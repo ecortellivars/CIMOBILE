@@ -1,3 +1,29 @@
 <resources>
     <string name="app_name">CIMobile</string>
+    <string name="iniciar_sesion">Iniciar sesión</string>
+    <string name="titulo_logout">Cerrar sesión</string>
+    <string name="nueva_notificacion">Nueva notificación</string>
+    <string name="cargar_reparto">Cargar reparto</string>
+    <string name="resumen_reparto">Resumen reparto</string>
+    <string name="detalle_logout">Va a salir y cerrar la sesión, ¿Desea continuar?</string>
+    <string name="ok">OK</string>
+    <string name="cancelar">cancelar</string>
+    <string name="notificador">Notificador</string>
+    <string name="delegacion">Delegación</string>
+    <string name="fecha">Fecha</string>
+    <string name="total_ficheros">Total ficheros</string>
+    <string name="total_remesas">Total remesas</string>
+    <string name="total_notificaciones">Total notificaciones</string>
+    <string name="total_notificaciones_gestionadas">Total notif. gestionadas</string>
+    <string name="total_notificaciones_marcadas">Total notif. marcadas</string>
+    <string name="detalle_notificaciones">Detalle notificaciones</string>
+    <string name="entregado_01">01 Entregado</string>
+    <string name="dir_incorrecta_02">02 Dir. incorrecta</string>
+    <string name="ausente_03">03 Ausente</string>
+    <string name="desconocido_04">04 Desconocido</string>
+    <string name="fallecido_05">05 Fallecido</string>
+    <string name="rehusado_06">06 Rehusado</string>
+    <string name="nadie_se_hace_cargo_07">07 Nadie se hace cargo</string>
+    <string name="cerrar_reparto">Cerrar reparto</string>
+    <string name="espere_info_reparto">Espere mientras se obtiene información del reparto</string>
 </resources>

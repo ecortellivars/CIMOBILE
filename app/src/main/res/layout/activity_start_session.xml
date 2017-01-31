@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_start_session"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="es.correointeligente.cipostal.cimobile.Activities.StartSessionActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/background_gradient"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="match_parent"
+            android:layout_height="171dp"
+            app:srcCompat="@mipmap/ic_launcher" />
+
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/spinner_notificador"
+            style="@style/Widget.AppCompat.Spinner.Underlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="50dp"
+            android:spinnerMode="dropdown"
+            android:textColor="#000000" />
+
+        <Button
+            android:id="@+id/button_iniciar_sesion"
+            android:layout_width="151dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_marginTop="50dp"
+            android:text="@string/iniciar_sesion" />
+
+
+    </LinearLayout>
+
+</RelativeLayout>
