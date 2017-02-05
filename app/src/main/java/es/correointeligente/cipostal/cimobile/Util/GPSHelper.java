@@ -1,0 +1,203 @@
+package es.correointeligente.cipostal.cimobile.Util;
+
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
+import android.content.IntentSender;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
+import es.correointeligente.cipostal.cimobile.Activities.NuevaNotificacionActivity;
+
+public class GPSHelper implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+
+    private static GPSHelper INSTANCIA = null;
+    private Context context;
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
+    private PendingResult<LocationSettingsResult> result;
+    private LocationSettingsRequest.Builder builder;
+    private Location mLastLocation;
+    private final int REQUEST_LOCATION = 200;
+    private final int REQUEST_CHECK_SETTINGS = 300;
+    Activity mActivity;
+
+    private GPSHelper() {
+
+    }
+
+    public static GPSHelper getInstancia() {
+        if(INSTANCIA == null) {
+            synchronized (FTPHelper.class) {
+                if(INSTANCIA == null) {
+                    INSTANCIA = new GPSHelper();
+                }
+            }
+        }
+        return INSTANCIA;
+    }
+
+    public void connect(Context context) {
+        this.context = context;
+        mActivity = (NuevaNotificacionActivity) context;
+        // Se inicializa el cliente Api de Google
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(context).addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+
+            mGoogleApiClient.connect();
+        }
+    }
+
+    public void disconnect() {
+        mGoogleApiClient.disconnect();
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        mLocationRequest = createLocationRequest();
+        builder = new LocationSettingsRequest.Builder().addLocationRequest(mLocationRequest);
+        result = LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(LocationSettingsResult result) {
+                final Status status = result.getStatus();
+                final LocationSettingsStates mState = result.getLocationSettingsStates();
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        // All location settings are satisfied. The client can
+                        // initialize location requests here.
+                       if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                       }
+                         /*    ActivityCompat.requestPermissions(NuevaNotificacionActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+                        } else {*/
+                            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                            if (mLastLocation != null) {
+                                /*latitud.setText(String.valueOf(mLastLocation.getLatitude()));
+                                longitud.setText(String.valueOf(mLastLocation.getLongitude()));
+                                getAddressFromLocation(mLastLocation, getApplicationContext(), new NuevaNotificacionActivity.GeoCoderHandler());*/
+                          //  }
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        // Location settings are not satisfied, but this can be fixed
+                        // by showing the user a dialog.
+                       /* try {
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            status.startResolutionForResult(NuevaNotificacionActivity.this, REQUEST_CHECK_SETTINGS);
+                        } catch (IntentSender.SendIntentException e) {
+                            // Ignore the error.
+                        }*/
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        // Location settings are not satisfied. However, we have no way
+                        // to fix the settings so we won't show the dialog.
+                        break;
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        if (mLastLocation != null) {
+          /*  latitud.setText(String.valueOf(mLastLocation.getLatitude()));
+            longitud.setText(String.valueOf(mLastLocation.getLongitude()));
+            getAddressFromLocation(mLastLocation, getApplicationContext(), new NuevaNotificacionActivity.GeoCoderHandler());*/
+        }
+    }
+
+    protected LocationRequest createLocationRequest() {
+        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        return mLocationRequest;
+    }
+
+   /* public static void getAddressFromLocation(final Location location, final Context context, final Handler handler) {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+                String result = null;
+                try {
+                    List<Address> list = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                    if (list != null && list.size() > 0) {
+                        Address address = list.get(0);
+                        // sending back first address line and locality
+                        result = address.getAddressLine(0) + ", " + address.getLocality() + ", " + address.getCountryName();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    Message msg = Message.obtain();
+                    msg.setTarget(handler);
+                    if (result != null) {
+                        msg.what = 1;
+                        Bundle bundle = new Bundle();
+                        bundle.putString("address", result);
+                        msg.setData(bundle);
+                    } else
+                        msg.what = 0;
+                    msg.sendToTarget();
+                }
+            }
+        };
+        thread.start();
+    }
+    private class GeoCoderHandler extends Handler {
+        @Override
+        public void handleMessage(Message message) {
+            String result;
+            switch (message.what) {
+                case 1:
+                    Bundle bundle = message.getData();
+                    result = bundle.getString("address");
+                    break;
+                default:
+                    result = null;
+            }
+            ciudad.setText(result);
+        }
+    }*/
+}
