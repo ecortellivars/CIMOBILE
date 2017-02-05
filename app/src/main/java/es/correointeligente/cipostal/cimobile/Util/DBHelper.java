@@ -414,12 +414,43 @@ public class DBHelper extends SQLiteOpenHelper {
         String query = "SELECT DISTINCT * FROM " + TABLE_NOTIFICACION;
         query += " WHERE 1 = 1 ";
 
+        if (filtroNotificacion.getReferencia() != null && filtroNotificacion.getReferencia().trim().length() > 0) {
+            query += "AND (" + KEY_NOTIFICACION_REFERENCIA + " LIKE "+filtroNotificacion.getReferencia()+ ") ";
+            query += "OR (" + KEY_NOTIFICACION_NOMBRE + " LIKE "+filtroNotificacion.getReferencia()+ ") ";
+        }
         if (filtroNotificacion.getEntregado()) {
             query += "AND " + KEY_NOTIFICACION_RESULTADO_1 + " = 01 ";
         }
+        if (filtroNotificacion.getDirIncorrecta()) {
+            query += "AND " + KEY_NOTIFICACION_RESULTADO_1 + " = 02 ";
+        }
+        if (filtroNotificacion.getAusente()) {
+            query += "AND " + KEY_NOTIFICACION_RESULTADO_1 + " = 03 ";
+        }
+        if (filtroNotificacion.getDesconocido()) {
+            query += "AND " + KEY_NOTIFICACION_RESULTADO_1 + " = 04 ";
+        }
+        if (filtroNotificacion.getFallecido()) {
+            query += "AND " + KEY_NOTIFICACION_RESULTADO_1 + " = 05 ";
+        }
+        if (filtroNotificacion.getRehusado()) {
+            query += "AND " + KEY_NOTIFICACION_RESULTADO_1 + " = 06 ";
+        }
+        if (filtroNotificacion.getNadieSeHaceCargo()) {
+            query += "AND " + KEY_NOTIFICACION_RESULTADO_1 + " = 07 ";
+        }
+        if (filtroNotificacion.getMarcadas()) {
+            query += "AND " + KEY_NOTIFICACION_MARCADA + " = "+1+" ";
+//            query += "ORDER BY "+KEY_NOTIFICACION_TIMESTAMP_MARCADA+" ASC ";
+        } else {
+            query += "ORDER BY "+KEY_NOTIFICACION_REFERENCIA+" ASC ";
+        }
 
-        query += "ORDER BY referencia ASC ";
-        query += "LIMIT 10 OFFSET " + filtroNotificacion.getPagina() * 10 + " ";
+        if(filtroNotificacion.getPagina() > 0) {
+            query += "LIMIT 10 OFFSET " + filtroNotificacion.getPagina() * 10 + " ";
+        } else {
+            query += "LIMIT 10 ";
+        }
 
         Cursor cursor = db.rawQuery(query, null);
 
@@ -598,6 +629,40 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         return notificacion;
+    }
+
+    public void guardaResultadoNotificacion(Notificacion notificacion){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        try {
+            db.beginTransaction();
+
+
+            ContentValues cv = new ContentValues();
+            if(notificacion.getSegundoIntento() == null || !notificacion.getSegundoIntento()) {
+                cv.put(KEY_NOTIFICACION_RESULTADO_1, notificacion.getResultado1());
+                cv.put(KEY_NOTIFICACION_FECHA_HORA_RES_1, notificacion.getFechaHoraRes1());
+                cv.put(KEY_NOTIFICACION_LONGITUD, notificacion.getLongitud());
+                cv.put(KEY_NOTIFICACION_LATITUD, notificacion.getLatitud());
+
+                db.update(TABLE_NOTIFICACION, cv, KEY_NOTIFICACION_REFERENCIA + "= ?", new String[]{notificacion.getReferencia()});
+            } else {
+                cv.put(KEY_NOTIFICACION_RESULTADO_2, notificacion.getResultado2());
+                cv.put(KEY_NOTIFICACION_FECHA_HORA_RES_2, notificacion.getFechaHoraRes2());
+                cv.put(KEY_NOTIFICACION_LONGITUD, notificacion.getLongitud());
+                cv.put(KEY_NOTIFICACION_LATITUD, notificacion.getLatitud());
+
+                db.update(TABLE_NOTIFICACION, cv, KEY_NOTIFICACION_REFERENCIA + "= ?", new String[]{notificacion.getReferencia()});
+            }
+
+            db.setTransactionSuccessful();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.endTransaction();
+        }
+        db.close();
     }
 
 

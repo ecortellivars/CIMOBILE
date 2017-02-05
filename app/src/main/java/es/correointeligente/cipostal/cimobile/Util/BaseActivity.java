@@ -37,7 +37,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         toolbar.setNavigationIcon(iconRes);
     }
 
-  protected void loadLayoutCurrentSession() {
+    protected void loadLayoutCurrentSession() {
         mTextViewNotificador = (TextView) findViewById(R.id.textView_notificador_value);
         mTextViewNotificador.setText(sp.getString("notificador", ""));
 

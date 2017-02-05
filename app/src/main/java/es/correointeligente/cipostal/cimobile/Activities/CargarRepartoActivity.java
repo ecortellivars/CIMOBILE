@@ -11,15 +11,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
-
-import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import es.correointeligente.cipostal.cimobile.Adapters.FicheroAdapter;
 import es.correointeligente.cipostal.cimobile.Holders.FicheroViewHolder;
@@ -28,15 +23,15 @@ import es.correointeligente.cipostal.cimobile.Model.Notificacion;
 import es.correointeligente.cipostal.cimobile.R;
 import es.correointeligente.cipostal.cimobile.Util.BaseActivity;
 import es.correointeligente.cipostal.cimobile.Util.DBHelper;
-import es.correointeligente.cipostal.cimobile.Util.Util;
+import es.correointeligente.cipostal.cimobile.Util.FTPHelper;
 
 public class CargarRepartoActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
     Toolbar mToolbar;
-    FTPClient ftpClient;
     ListView mlistView_cargar_reparto_ficheros;
     FicheroAdapter itemsAdapter;
     DBHelper dbHelper;
+    FTPHelper ftpHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +52,9 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
         // Carga el layout comun de sesion actual
         this.loadLayoutCurrentSession();
 
+        // Inicializamos la clase Singleton para la gestion FTP
+        ftpHelper = FTPHelper.getInstancia();
+
         // Lanza una tarea en background para la conexión FTP
         FtpConnectionTask ftpConnectionTask = new FtpConnectionTask();
         ftpConnectionTask.execute();
@@ -72,7 +70,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            disconnectFTPServer();
+            ftpHelper.disconnect();
             finish();
         }
         return super.onOptionsItemSelected(item);
@@ -80,7 +78,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
 
     @Override
     public void onBackPressed() {
-        this.disconnectFTPServer();
+        ftpHelper.disconnect();
         this.finish();
     }
 
@@ -110,64 +108,32 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
         builder.show();
     }
 
-    private void disconnectFTPServer() {
-        if (ftpClient != null && ftpClient.isConnected()) {
-            try {
-                ftpClient.disconnect();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private class FtpConnectionTask extends AsyncTask<Void, Void, FTPClient> {
+    private class FtpConnectionTask extends AsyncTask<Void, Void, Void> {
         ProgressDialog progressDialog;
 
-        protected FTPClient doInBackground(Void... args) {
+        protected Void doInBackground(Void... args) {
             try {
-                ftpClient = new FTPClient();
-                ftpClient.setConnectTimeout(5000);
-//                ftpClient.connect("46.17.141.94",1984);
-                ftpClient.connect("192.168.0.105");
-                ftpClient.login("jorge", "abc123.");
-//                ftpClient.login("valencia", "abc123.");
-                ftpClient.changeWorkingDirectory("/SICERS");
 
+               if(ftpHelper.connect()) {
 
+                   if(ftpHelper.cargarCarpetaSICER()) {
 
-//                ftpsClient = new FTPSClient(false);
-//                ftpsClient.setConnectTimeout(10000);
-//                ftpsClient.connect("192.168.0.105");
-//                ftpsClient.login("jorge", "abc123.");
-//
-//               int  reply = ftpsClient.getReplyCode();
-//                FTPReply.isPositiveCompletion(reply);
-//                ftpsClient.setTrustManager(TrustManagerUtils.getAcceptAllTrustManager());
-//                ftpsClient.execPROT("P");
-//                ftpsClient.changeWorkingDirectory("/SICERS");
-//                reply = ftpsClient.getReplyCode();
-//                FTPReply.isPositiveCompletion(reply);
-//                ftpsClient.enterLocalPassiveMode();
-                FTPFile[] arrayFicheros = ftpClient.listFiles();
-                List<FicheroViewHolder> listaFicheros = new ArrayList<>();
-                for (FTPFile ftpFile : arrayFicheros) {
-                    if (ftpFile.isFile() && FilenameUtils.getExtension(ftpFile.getName()).equalsIgnoreCase("txt")) {
-                        String nombreFichero = ftpFile.getName();
-                        String tamanyo = Util.obtenerTamanyoFicheroString(ftpFile.getSize());
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-                        String fecha = sdf.format(ftpFile.getTimestamp().getTime());
+                       List<FicheroViewHolder> listaFicheros = ftpHelper.obtenerFicherosDirectorio();
+                       itemsAdapter = new FicheroAdapter(getBaseContext(), R.layout.item_fichero, listaFicheros);
 
-                        listaFicheros.add(new FicheroViewHolder(nombreFichero, tamanyo, fecha, null));
-                    }
-                }
+                   } else {
+                       // error cambio de carpeta
+                   }
 
-                itemsAdapter = new FicheroAdapter(getBaseContext(), R.layout.item_fichero, listaFicheros);
+               } else {
+                 // error de conexion
+               }
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            return ftpClient;
+            return null;
         }
 
         @Override
@@ -176,10 +142,8 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
         }
 
         @Override
-        protected void onPostExecute(FTPClient result) {
-            ftpClient = result;
-
-            if (ftpClient != null && ftpClient.isConnected()) {
+        protected void onPostExecute(Void result) {
+            if (ftpHelper.isConnected()) {
                 // Se ha creado la conexión correctamente
                 mlistView_cargar_reparto_ficheros.setAdapter(itemsAdapter);
                 mlistView_cargar_reparto_ficheros.setOnItemClickListener(CargarRepartoActivity.this);
@@ -207,19 +171,19 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
             Boolean resultado = true;
             String nombreFicheroSeleccionado = args[0];
 
-            if (nombreFicheroSeleccionado != null) {
+            if (nombreFicheroSeleccionado != null && ftpHelper.isConnected()) {
                 // Se comprueba si ya se ha cargado con anterioridad ese fichero, en ese caso no se puede cargar nuevamente
                 Fichero fichero = dbHelper.obtenerFichero(nombreFicheroSeleccionado);
 
                 if (fichero == null) {
-
-                    try (Scanner sc = new Scanner(ftpClient.retrieveFileStream(nombreFicheroSeleccionado))) {
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(ftpHelper.leerFichero(nombreFicheroSeleccionado)))) {
 
                         fichero = new Fichero(nombreFicheroSeleccionado);
                         Integer numLinea = 1;
                         List<Notificacion> listaNotificaciones = new ArrayList<>();
-                        while (sc.hasNextLine()) {
-                            String linea = sc.nextLine();
+
+                        for (String linea = reader.readLine(); linea != null; linea = reader.readLine()) {
+
                             if (linea.startsWith("F")) { // CABECERA DE FICHERO
 
                                 fichero.setCodigoCliente(linea.substring(4, 12));
@@ -245,7 +209,6 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                             numLinea++;
                         }
 
-                        ftpClient.completePendingCommand();
                         publishProgress("Guardando los datos en la base de datos interna");
                         dbHelper.guardarFicheroInicial(fichero, listaNotificaciones);
 

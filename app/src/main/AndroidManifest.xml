@@ -5,7 +5,8 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -22,6 +23,10 @@
         <activity android:name=".Activities.MainActivity" />
         <activity android:name=".Activities.CargarRepartoActivity" />
         <activity android:name=".Activities.ResumenRepartoActivity" />
+        <activity android:name=".Activities.ListaNotificacionesActivity" />
+        <activity android:name=".Activities.ScanBarcodeActivity" />
+        <activity android:name=".Activities.NuevaNotificacionActivity" />
+        <activity android:name=".Activities.NotificacionEntregadaActivity"></activity>
     </application>
 
 </manifest>

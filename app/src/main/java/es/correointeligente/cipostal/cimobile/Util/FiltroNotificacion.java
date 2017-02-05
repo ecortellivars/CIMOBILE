@@ -22,7 +22,7 @@ public class FiltroNotificacion {
         this.rehusado = false;
         this.nadieSeHaceCargo = false;
         this.marcadas = false;
-        this.pagina = 1;
+        this.pagina = 0;
     }
 
     public FiltroNotificacion(Boolean entregado, Boolean dirIncorrecta, Boolean ausente, Boolean desconocido, Boolean fallecido,

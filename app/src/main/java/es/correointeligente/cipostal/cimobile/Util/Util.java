@@ -15,7 +15,6 @@ public class Util {
     final static List<String> tamanyosMemoria = Arrays.asList("Bytes", "KB", "MB", "GB", "TB");
 
     public static List<Resultado> crearResultadosPorDefecto(Context context) {
-        List<Resultado> listaResultados = new ArrayList<>();
         DBHelper dbHelper = new DBHelper(context);
 
         dbHelper.addResultado(new Resultado("01", "Notificado", 1));

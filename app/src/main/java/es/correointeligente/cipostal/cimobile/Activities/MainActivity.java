@@ -67,6 +67,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 startActivity(i);
                 break;
             case R.id.button_nueva_notificacion:
+                i = new Intent(getBaseContext(), ListaNotificacionesActivity.class);
+                startActivity(i);
                 break;
             case R.id.button_cerrar_sesion:
                 this.cerrarSesion();

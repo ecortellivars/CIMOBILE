@@ -5,6 +5,7 @@
     <string name="nueva_notificacion">Nueva notificación</string>
     <string name="cargar_reparto">Cargar reparto</string>
     <string name="resumen_reparto">Resumen reparto</string>
+    <string name="cargando_notificacion">Cargando notificación</string>
     <string name="detalle_logout">Va a salir y cerrar la sesión, ¿Desea continuar?</string>
     <string name="ok">OK</string>
     <string name="cancelar">cancelar</string>
@@ -17,6 +18,10 @@
     <string name="total_notificaciones_gestionadas">Total notif. gestionadas</string>
     <string name="total_notificaciones_marcadas">Total notif. marcadas</string>
     <string name="detalle_notificaciones">Detalle notificaciones</string>
+    <string name="detalle_notificacion">Detalle notificación</string>
+    <string name="detalle_primer_intento">Detalle primer intento</string>
+    <string name="no_entregado">No entregado</string>
+    <string name="entregado">Entregado</string>
     <string name="entregado_01">01 Entregado</string>
     <string name="dir_incorrecta_02">02 Dir. incorrecta</string>
     <string name="ausente_03">03 Ausente</string>
@@ -26,4 +31,33 @@
     <string name="nadie_se_hace_cargo_07">07 Nadie se hace cargo</string>
     <string name="cerrar_reparto">Cerrar reparto</string>
     <string name="espere_info_reparto">Espere mientras se obtiene información del reparto</string>
+    <string name="espere_info_notificacion">Espere mientras se obtiene información de la notificación</string>
+    <string name="filtro">Filtro</string>
+    <string name="filtro_busqueda">Filtro de búsqueda</string>
+    <string name="resultado">Resultado</string>
+    <string name="motivo_no_entrega">Motivo de no entrega</string>
+    <string name="numero_documento">Número documento</string>
+    <string name="nombre_y_apellidos">Nombre y apellidos</string>
+    <string name="firma_receptor">Firma del receptor</string>
+    <string name="guardar">Guardar</string>
+
+    <string-array name="filtro_busqueda_array">
+        <item>01 Entregado</item>
+        <item>02 Dir. incorrecta</item>
+        <item>03 Ausente</item>
+        <item>04 Desconocido</item>
+        <item>05 Fallecido</item>
+        <item>06 Rehusado</item>
+        <item>07 Nadie se hace cargo</item>
+        <item>Marcadas notificador</item>
+    </string-array>
+
+    <string-array name="resultados_no_entrega">
+        <item>02 Dir. incorrecta</item>
+        <item>03 Ausente</item>
+        <item>04 Desconocido</item>
+        <item>05 Fallecido</item>
+        <item>06 Rehusado</item>
+        <item>07 Nadie se hace cargo</item>
+    </string-array>
 </resources>
