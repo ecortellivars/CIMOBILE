@@ -50,8 +50,10 @@ import es.correointeligente.cipostal.cimobile.Model.Notificacion;
 import es.correointeligente.cipostal.cimobile.R;
 import es.correointeligente.cipostal.cimobile.Util.BaseActivity;
 import es.correointeligente.cipostal.cimobile.Util.DBHelper;
+import es.correointeligente.cipostal.cimobile.Util.FTPHelper;
+import es.correointeligente.cipostal.cimobile.Util.GPSHelper;
 
-public class NuevaNotificacionActivity extends BaseActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class NuevaNotificacionActivity extends BaseActivity implements View.OnClickListener {
 
     Toolbar mToolbar;
     String refPostal;
@@ -63,14 +65,6 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     int checkedItem;
     Notificacion notificacion;
 
-    GoogleApiClient mGoogleApiClient;
-    LocationRequest mLocationRequest;
-    private PendingResult<LocationSettingsResult> result;
-    private LocationSettingsRequest.Builder builder;
-    private Location mLastLocation;
-    private final int REQUEST_LOCATION = 200;
-    private final int REQUEST_CHECK_SETTINGS = 300;
-    TextView latitud, longitud, ciudad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,17 +76,6 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        // Se inicializa el cliente Api de Google
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this)
-                                                                .addOnConnectionFailedListener(this)
-                                                                .addApi(LocationServices.API)
-                                                                .build();
-        }
-        latitud = (TextView) findViewById(R.id.latitud);
-        longitud = (TextView) findViewById(R.id.longitud);
-        ciudad = (TextView) findViewById(R.id.ciudad);
 
         // Se recupera el valor que se nos ha pasado desde la lista de notificaciones
         refPostal = getIntent().getStringExtra("refPostal");
@@ -261,8 +244,24 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         mDialog.show();
     }
 
+    @Override
+    protected void onStart() {
+        // Inicializamos la clase Singleton para la gestion FTP
+        GPSHelper gpsHelper = GPSHelper.getInstancia();
+        gpsHelper.connect(getBaseContext());
 
-    /** METODOS PARA OBTENER LA LOCALIZACION GPS **/
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        GPSHelper gpsHelper = GPSHelper.getInstancia();
+        gpsHelper.disconnect();
+
+        super.onStop();
+    }
+
+    /** METODOS PARA OBTENER LA LOCALIZACION GPS
    @Override
     protected void onStart() {
         mGoogleApiClient.connect();
@@ -392,6 +391,6 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             }
             ciudad.setText(result);
         }
-    }
+    }**/
 
 }
