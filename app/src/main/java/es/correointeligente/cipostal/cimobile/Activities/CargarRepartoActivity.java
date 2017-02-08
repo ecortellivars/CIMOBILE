@@ -18,7 +18,6 @@ import java.util.List;
 
 import es.correointeligente.cipostal.cimobile.Adapters.FicheroAdapter;
 import es.correointeligente.cipostal.cimobile.Holders.FicheroViewHolder;
-import es.correointeligente.cipostal.cimobile.Model.Fichero;
 import es.correointeligente.cipostal.cimobile.Model.Notificacion;
 import es.correointeligente.cipostal.cimobile.R;
 import es.correointeligente.cipostal.cimobile.Util.BaseActivity;
@@ -88,8 +87,8 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
         final String nombreFicheroSeleccionado = ((FicheroViewHolder) adapterView.getItemAtPosition(position)).getNombreFichero();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Cargar fichero SICER");
-        builder.setMessage("¿Está seguro de cargar el fichero SICER " + nombreFicheroSeleccionado + "?");
+        builder.setTitle(R.string.cargar_fichero_sicer);
+        builder.setMessage(R.string.esta_seguro_de_cargar_el_fichero_sicer+" "+ nombreFicheroSeleccionado + "?");
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 // Lanza la tarea en background de la carga del fichero SICER
@@ -138,7 +137,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
 
         @Override
         protected void onPreExecute() {
-            progressDialog = ProgressDialog.show(CargarRepartoActivity.this, "Conecanto al ftp", "Espere mientras se conecta al servidor FTP");
+            progressDialog = ProgressDialog.show(CargarRepartoActivity.this, getString(R.string.conexion_ftp), getString(R.string.espere_conexion_servidor_ftp));
         }
 
         @Override
@@ -150,8 +149,8 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
             } else {
                 // Ha fallado la conexión FTP
                 AlertDialog.Builder builder = new AlertDialog.Builder(CargarRepartoActivity.this);
-                builder.setTitle("Conexión FTP");
-                builder.setMessage("No se ha podido conectar al servidor FTP en la ip 192.168.0.105");
+                builder.setTitle(R.string.conexion_ftp);
+                builder.setMessage(getString(R.string.fallo_conexion_servidor_ftp));
                 builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int which) {
                         dialogInterface.cancel();
@@ -173,25 +172,19 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
 
             if (nombreFicheroSeleccionado != null && ftpHelper.isConnected()) {
                 // Se comprueba si ya se ha cargado con anterioridad ese fichero, en ese caso no se puede cargar nuevamente
-                Fichero fichero = dbHelper.obtenerFichero(nombreFicheroSeleccionado);
+                Boolean existeFichero = dbHelper.existeFichero(nombreFicheroSeleccionado);
 
-                if (fichero == null) {
+                if (!existeFichero) {
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(ftpHelper.leerFichero(nombreFicheroSeleccionado)))) {
 
-                        fichero = new Fichero(nombreFicheroSeleccionado);
                         Integer numLinea = 1;
                         List<Notificacion> listaNotificaciones = new ArrayList<>();
 
                         for (String linea = reader.readLine(); linea != null; linea = reader.readLine()) {
 
-                            if (linea.startsWith("F")) { // CABECERA DE FICHERO
-
-                                fichero.setCodigoCliente(linea.substring(4, 12));
-                                fichero.setFechaFichero(linea.substring(19, 27) + " " + linea.substring(27, 32));
-
-                            } else if (linea.startsWith("D")) { // DETALLE
+                            if (linea.startsWith("D")) { // DETALLE (nosotros usaremos "P" para primera entrega
                                 Notificacion notificacion = new Notificacion();
-                                notificacion.setNombreFichero(fichero.getNombreFichero());
+                                notificacion.setNombreFichero(nombreFicheroSeleccionado);
                                 notificacion.setReferencia(linea.substring(1, 24));
                                 notificacion.setNombre(linea.substring(24, 124).trim());
                                 notificacion.setDireccion(linea.substring(124, 174).trim());
@@ -200,17 +193,15 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                 notificacion.setSegundoIntento(false);
                                 listaNotificaciones.add(notificacion);
 
-                            } else if (linea.startsWith("f")) { // FIN DE FICHERO
-                                fichero.setNumRemesas(linea.substring(12, 14));
-                                fichero.setNumNotificaciones(linea.substring(15, 23));
-                            }
+                                publishProgress(getString(R.string.cargando_fichero_sicer) + numLinea);
+                                numLinea++;
+                            } else if(linea.startsWith("S")) { // Determina que es el formato del sicer de segundo intento
 
-                            publishProgress("Cargando fichero SICER...\nLinea: " + numLinea);
-                            numLinea++;
+                            }
                         }
 
-                        publishProgress("Guardando los datos en la base de datos interna");
-                        dbHelper.guardarFicheroInicial(fichero, listaNotificaciones);
+                        publishProgress(getString(R.string.guardando_datos_en_bd_interna));
+                        dbHelper.guardarNotificacionesInicial(listaNotificaciones);
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -239,12 +230,12 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
         protected void onPostExecute(Boolean result) {
             progressDialog.dismiss();
             AlertDialog.Builder builder = new AlertDialog.Builder(CargarRepartoActivity.this);
-            builder.setTitle("Información carga");
+            builder.setTitle(R.string.informacion_carga);
             if (result) {
-                builder.setMessage("Se ha guardado correctamente en la base de datos");
+                builder.setMessage(R.string.datos_guardados_ok_bd);
             } else {
                 // El fichero ya estaba cargado
-                builder.setMessage("El fichero ya se habia cargado anteriormente");
+                builder.setMessage(R.string.fichero_cargado_anteriormente);
             }
             builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialogInterface, int which) {

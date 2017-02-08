@@ -20,7 +20,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
     DBHelper dbHelper;
     Button mCerrarReparto;
 
-    TextView tv_totFicheros, tv_totRemesas, tv_totNotificaciones, tv_totNotifGestionadas, tv_totNotifMarcadas;
+    TextView tv_totFicheros, tv_totNotificaciones, tv_totNotifGestionadas, tv_totNotifMarcadas;
     TextView tv_entregado, tv_dirIncorrecta, tv_ausente, tv_desconocido, tv_fallecido, tv_rehusado, tv_noSeHaceCargo;
 
     @Override
@@ -63,7 +63,6 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
 
     private void mapearVistaTextViews() {
         tv_totFicheros = (TextView) findViewById(R.id.textView_resumen_total_ficheros_value);
-        tv_totRemesas = (TextView) findViewById(R.id.textView_resumen_total_remesas_value);
         tv_totNotificaciones = (TextView) findViewById(R.id.textView_resumen_total_notificaciones_value);
         tv_totNotifGestionadas = (TextView) findViewById(R.id.textView_resumen_total_notif_gestionadas_value);
         tv_totNotifMarcadas = (TextView) findViewById(R.id.textView_resumen_total_notif_marcadas_value);
@@ -109,7 +108,6 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             progressDialog.dismiss();
 
             tv_totFicheros.setText(resumenReparto.getTotFicheros().toString());
-            tv_totRemesas.setText(resumenReparto.getTotRemesas().toString());
             tv_totNotificaciones.setText(resumenReparto.getTotNotificaciones().toString());
             tv_totNotifMarcadas.setText(resumenReparto.getTotNotifMarcadas().toString());
             tv_totNotifGestionadas.setText(resumenReparto.getTotNotifGestionadas().toString());

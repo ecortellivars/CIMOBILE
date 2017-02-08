@@ -40,6 +40,18 @@
     <string name="nombre_y_apellidos">Nombre y apellidos</string>
     <string name="firma_receptor">Firma del receptor</string>
     <string name="guardar">Guardar</string>
+    <string name="cargar_fichero_sicer">Cargar fichero SICER</string>
+    <string name="esta_seguro_de_cargar_el_fichero_sicer">¿Está seguro de cargar el fichero SICER</string>
+    <string name="conexion_ftp">Conexión FTP</string>
+    <string name="espere_conexion_servidor_ftp">Espere mientras se conecta al servidor FTP</string>
+    <string name="fallo_conexion_servidor_ftp">No se ha podido conectar al servidor FTP</string>
+    <string name="guardando_datos_en_bd_interna">Guardando los datos en la base de datos interna</string>
+    <string name="cargando_fichero_sicer">"Cargando fichero SICER...\nLinea: "</string>
+    <string name="fichero_cargado_anteriormente">El fichero ya se habia cargado anteriormente</string>
+    <string name="datos_guardados_ok_bd">Se ha guardado correctamente en la base de datos</string>
+    <string name="informacion_carga">Información carga</string>
+    <string name="latitud">Latitud</string>
+    <string name="longitud">Longitud</string>
 
     <string-array name="filtro_busqueda_array">
         <item>01 Entregado</item>

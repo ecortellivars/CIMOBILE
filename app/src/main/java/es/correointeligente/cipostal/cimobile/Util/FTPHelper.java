@@ -53,6 +53,8 @@ public class FTPHelper {
 
         try {
             JSch jsch = new JSch();
+//            session = jsch.getSession("valencia","46.17.141.94", 1984);
+//            session.setPassword("9ca174324c");
             session = jsch.getSession("jorge","192.168.0.105", 23);
             session.setPassword("abc123.");
 

@@ -17,15 +17,15 @@ public class Util {
     public static List<Resultado> crearResultadosPorDefecto(Context context) {
         DBHelper dbHelper = new DBHelper(context);
 
-        dbHelper.addResultado(new Resultado("01", "Notificado", 1));
-        dbHelper.addResultado(new Resultado("02", "Dirección Incorrecta", 1));
-        dbHelper.addResultado(new Resultado("03", "Ausente", 0));
-        dbHelper.addResultado(new Resultado("04", "Desconocido", 1));
-        dbHelper.addResultado(new Resultado("05", "Fallecido", 1));
-        dbHelper.addResultado(new Resultado("06", "Rehusado", 1));
-        dbHelper.addResultado(new Resultado("07", "Nadie se hace cargo", 1));
+        dbHelper.guardarResultado(new Resultado("01", "Notificado", 1));
+        dbHelper.guardarResultado(new Resultado("02", "Dirección Incorrecta", 1));
+        dbHelper.guardarResultado(new Resultado("03", "Ausente", 0));
+        dbHelper.guardarResultado(new Resultado("04", "Desconocido", 1));
+        dbHelper.guardarResultado(new Resultado("05", "Fallecido", 1));
+        dbHelper.guardarResultado(new Resultado("06", "Rehusado", 1));
+        dbHelper.guardarResultado(new Resultado("07", "Nadie se hace cargo", 1));
 
-        return dbHelper.getAllResultados();
+        return dbHelper.obtenerResultados();
     }
 
     public static List<Notificador> obtenerNotificadores() {

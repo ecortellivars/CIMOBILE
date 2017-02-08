@@ -169,13 +169,17 @@ public class ListaNotificacionesActivity extends BaseActivity {
                     NotificacionesAdapter adapter = new NotificacionesAdapter(ListaNotificacionesActivity.this, listaNotificaciones);
                     mRecyclerNotificaciones.setAdapter(adapter);
                 } else {
-                    listaNotificaciones.remove(size - 1);
+                    int tamanyoCalculado = size;
+                    if(listaNotificaciones.get(size-1) instanceof NotificacionProgressbar) {
+                        tamanyoCalculado = tamanyoCalculado - 1;
+                        listaNotificaciones.remove(tamanyoCalculado);
+                    }
                     listaNotificaciones.addAll(listaNotificacionesConsulta);
                     if (listaNotificacionesConsulta.size() == THRESHOLD_PAGINA) {
                         listaNotificaciones.add(new NotificacionProgressbar());
                     }
 
-                    mRecyclerNotificaciones.getAdapter().notifyItemRangeChanged(size - 1, listaNotificaciones.size() - size);
+                    mRecyclerNotificaciones.getAdapter().notifyItemRangeChanged(tamanyoCalculado, listaNotificaciones.size() - size);
 
                 }
             }
@@ -266,7 +270,7 @@ public class ListaNotificacionesActivity extends BaseActivity {
 
     private void mapearEditTextRefPostal() {
         mRefPostal = (EditText) findViewById(R.id.editText_listaNotificaciones_refPostal);
-        // Force edit text to input only uppercase characters
+        // Se fuerza que el inputText se haga entero en mayusculas
         mRefPostal.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         mRefPostal.addTextChangedListener(new TextWatcher() {
             @Override

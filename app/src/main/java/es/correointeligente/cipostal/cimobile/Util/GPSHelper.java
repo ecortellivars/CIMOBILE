@@ -1,19 +1,13 @@
 package es.correointeligente.cipostal.cimobile.Util;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
-import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -28,12 +22,6 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-
-import es.correointeligente.cipostal.cimobile.Activities.NuevaNotificacionActivity;
-
 public class GPSHelper implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static GPSHelper INSTANCIA = null;
@@ -45,7 +33,8 @@ public class GPSHelper implements GoogleApiClient.ConnectionCallbacks, GoogleApi
     private Location mLastLocation;
     private final int REQUEST_LOCATION = 200;
     private final int REQUEST_CHECK_SETTINGS = 300;
-    Activity mActivity;
+    private String longitud;
+    private String latitud;
 
     private GPSHelper() {
 
@@ -64,7 +53,6 @@ public class GPSHelper implements GoogleApiClient.ConnectionCallbacks, GoogleApi
 
     public void connect(Context context) {
         this.context = context;
-        mActivity = (NuevaNotificacionActivity) context;
         // Se inicializa el cliente Api de Google
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(context).addConnectionCallbacks(this)
@@ -94,18 +82,18 @@ public class GPSHelper implements GoogleApiClient.ConnectionCallbacks, GoogleApi
                     case LocationSettingsStatusCodes.SUCCESS:
                         // All location settings are satisfied. The client can
                         // initialize location requests here.
-                       if (ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
+                       if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                           mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                           if (mLastLocation != null) {
+                               latitud = Double.toString(mLastLocation.getLatitude());
+                               longitud = Double.toString(mLastLocation.getLongitude());
+//                             getAddressFromLocation(mLastLocation, getApplicationContext(), new NuevaNotificacionActivity.GeoCoderHandler());*
+                           }
+                       } else {
+                           // La aplicacion no tiene los permisos concedidos, por lo que se le solicita al usuario si lo permite
+                           // TODO: hay que devolver el resultado denegado y desde la pantalla del activity hacer el request de los permisos
+                           // ActivityCompat.requestPermissions(NuevaNotificacionActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
                        }
-                         /*    ActivityCompat.requestPermissions(NuevaNotificacionActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
-                        } else {*/
-                            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                            if (mLastLocation != null) {
-                                /*latitud.setText(String.valueOf(mLastLocation.getLatitude()));
-                                longitud.setText(String.valueOf(mLastLocation.getLongitude()));
-                                getAddressFromLocation(mLastLocation, getApplicationContext(), new NuevaNotificacionActivity.GeoCoderHandler());*/
-                          //  }
-                        }
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                         // Location settings are not satisfied, but this can be fixed
@@ -140,9 +128,9 @@ public class GPSHelper implements GoogleApiClient.ConnectionCallbacks, GoogleApi
     @Override
     public void onLocationChanged(Location location) {
         if (mLastLocation != null) {
-          /*  latitud.setText(String.valueOf(mLastLocation.getLatitude()));
-            longitud.setText(String.valueOf(mLastLocation.getLongitude()));
-            getAddressFromLocation(mLastLocation, getApplicationContext(), new NuevaNotificacionActivity.GeoCoderHandler());*/
+            latitud = Double.toString(mLastLocation.getLatitude());
+            longitud = Double.toString(mLastLocation.getLongitude());
+            //getAddressFromLocation(mLastLocation, getApplicationContext(), new NuevaNotificacionActivity.GeoCoderHandler());
         }
     }
 
@@ -154,7 +142,15 @@ public class GPSHelper implements GoogleApiClient.ConnectionCallbacks, GoogleApi
         return mLocationRequest;
     }
 
-   /* public static void getAddressFromLocation(final Location location, final Context context, final Handler handler) {
+    public String getLongitud() {
+        return longitud;
+    }
+
+    public String getLatitud() {
+        return latitud;
+    }
+
+    /* public static void getAddressFromLocation(final Location location, final Context context, final Handler handler) {
         Thread thread = new Thread() {
             @Override
             public void run() {

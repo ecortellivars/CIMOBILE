@@ -1,6 +1,8 @@
 package es.correointeligente.cipostal.cimobile.Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +26,6 @@ public class NotificacionesAdapter extends RecyclerView.Adapter<NotificacionView
     private ListaNotificacionesActivity listaNotificacionesActivity;
 
     public NotificacionesAdapter(Context context, List<Notificacion> items) {
-
         this.mainContext = context;
         this.listaNotificacionesActivity = (ListaNotificacionesActivity) mainContext;
         this.items = items;
@@ -59,7 +60,11 @@ public class NotificacionesAdapter extends RecyclerView.Adapter<NotificacionView
     @Override
     public void onBindViewHolder(NotificacionViewHolder viewHolder, int position) {
         if (viewHolder.getItemViewType() == TYPE_NOTIFICACION) {
-            viewHolder.bindData(items.get(position));
+            Notificacion notificacion = items.get(position);
+            viewHolder.bindData(notificacion);
+            if(notificacion.getBackgroundColor() != null) {
+                ((CardView) viewHolder.getCardView()).setCardBackgroundColor(Color.CYAN);
+            }
         }
     }
 

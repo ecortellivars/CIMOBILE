@@ -2,7 +2,6 @@ package es.correointeligente.cipostal.cimobile.Model;
 
 public class ResumenReparto {
     private Integer totFicheros;
-    private Integer totRemesas;
     private Integer totNotificaciones;
     private Integer totNotifGestionadas;
     private Integer totNotifMarcadas;
@@ -17,12 +16,11 @@ public class ResumenReparto {
     public ResumenReparto() {
     }
 
-    public ResumenReparto(int totFicheros, int totRemesas, int totNotificaciones,
+    public ResumenReparto(int totFicheros, int totNotificaciones,
                           int totNotifGestionadas, int totNotifMarcadas, int numEntregados,
                           int numDirIncorrectas, int numAusentes, int numDesconocidos,
                           int numFallecidos, int numRehusados, int numNadieSeHaceCargo) {
         this.totFicheros = totFicheros;
-        this.totRemesas = totRemesas;
         this.totNotificaciones = totNotificaciones;
         this.totNotifGestionadas = totNotifGestionadas;
         this.totNotifMarcadas = totNotifMarcadas;
@@ -41,14 +39,6 @@ public class ResumenReparto {
 
     public void setTotFicheros(Integer totFicheros) {
         this.totFicheros = totFicheros;
-    }
-
-    public Integer getTotRemesas() {
-        return totRemesas;
-    }
-
-    public void setTotRemesas(Integer totRemesas) {
-        this.totRemesas = totRemesas;
     }
 
     public Integer getTotNotificaciones() {

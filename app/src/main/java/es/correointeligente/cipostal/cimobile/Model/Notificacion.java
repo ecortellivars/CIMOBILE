@@ -2,34 +2,45 @@ package es.correointeligente.cipostal.cimobile.Model;
 
 public class Notificacion {
 
+    private Integer id;
     private String referencia;
     private String nombre;
     private String direccion;
     private String poblacion;
     private String codigoPostal;
     private String resultado1;
+    private String descResultado1;
     private String fechaHoraRes1;
     private String notificadorRes1;
     private String firmaNotificadorRes1;
+    private String longitudRes1;
+    private String latitudRes1;
     private String resultado2;
+    private String descResultado2;
     private String fechaHoraRes2;
     private String notificadorRes2;
     private String firmaNotificadorRes2;
+    private String longitudRes2;
+    private String latitudRes2;
     private String tipoDocReceptor;
     private String numDocReceptor;
     private String nombreReceptor;
     private String firmaReceptor;
-    private String longitud;
-    private String latitud;
     private String nombreFichero;
     private Boolean marcada;
+    private Integer timestampMarcada;
     private Boolean segundoIntento;
+
+    // Variables de visualizacion
+    private Integer backgroundColor;
 
     public Notificacion() {
     }
 
-    public Notificacion(String referencia, String nombre, String direccion, String poblacion,
-                        String codigoPostal, String nombreFichero, Boolean marcada, Boolean segundoIntento) {
+    public Notificacion(Integer id, String referencia, String nombre, String direccion, String poblacion,
+                        String codigoPostal, String nombreFichero, Boolean marcada, Boolean segundoIntento,
+                        Integer backgroundColor) {
+        this.id = id;
         this.referencia = referencia;
         this.nombre = nombre;
         this.direccion = direccion;
@@ -38,6 +49,15 @@ public class Notificacion {
         this.nombreFichero = nombreFichero;
         this.marcada = marcada;
         this.segundoIntento = segundoIntento;
+        this.backgroundColor = backgroundColor;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getReferencia() {
@@ -88,6 +108,14 @@ public class Notificacion {
         this.resultado1 = resultado1;
     }
 
+    public String getDescResultado1() {
+        return descResultado1;
+    }
+
+    public void setDescResultado1(String descResultado1) {
+        this.descResultado1 = descResultado1;
+    }
+
     public String getFechaHoraRes1() {
         return fechaHoraRes1;
     }
@@ -112,12 +140,36 @@ public class Notificacion {
         this.firmaNotificadorRes1 = firmaNotificadorRes1;
     }
 
+    public String getLongitudRes1() {
+        return longitudRes1;
+    }
+
+    public void setLongitudRes1(String longitudRes1) {
+        this.longitudRes1 = longitudRes1;
+    }
+
+    public String getLatitudRes1() {
+        return latitudRes1;
+    }
+
+    public void setLatitudRes1(String latitudRes1) {
+        this.latitudRes1 = latitudRes1;
+    }
+
     public String getResultado2() {
         return resultado2;
     }
 
     public void setResultado2(String resultado2) {
         this.resultado2 = resultado2;
+    }
+
+    public String getDescResultado2() {
+        return descResultado2;
+    }
+
+    public void setDescResultado2(String descResultado2) {
+        this.descResultado2 = descResultado2;
     }
 
     public String getFechaHoraRes2() {
@@ -142,6 +194,22 @@ public class Notificacion {
 
     public void setFirmaNotificadorRes2(String firmaNotificadorRes2) {
         this.firmaNotificadorRes2 = firmaNotificadorRes2;
+    }
+
+    public String getLongitudRes2() {
+        return longitudRes2;
+    }
+
+    public void setLongitudRes2(String longitudRes2) {
+        this.longitudRes2 = longitudRes2;
+    }
+
+    public String getLatitudRes2() {
+        return latitudRes2;
+    }
+
+    public void setLatitudRes2(String latitudRes2) {
+        this.latitudRes2 = latitudRes2;
     }
 
     public String getTipoDocReceptor() {
@@ -176,22 +244,6 @@ public class Notificacion {
         this.firmaReceptor = firmaReceptor;
     }
 
-    public String getLongitud() {
-        return longitud;
-    }
-
-    public void setLongitud(String longitud) {
-        this.longitud = longitud;
-    }
-
-    public String getLatitud() {
-        return latitud;
-    }
-
-    public void setLatitud(String latitud) {
-        this.latitud = latitud;
-    }
-
     public String getNombreFichero() {
         return nombreFichero;
     }
@@ -208,11 +260,27 @@ public class Notificacion {
         this.marcada = marcada;
     }
 
+    public Integer getTimestampMarcada() {
+        return timestampMarcada;
+    }
+
+    public void setTimestampMarcada(Integer timestampMarcada) {
+        this.timestampMarcada = timestampMarcada;
+    }
+
     public Boolean getSegundoIntento() {
         return segundoIntento;
     }
 
     public void setSegundoIntento(Boolean segundoIntento) {
         this.segundoIntento = segundoIntento;
+    }
+
+    public Integer getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(Integer backgroundColor) {
+        this.backgroundColor = backgroundColor;
     }
 }
