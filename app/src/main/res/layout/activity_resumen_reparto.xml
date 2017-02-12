@@ -127,7 +127,7 @@
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorGrisSuave"
+                android:background="@drawable/fieldset_shape"
                 android:padding="16dp">
 
                 <TableRow

@@ -1,24 +1,38 @@
 package es.correointeligente.cipostal.cimobile.Activities;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import es.correointeligente.cipostal.cimobile.Model.Notificacion;
+import es.correointeligente.cipostal.cimobile.Model.Resultado;
 import es.correointeligente.cipostal.cimobile.Model.ResumenReparto;
 import es.correointeligente.cipostal.cimobile.R;
 import es.correointeligente.cipostal.cimobile.Util.BaseActivity;
 import es.correointeligente.cipostal.cimobile.Util.DBHelper;
+import es.correointeligente.cipostal.cimobile.Util.FTPHelper;
 
 public class ResumenRepartoActivity extends BaseActivity implements View.OnClickListener {
     Toolbar mToolbar;
     DBHelper dbHelper;
     Button mCerrarReparto;
+    FTPHelper ftpHelper;
 
     TextView tv_totFicheros, tv_totNotificaciones, tv_totNotifGestionadas, tv_totNotifMarcadas;
     TextView tv_entregado, tv_dirIncorrecta, tv_ausente, tv_desconocido, tv_fallecido, tv_rehusado, tv_noSeHaceCargo;
@@ -55,6 +69,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
 
         switch (view.getId()) {
             case R.id.button_resumen_cerrar_reparto:
+                crearDialogoAvisoCierreReparto();
                 break;
             default:
                 break;
@@ -121,4 +136,107 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             tv_noSeHaceCargo.setText(resumenReparto.getNumNadieSeHaceCargo().toString());
         }
     }
+
+    private void crearDialogoAvisoCierreReparto() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.cerrar_reparto);
+        builder.setMessage("Va a cerrar el reparto, lo que conlleva la generacion del fichero con los datos de las notificaciones," +
+                " el volcado del mismo en la carpeta FTP correspondiente y el borrado de los datos internos de la PDA. ¿Desea proseguir?");
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // Lanza la tarea en background de la carga del fichero SICER
+                CerrarRepartoTASK cerrarRepartoTASK = new CerrarRepartoTASK();
+                cerrarRepartoTASK.execute();
+            }
+        });
+        builder.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialogInterface, int wich) {
+                dialogInterface.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    private class CerrarRepartoTASK extends AsyncTask<Void, Void, Void> {
+        ProgressDialog progressDialog;
+
+        protected Void doInBackground(Void... args) {
+            try {
+
+                // Se establece la conexion con el servidor FTP
+                ftpHelper = FTPHelper.getInstancia();
+
+                if(ftpHelper != null && ftpHelper.connect()) {
+
+                    // Se comprueba si existe la carpeta del notificador, sino se crea
+                    String pathVolcado = "/SICERS/" + obtenerCodigoNotificador();
+                    if(ftpHelper.cargarCarpetaNotificador(pathVolcado)) {
+
+                        // Se recuperan las notificaciones que se han gestionado durante el reparto
+                        List<Notificacion> listaNotificacionesGestionadas = dbHelper.obtenerNotificacionesGestionadas();
+                        Calendar calendarAux = Calendar.getInstance();
+                        File file = File.createTempFile("prueba", ".csv");
+                        FileWriter writer = new FileWriter(file);
+
+                        for (Notificacion notificacion : listaNotificacionesGestionadas) {
+
+                            // Se recupera el codigo de resultado y la fecha segun es primer o segundo intento
+                            String codResultado = notificacion.getResultado1();
+                            String fechaResultadoString = notificacion.getFechaHoraRes1();
+                            if (notificacion.getSegundoIntento() != null && notificacion.getSegundoIntento()) {
+                                codResultado = notificacion.getResultado2();
+                                fechaResultadoString = notificacion.getFechaHoraRes2();
+                                Resultado resultado = dbHelper.obtenerResultado(notificacion.getResultado2());
+                                if (resultado.getEsFinal() != null && !resultado.getEsFinal()) {
+                                    codResultado = resultado.getCodigoSegundoIntento();
+                                }
+                            }
+
+                            // Se formatea la fecha resultado
+                            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                            Date dateAux = formatter.parse(fechaResultadoString);
+                            DateFormat df = new SimpleDateFormat("yyyyMMdd");
+                            calendarAux.setTime(dateAux);
+                            fechaResultadoString = df.format(calendarAux.getTime());
+
+                            writer.append(obtenerDelegacion() + ";" + obtenerCodigoNotificador() + ";" + codResultado + ";" + notificacion.getReferencia() + ";" + fechaResultadoString + ";" + fechaResultadoString);
+
+                        }
+
+                        writer.flush();
+
+                        // Una vez generado el fichero, se sube al servidor FTP
+                        Boolean ok = ftpHelper.subirFichero(file, pathVolcado);
+
+
+                    } else {
+                        // error cambio de carpeta o crear carpeta
+                    }
+
+                } else {
+                    // error de conexion
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = ProgressDialog.show(ResumenRepartoActivity.this, getString(R.string.conexion_ftp), getString(R.string.espere_conexion_servidor_ftp));
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+            progressDialog.dismiss();
+        }
+    }
+
 }

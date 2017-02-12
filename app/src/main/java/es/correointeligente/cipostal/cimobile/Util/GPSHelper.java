@@ -26,6 +26,7 @@ public class GPSHelper implements GoogleApiClient.ConnectionCallbacks, GoogleApi
 
     private static GPSHelper INSTANCIA = null;
     private Context context;
+
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private PendingResult<LocationSettingsResult> result;

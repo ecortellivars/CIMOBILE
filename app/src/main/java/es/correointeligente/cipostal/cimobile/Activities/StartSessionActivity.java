@@ -22,6 +22,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
     SharedPreferences sp;
     String notificador;
     String delegacion;
+    String codigoNotificador;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                     SharedPreferences.Editor e = sp.edit();
                     e.putString("notificador", notificador);
                     e.putString("delegacion", delegacion);
+                    e.putString("codigoNotificador", codigoNotificador);
                     e.commit();
 
                     Intent i = new Intent(getBaseContext(), MainActivity.class);
@@ -74,6 +76,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         Notificador notifAux = (Notificador) adapterView.getSelectedItem();
         notificador = notifAux.getNombre();
         delegacion = notifAux.getDelegacion();
+        codigoNotificador = notifAux.getCodigo();
     }
 
     @Override

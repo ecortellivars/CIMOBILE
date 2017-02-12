@@ -107,7 +107,8 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/10.0.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-location/10.0.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-tasks/10.0.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-vision/10.0.1/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/me.dm7.barcodescanner/core/1.9/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/me.dm7.barcodescanner/zbar/1.9/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-classes" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-runtime-classes" />
@@ -140,8 +141,9 @@
     <orderEntry type="library" exported="" name="cardview-v7-25.1.1" level="project" />
     <orderEntry type="library" exported="" name="support-core-ui-25.1.1" level="project" />
     <orderEntry type="library" exported="" name="jsch-0.1.54" level="project" />
-    <orderEntry type="library" exported="" name="play-services-vision-10.0.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-location-10.0.1" level="project" />
+    <orderEntry type="library" exported="" name="core-1.9" level="project" />
+    <orderEntry type="library" exported="" name="zbar-1.9" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="jsr305-2.0.1" level="project" />
     <orderEntry type="library" exported="" name="commons-net-3.5" level="project" />
     <orderEntry type="library" exported="" name="support-core-utils-25.1.1" level="project" />

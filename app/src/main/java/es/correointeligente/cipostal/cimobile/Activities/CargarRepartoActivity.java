@@ -51,9 +51,6 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
         // Carga el layout comun de sesion actual
         this.loadLayoutCurrentSession();
 
-        // Inicializamos la clase Singleton para la gestion FTP
-        ftpHelper = FTPHelper.getInstancia();
-
         // Lanza una tarea en background para la conexión FTP
         FtpConnectionTask ftpConnectionTask = new FtpConnectionTask();
         ftpConnectionTask.execute();
@@ -113,7 +110,9 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
         protected Void doInBackground(Void... args) {
             try {
 
-               if(ftpHelper.connect()) {
+               // Inicializamos la clase Singleton para la gestion FTP
+               ftpHelper = FTPHelper.getInstancia();
+               if(ftpHelper != null && ftpHelper.connect()) {
 
                    if(ftpHelper.cargarCarpetaSICER()) {
 
@@ -142,7 +141,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
 
         @Override
         protected void onPostExecute(Void result) {
-            if (ftpHelper.isConnected()) {
+            if (ftpHelper != null && ftpHelper.isConnected()) {
                 // Se ha creado la conexión correctamente
                 mlistView_cargar_reparto_ficheros.setAdapter(itemsAdapter);
                 mlistView_cargar_reparto_ficheros.setOnItemClickListener(CargarRepartoActivity.this);
@@ -180,28 +179,58 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                         Integer numLinea = 1;
                         List<Notificacion> listaNotificaciones = new ArrayList<>();
 
+                        Boolean esCargaPrimeraEntrega = Boolean.TRUE;
                         for (String linea = reader.readLine(); linea != null; linea = reader.readLine()) {
 
-                            if (linea.startsWith("D")) { // DETALLE (nosotros usaremos "P" para primera entrega
+                            if (linea.startsWith("P")) { // DETALLE (nosotros usaremos "P" para primera entrega
                                 Notificacion notificacion = new Notificacion();
                                 notificacion.setNombreFichero(nombreFicheroSeleccionado);
-                                notificacion.setReferencia(linea.substring(1, 24));
-                                notificacion.setNombre(linea.substring(24, 124).trim());
-                                notificacion.setDireccion(linea.substring(124, 174).trim());
-                                notificacion.setPoblacion(linea.substring(174, 214).trim());
-                                notificacion.setCodigoPostal(linea.substring(214, 219).trim());
+                                notificacion.setReferencia(linea.substring(1, 71).trim());
+                                notificacion.setNombre(linea.substring(71, 321).trim());
+                                notificacion.setDireccion(linea.substring(321, 456).trim());
+                                notificacion.setCodigoPostal(linea.substring(456, 461).trim());
+                                notificacion.setPoblacion(linea.substring(461, 561).trim());
+                                notificacion.setReferenciaSCB(linea.substring(561, 631).trim());
+
                                 notificacion.setSegundoIntento(false);
                                 listaNotificaciones.add(notificacion);
 
-                                publishProgress(getString(R.string.cargando_fichero_sicer) + numLinea);
-                                numLinea++;
                             } else if(linea.startsWith("S")) { // Determina que es el formato del sicer de segundo intento
 
+                                esCargaPrimeraEntrega = Boolean.FALSE;
+
+                                // Se recupera la referencia postal
+                                String referenciaPostal = linea.substring(1, 71).trim();
+
+                                // Lo primero se busca si existe en la base de datos interna, es decir, si se ha cargado
+                                Notificacion notificacion = dbHelper.obtenerNotificacion(referenciaPostal);
+                                if(notificacion != null) {
+
+                                    notificacion.setResultado1(linea.substring(71, 73).trim());
+                                    notificacion.setDescResultado1(linea.substring(73, 103).trim());
+                                    notificacion.setFechaHoraRes1(linea.substring(103, 128).trim());
+                                    notificacion.setLongitudRes1(linea.substring(128, 148).trim());
+                                    notificacion.setLatitudRes1(linea.substring(148, 168).trim());
+                                    notificacion.setNotificadorRes1(linea.substring(168, 218).trim());
+                                    notificacion.setSegundoIntento(true);
+
+                                    listaNotificaciones.add(notificacion);
+
+                                } else {
+                                    // Si no se ha encontrado, se debe sacar un mensaje con el error al notificador
+                                }
                             }
+
+                            publishProgress(getString(R.string.cargando_fichero_sicer) + numLinea);
+                            numLinea++;
                         }
 
                         publishProgress(getString(R.string.guardando_datos_en_bd_interna));
-                        dbHelper.guardarNotificacionesInicial(listaNotificaciones);
+                        if(esCargaPrimeraEntrega) {
+                            dbHelper.guardarNotificacionesInicial(listaNotificaciones);
+                        } else {
+                            dbHelper.actualizarNotificacionesSegundoIntentoInicial(listaNotificaciones);
+                        }
 
                     } catch (Exception e) {
                         e.printStackTrace();

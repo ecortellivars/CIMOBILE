@@ -9,8 +9,11 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,6 +41,7 @@ public class FTPHelper {
             synchronized (FTPHelper.class) {
                 if(INSTANCIA == null) {
                     INSTANCIA = new FTPHelper();
+                    INSTANCIA.conectado = Boolean.FALSE;
                 }
             }
         }
@@ -49,8 +53,6 @@ public class FTPHelper {
     }
 
     public Boolean connect() {
-        Boolean conectado = Boolean.FALSE;
-
         try {
             JSch jsch = new JSch();
 //            session = jsch.getSession("valencia","46.17.141.94", 1984);
@@ -61,10 +63,9 @@ public class FTPHelper {
             Properties prop = new Properties();
             prop.put("StrictHostKeyChecking", "no");
             session.setConfig(prop);
-            session.connect();
+            session.connect(10000);
 
             conectado = Boolean.TRUE;
-            this.conectado = Boolean.TRUE;
 
         } catch (JSchException e) {
             e.printStackTrace();
@@ -99,6 +100,43 @@ public class FTPHelper {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+        return ok;
+    }
+
+    public Boolean cargarCarpetaNotificador(String path) {
+        Boolean ok = Boolean.FALSE;
+        try {
+            Channel channel = session.openChannel("sftp");
+            channel.connect();
+            channelSftp = (ChannelSftp) channel;
+
+            try {
+                channelSftp.mkdir(path);
+            } catch (Exception e) {
+            }
+
+            ok = Boolean.TRUE;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return ok;
+    }
+
+    public Boolean subirFichero(File file, String Path) {
+        Boolean ok = Boolean.TRUE;
+        try {
+            Channel channel = session.openChannel("sftp");
+            channel.connect();
+            ChannelSftp channelSftp = (ChannelSftp) channel;
+            channelSftp.cd(Path);
+            InputStream stream = new ByteArrayInputStream( FileUtils.readFileToByteArray(file));
+            channelSftp.put(stream, file.getName());
+        } catch (Exception e) {
+            ok = Boolean.FALSE;
         }
 
         return ok;

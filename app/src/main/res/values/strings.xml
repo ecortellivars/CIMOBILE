@@ -35,6 +35,8 @@
     <string name="filtro">Filtro</string>
     <string name="filtro_busqueda">Filtro de búsqueda</string>
     <string name="resultado">Resultado</string>
+    <string name="resultado1">RESULTADO 1</string>
+    <string name="resultado2">RESULTADO 2</string>
     <string name="motivo_no_entrega">Motivo de no entrega</string>
     <string name="numero_documento">Número documento</string>
     <string name="nombre_y_apellidos">Nombre y apellidos</string>
@@ -52,6 +54,11 @@
     <string name="informacion_carga">Información carga</string>
     <string name="latitud">Latitud</string>
     <string name="longitud">Longitud</string>
+    <string name="observaciones">Observaciones</string>
+    <string name="hint_observaciones">Mis observaciones...</string>
+    <string name="referencia_postal">Referencia postal</string>
+    <string name="direccion">Dirección</string>
+    <string name="receptor">Receptor</string>
 
     <string-array name="filtro_busqueda_array">
         <item>01 Entregado</item>

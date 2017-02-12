@@ -4,6 +4,7 @@ public class Notificacion {
 
     private Integer id;
     private String referencia;
+    private String referenciaSCB;
     private String nombre;
     private String direccion;
     private String poblacion;
@@ -15,6 +16,7 @@ public class Notificacion {
     private String firmaNotificadorRes1;
     private String longitudRes1;
     private String latitudRes1;
+    private String observacionesRes1;
     private String resultado2;
     private String descResultado2;
     private String fechaHoraRes2;
@@ -22,13 +24,14 @@ public class Notificacion {
     private String firmaNotificadorRes2;
     private String longitudRes2;
     private String latitudRes2;
+    private String observacionesRes2;
     private String tipoDocReceptor;
     private String numDocReceptor;
     private String nombreReceptor;
     private String firmaReceptor;
     private String nombreFichero;
     private Boolean marcada;
-    private Integer timestampMarcada;
+    private String timestampMarcada;
     private Boolean segundoIntento;
 
     // Variables de visualizacion
@@ -39,9 +42,10 @@ public class Notificacion {
 
     public Notificacion(Integer id, String referencia, String nombre, String direccion, String poblacion,
                         String codigoPostal, String nombreFichero, Boolean marcada, Boolean segundoIntento,
-                        Integer backgroundColor) {
+                        Integer backgroundColor, String referenciaSCB) {
         this.id = id;
         this.referencia = referencia;
+        this.referenciaSCB = referenciaSCB;
         this.nombre = nombre;
         this.direccion = direccion;
         this.poblacion = poblacion;
@@ -260,11 +264,11 @@ public class Notificacion {
         this.marcada = marcada;
     }
 
-    public Integer getTimestampMarcada() {
+    public String getTimestampMarcada() {
         return timestampMarcada;
     }
 
-    public void setTimestampMarcada(Integer timestampMarcada) {
+    public void setTimestampMarcada(String timestampMarcada) {
         this.timestampMarcada = timestampMarcada;
     }
 
@@ -282,5 +286,29 @@ public class Notificacion {
 
     public void setBackgroundColor(Integer backgroundColor) {
         this.backgroundColor = backgroundColor;
+    }
+
+    public String getObservacionesRes1() {
+        return observacionesRes1;
+    }
+
+    public void setObservacionesRes1(String observacionesRes1) {
+        this.observacionesRes1 = observacionesRes1;
+    }
+
+    public String getObservacionesRes2() {
+        return observacionesRes2;
+    }
+
+    public void setObservacionesRes2(String observacionesRes2) {
+        this.observacionesRes2 = observacionesRes2;
+    }
+
+    public String getReferenciaSCB() {
+        return referenciaSCB;
+    }
+
+    public void setReferenciaSCB(String referenciaSCB) {
+        this.referenciaSCB = referenciaSCB;
     }
 }

@@ -34,32 +34,42 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
+                android:background="@drawable/edit_text_shape"
+                android:maxLines="1"
+                android:padding="8dp"
+                android:textStyle="bold"
                 android:hint="@string/numero_documento"/>
 
             <TextView
                 android:text="@string/nombre_y_apellidos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"/>
 
             <EditText
                 android:id="@+id/editText_notificacionEntregada_nombreApellidos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
+                android:background="@drawable/edit_text_shape"
+                android:maxLines="1"
+                android:padding="8dp"
+                android:textStyle="bold"
                 android:hint="@string/nombre_y_apellidos" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/firma_receptor"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"/>
 
             <es.correointeligente.cipostal.cimobile.Util.Lienzo
                 android:id="@+id/lienzo_firma"
                 android:layout_width="match_parent"
                 android:layout_height="275dp"
-                android:background="#FFFFFFFF" />
+                android:background="@drawable/edit_text_shape" />
 
             <android.support.v4.widget.Space
                 android:layout_width="match_parent"
@@ -75,7 +85,7 @@
                 android:weightSum="1">
 
                 <Button
-                    android:id="@+id/button_nueva_notificacion_noEntregado"
+                    android:id="@+id/button_notif_entregada_guardar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"

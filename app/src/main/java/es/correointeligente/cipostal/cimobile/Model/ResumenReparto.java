@@ -1,17 +1,8 @@
 package es.correointeligente.cipostal.cimobile.Model;
 
 public class ResumenReparto {
-    private Integer totFicheros;
-    private Integer totNotificaciones;
-    private Integer totNotifGestionadas;
-    private Integer totNotifMarcadas;
-    private Integer numEntregados;
-    private Integer numDirIncorrectas;
-    private Integer numAusentes;
-    private Integer numDesconocidos;
-    private Integer numFallecidos;
-    private Integer numRehusados;
-    private Integer numNadieSeHaceCargo;
+    private Integer totFicheros, totNotificaciones, totNotifGestionadas, totNotifMarcadas, numEntregados,
+                    numDirIncorrectas, numAusentes, numDesconocidos, numFallecidos, numRehusados, numNadieSeHaceCargo;
 
     public ResumenReparto() {
     }

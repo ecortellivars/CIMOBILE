@@ -44,6 +44,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
         mResumenReparto = (Button) findViewById(R.id.button_resumen_reparto);
         mResumenReparto.setOnClickListener(this);
+
     }
 
     @Override

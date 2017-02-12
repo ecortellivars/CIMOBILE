@@ -18,7 +18,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.google.android.gms.common.api.CommonStatusCodes;
-import com.google.android.gms.vision.barcode.Barcode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +29,7 @@ import es.correointeligente.cipostal.cimobile.R;
 import es.correointeligente.cipostal.cimobile.Util.BaseActivity;
 import es.correointeligente.cipostal.cimobile.Util.DBHelper;
 import es.correointeligente.cipostal.cimobile.Util.FiltroNotificacion;
+import es.correointeligente.cipostal.cimobile.Util.Util;
 
 public class ListaNotificacionesActivity extends BaseActivity {
     Toolbar mToolbar;
@@ -316,23 +316,52 @@ public class ListaNotificacionesActivity extends BaseActivity {
             public void onClick(View view) {
 
                 Intent i = new Intent(getBaseContext(), ScanBarcodeActivity.class);
-                startActivityForResult(i, 0); // el 0 hace referencia al id de petición, como no va a haber mas en esta pantalla no hace falta hacerlo mas declarativo
+                startActivityForResult(i, Util.REQUEST_CODE_BARCODE_SCAN);
             }
         });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 0) {
+        if (requestCode == Util.REQUEST_CODE_BARCODE_SCAN) {
             if (resultCode == CommonStatusCodes.SUCCESS) {
                 if (data != null) {
-                    Barcode barcode = data.getParcelableExtra("barcode");
-                    mRefPostal.setText(barcode.displayValue);
+                    String barcode = data.getStringExtra("barcode");
+                    mRefPostal.setText(barcode);
                 } else {
                     mRefPostal.setText(null);
                 }
             } else {
                 super.onActivityResult(requestCode, resultCode, data);
+            }
+        } else if(requestCode == Util.REQUEST_CODE_NOTIFICATION_RESULT) {
+            if (resultCode == CommonStatusCodes.SUCCESS) {
+                if (data != null) {
+                    Integer posicionAdapter = data.getIntExtra("posicionAdapter",0);
+                    Integer idNotificacion = data.getIntExtra("idNotificacion",0);
+                    Notificacion notificacionAux = dbHelper.obtenerNotificacion(idNotificacion);
+                    if(notificacionAux != null) {
+                        listaNotificaciones.set(posicionAdapter, notificacionAux);
+                        mRecyclerNotificaciones.getAdapter().notifyItemChanged(posicionAdapter);
+                    }
+
+                }
+            }
+        } else if(requestCode == Util.REQUEST_CODE_NOTIFICATION_DELETE_RESULT) {
+            if (resultCode == CommonStatusCodes.SUCCESS) {
+                if (data != null) {
+                    Boolean eliminado = data.getBooleanExtra("eliminado", false);
+                    Integer posicionAdapter = data.getIntExtra("posicionAdapter",0);
+                    Integer idNotificacion = data.getIntExtra("idNotificacion",0);
+                    if(eliminado) {
+                       Notificacion notificacionAux = dbHelper.obtenerNotificacion(idNotificacion);
+                       if(notificacionAux != null) {
+                            listaNotificaciones.set(posicionAdapter, notificacionAux);
+                            mRecyclerNotificaciones.getAdapter().notifyItemChanged(posicionAdapter);
+                       }
+                    }
+
+                }
             }
         }
     }

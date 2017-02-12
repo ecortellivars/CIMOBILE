@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:focusableInTouchMode="true"
     tools:context=".Activities.NuevaNotificacionActivity">
 
     <include
@@ -40,7 +41,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:background="@color/colorGrisSuave">
+                    android:background="@drawable/fieldset_shape">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/referencia_postal"
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:id="@+id/textView_nuevaNotificacion_refPostal"
@@ -49,10 +56,24 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/nombre_y_apellidos"
+                        android:textStyle="bold"
+                        android:layout_marginTop="5dp"/>
+
+                    <TextView
                         android:id="@+id/textView_nuevaNotificacion_nombre"
                         android:text="TextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/direccion"
+                        android:textStyle="bold"
+                        android:layout_marginTop="5dp"/>
 
                     <TextView
                         android:id="@+id/textView_nuevaNotificacion_direccion"
@@ -60,44 +81,80 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
 
-                    <LinearLayout
+                    <TableLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:stretchColumns="*"
+                        android:layout_marginTop="5dp">
 
-                        <TextView
-                            android:text="@string/latitud"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                        <TableRow>
 
-                        <TextView
-                            android:id="@+id/textView_nuevaNotificacion_latitud"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textStyle="bold"
-                            android:layout_marginLeft="10dp"/>
+                            <TextView
+                                android:text="@string/latitud"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textStyle="bold"/>
 
-                    </LinearLayout>
+                            <TextView
+                                android:text="@string/longitud"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textStyle="bold"/>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        </TableRow>
 
-                        <TextView
-                            android:text="@string/longitud"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                        <TableRow>
 
-                        <TextView
-                            android:id="@+id/textView_nuevaNotificacion_longitud"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textStyle="bold"
-                            android:layout_marginLeft="10dp"/>
+                            <TextView
+                                android:id="@+id/textView_nuevaNotificacion_latitud"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
 
-                        </LinearLayout>
+                            <TextView
+                                android:id="@+id/textView_nuevaNotificacion_longitud"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                        </TableRow>
+
+                    </TableLayout>
+
                 </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:weightSum="1">
+
+                <TextView
+                    android:text="@string/observaciones"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textAllCaps="true"/>
+
+                <EditText
+                    android:id="@+id/editText_nuevaNotificacion_observaciones"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top|left"
+                    android:inputType="textMultiLine"
+                    android:overScrollMode="always"
+                    android:scrollbarStyle="insideInset"
+                    android:scrollbars="vertical"
+                    android:lines="4"
+                    android:padding="3dp"
+                    android:background="@drawable/edit_text_shape"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:scrollHorizontally="false"
+                    android:hint="@string/hint_observaciones"/>
+
 
             </LinearLayout>
 
@@ -106,7 +163,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="visible"
                 android:padding="16dp">
 
                 <TextView
@@ -121,37 +177,38 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:background="@color/colorGrisSuave">
+                    android:background="@drawable/fieldset_shape">
 
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                    <TextView
+                        android:text="@string/resultado"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"/>
 
-                        <TextView
-                            android:text="@string/resultado"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/textView_nuevaNotificacion_resultadoDetalle_primerIntento"
+                        android:text="@string/resultado"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAllCaps="true"/>
 
-                        <TextView
-                            android:id="@+id/textView_nuevaNotificacion_resultadoDetalle_primerIntento"
-                            android:text="TextView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
+                    <TextView
+                        android:text="@string/fecha"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"/>
 
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/textView_nuevaNotificacion_resultadoDetalle_primerIntento_fecha"
+                        android:text="@string/fecha"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
 
-                        <TextView
-                            android:text="Consejo sobre la segunda entrega"
-                            android:id="@+id/textView_nuevaNotificacion_consejo_segundo_intento"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/textView_nuevaNotificacion_consejo_segundo_intento"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"/>
 
                 </LinearLayout>
 
@@ -163,6 +220,7 @@
                 android:layout_weight="1" />
 
             <LinearLayout
+                android:id="@+id/linearLayout_nueva_notificacion_botonera"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"

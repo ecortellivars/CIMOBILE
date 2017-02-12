@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tv_result_entregado_cabecera_resultado"
+            android:text="@string/resultado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textAllCaps="true"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:background="@drawable/fieldset_shape">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/resultado"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tv_result_entregado_resultado"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/resultado"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/fecha"
+                android:textStyle="bold"
+                android:layout_marginTop="5dp"/>
+
+            <TextView
+                android:id="@+id/tv_result_entregado_fecha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/fecha"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/notificador"
+                android:textStyle="bold"
+                android:layout_marginTop="5dp"/>
+
+            <TextView
+                android:id="@+id/tv_result_entregado_notificador"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/notificador"/>
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="*"
+                android:layout_marginTop="5dp">
+
+                <TableRow>
+
+                    <TextView
+                        android:text="@string/latitud"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:text="@string/longitud"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"/>
+
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:id="@+id/tv_result_entregado_latitud"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/longitud"/>
+
+                    <TextView
+                        android:id="@+id/tv_result_entregado_longitud"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/longitud"/>
+
+                </TableRow>
+
+            </TableLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/receptor"
+                android:textStyle="bold"
+                android:layout_marginTop="5dp"/>
+
+            <TextView
+                android:id="@+id/tv_result_entregado_receptor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/receptor"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/firma_receptor"
+                android:textStyle="bold"
+                android:layout_marginTop="5dp"/>
+
+            <ImageView
+                android:id="@+id/imageView_result_entregado_firma"
+                android:layout_width="match_parent"
+                android:layout_height="275dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/observaciones"
+                android:textStyle="bold"
+                android:layout_marginTop="5dp"/>
+
+            <TextView
+                android:id="@+id/tv_result_entregado_observaciones"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:overScrollMode="always"
+                android:scrollbarStyle="insideInset"
+                android:scrollbars="vertical"
+                android:lines="4"
+                android:padding="3dp"
+                android:background="@drawable/edit_text_shape"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:scrollHorizontally="false"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

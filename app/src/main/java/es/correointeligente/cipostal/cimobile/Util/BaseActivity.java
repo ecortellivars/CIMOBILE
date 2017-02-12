@@ -63,4 +63,14 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         return resultado;
     }
+
+    public String obtenerNombreNotificador() {
+        return sp.getString("notificador", "");
+    }
+    public String obtenerDelegacion() {
+        return sp.getString("delegacion", "");
+    }
+    public String obtenerCodigoNotificador() {
+        return sp.getString("codigoNotificador", "");
+    }
 }
