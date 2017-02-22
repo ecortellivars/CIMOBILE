@@ -269,8 +269,8 @@ public class DetalleNotificacionActivity extends BaseActivity {
 
     private void crearDialogoEliminarResultado() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Eliminar resultado");
-        builder.setMessage("¿Está seguro de eliminar el resultado?");
+        builder.setTitle(R.string.eliminar_resultado);
+        builder.setMessage(R.string.seguro_eliminar_resultado);
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 // Lanza la tarea en background de la carga del fichero SICER

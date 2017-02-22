@@ -943,6 +943,24 @@ public class DBHelper extends SQLiteOpenHelper {
         return eliminado;
     }
 
+    public Boolean borrarNotificaciones() {
+        Boolean eliminado = Boolean.FALSE;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            db.beginTransaction();
+            db.delete(TABLE_NOTIFICACION, null, null);
+            db.setTransactionSuccessful();
+            eliminado = Boolean.TRUE;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.endTransaction();
+        }
+
+        return eliminado;
+    }
+
     /*******************************************************************/
     /******** CREACION DE LAS TABLAS DE LA BASE DE DATOS SQLITE ********/
     /*******************************************************************/

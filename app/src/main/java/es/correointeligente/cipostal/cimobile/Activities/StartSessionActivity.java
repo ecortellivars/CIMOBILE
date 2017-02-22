@@ -29,10 +29,10 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_session);
 
-        sp = this.getSharedPreferences("login", MODE_PRIVATE);
+        sp = this.getSharedPreferences(Util.FICHERO_PREFERENCIAS_SESION, MODE_PRIVATE);
 
         //Si SharedPreferences contiene el dato de la sesion se salta la pantalla de inicio de sesion
-        if (sp.contains("notificador")) {
+        if (sp.contains(Util.CLAVE_SESION_NOTIFICADOR)) {
             Intent i = new Intent(this, MainActivity.class);
             startActivity(i);
             finish();
@@ -57,10 +57,13 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
             case R.id.button_iniciar_sesion:
                 if (notificador != null) {
                     SharedPreferences.Editor e = sp.edit();
-                    e.putString("notificador", notificador);
-                    e.putString("delegacion", delegacion);
-                    e.putString("codigoNotificador", codigoNotificador);
+                    e.putString(Util.CLAVE_SESION_NOTIFICADOR, notificador);
+                    e.putString(Util.CLAVE_SESION_DELEGACION, delegacion);
+                    e.putString(Util.CLAVE_SESION_COD_NOTIFICADOR, codigoNotificador);
                     e.commit();
+
+                    // Antes de llamar a la pantalla principal, se comprueba si tiene cargadas las preferencias por defecto
+                    Util.cargarConfiguracionAplicacionPorDefecto(getBaseContext());
 
                     Intent i = new Intent(getBaseContext(), MainActivity.class);
                     startActivity(i);

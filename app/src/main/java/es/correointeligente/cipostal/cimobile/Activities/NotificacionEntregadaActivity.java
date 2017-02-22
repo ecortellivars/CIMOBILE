@@ -1,10 +1,12 @@
 package es.correointeligente.cipostal.cimobile.Activities;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.view.View;
@@ -13,8 +15,13 @@ import android.widget.EditText;
 
 import com.google.android.gms.common.api.CommonStatusCodes;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -22,7 +29,10 @@ import java.util.Calendar;
 import es.correointeligente.cipostal.cimobile.Model.Notificacion;
 import es.correointeligente.cipostal.cimobile.Model.Resultado;
 import es.correointeligente.cipostal.cimobile.R;
+import es.correointeligente.cipostal.cimobile.TSA.TimeStamp;
+import es.correointeligente.cipostal.cimobile.TSA.TimeStampRequestParameters;
 import es.correointeligente.cipostal.cimobile.Util.BaseActivity;
+import es.correointeligente.cipostal.cimobile.Util.CiMobileException;
 import es.correointeligente.cipostal.cimobile.Util.DBHelper;
 import es.correointeligente.cipostal.cimobile.Util.Lienzo;
 import es.correointeligente.cipostal.cimobile.Util.Util;
@@ -84,31 +94,45 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
 
             // Guarda la imagen firmada en el sistema de archivos
             try {
-
                 Bitmap bitmap = mLienzo.getDrawingCache();
-                File file = new File(getFilesDir(),referenciaPostal+".png");
-                if(!file.exists()) {
-                    file.createNewFile();
+                File file = new File(Util.obtenerRutaFirmasReceptor(), referenciaPostal+".png");
+
+                try (FileOutputStream ostream = new FileOutputStream(file);) {
+
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 10, ostream);
+                    ostream.close();
+
+                    // Lanza en background el guardado de la notificacion entregada
+                    GuardarNotificacionEntregadaTask guardarNotificacionEntregadaTask = new GuardarNotificacionEntregadaTask();
+                    guardarNotificacionEntregadaTask.execute(file.getPath(), edt_nombreReceptor.getText().toString(), edt_numeroDocumentoReceptor.getText().toString());
+
+                } catch (Exception e) {
+                  e.printStackTrace();
                 }
-                FileOutputStream ostream = new FileOutputStream(file);
-                bitmap.compress(Bitmap.CompressFormat.PNG, 10, ostream);
-                ostream.close();
-
-                // Lanza en background el guardado de la notificacion entregada
-                GuardarNotificacionEntregadaTask guardarNotificacionEntregadaTask = new GuardarNotificacionEntregadaTask();
-                guardarNotificacionEntregadaTask.execute(file.getPath(), edt_nombreReceptor.getText().toString(), edt_numeroDocumentoReceptor.getText().toString());
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private class GuardarNotificacionEntregadaTask extends AsyncTask<String, Void, Boolean> {
+
+    /**
+     * Clase privada que se encarga de guardar el resultado en la base de datos, generar el xml
+     * y generar el fichero de sello de tiempo
+     */
+    private class GuardarNotificacionEntregadaTask extends AsyncTask<String, String, String> {
         ProgressDialog progressDialog;
+        Boolean guardadoNotificacionEnBD;
 
         @Override
-        protected Boolean doInBackground(String... args) {
+        protected void onPreExecute() {
+            guardadoNotificacionEnBD = false;
+            progressDialog = ProgressDialog.show(NotificacionEntregadaActivity.this, getMessageResources(R.string.guardar), getMessageResources(R.string.guardando_datos_en_bd_interna));
+        }
+
+        @Override
+        protected String doInBackground(String... args) {
+            String fallo = "";
 
             DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             String fechaHoraString = df.format(Calendar.getInstance().getTime());
@@ -132,7 +156,9 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setLongitudRes1(longitud);
                 notificacionAux.setObservacionesRes1(observaciones);
                 notificacionAux.setNotificadorRes1(obtenerNombreNotificador());
+
             } else {
+
                 notificacionAux.setDescResultado2(resultado.getDescripcion().toUpperCase());
                 notificacionAux.setResultado2(resultado.getCodigo());
                 notificacionAux.setFechaHoraRes2(fechaHoraString);
@@ -140,31 +166,100 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setLongitudRes2(longitud);
                 notificacionAux.setObservacionesRes2(observaciones);
                 notificacionAux.setNotificadorRes2(obtenerNombreNotificador());
+
             }
 
-            return dbHelper.guardaResultadoNotificacion(notificacionAux);
+            guardadoNotificacionEnBD = dbHelper.guardaResultadoNotificacion(notificacionAux);
+            if(!guardadoNotificacionEnBD) {
+                fallo = getString(R.string.error_guardar_en_bd);
+            } else {
+                notificacionAux = dbHelper.obtenerNotificacion(idNotificacion);
+                File ficheroXML = null;
+                try {
+                    // Se genera el fichero XML
+                    publishProgress(getString(R.string.generado_xml));
+                    ficheroXML = Util.NotificacionToXML(notificacionAux, getBaseContext());
+
+                    // Se realiza la llamada al servidor del sellado de tiempo y se genera el fichero de sello de tiempo
+                    String tsaUrl = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_URL, getBaseContext());
+                    String tsaUser = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_USER, getBaseContext());
+                    TimeStampRequestParameters timeStampRequestParameters = null;
+                    if(StringUtils.isNotBlank(tsaUser)) {
+                        String tsaPassword = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_PASSWORD, getBaseContext());
+                        timeStampRequestParameters.setUser(tsaUser);
+                        timeStampRequestParameters.setPassword(tsaPassword);
+                    }
+                    publishProgress(getString(R.string.generado_sello_de_tiempo));
+                    TimeStamp t = TimeStamp.stampDocument(FileUtils.readFileToByteArray(ficheroXML), new URL(tsaUrl), timeStampRequestParameters, null);
+                    Util.guardarFicheroSelloTiempo(notificacionAux.getReferencia()+".ts", t.toDER());
+
+                } catch (CiMobileException e) {
+                    fallo = e.getError();
+                } catch (IOException e) {
+                    fallo = getString(R.string.error_lectura_fichero_xml);
+                }
+            }
+            return fallo;
         }
 
         @Override
-        protected void onPreExecute() {
-            progressDialog = ProgressDialog.show(NotificacionEntregadaActivity.this, getMessageResources(R.string.cargando_notificacion), getMessageResources(R.string.espere_info_notificacion));
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            progressDialog.setMessage(values[0]);
         }
 
         @Override
-        protected void onPostExecute(Boolean guardado) {
+        protected void onPostExecute(String fallo) {
 
+            // Se cierra el dialogo de espera
             progressDialog.dismiss();
+            // Se crea el dialogo de respuesta del guardado
+            AlertDialog.Builder builder = new AlertDialog.Builder(NotificacionEntregadaActivity.this);
+            builder.setTitle(R.string.guardado);
 
-            if(guardado) {
+            if(fallo != null && !fallo.isEmpty()) {
+                // Fallo al guardar
+                if(guardadoNotificacionEnBD) {
+                    // Añadir texto indicando que como no se ha generado ni el sello de tiempo ni el xml, esa notificacion
+                    // debera realizarla en papel
+                    fallo += getString(R.string.realizar_notif_en_papel);
+                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialogInterface, int which) {
+                            Intent intentResultado = new Intent();
+                            intentResultado.putExtra("posicionAdapter", posicionAdapter);
+                            intentResultado.putExtra("idNotificacion", idNotificacion);
+                            setResult(CommonStatusCodes.SUCCESS, intentResultado);
+                            dialogInterface.dismiss();
+                            finish();
+                        }
+                    });
 
-                Intent intentResultado = new Intent();
-                intentResultado.putExtra("posicionAdapter", posicionAdapter);
-                intentResultado.putExtra("idNotificacion", idNotificacion);
-                setResult(CommonStatusCodes.SUCCESS, intentResultado);
-                finish();
+                } else {
+                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialogInterface, int which) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                }
+
+                builder.setMessage(fallo);
+            } else {
+                // Guardado y generado correctamente
+                builder.setMessage(R.string.notificacion_grabada_correctamente);
+                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        Intent intentResultado = new Intent();
+                        intentResultado.putExtra("posicionAdapter", posicionAdapter);
+                        intentResultado.putExtra("idNotificacion", idNotificacion);
+                        setResult(CommonStatusCodes.SUCCESS, intentResultado);
+                        dialogInterface.dismiss();
+                        finish();
+                    }
+                });
             }
 
-
+            // Crear el dialogo con los parametros que se han definido y se muestra por pantalla
+            builder.show();
         }
     }
 }

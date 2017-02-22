@@ -59,24 +59,45 @@
     <string name="referencia_postal">Referencia postal</string>
     <string name="direccion">Dirección</string>
     <string name="receptor">Receptor</string>
+    <string name="informacion_segundo_intento_1">El segundo intento de notificación debería ser antes de las</string>
+    <string name="informacion_segundo_intento_2">o después de las</string>
+    <string name="generado_xml">Generando el fichero XML</string>
+    <string name="generado_sello_de_tiempo">Generando el sello de tiempo del fichero XML</string>
+    <string name="error_generar_XML">No se ha generado el fichero XML</string>
+    <string name="error_lectura_fichero_xml">Se ha producido un fallo al leer el fichero XML para realizar el sellado de tiempo</string>
+    <string name="error_guardar_en_bd">Se ha producido un error al guardar en la base de datos</string>
+    <string name="guardado">Guardado</string>
+    <string name="realizar_notif_en_papel">Debido a que no se ha generado ni el sello de tiempo ni el fichero XML, realice la notificación en papel</string>
+    <string name="notificacion_grabada_correctamente">La notificación se ha guardado correctamente</string>
+    <string name="cerrar_reparto_info">Va a cerrar el reparto, lo que conlleva la generacion del fichero con los datos de las notificaciones, el volcado del mismo en la carpeta FTP correspondiente y el borrado de los datos internos de la PDA. ¿Desea proseguir?</string>
+    <string name="error_conexion_ftp">Se ha producido un error en la conexión FTP</string>
+    <string name="error_acceso_carpeta_ftp">No se ha podido acceder a la carpeta del FTP</string>
+    <string name="error_subir_fichero_zip">Se ha producido un error al subir el fichero CSV</string>
+    <string name="error_subir_fichero_CSV">Se ha producido un error al subir el fichero CSV</string>
+    <string name="error_borrado_notificaciones">Se ha producido un error al borrar las notificaciones</string>
+    <string name="error_fallo_borrar_ficheros_sensibles">Se ha producido un error al borrar los ficheros XML, CSV, imagenes y sellos de tiempo</string>
+    <string name="generando_fichero_CSV">Generando fichero CSV</string>
+    <string name="subiendo_fichero_CSV">Subiendo fichero CSV al servidor FTP</string>
+    <string name="subiendo_fichero_segundo_intento">Subiendo fichero segundo intento al servidor FTP</string>
+    <string name="generando_fichero_zip">Generando fichero ZIP con todos los datos</string>
+    <string name="subiendo_fichero_zip">Subiendo fichero ZIP al servidor FTP</string>
+    <string name="limpiando_base_datos">Limpiando base de datos</string>
+    <string name="limpiando_directorio">Limpiando ficheros XML, CSV, TS</string>
+    <string name="cierre_reparto_correcto">El cierre del reparto se ha realizado correctamente</string>
+    <string name="error_subiendo_fichero_segundo_intento">Se ha producido un error al subir el fichero de segundos intentos</string>
+    <string name="error_proceso_cierre_reparto">Se ha producido un error durante el proceso de cierre de reparto</string>
+    <string name="error_apertura_ficheros_escritura">Se ha producido un fallo de escritura sobre la PDA. Reiniciela para solucionar el problema y cerrar el reparto</string>
+    <string name="eliminar_resultado">Eliminar resultado</string>
+    <string name="seguro_eliminar_resultado">¿Está seguro de eliminar el resultado?</string>
 
     <string-array name="filtro_busqueda_array">
-        <item>01 Entregado</item>
-        <item>02 Dir. incorrecta</item>
-        <item>03 Ausente</item>
-        <item>04 Desconocido</item>
-        <item>05 Fallecido</item>
-        <item>06 Rehusado</item>
-        <item>07 Nadie se hace cargo</item>
+        <item>Entregado</item>
+        <item>Dir. incorrecta</item>
+        <item>Ausente</item>
+        <item>Desconocido</item>
+        <item>Fallecido</item>
+        <item>Rehusado</item>
+        <item>Nadie se hace cargo</item>
         <item>Marcadas notificador</item>
-    </string-array>
-
-    <string-array name="resultados_no_entrega">
-        <item>02 Dir. incorrecta</item>
-        <item>03 Ausente</item>
-        <item>04 Desconocido</item>
-        <item>05 Fallecido</item>
-        <item>06 Rehusado</item>
-        <item>07 Nadie se hace cargo</item>
     </string-array>
 </resources>

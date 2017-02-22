@@ -112,7 +112,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
 
                // Inicializamos la clase Singleton para la gestion FTP
                ftpHelper = FTPHelper.getInstancia();
-               if(ftpHelper != null && ftpHelper.connect()) {
+               if(ftpHelper != null && ftpHelper.connect(CargarRepartoActivity.this)) {
 
                    if(ftpHelper.cargarCarpetaSICER()) {
 
@@ -246,7 +246,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
 
         @Override
         protected void onPreExecute() {
-            progressDialog = ProgressDialog.show(CargarRepartoActivity.this, "Cargando", "Cargando fichero SICER...");
+            progressDialog = ProgressDialog.show(CargarRepartoActivity.this, getMessageResources(R.string.cargando_notificacion), getMessageResources(R.string.cargando_fichero_sicer));
         }
 
         @Override

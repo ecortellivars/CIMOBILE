@@ -35,6 +35,12 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -45,8 +51,12 @@ import java.util.List;
 import es.correointeligente.cipostal.cimobile.Model.Notificacion;
 import es.correointeligente.cipostal.cimobile.Model.Resultado;
 import es.correointeligente.cipostal.cimobile.R;
+import es.correointeligente.cipostal.cimobile.TSA.TimeStamp;
+import es.correointeligente.cipostal.cimobile.TSA.TimeStampRequestParameters;
 import es.correointeligente.cipostal.cimobile.Util.BaseActivity;
+import es.correointeligente.cipostal.cimobile.Util.CiMobileException;
 import es.correointeligente.cipostal.cimobile.Util.DBHelper;
+import es.correointeligente.cipostal.cimobile.Util.Util;
 
 public class NuevaNotificacionActivity extends BaseActivity implements View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -191,6 +201,9 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         }
     }
 
+    /**
+     * Clase privada que carga los datos de la notificacion a partir de su identificador
+     */
     private class CargarDetalleNotificacionTask extends AsyncTask<Void, Void, Notificacion> {
         ProgressDialog progressDialog;
 
@@ -246,11 +259,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     e.printStackTrace();
                 }
 
-
-                String consejoSegundoIntento = "El segundo intento de notificación debería ser antes de las " +horaAntesDe+
-                                                " o después de las "+horaApartirDe;
-
-
+                String consejoSegundoIntento = R.string.informacion_segundo_intento_1 + " " + horaAntesDe + " " + R.string.informacion_segundo_intento_2 + " " + horaApartirDe;
                 ll_detallePrimerIntento.setVisibility(View.VISIBLE);
                 ll_botonera.setVisibility(invalidarBotonera ? View.INVISIBLE : View.VISIBLE);
                 tv_resultadoDetallePrimerIntento.setText(notificacion.getResultado1()+" "+notificacion.getDescResultado1());
@@ -283,49 +292,44 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(NuevaNotificacionActivity.this);
         mBuilder.setTitle(R.string.motivo_no_entrega);
         mBuilder.setSingleChoiceItems(listaResultadosNoEntrega, checkedItem, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int posicion) {
-                        checkedItem = posicion;
-                    }
-                });
+            @Override
+            public void onClick(DialogInterface dialogInterface, int posicion) {
+                checkedItem = posicion;
+            }
+        });
 
         mBuilder.setCancelable(false);
         mBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-                String fechaHoraString = df.format(Calendar.getInstance().getTime());
-                String codResultado = listaResultadosNoNotifica.get(checkedItem).getCodigo();
-                String descResultado = listaResultadosNoNotifica.get(checkedItem).getDescripcion();
+            DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            String fechaHoraString = df.format(Calendar.getInstance().getTime());
+            String codResultado = listaResultadosNoNotifica.get(checkedItem).getCodigo();
+            String descResultado = listaResultadosNoNotifica.get(checkedItem).getDescripcion();
 
-                if(notificacion.getSegundoIntento() == null || !notificacion.getSegundoIntento()) {
-                    notificacion.setFechaHoraRes1(fechaHoraString);
-                    notificacion.setResultado1(codResultado);
-                    notificacion.setDescResultado1(descResultado);
-                    notificacion.setLatitudRes1(tv_latitud.getText().toString().trim().length() == 0 ? null : tv_latitud.getText().toString());
-                    notificacion.setLongitudRes1(tv_longitud.getText().toString().trim().length() == 0 ? null : tv_longitud.getText().toString());
-                    notificacion.setObservacionesRes1(edt_observaciones.getText().toString().trim().length() == 0 ? null : edt_observaciones.getText().toString());
-                    notificacion.setNotificadorRes1(obtenerNombreNotificador());
-                }else {
-                    notificacion.setFechaHoraRes2(fechaHoraString);
-                    notificacion.setResultado2(codResultado);
-                    notificacion.setDescResultado2(descResultado);
-                    notificacion.setLatitudRes2(tv_latitud.getText().toString().trim().length() == 0 ? null : tv_latitud.getText().toString());
-                    notificacion.setLongitudRes2(tv_longitud.getText().toString().trim().length() == 0 ? null : tv_longitud.getText().toString());
-                    notificacion.setObservacionesRes2(edt_observaciones.getText().toString().trim().length() == 0 ? null : edt_observaciones.getText().toString());
-                    notificacion.setNotificadorRes2(obtenerNombreNotificador());
-                }
+            if(notificacion.getSegundoIntento() == null || !notificacion.getSegundoIntento()) {
+                notificacion.setFechaHoraRes1(fechaHoraString);
+                notificacion.setResultado1(codResultado);
+                notificacion.setDescResultado1(descResultado);
+                notificacion.setLatitudRes1(tv_latitud.getText().toString().trim().length() == 0 ? null : tv_latitud.getText().toString());
+                notificacion.setLongitudRes1(tv_longitud.getText().toString().trim().length() == 0 ? null : tv_longitud.getText().toString());
+                notificacion.setObservacionesRes1(edt_observaciones.getText().toString().trim().length() == 0 ? null : edt_observaciones.getText().toString());
+                notificacion.setNotificadorRes1(obtenerNombreNotificador());
+            } else {
+                notificacion.setFechaHoraRes2(fechaHoraString);
+                notificacion.setResultado2(codResultado);
+                notificacion.setDescResultado2(descResultado);
+                notificacion.setLatitudRes2(tv_latitud.getText().toString().trim().length() == 0 ? null : tv_latitud.getText().toString());
+                notificacion.setLongitudRes2(tv_longitud.getText().toString().trim().length() == 0 ? null : tv_longitud.getText().toString());
+                notificacion.setObservacionesRes2(edt_observaciones.getText().toString().trim().length() == 0 ? null : edt_observaciones.getText().toString());
+                notificacion.setNotificadorRes2(obtenerNombreNotificador());
+            }
 
-                dbHelper.guardaResultadoNotificacion(notificacion);
+            GuardarResultadoNegativoTask guardarResultadoNegativoTask = new GuardarResultadoNegativoTask();
+            guardarResultadoNegativoTask.execute();
 
-                // Se cierra el dialogo del filtrado
-                dialogInterface.dismiss();
-
-                Intent intentResultado = new Intent();
-                intentResultado.putExtra("posicionAdapter", posicionAdapter);
-                intentResultado.putExtra("idNotificacion", idNotificacion);
-                setResult(CommonStatusCodes.SUCCESS, intentResultado);
-                finish();
+            // Se cierra el cuadro de dialogo de los resultados postales negativos
+            dialogInterface.dismiss();
             }
         });
 
@@ -336,6 +340,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             }
         });
 
+        // Se construye el dialogo y se muestra por pantalla
         AlertDialog mDialog = mBuilder.create();
         mDialog.show();
     }
@@ -428,6 +433,118 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         mLocationRequest.setFastestInterval(5000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         return mLocationRequest;
+    }
+
+    /**
+     * Clase privada que se ejecuta en background y se encarga de guardar la notificacion, generar el fichero XML y el sello de tiempo
+     */
+    private class GuardarResultadoNegativoTask extends AsyncTask<Void, String, String> {
+        ProgressDialog progressDialog;
+        Boolean guardadoNotificacionEnBD;
+
+        @Override
+        protected void onPreExecute() {
+            guardadoNotificacionEnBD = false;
+            progressDialog = ProgressDialog.show(NuevaNotificacionActivity.this, getMessageResources(R.string.guardar), getMessageResources(R.string.guardando_datos_en_bd_interna));
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            String fallo = "";
+                // Primero guarda el resultado de notificacion y recupera todos los datos para generar el fichero xml
+            guardadoNotificacionEnBD = dbHelper.guardaResultadoNotificacion(notificacion);
+            if(!guardadoNotificacionEnBD) {
+                fallo = getString(R.string.error_guardar_en_bd)   ;
+            } else {
+                notificacion = dbHelper.obtenerNotificacion(idNotificacion);
+                File ficheroXML = null;
+                try {
+                    // Se genera el fichero XML
+                    publishProgress(getString(R.string.generado_xml));
+                    ficheroXML = Util.NotificacionToXML(notificacion, getBaseContext());
+
+                    // Se realiza la llamada al servidor del sellado de tiempo y se genera el fichero de sello de tiempo
+                    publishProgress(getString(R.string.generado_sello_de_tiempo));
+                    String tsaUrl = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_URL, getBaseContext());
+                    String tsaUser = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_USER, getBaseContext());
+                    TimeStampRequestParameters timeStampRequestParameters = null;
+                    if(StringUtils.isNotBlank(tsaUser)) {
+                        String tsaPassword = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_PASSWORD, getBaseContext());
+                        timeStampRequestParameters.setUser(tsaUser);
+                        timeStampRequestParameters.setPassword(tsaPassword);
+                    }
+                    TimeStamp t = TimeStamp.stampDocument(FileUtils.readFileToByteArray(ficheroXML), new URL(tsaUrl), timeStampRequestParameters, null);
+                    Util.guardarFicheroSelloTiempo(notificacion.getReferencia()+".ts", t.toDER());
+
+                } catch (CiMobileException e) {
+                    fallo = e.getError();
+                } catch (IOException e) {
+                    fallo = getString(R.string.error_lectura_fichero_xml);
+                }
+            }
+
+            return fallo;
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            progressDialog.setMessage(values[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String fallo) {
+            // Se cierra el dialogo de espera
+            progressDialog.dismiss();
+
+            // Se crea el dialogo de respuesta del guardado
+            AlertDialog.Builder builder = new AlertDialog.Builder(NuevaNotificacionActivity.this);
+            builder.setTitle(R.string.guardado);
+
+            if(fallo != null && !fallo.isEmpty()) {
+                // Fallo al guardar
+                if(guardadoNotificacionEnBD) {
+                    // Añadir texto indicando que como no se ha generado ni el sello de tiempo ni el xml, esa notificacion
+                    // debera realizarla en papel
+                    fallo += ".\n"+getString(R.string.realizar_notif_en_papel);
+                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialogInterface, int which) {
+                            Intent intentResultado = new Intent();
+                            intentResultado.putExtra("posicionAdapter", posicionAdapter);
+                            intentResultado.putExtra("idNotificacion", idNotificacion);
+                            setResult(CommonStatusCodes.SUCCESS, intentResultado);
+                            dialogInterface.dismiss();
+                            finish();
+                        }
+                    });
+
+                } else {
+                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialogInterface, int which) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                }
+
+                builder.setMessage(fallo);
+            } else {
+                // Guardado y generado correctamente
+                builder.setMessage(R.string.notificacion_grabada_correctamente);
+                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        Intent intentResultado = new Intent();
+                        intentResultado.putExtra("posicionAdapter", posicionAdapter);
+                        intentResultado.putExtra("idNotificacion", idNotificacion);
+                        setResult(CommonStatusCodes.SUCCESS, intentResultado);
+                        dialogInterface.dismiss();
+                        finish();
+                    }
+                });
+            }
+
+            // Crear el dialogo con los parametros que se han definido y se muestra por pantalla
+            builder.show();
+        }
     }
 
 }

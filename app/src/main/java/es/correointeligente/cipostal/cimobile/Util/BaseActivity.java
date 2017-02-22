@@ -28,7 +28,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        sp = this.getSharedPreferences("login", MODE_PRIVATE);
+        sp = this.getSharedPreferences(Util.FICHERO_PREFERENCIAS_SESION, MODE_PRIVATE);
     }
 
     protected abstract int getLayoutResocurce();
@@ -39,10 +39,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected void loadLayoutCurrentSession() {
         mTextViewNotificador = (TextView) findViewById(R.id.textView_notificador_value);
-        mTextViewNotificador.setText(sp.getString("notificador", ""));
+        mTextViewNotificador.setText(sp.getString(Util.CLAVE_SESION_NOTIFICADOR, ""));
 
         mTextViewDelegacion = (TextView) findViewById(R.id.textView_delegacion_value);
-        mTextViewDelegacion.setText(sp.getString("delegacion", ""));
+        mTextViewDelegacion.setText(sp.getString(Util.CLAVE_SESION_DELEGACION, ""));
 
         mTextViewFecha = (TextView) findViewById(R.id.textView_fecha_value);
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
@@ -64,13 +64,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         return resultado;
     }
 
-    public String obtenerNombreNotificador() {
-        return sp.getString("notificador", "");
-    }
+    public String obtenerNombreNotificador() { return sp.getString(Util.CLAVE_SESION_NOTIFICADOR, ""); }
     public String obtenerDelegacion() {
-        return sp.getString("delegacion", "");
+        return sp.getString(Util.CLAVE_SESION_DELEGACION, "");
     }
-    public String obtenerCodigoNotificador() {
-        return sp.getString("codigoNotificador", "");
-    }
+    public String obtenerCodigoNotificador() { return sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, ""); }
 }

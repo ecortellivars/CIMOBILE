@@ -48,22 +48,24 @@ public class FTPHelper {
         return INSTANCIA;
     }
 
-    public void inicializa(Context context) {
-        this.context = context;
-    }
-
-    public Boolean connect() {
+    public Boolean connect(Context context) {
         try {
+            this.context = context;
             JSch jsch = new JSch();
-//            session = jsch.getSession("valencia","46.17.141.94", 1984);
-//            session.setPassword("9ca174324c");
-            session = jsch.getSession("jorge","192.168.0.105", 23);
-            session.setPassword("abc123.");
+
+            String usuario = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_USER, context);
+            String ipFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_IP, context);
+            String puertoFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, context);
+            String passFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_PASSWORD, context);
+            String timeoutFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_TIMEOUT, context);
+
+            session = jsch.getSession(usuario,ipFTP, Integer.parseInt(puertoFTP));
+            session.setPassword(passFTP);
 
             Properties prop = new Properties();
             prop.put("StrictHostKeyChecking", "no");
             session.setConfig(prop);
-            session.connect(10000);
+            session.connect(Integer.parseInt(timeoutFTP));
 
             conectado = Boolean.TRUE;
 
@@ -92,10 +94,12 @@ public class FTPHelper {
         Boolean ok = Boolean.FALSE;
         try {
 
+            String carpetaSICERS = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, context);
+
             Channel channel = session.openChannel("sftp");
             channel.connect();
             channelSftp = (ChannelSftp) channel;
-            channelSftp.cd("/SICERS");
+            channelSftp.cd(carpetaSICERS);
             ok = Boolean.TRUE;
 
         } catch (Exception e) {
