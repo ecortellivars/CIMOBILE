@@ -6,12 +6,16 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import com.google.android.gms.common.api.CommonStatusCodes;
 
@@ -43,10 +47,13 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
     Toolbar mToolbar;
     Button btn_guardar;
     DBHelper dbHelper;
-    String referenciaPostal, longitud, latitud, observaciones;
+    String referenciaPostal, referenciaPostalSCB, longitud, latitud, observaciones;
     Integer idNotificacion, posicionAdapter;
     Boolean esPrimerResultado;
     EditText edt_numeroDocumentoReceptor, edt_nombreReceptor;
+    Spinner spinner_tipoDocumentoReceptor;
+    Boolean numeroDocumentoValido;
+    final  String[] listaTiposDocumento = new String[]{Util.TIPO_DOCUMENTO_NIF, Util.TIPO_DOCUMENTO_CIF, Util.TIPO_DOCUMENTO_NIE, Util.TIPO_DOCUMENTO_OTRO};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +65,9 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        // Recupera la referencia postal y el id
+        // Recupera laos datos de la notificacion
         referenciaPostal = getIntent().getStringExtra("referenciaPostal");
+        referenciaPostalSCB = getIntent().getStringExtra("referenciaPostalSCB");
         idNotificacion = getIntent().getIntExtra("idNotificacion",0);
         posicionAdapter = getIntent().getIntExtra("posicionAdapter",0);
         longitud = getIntent().getStringExtra("longitud");
@@ -67,10 +75,44 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
         observaciones = getIntent().getStringExtra("observaciones");
         esPrimerResultado = getIntent().getBooleanExtra("esPrimerResultado", Boolean.TRUE);
 
+        numeroDocumentoValido = true;
         edt_numeroDocumentoReceptor = (EditText) findViewById(R.id.editText_notificacionEntregada_numeroDocumento);
+        edt_numeroDocumentoReceptor.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(!hasFocus) {
+                    numeroDocumentoValido = Util.validarNumeroDocumento(((EditText)view).getText().toString(), spinner_tipoDocumentoReceptor.getSelectedItem().toString());
+                    if(!numeroDocumentoValido) {
+                        ((EditText)view).setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape_error));
+                    } else {
+                        ((EditText)view).setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape));
+                    }
+                }
+            }
+        });
         edt_nombreReceptor = (EditText) findViewById(R.id.editText_notificacionEntregada_nombreApellidos);
+        spinner_tipoDocumentoReceptor = (Spinner) findViewById(R.id.spinner_notificacionEntregada_tipoDocumento);
+        spinner_tipoDocumentoReceptor.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, listaTiposDocumento));
+        spinner_tipoDocumentoReceptor.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(edt_numeroDocumentoReceptor.getText().toString().length() > 0) {
+                    numeroDocumentoValido = Util.validarNumeroDocumento(edt_numeroDocumentoReceptor.getText().toString(), ((Spinner)adapterView).getSelectedItem().toString());
+                    if(!numeroDocumentoValido) {
+                        edt_numeroDocumentoReceptor.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape_error));
+                    } else {
+                        edt_numeroDocumentoReceptor.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape));
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
         // Se fuerza que el inputText se haga entero en mayusculas
-        edt_nombreReceptor.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
+        edt_numeroDocumentoReceptor.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         edt_nombreReceptor.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
         mLienzo = (Lienzo) findViewById(R.id.lienzo_firma);
@@ -92,25 +134,37 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
     public void onClick(View view) {
         if(view.getId() == R.id.button_notif_entregada_guardar) {
 
-            // Guarda la imagen firmada en el sistema de archivos
-            try {
-                Bitmap bitmap = mLienzo.getDrawingCache();
-                File file = new File(Util.obtenerRutaFirmasReceptor(), referenciaPostal+".png");
+            if(numeroDocumentoValido) {
 
-                try (FileOutputStream ostream = new FileOutputStream(file);) {
+                // Primero se pone el fondo en su color original para validar posteriormente
+                edt_nombreReceptor.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape));
+                if(StringUtils.isNotBlank(edt_nombreReceptor.getText().toString())) {
 
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 10, ostream);
-                    ostream.close();
+                    // Guarda la imagen firmada en el sistema de archivos
+                    try {
+                        mLienzo.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape));
+                        Bitmap bitmap = mLienzo.getDrawingCache();
+                        File file = new File(Util.obtenerRutaFirmasReceptor(), referenciaPostal+"_"+StringUtils.defaultIfBlank(referenciaPostalSCB,"") + ".png");
 
-                    // Lanza en background el guardado de la notificacion entregada
-                    GuardarNotificacionEntregadaTask guardarNotificacionEntregadaTask = new GuardarNotificacionEntregadaTask();
-                    guardarNotificacionEntregadaTask.execute(file.getPath(), edt_nombreReceptor.getText().toString(), edt_numeroDocumentoReceptor.getText().toString());
+                        try (FileOutputStream ostream = new FileOutputStream(file);) {
 
-                } catch (Exception e) {
-                  e.printStackTrace();
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 10, ostream);
+                            ostream.close();
+
+                            // Lanza en background el guardado de la notificacion entregada
+                            GuardarNotificacionEntregadaTask guardarNotificacionEntregadaTask = new GuardarNotificacionEntregadaTask();
+                            guardarNotificacionEntregadaTask.execute(file.getPath(), edt_nombreReceptor.getText().toString(), edt_numeroDocumentoReceptor.getText().toString());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    // si no se ha introducido texto en el nombre receptor se pinta en rojo
+                    edt_nombreReceptor.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape_error));
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
     }
@@ -127,7 +181,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
         @Override
         protected void onPreExecute() {
             guardadoNotificacionEnBD = false;
-            progressDialog = ProgressDialog.show(NotificacionEntregadaActivity.this, getMessageResources(R.string.guardar), getMessageResources(R.string.guardando_datos_en_bd_interna));
+            progressDialog = ProgressDialog.show(NotificacionEntregadaActivity.this, getString(R.string.guardar), getString(R.string.guardando_datos_en_bd_interna));
         }
 
         @Override
@@ -156,6 +210,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setLongitudRes1(longitud);
                 notificacionAux.setObservacionesRes1(observaciones);
                 notificacionAux.setNotificadorRes1(obtenerNombreNotificador());
+                notificacionAux.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador()+File.separator+obtenerCodigoNotificador()+".png");
 
             } else {
 
@@ -166,6 +221,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setLongitudRes2(longitud);
                 notificacionAux.setObservacionesRes2(observaciones);
                 notificacionAux.setNotificadorRes2(obtenerNombreNotificador());
+                notificacionAux.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador()+File.separator+obtenerCodigoNotificador()+".png");
 
             }
 
@@ -186,12 +242,13 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                     TimeStampRequestParameters timeStampRequestParameters = null;
                     if(StringUtils.isNotBlank(tsaUser)) {
                         String tsaPassword = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_PASSWORD, getBaseContext());
+                        timeStampRequestParameters = new TimeStampRequestParameters();
                         timeStampRequestParameters.setUser(tsaUser);
                         timeStampRequestParameters.setPassword(tsaPassword);
                     }
                     publishProgress(getString(R.string.generado_sello_de_tiempo));
                     TimeStamp t = TimeStamp.stampDocument(FileUtils.readFileToByteArray(ficheroXML), new URL(tsaUrl), timeStampRequestParameters, null);
-                    Util.guardarFicheroSelloTiempo(notificacionAux.getReferencia()+".ts", t.toDER());
+                    Util.guardarFicheroSelloTiempo(notificacionAux, t.toDER());
 
                 } catch (CiMobileException e) {
                     fallo = e.getError();

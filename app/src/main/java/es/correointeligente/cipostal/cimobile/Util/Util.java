@@ -7,6 +7,7 @@ import android.util.Base64;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -16,14 +17,16 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -38,15 +41,24 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import es.correointeligente.cipostal.cimobile.Model.Notificacion;
-import es.correointeligente.cipostal.cimobile.Model.Notificador;
 import es.correointeligente.cipostal.cimobile.R;
 
 
 public class Util {
 
+    // TIPOS DE DOCUMENTO
+    public final static String TIPO_DOCUMENTO_NIF = "NIF";
+    public final static String TIPO_DOCUMENTO_NIE = "NIE";
+    public final static String TIPO_DOCUMENTO_CIF = "CIF";
+    public final static String TIPO_DOCUMENTO_OTRO = "OTRO";
+
+    // PATRON PARA LA VALIDACIÓN DEL CIF
+    private static final Pattern cifPattern = Pattern.compile("[[A-H][J-N][P-S]UVW][0-9]{7}[0-9A-J]");
+    private static final String CONTROL_SOLO_NUMEROS = "ABEH"; // Sólo admiten números como caracter de control
+    private static final String CONTROL_SOLO_LETRAS = "KPQS"; // Sólo admiten letras como caracter de control
+    private static final String CONTROL_NUMERO_A_LETRA = "JABCDEFGHI"; // Conversión de dígito a letra de control.
+
     // CONSTANTES NOMBRES BASE FICHEROS
-    public final static String NOMBRE_FICHERO_ZIP = "notificaciones";
-    public final static String NOMBRE_FICHERO_CSV = "notificaciones";
     public final static String NOMBRE_FICHERO_SEGUNDO_INTENTO = "segundo_intento";
 
     // CONSTANTES RUTAS DE FICHEROS
@@ -55,6 +67,7 @@ public class Util {
     public final static String EXTERNAL_DIRECTORY_SELLO_TIEMPO = "TS";
     public final static String EXTERNAL_DIRECTORY_FIRMAS_RECEPTOR = "FIRMAS_RECEPTOR";
     public final static String EXTERNAL_DIRECTORY_FIRMA_NOTIFICADOR = "FIRMAS_NOTIFICADOR";
+    public final static String EXTERNAL_DIRECTORY_UPDATES_APP = "UPDATES_APP";
 
     // CONSTANTES DE REQUESTS DE LOS ACTIVITY RESULTS
     public final static int REQUEST_CODE_BARCODE_SCAN = 0;
@@ -89,16 +102,21 @@ public class Util {
     public final static String CLAVE_PREFERENCIAS_FTP_PASSWORD = "ftpPassword";
     public final static String CLAVE_PREFERENCIAS_FTP_TIMEOUT = "ftpTimeOut";
     public final static String CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS = "ftpCarpetaSicers";
+
+    public final static String CLAVE_PREFERENCIAS_TSA_ACTIVO = "tsaActivo";
     public final static String CLAVE_PREFERENCIAS_TSA_URL = "tsaURL";
     public final static String CLAVE_PREFERENCIAS_TSA_USER = "tsaUser";
     public final static String CLAVE_PREFERENCIAS_TSA_PASSWORD = "tsaPass";
 
-    public final static String CLAVE_PREFERENCIAS_WS_URL = "wsURL";
-    public final static String CLAVE_PREFERENCIAS_WS_PUERTO = "wsPuerto";
+    public final static String CLAVE_PREFERENCIAS_WS_NAMESPACE = "wsNamespace";
+    public final static String CLAVE_PREFERENCIAS_WS_METHOD_NAME = "wsMetodo";
+    public final static String CLAVE_PREFERENCIAS_WS_METHOD_URL= "wsURL";
 
     public final static String CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_DIAS = "sigVisitaDias";
     public final static String CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_HORAS = "sigVisitaHoras";
 
+    public final static String CLAVE_PREFERENCIAS_UPDATES_CARPETA = "updatesCarpeta";
+    public final static String CLAVE_PREFERENCIAS_UPDATES_FICHERO = "updatesFichero";
 
 
     /**
@@ -120,17 +138,24 @@ public class Util {
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, "/SICERS");
 
             // Preferncias TSA
+            e.putBoolean(Util.CLAVE_PREFERENCIAS_TSA_ACTIVO, true); // http://tss.accv.es:8318/tsaup
             e.putString(Util.CLAVE_PREFERENCIAS_TSA_URL, "http://tss.accv.es:8318/tsa"); // http://tss.accv.es:8318/tsaup
             e.putString(Util.CLAVE_PREFERENCIAS_TSA_USER, ""); //cipostaluser
             e.putString(Util.CLAVE_PREFERENCIAS_TSA_PASSWORD, ""); //8ttErr32
 
             // Preferencias WS
-            e.putString(Util.CLAVE_PREFERENCIAS_WS_URL, "");//46.17.141.94
-            e.putString(Util.CLAVE_PREFERENCIAS_WS_PUERTO, ""); //1984
+            e.putString(Util.CLAVE_PREFERENCIAS_WS_NAMESPACE, "http://impl.v01.srvPostal.business.postal.sdci.es/");
+            e.putString(Util.CLAVE_PREFERENCIAS_WS_METHOD_NAME, "validarLoginWS");
+            e.putString(Util.CLAVE_PREFERENCIAS_WS_METHOD_URL, "http://correointeligente.es:9995/PostalService");
 
             // Preferencias Siguiente visita
             e.putString(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_DIAS, "3");
             e.putString(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_HORAS, "3");
+
+            // Preferencias para la actualización automática de la aplicación
+            e.putString(Util.CLAVE_PREFERENCIAS_UPDATES_CARPETA, "Actualizaciones");
+            e.putString(Util.CLAVE_PREFERENCIAS_UPDATES_FICHERO, "version.txt");
+
 
             e.commit();
 
@@ -206,18 +231,6 @@ public class Util {
         return file.getPath();
     }
 
-
-    public static List<Notificador> obtenerNotificadores() {
-        List<Notificador> listaNotificadores = new ArrayList<>();
-        Notificador notificador1 = new Notificador("A1", "Jorge Zaldivar Donato", "Valencia");
-        Notificador notificador2 = new Notificador("A2", "Juan Vicente Martinez", "Paterna");
-
-        listaNotificadores.add(notificador1);
-        listaNotificadores.add(notificador2);
-
-        return listaNotificadores;
-    }
-
     public static String obtenerTamanyoFicheroString(long bytes) {
         String result;
         if (bytes == 0) {
@@ -232,12 +245,13 @@ public class Util {
 
     /**
      * Guarda en disco un array de bytes.
-     * @param nombreFichero Fichero donde se guardará el contenido
+     * @param notificacion Fichero donde se guardará el contenido
      * @param contenido Contenido a guardar
      * @throws Exception No se puede escribir
      */
-    public static void guardarFicheroSelloTiempo(String nombreFichero, byte[] contenido) throws IOException {
+    public static void guardarFicheroSelloTiempo(Notificacion notificacion, byte[] contenido) throws IOException {
         // Los guardamos a disco.
+        String nombreFichero = notificacion.getReferencia()+"_"+StringUtils.defaultIfBlank(notificacion.getReferenciaSCB(),"")+".ts";
         FileUtils.writeByteArrayToFile(new File(obtenerRutaSelloDeTiempo(), nombreFichero), contenido);
     }
 
@@ -249,11 +263,15 @@ public class Util {
     public static File NotificacionToXML(Notificacion notificacion, Context context) throws CiMobileException {
         File xmlFile = null;
         try {
+
+            String nombeFichero = notificacion.getReferencia()+"_"+StringUtils.defaultIfBlank(notificacion.getReferenciaSCB(),"")+".xml";
+
             // Se Determina si viene del primer o del segundo resultado
             Date date = null;
             String horaString = null;
             String fechaString = null;
             String resultadoString = null;
+            String resultadoDescString = null;
             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             DateFormat dfHora = new SimpleDateFormat("HH:mm");
             DateFormat dfDia = new SimpleDateFormat("dd/MM/yyyy");
@@ -261,21 +279,26 @@ public class Util {
             String longitudString = null;
             String observacionesString = null;
             String notificadorString = null;
+            String firmaNotificadorString = null;
 
             if(notificacion.getResultado2() != null && !notificacion.getResultado2().trim().isEmpty()) {
                 resultadoString = notificacion.getResultado2();
+                resultadoDescString = notificacion.getDescResultado2();
                 date = formatter.parse(notificacion.getFechaHoraRes2());
                 latitudString = notificacion.getLatitudRes2();
                 longitudString = notificacion.getLongitudRes2();
                 observacionesString = notificacion.getObservacionesRes2();
                 notificadorString = notificacion.getNotificadorRes2();
+                firmaNotificadorString = notificacion.getFirmaNotificadorRes2();
             } else {
                 resultadoString = notificacion.getResultado1();
+                resultadoDescString = notificacion.getDescResultado1();
                 date = formatter.parse(notificacion.getFechaHoraRes1());
                 latitudString = notificacion.getLatitudRes1();
                 longitudString = notificacion.getLongitudRes1();
                 observacionesString = notificacion.getObservacionesRes1();
                 notificadorString = notificacion.getNotificadorRes1();
+                firmaNotificadorString = notificacion.getFirmaNotificadorRes1();
             }
 
             horaString = dfHora.format(date);
@@ -308,7 +331,7 @@ public class Util {
             rootElement.appendChild(dirDestinatario);
 
             Element resultado = doc.createElement("resultado");
-            resultado.appendChild(doc.createTextNode(resultadoString));
+            resultado.appendChild(doc.createTextNode(resultadoString+" "+resultadoDescString));
             rootElement.appendChild(resultado);
 
             Element fecha = doc.createElement("fecha");
@@ -337,6 +360,9 @@ public class Util {
             notificador.appendChild(doc.createTextNode(notificadorString));
             rootElement.appendChild(notificador);
 
+            FileInputStream fis = null;
+            byte[] filedata = null;
+            String encodedImage = null;
             if(notificacion.getNumDocReceptor() != null && !notificacion.getNumDocReceptor().trim().isEmpty()) {
                 Element numDocReceptor = doc.createElement("numDocReceptor");
                 numDocReceptor.appendChild(doc.createTextNode(notificacion.getNumDocReceptor()));
@@ -346,15 +372,24 @@ public class Util {
                 nombreReceptor.appendChild(doc.createTextNode(notificacion.getNombreReceptor()));
                 rootElement.appendChild(nombreReceptor);
 
-                FileInputStream fis = new FileInputStream(notificacion.getFirmaReceptor());
-                byte[] filedata = IOUtils.toByteArray(fis);
-                String encodedImage = Base64.encodeToString(filedata, Base64.NO_WRAP);
+                fis = new FileInputStream(notificacion.getFirmaReceptor());
+                filedata = IOUtils.toByteArray(fis);
+                encodedImage = Base64.encodeToString(filedata, Base64.NO_WRAP);
                 Element firmaReceptor = doc.createElement("firmaReceptor");
                 firmaReceptor.appendChild(doc.createTextNode(encodedImage));
                 rootElement.appendChild(firmaReceptor);
+                fis.close();
             }
 
-            xmlFile = new File(obtenerRutaXML(), notificacion.getReferencia()+".xml");
+            fis = new FileInputStream(firmaNotificadorString);
+            filedata = IOUtils.toByteArray(fis);
+            encodedImage = Base64.encodeToString(filedata, Base64.NO_WRAP);
+            Element firmaNotificador = doc.createElement("firmaNotificador");
+            firmaNotificador.appendChild(doc.createTextNode(encodedImage));
+            rootElement.appendChild(firmaNotificador);
+            fis.close();
+
+            xmlFile = new File(obtenerRutaXML(), nombeFichero);
             if(!xmlFile.exists()) {
                 xmlFile.createNewFile();
             }
@@ -385,9 +420,9 @@ public class Util {
         return xmlFile;
     }
 
-    public static File comprimirZIP(String codigoNotificador) {
+    public static File comprimirZIP(String codigoNotificador, String delegacion) {
         DateFormat dfDia = new SimpleDateFormat("ddMMyyyy");
-        String nombreFichero = NOMBRE_FICHERO_ZIP+"_"+codigoNotificador+"_"+dfDia.format(Calendar.getInstance().getTime())+".zip";
+        String nombreFichero = delegacion+"_"+codigoNotificador+"_"+dfDia.format(Calendar.getInstance().getTime())+".zip";
 
         File directorioAGenerarZIP = new File(obtenerRutaAPP());
         File ficheroZIP = new File(Environment.getExternalStorageDirectory(),nombreFichero);
@@ -402,6 +437,17 @@ public class Util {
         }
 
         return ficheroZIP;
+    }
+
+    public static  Boolean existeFirmaNotificador(String codigoNotificador) {
+        Boolean existe = false;
+        try {
+            File f = new File(obtenerRutaFirmaNotificador() + File.separator + codigoNotificador + ".png");
+            existe = f.exists();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return existe;
     }
 
     /**
@@ -438,6 +484,10 @@ public class Util {
         }
     }
 
+    /**
+     * Método estático que se encarga de borrar los archivos físicos que se encuentran en el dispositivo
+     * @return Boolean
+     */
     public static Boolean borrarFicherosAplicacion() {
         Boolean eliminado = false;
 
@@ -450,6 +500,159 @@ public class Util {
         }
 
         return  eliminado;
+    }
+
+    /**
+     * Metodo que guarda el fichero APK en downloads
+     * @param is
+     * @param nombreFichero
+     * @return String
+     */
+    public static String guardarFicheroAPK(InputStream is, String nombreFichero) {
+        String carpeta = Environment.getExternalStorageDirectory()+File.separator+EXTERNAL_DIRECTORY_UPDATES_APP;
+
+        File file = new File(carpeta);
+        if(!file.exists()) {
+            file.mkdirs();
+        }
+        File outputFile = new File(file, nombreFichero);
+        if(outputFile.exists()){
+            outputFile.delete();
+        }
+        try (FileOutputStream fos = new FileOutputStream(outputFile);) {
+            byte[] buffer = new byte[1024];
+            int len1 = 0;
+            while ((len1 = is.read(buffer)) != -1) {
+                fos.write(buffer, 0, len1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return outputFile.getPath();
+    }
+
+    /**
+     * Método estático que se encarga de validar el número de documento del receptor
+     * @param numeroDocumento
+     * @param tipoDocumento
+     * @return Boolean
+     */
+    public static Boolean validarNumeroDocumento(String numeroDocumento, String tipoDocumento) {
+        Boolean valido = Boolean.TRUE;
+        if(tipoDocumento.equalsIgnoreCase(TIPO_DOCUMENTO_NIF) || tipoDocumento.equalsIgnoreCase(TIPO_DOCUMENTO_NIE)) {
+            valido = validarNifNie(numeroDocumento, tipoDocumento);
+        } else if(tipoDocumento.equalsIgnoreCase(TIPO_DOCUMENTO_CIF)) {
+            valido = validarCif(numeroDocumento);
+        }
+
+        return valido;
+    }
+
+    /**
+     * Método privado para la validacion del NIF o del NIE
+     * @param numeroDocumento
+     * @param tipoDocumento
+     * @return
+     */
+    private static Boolean validarNifNie(String numeroDocumento, String tipoDocumento) {
+        Boolean valido = Boolean.TRUE;
+
+        //si es NIE, eliminar la x,y,z inicial para tratarlo como nif
+        Boolean esNumDocNIE = false;
+        if (numeroDocumento.toUpperCase().startsWith("X")) {
+            numeroDocumento = numeroDocumento.substring(1);
+            esNumDocNIE = true;
+        } else if (numeroDocumento.toUpperCase().startsWith("Y")) {
+            numeroDocumento = "1" + numeroDocumento.substring(1);
+            esNumDocNIE = true;
+        } else if (numeroDocumento.toUpperCase().startsWith("Z")) {
+            numeroDocumento = "2" + numeroDocumento.substring(1);
+            esNumDocNIE = true;
+        }
+
+        if((tipoDocumento.equalsIgnoreCase(TIPO_DOCUMENTO_NIF) && !esNumDocNIE) ||
+           (tipoDocumento.equalsIgnoreCase(TIPO_DOCUMENTO_NIE) && esNumDocNIE)) {
+
+            Pattern nifPattern = Pattern.compile("(\\d{1,8})([TRWAGMYFPDXBNJZSQVHLCKEtrwagmyfpdxbnjzsqvhlcke])");
+            Matcher m = nifPattern.matcher(numeroDocumento);
+            if (m.matches()) {
+                String letra = m.group(2);
+                //Extraer letra del NIF
+                String letras = "TRWAGMYFPDXBNJZSQVHLCKE";
+                int dni = Integer.parseInt(m.group(1));
+                dni = dni % 23;
+                String reference = letras.substring(dni, dni + 1);
+                if (!reference.equalsIgnoreCase(letra)) {
+                    valido = false;
+                }
+            } else {
+                valido = false;
+            }
+        } else {
+            valido = false;
+        }
+
+        return valido;
+    }
+
+    /**
+     * Metodo para validar un CIF
+     * @param numeroDocumento
+     * @return Boolean
+     */
+    private static Boolean validarCif(String numeroDocumento) {
+        Boolean valido = Boolean.TRUE;
+        try {
+            if (cifPattern.matcher(numeroDocumento).matches()) {
+                int parA = 0;
+                for (int i = 2; i < 8; i += 2) {
+                    final int digito = Character.digit(numeroDocumento.charAt(i), 10);
+                    if (digito < 0) {
+                        valido = false;
+                        break;
+                    }
+                    parA += digito;
+                }
+
+                if(valido) {
+
+                    int nonB = 0;
+                    for (int i = 1; i < 9; i += 2) {
+                        final int digito = Character.digit(numeroDocumento.charAt(i), 10);
+                        if (digito < 0) {
+                            valido = false;
+                            break;
+                        }
+                        int nn = 2 * digito;
+                        if (nn > 9) {
+                            nn = 1 + (nn - 10);
+                        }
+                        nonB += nn;
+                    }
+
+                    if(valido) {
+                        final int parcialC = parA + nonB;
+                        final int digitoE = parcialC % 10;
+                        final int digitoD = (digitoE > 0) ? (10 - digitoE) : 0;
+                        final char letraIni = numeroDocumento.charAt(0);
+                        final char caracterFin = numeroDocumento.charAt(8);
+
+                        valido = (CONTROL_SOLO_NUMEROS.indexOf(letraIni) < 0 && // ¿el caracter de control es válido como letra?
+                                                   CONTROL_NUMERO_A_LETRA.charAt(digitoD) == caracterFin) || // ¿el carácter de control es válido como dígito?
+                                                  (CONTROL_SOLO_LETRAS.indexOf(letraIni) < 0 &&
+                                                   digitoD == Character.digit(caracterFin, 10));
+                    }
+                }
+
+            } else {
+                // No cumple el patrón de CIF
+                valido = false;
+            }
+        } catch (Exception e) {
+           e.printStackTrace();
+        }
+
+        return valido;
     }
 
 }

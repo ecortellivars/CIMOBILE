@@ -83,7 +83,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
             case android.R.id.home:
                 finish();
                 break;
-            case R.id.menu_filter_notificaciones:
+            case R.id.menu_borrar_notificaciones:
                 this.crearDialogoEliminarResultado();
                 break;
             default:
@@ -111,7 +111,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
 
         @Override
         protected void onPreExecute() {
-            progressDialog = ProgressDialog.show(DetalleNotificacionActivity.this, getMessageResources(R.string.cargando_notificacion), getMessageResources(R.string.espere_info_notificacion));
+            progressDialog = ProgressDialog.show(DetalleNotificacionActivity.this, getString(R.string.cargando_notificacion), getString(R.string.espere_info_notificacion));
         }
 
         @Override
@@ -273,7 +273,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
         builder.setMessage(R.string.seguro_eliminar_resultado);
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                // Lanza la tarea en background de la carga del fichero SICER
+                // Lanza la tarea en background para la eliminación del resultado
                 EliminarResultadoNotificacionTask eliminarResultadoNotificacionTask = new EliminarResultadoNotificacionTask();
                 eliminarResultadoNotificacionTask.execute();
             }
@@ -289,8 +289,18 @@ public class DetalleNotificacionActivity extends BaseActivity {
         builder.show();
     }
 
+    /**
+     * Clase privada que se encarga de ejecutar en segundo planta la eliminacion del resultado de una notificacion
+     * Además elimina el fichero físico donde se encuentra la imagen de la firma del receptor(si es que tuviera)
+     * Tambíen debe eliminar el fichero XML y el sello de tiempo asociado
+     */
     private class EliminarResultadoNotificacionTask extends AsyncTask<Void, Void, Boolean> {
         ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = ProgressDialog.show(DetalleNotificacionActivity.this, getString(R.string.eliminar_resultado), getString(R.string.espere_info_eliminar_resultado));
+        }
 
         @Override
         protected Boolean doInBackground(Void... voids) {
@@ -305,17 +315,14 @@ public class DetalleNotificacionActivity extends BaseActivity {
                         if (file.exists()) {
                             file.delete();
                         }
+
+                        //TODO: eliminar fichero XML y sello de tiempo
                     }catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
 
             return eliminado;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            progressDialog = ProgressDialog.show(DetalleNotificacionActivity.this, getMessageResources(R.string.cargando_notificacion), getMessageResources(R.string.espere_info_notificacion));
         }
 
         @Override

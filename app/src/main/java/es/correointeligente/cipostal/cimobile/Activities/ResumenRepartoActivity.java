@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -100,9 +101,20 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_borrar_notificacion, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+            case  R.id.menu_borrar_notificaciones:
+                this.crearDialogoEliminarNotificaciones();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -119,7 +131,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
 
         @Override
         protected void onPreExecute() {
-            progressDialog = ProgressDialog.show(ResumenRepartoActivity.this, getMessageResources(R.string.resumen_reparto), getMessageResources(R.string.espere_info_reparto));
+            progressDialog = ProgressDialog.show(ResumenRepartoActivity.this, getString(R.string.resumen_reparto), getString(R.string.espere_info_reparto));
         }
 
         @Override
@@ -186,7 +198,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             File ficheroTXT = null;
 
             DateFormat dfDia = new SimpleDateFormat("ddMMyyyy");
-            String nombreFicheroCSV = Util.NOMBRE_FICHERO_CSV+"_"+obtenerCodigoNotificador()+"_"+dfDia.format(Calendar.getInstance().getTime())+".csv";
+            String nombreFicheroCSV = obtenerDelegacion()+"_"+dfDia.format(Calendar.getInstance().getTime())+".csv";
             String nombreFicheroTXT = Util.NOMBRE_FICHERO_SEGUNDO_INTENTO+"_"+obtenerCodigoNotificador()+"_"+dfDia.format(Calendar.getInstance().getTime())+".txt";
             try {
                 // Se establece la conexion con el servidor FTP
@@ -274,7 +286,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
 
                                 // Generar ZIP con los xml, las firmas, los sellos de tiempo y el csv
                                 publishProgress(getString(R.string.generando_fichero_zip));
-                                ficheroZIP = Util.comprimirZIP(obtenerCodigoNotificador());
+                                ficheroZIP = Util.comprimirZIP(obtenerCodigoNotificador(), obtenerDelegacion());
                                 publishProgress(getString(R.string.subiendo_fichero_zip));
                                 if (!ftpHelper.subirFichero(ficheroZIP, pathVolcado)) {
                                     fallo = getString(R.string.error_subir_fichero_zip);
@@ -336,6 +348,98 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                 builder.setMessage(fallo);
             } else {
                 builder.setMessage(R.string.cierre_reparto_correcto);
+            }
+
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialogInterface, int which) {
+                    dialogInterface.dismiss();
+                    finish();
+                }
+            });
+
+            // Genera el dialogo y lo muestra por pantalla
+            builder.show();
+        }
+    }
+
+    /**
+     * Método privado que se encarga de crear un dialogo para informar de las acciones a
+     * realizar si se acepta eliminar las notificaciones
+     */
+    private void crearDialogoEliminarNotificaciones() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.eliminar_notificaciones);
+        builder.setMessage(R.string.seguro_eliminar_notificaciones);
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // Lanza la tarea en background de la eliminación de todas las notificaciones
+                EliminarNotificacionTask eliminarNotificacionTask = new EliminarNotificacionTask();
+                eliminarNotificacionTask.execute();
+            }
+        });
+        builder.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialogInterface, int wich) {
+                dialogInterface.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+
+    /**
+     * Clase privada que se encarga de eliminar todas las notificaciones
+     * 1.- Limpia la BD interna SQLite
+     * 2.- Elimina los XML
+     * 3.- Elimina los sellos de tiempo
+     * 4.- Elimina las imagenes firmadas
+     */
+    private class EliminarNotificacionTask extends AsyncTask<Void, String, String> {
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = ProgressDialog.show(ResumenRepartoActivity.this, getString(R.string.eliminar_notificaciones), getString(R.string.limpiando_base_datos));
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            String fallo = null;
+
+            if(!dbHelper.borrarNotificaciones()) {
+                fallo = getString(R.string.error_borrado_notificaciones);
+            } else {
+                // Borra las carpetas
+                publishProgress(getString(R.string.limpiando_directorio));
+                if(!Util.borrarFicherosAplicacion()) {
+                    fallo = getString(R.string.error_fallo_borrar_ficheros_sensibles);
+                }
+            }
+
+            return fallo;
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            progressDialog.setMessage(values[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String fallo) {
+
+            progressDialog.dismiss();
+            // Se crea el dialogo de respuesta
+            AlertDialog.Builder builder = new AlertDialog.Builder(ResumenRepartoActivity.this);
+            builder.setTitle(R.string.eliminar_notificaciones);
+
+            if(fallo != null && !fallo.isEmpty()) {
+                // En caso de haber habiado algún fallo
+                builder.setMessage(fallo);
+            } else {
+                builder.setMessage(R.string.eliminado_todo_correctamente);
             }
 
             builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {

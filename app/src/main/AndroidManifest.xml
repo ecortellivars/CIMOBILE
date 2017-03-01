@@ -27,10 +27,13 @@
         <activity android:name=".Activities.ResumenRepartoActivity" />
         <activity android:name=".Activities.ListaNotificacionesActivity" />
         <activity android:name=".Activities.ScanBarcodeActivity" />
-        <activity android:name=".Activities.NuevaNotificacionActivity"
-            android:noHistory="true"/>
+        <activity
+            android:name=".Activities.NuevaNotificacionActivity"
+            android:noHistory="true" />
         <activity android:name=".Activities.NotificacionEntregadaActivity" />
-        <activity android:name=".Activities.DetalleNotificacionActivity"></activity>
+        <activity android:name=".Activities.DetalleNotificacionActivity" />
+        <activity android:name=".Activities.PreferenciasActivity" />
+        <activity android:name=".Activities.FirmaNotificadorActivity"></activity>
     </application>
 
 </manifest>

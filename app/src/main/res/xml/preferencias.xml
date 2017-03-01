@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="Webservice de login">
+
+        <EditTextPreference
+            android:key="wsNamespace"
+            android:title="Namespace"
+            android:summary="Namespace del Webservice" />
+
+        <EditTextPreference
+            android:key="wsMetodo"
+            android:title="Método"
+            android:summary="Método del login" />
+
+        <EditTextPreference
+            android:key="wsURL"
+            android:title="URL"
+            android:summary="URL del webservice a consumir" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="FTPS">
+
+        <EditTextPreference
+            android:key="ftpIp"
+            android:title="IP del servidor"
+            android:summary="Dirección IP del servidor FTP" />
+
+        <EditTextPreference
+            android:key="ftpPuerto"
+            android:title="Puerto"
+            android:summary="Puerto del servidor FTP" />
+
+        <EditTextPreference
+            android:key="ftpUser"
+            android:title="Usuario"
+            android:summary="Usuario servidor FTP" />
+
+        <EditTextPreference
+            android:key="ftpPassword"
+            android:title="Contraseña"
+            android:summary="Contraseña del servidor FTP"
+            android:inputType="textPassword"/>
+
+        <EditTextPreference
+            android:key="ftpTimeOut"
+            android:title="Timeout"
+            android:summary="Tiempo de espera" />
+
+        <EditTextPreference
+            android:key="ftpCarpetaSicers"
+            android:title="Carpeta ficheros"
+            android:summary="Carpeta ficheros SICER" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="TSA">
+
+        <CheckBoxPreference
+            android:key="tsaActivo"
+            android:title="Usar sellos de tiempo"
+            android:defaultValue="true"/>
+
+        <EditTextPreference
+            android:key="tsaURL"
+            android:title="URL"
+            android:summary="Dirección IP del servidor TSA"
+            android:dependency="tsaActivo"/>
+
+        <EditTextPreference
+            android:key="tsaUser"
+            android:title="Usuario"
+            android:summary="Usuario servidor TSA"
+            android:dependency="tsaActivo"/>
+
+        <EditTextPreference
+            android:key="tsaPass"
+            android:title="Contraseña"
+            android:summary="Contraseña del servidor TSA"
+            android:dependency="tsaActivo"
+            android:inputType="textPassword"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Segundos intentos">
+
+        <EditTextPreference
+            android:key="sigVisitaDias"
+            android:title="Dias"
+            android:summary="Dias de margen para el segundo intento"/>
+
+        <EditTextPreference
+            android:key="sigVisitaHoras"
+            android:title="Horas"
+            android:summary="Horas de margen para el segundo intento"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Actualizaciones">
+        <EditTextPreference
+            android:key="updatesCarpeta"
+            android:title="Carpeta UPDATES"
+            android:summary="Carpeta donde se aloja las nuevas version de la APP" />
+
+        <EditTextPreference
+            android:key="updatesFichero"
+            android:title="Fichero UPDATES"
+            android:summary="Fichero que describe la versión" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Aplicación de oficina">
+        <CheckBoxPreference
+            android:key="usarAPPEnOficina"
+            android:title="Uso de la aplicación en la oficina"
+            android:defaultValue="false"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

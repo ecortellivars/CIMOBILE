@@ -29,16 +29,33 @@
                 android:layout_height="wrap_content"
                 android:textStyle="bold"/>
 
-            <EditText
-                android:id="@+id/editText_notificacionEntregada_numeroDocumento"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:background="@drawable/edit_text_shape"
-                android:maxLines="1"
-                android:padding="8dp"
-                android:textStyle="bold"
-                android:hint="@string/numero_documento"/>
+                android:orientation="horizontal">
+
+
+                <Spinner
+                    android:id="@+id/spinner_notificacionEntregada_tipoDocumento"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:spinnerMode="dialog"
+                    android:background="@drawable/edit_text_shape"
+                    android:textStyle="bold"/>
+
+                <EditText
+                    android:id="@+id/editText_notificacionEntregada_numeroDocumento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:background="@drawable/edit_text_shape"
+                    android:maxLines="1"
+                    android:padding="8dp"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="5dp"
+                    android:hint="@string/numero_documento"/>
+
+            </LinearLayout>
 
             <TextView
                 android:text="@string/nombre_y_apellidos"

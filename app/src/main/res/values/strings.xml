@@ -1,11 +1,13 @@
 <resources>
     <string name="app_name">CIMobile</string>
     <string name="iniciar_sesion">Iniciar sesión</string>
+    <string name="iniciando_sesion">Iniciando sesión</string>
     <string name="titulo_logout">Cerrar sesión</string>
     <string name="nueva_notificacion">Nueva notificación</string>
     <string name="cargar_reparto">Cargar reparto</string>
     <string name="resumen_reparto">Resumen reparto</string>
     <string name="cargando_notificacion">Cargando notificación</string>
+    <string name="cargando_resultados">Cargando resultados</string>
     <string name="detalle_logout">Va a salir y cerrar la sesión, ¿Desea continuar?</string>
     <string name="ok">OK</string>
     <string name="cancelar">cancelar</string>
@@ -32,6 +34,8 @@
     <string name="cerrar_reparto">Cerrar reparto</string>
     <string name="espere_info_reparto">Espere mientras se obtiene información del reparto</string>
     <string name="espere_info_notificacion">Espere mientras se obtiene información de la notificación</string>
+    <string name="espere_info_resultados">Espere mientras se cargan los posibles resultados de notificación</string>
+    <string name="espere_info_inicio_sesion">Espere mientras se obtiene la información del inicio de sesión</string>
     <string name="filtro">Filtro</string>
     <string name="filtro_busqueda">Filtro de búsqueda</string>
     <string name="resultado">Resultado</string>
@@ -72,9 +76,10 @@
     <string name="cerrar_reparto_info">Va a cerrar el reparto, lo que conlleva la generacion del fichero con los datos de las notificaciones, el volcado del mismo en la carpeta FTP correspondiente y el borrado de los datos internos de la PDA. ¿Desea proseguir?</string>
     <string name="error_conexion_ftp">Se ha producido un error en la conexión FTP</string>
     <string name="error_acceso_carpeta_ftp">No se ha podido acceder a la carpeta del FTP</string>
-    <string name="error_subir_fichero_zip">Se ha producido un error al subir el fichero CSV</string>
+    <string name="error_subir_fichero_zip">Se ha producido un error al subir el fichero ZIP</string>
     <string name="error_subir_fichero_CSV">Se ha producido un error al subir el fichero CSV</string>
     <string name="error_borrado_notificaciones">Se ha producido un error al borrar las notificaciones</string>
+    <string name="error_carga_fichero">Se ha producido un error durante la carga del fichero</string>
     <string name="error_fallo_borrar_ficheros_sensibles">Se ha producido un error al borrar los ficheros XML, CSV, imagenes y sellos de tiempo</string>
     <string name="generando_fichero_CSV">Generando fichero CSV</string>
     <string name="subiendo_fichero_CSV">Subiendo fichero CSV al servidor FTP</string>
@@ -88,7 +93,22 @@
     <string name="error_proceso_cierre_reparto">Se ha producido un error durante el proceso de cierre de reparto</string>
     <string name="error_apertura_ficheros_escritura">Se ha producido un fallo de escritura sobre la PDA. Reiniciela para solucionar el problema y cerrar el reparto</string>
     <string name="eliminar_resultado">Eliminar resultado</string>
+    <string name="espere_info_eliminar_resultado">Espere mientras se elimina el resultado</string>
+    <string name="eliminar_notificaciones">Eliminar notificaciones</string>
     <string name="seguro_eliminar_resultado">¿Está seguro de eliminar el resultado?</string>
+    <string name="seguro_eliminar_notificaciones">¿Está seguro de eliminar las notificaciones? Si acepta, eliminará todos los resultados gestionados, junto a las imagenes de firma, sellos de tiempo y ficheros XML</string>
+    <string name="usuario">Usuario</string>
+    <string name="password">Contraseña</string>
+    <string name="configuracion">Configuración</string>
+    <string name="eliminado_todo_correctamente">Se ha eliminado todo correctamente</string>
+    <string name="error_no_existe_notif_en_carga_previa">No existe la notificación en el fichero cargado anteriormente</string>
+    <string name="error_guardar_notificaciones">Error al guardar las notificaciones</string>
+    <string name="usuario_no_valido">Usuario no válido</string>
+    <string name="password_no_valido">Contraseña no válida</string>
+    <string name="error_inicio_sesion">Se ha producido un error en el inicio de sesión</string>
+    <string name="actualizacion">Actualización</string>
+    <string name="detalle_actualizacion">Se ha encontrado un nueva versión. ¿Dese actualizar? Versión: </string>
+    <string name="descargando_version">Descargando versión...</string>
 
     <string-array name="filtro_busqueda_array">
         <item>Entregado</item>
@@ -100,4 +120,5 @@
         <item>Nadie se hace cargo</item>
         <item>Marcadas notificador</item>
     </string-array>
+
 </resources>

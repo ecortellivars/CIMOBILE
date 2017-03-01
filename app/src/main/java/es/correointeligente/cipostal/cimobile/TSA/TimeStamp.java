@@ -230,7 +230,7 @@ public class TimeStamp {
             String userPassword = parameters.getUser() + ":" + parameters.getPassword();
             String reqString = "Basic " + new String(Base64.encode(userPassword.getBytes(), Base64.NO_WRAP));
             reqProperties.put("Authorization", reqString);
-            reqProperties.put("Content-Length", String.valueOf(reqString.length()));
+//            reqProperties.put("Content-Length", String.valueOf(reqString.length()));
         }
 
         reqProperties.put("Content-Type", "application/timestamp-query");
@@ -289,6 +289,7 @@ public class TimeStamp {
             urlConn.setDoInput(true);
             urlConn.setDoOutput(true);
             urlConn.setRequestMethod("POST");
+
             // No usar caché
             urlConn.setUseCaches(false);
         } catch (ProtocolException e){
@@ -299,7 +300,13 @@ public class TimeStamp {
         Iterator iter = reqProperties.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
-            urlConn.setRequestProperty((String) entry.getKey(), (String) entry.getValue());
+            if(entry.getKey().equals("Authorization")) {
+                urlConn.setChunkedStreamingMode(entry.getValue().toString().getBytes().length);
+                urlConn.setRequestProperty((String) entry.getKey(), (String) entry.getValue());
+            } else {
+                urlConn.setRequestProperty((String) entry.getKey(), (String) entry.getValue());
+            }
+
         }
 
         try (OutputStream printout = urlConn.getOutputStream();){

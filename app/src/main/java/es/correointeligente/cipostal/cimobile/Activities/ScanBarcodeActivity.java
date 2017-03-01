@@ -16,7 +16,6 @@ public class ScanBarcodeActivity extends AppCompatActivity implements ZBarScanne
         super.onCreate(savedInstanceState);
 
         mScannerView = new ZBarScannerView(this);   // Programmatically initialize the scanner view
-        mScannerView.setFlash(true);
         setContentView(mScannerView);                // Set the scanner view as the content view
     }
 

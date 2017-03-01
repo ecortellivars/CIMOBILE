@@ -90,16 +90,13 @@ public class FTPHelper {
         return  desconectado;
     }
 
-    public Boolean cargarCarpetaSICER() {
+    public Boolean cargarCarpeta(String ruta) {
         Boolean ok = Boolean.FALSE;
         try {
-
-            String carpetaSICERS = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, context);
-
             Channel channel = session.openChannel("sftp");
             channel.connect();
             channelSftp = (ChannelSftp) channel;
-            channelSftp.cd(carpetaSICERS);
+            channelSftp.cd(ruta);
             ok = Boolean.TRUE;
 
         } catch (Exception e) {
@@ -178,6 +175,10 @@ public class FTPHelper {
 
     public InputStream leerFichero(String nombreFichero) throws SftpException {
         return channelSftp.get(nombreFichero);
+    }
+
+    public void descargarFichero(String nombreFichero, String destino) throws SftpException {
+        channelSftp.get(nombreFichero, destino);
     }
 
 

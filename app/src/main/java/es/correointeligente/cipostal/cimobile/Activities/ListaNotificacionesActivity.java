@@ -135,6 +135,10 @@ public class ListaNotificacionesActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Clase privada que se ejecuta en segundo plano y se encarga de obtener las notificaiciones
+     * en una lista infinita desde la base de datos interna
+     */
     private class ObtenerNotificacionesTask extends AsyncTask<FiltroNotificacion, Void, List<Notificacion>> {
 
         @Override
@@ -267,6 +271,11 @@ public class ListaNotificacionesActivity extends BaseActivity {
         mDialog.show();
     }
 
+    /**
+     * Método privado que se encarga de mapear el edittext donde se escribe la refrencia,
+     * se le añaden escuhcadores para detectar que va escribiendo el usuario para ir haciendo
+     * el filtro de búsqueda de forma dinámica
+     */
     private void mapearEditTextRefPostal() {
         mRefPostal = (EditText) findViewById(R.id.editText_listaNotificaciones_refPostal);
         // Se fuerza que el inputText se haga entero en mayusculas

@@ -7,11 +7,14 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
 import es.correointeligente.cipostal.cimobile.R;
 import es.correointeligente.cipostal.cimobile.Util.BaseActivity;
+import es.correointeligente.cipostal.cimobile.Util.Util;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener{
 
@@ -20,7 +23,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     Button mCargarReparto;
     Button mCerrarSesion;
     Button mResumenReparto;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +69,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 startActivity(i);
                 break;
             case R.id.button_nueva_notificacion:
-                i = new Intent(getBaseContext(), ListaNotificacionesActivity.class);
+                if(!Util.existeFirmaNotificador(obtenerCodigoNotificador())) {
+                    i = new Intent(getBaseContext(), FirmaNotificadorActivity.class);
+                } else {
+                    i = new Intent(getBaseContext(), ListaNotificacionesActivity.class);
+                }
                 startActivity(i);
                 break;
             case R.id.button_cerrar_sesion:
@@ -76,6 +82,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             default:
                 break;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_configuracion_aplicacion, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_preferences:
+                Intent i = new Intent(getBaseContext(), PreferenciasActivity.class);
+                startActivity(i);
+                break;
+            default:
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +23,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     // Database name
     private static final String DATABASE_NAME = "notificacionesManager";
+
+    private Context context;
 
     /*********************************************************/
     /************* TABLA NOTIFICACION ***********************/
@@ -71,7 +76,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String KEY_RESULTADO_CODIGO_SEGUNDO_INTENTO = "codigoSegundoIntento";
     private static final String KEY_RESULTADO_NOTIFICA = "notifica";
 
-    public DBHelper(Context context) {super(context, DATABASE_NAME, null, DATABASE_VERSION); }
+    public DBHelper(Context context) {super(context, DATABASE_NAME, null, DATABASE_VERSION); this.context = context;}
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
@@ -93,6 +98,11 @@ public class DBHelper extends SQLiteOpenHelper {
     /*********************************************************/
     /************* QUERIES RESULTADOS ************************/
     /*********************************************************/
+
+    /**
+     * Guarda el tipo de resultado en la base de datos
+     * @param resultado
+     */
     public void guardarResultado(Resultado resultado) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -108,11 +118,15 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(KEY_RESULTADO_RESULTADO_OFICINA, esResultadoOficina);
         values.put(KEY_RESULTADO_NOTIFICA, notifica);
 
-
         db.insert(TABLE_RESULTADO, null, values);
         db.close();
     }
 
+    /**
+     * Obtiene el resultado por su código
+     * @param codigo
+     * @return Resultado
+     */
     public Resultado obtenerResultado(String codigo) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(
@@ -148,6 +162,10 @@ public class DBHelper extends SQLiteOpenHelper {
         return resultado;
     }
 
+    /**
+     * Obtiene todos los tipos de resultado de la base de datos interna
+     * @return List<Resultado>
+     */
     public List<Resultado> obtenerResultados() {
         List<Resultado> listaResultados = new ArrayList<>();
 
@@ -176,9 +194,15 @@ public class DBHelper extends SQLiteOpenHelper {
             }
         }
 
+        db.close();
+
         return listaResultados;
     }
 
+    /**
+     * Obtiene aquellos tipos de resultado que no dan por entregada la notificación
+     * @return
+     */
     public List<Resultado> obtenerResultadosNoNotifican() {
         List<Resultado> listaResultados = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -207,12 +231,20 @@ public class DBHelper extends SQLiteOpenHelper {
             }
         }
 
+        db.close();
+
         return listaResultados;
     }
 
     /********************************************/
     /************ QUERIES PERSONALIZADAS ********/
     /********************************************/
+
+    /**
+     * Valida si ya se ha incluido el fichero a cargar anteriormente
+     * @param nombreFichero
+     * @return Boolean
+     */
     public Boolean existeFichero(String nombreFichero) {
         Boolean existe = Boolean.FALSE;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -231,9 +263,16 @@ public class DBHelper extends SQLiteOpenHelper {
             }
         }
 
+        db.close();
+
         return existe;
     }
 
+    /**
+     * Obtiene solo las notificaciones que han sido gestionadas por el notificador, es decir aquellas
+     * que se les haya incluido algún resultado postal
+     * @return List<Notificacion>
+     */
     public List<Notificacion> obtenerNotificacionesGestionadas() {
         List<Notificacion> listaNotificaciones = new ArrayList<>();
 
@@ -294,6 +333,10 @@ public class DBHelper extends SQLiteOpenHelper {
         return listaNotificaciones;
     }
 
+    /**
+     * Obtiene un detalle global de como estan las notificaciones
+     * @return ResumenReparto
+     */
     public ResumenReparto obtenerResumenReparto() {
         SQLiteDatabase db = this.getReadableDatabase();
         ResumenReparto resumenReparto = new ResumenReparto();
@@ -371,8 +414,13 @@ public class DBHelper extends SQLiteOpenHelper {
     /********************************************/
     /****** QUERIES NOTIFICACIONES **************/
     /********************************************/
-    public void guardarNotificacionesInicial(List<Notificacion> listaNotificaciones) {
+    /**
+     * Realiza el guardado inicial de cuando se estan cargando las notificacion del fichero SICER
+     * @param listaNotificaciones
+     */
+    public void guardarNotificacionesInicial(List<Notificacion> listaNotificaciones) throws CiMobileException {
         SQLiteDatabase db = this.getWritableDatabase();
+        Boolean hayError = false;
         try {
             db.beginTransaction();
 
@@ -398,15 +446,25 @@ public class DBHelper extends SQLiteOpenHelper {
 
         } catch (Exception e) {
             e.printStackTrace();
+            hayError = true;
         } finally {
             db.endTransaction();
         }
 
         db.close();
+
+        if(hayError) {
+            throw new CiMobileException(context.getString(R.string.error_guardar_notificaciones));
+        }
     }
 
-    public Boolean actualizarNotificacionesSegundoIntentoInicial(List<Notificacion> listaNotificaciones) {
-        Boolean guardadoOk = Boolean.TRUE;
+    /**
+     * Actualiza las notificaciones existentes en la base de datos que han sido cargadas previamente,
+     * con los datos del primer intento para poder gestionar el segundo intento
+     * @param listaNotificaciones
+     */
+    public void actualizarNotificacionesSegundoIntentoInicial(List<Notificacion> listaNotificaciones) throws CiMobileException {
+        Boolean hayError = false;
 
         SQLiteDatabase db = this.getWritableDatabase();
         try {
@@ -430,16 +488,23 @@ public class DBHelper extends SQLiteOpenHelper {
 
         } catch (Exception e) {
             e.printStackTrace();
-            guardadoOk = Boolean.FALSE;
+            hayError = true;
         } finally {
             db.endTransaction();
         }
 
         db.close();
 
-        return guardadoOk;
+        if(hayError) {
+            throw new CiMobileException(context.getString(R.string.error_guardar_notificaciones));
+        }
     }
 
+    /**
+     * Obtiene una notificación en concreto a partir de su identificador de la BD
+     * @param idNotificacion
+     * @return Notificacion
+     */
     public Notificacion obtenerNotificacion(Integer idNotificacion) {
         Notificacion notificacion = null;
 
@@ -494,8 +559,23 @@ public class DBHelper extends SQLiteOpenHelper {
         return notificacion;
     }
 
-    public Notificacion obtenerNotificacion(String referencia) {
+    /**
+     * Obtiene la notificacion por referencia y si tuviera segunda referencia, tambien por ella, para evitar duplicados
+     * @param referencia
+     * @param referenciaSCB
+     * @return Notificacion
+     */
+    public Notificacion obtenerNotificacion(String referencia, String referenciaSCB) {
         Notificacion notificacion = null;
+
+        int numParametros = StringUtils.isNotBlank(referenciaSCB) ? 2 : 1;
+        String[] parametros = new String[numParametros];
+        String whereClause = KEY_NOTIFICACION_REFERENCIA + " = ?";
+        parametros[0] = referencia;
+        if(StringUtils.isNotBlank(referenciaSCB)) {
+            whereClause += " AND "+ KEY_NOTIFICACION_REFERENCIA_SCB + " = ?";
+            parametros[0] = referenciaSCB;
+        }
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(
@@ -533,7 +613,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_TIMESTAMP_MARCADA,
                         KEY_NOTIFICACION_SEGUNDO_INTENTO
                 },
-                KEY_NOTIFICACION_REFERENCIA + " = ?", new String[]{referencia},
+                whereClause, parametros,
                 null, null, null, null
         );
 
@@ -546,6 +626,12 @@ public class DBHelper extends SQLiteOpenHelper {
         return notificacion;
     }
 
+    /**
+     * Obtiene las notificaciones de la base de datos dado un criterio de busqueda que se especifica
+     * en la clase FiltroNotificacion
+     * @param filtroNotificacion
+     * @return
+     */
     public List<Notificacion> obtenerNotificacionesPorFiltro(FiltroNotificacion filtroNotificacion) {
         List<Notificacion> listaNotificaciones = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -614,6 +700,10 @@ public class DBHelper extends SQLiteOpenHelper {
         return listaNotificaciones;
     }
 
+    /**
+     * Obtiene todas las notificaciones de la base de datos sin ningún tipo de filtro
+     * @return List<Notificacion>
+     */
     public List<Notificacion> obtenerTodasLasNotificaciones() {
         List<Notificacion> listaNotificaciones = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -666,6 +756,10 @@ public class DBHelper extends SQLiteOpenHelper {
         return listaNotificaciones;
     }
 
+    /**
+     * Actualiza en la base de datos si se ha marcado o no la notificacion como favorita
+     * @param notificacion
+     */
     public void actualizarNotificacionMarcada(Notificacion notificacion) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -688,6 +782,11 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    /**
+     * Es un método privado que se encarga de mapear correctamente el valor devuelto por la consulta
+     * @param cursor
+     * @return Notificacion
+     */
     private Notificacion mapearCursorANotificacion(Cursor cursor) {
         Notificacion notificacion = new Notificacion();
 
@@ -847,6 +946,12 @@ public class DBHelper extends SQLiteOpenHelper {
         return notificacion;
     }
 
+    /**
+     * Guarda el resultado postal de la notificacion disinguiendo que valores guardar dependiendo
+     * de si es un primer o un sgundo intento
+     * @param notificacion
+     * @return Boolean
+     */
     public Boolean guardaResultadoNotificacion(Notificacion notificacion){
         Boolean guardadoOk = Boolean.TRUE;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -860,7 +965,7 @@ public class DBHelper extends SQLiteOpenHelper {
             cv.put(KEY_NOTIFICACION_NUM_DOC_RECEPTOR, notificacion.getNumDocReceptor());
             cv.put(KEY_NOTIFICACION_TIPO_DOC_RECEPTOR, notificacion.getTipoDocReceptor());
 
-            if(notificacion.getSegundoIntento() == null || !notificacion.getSegundoIntento()) {
+            if(BooleanUtils.isFalse(notificacion.getSegundoIntento())) {
                 cv.put(KEY_NOTIFICACION_RESULTADO_1, notificacion.getResultado1());
                 cv.put(KEY_NOTIFICACION_DESCRIPCION_RESULTADO_1, notificacion.getDescResultado1());
                 cv.put(KEY_NOTIFICACION_FECHA_HORA_RES_1, notificacion.getFechaHoraRes1());
@@ -869,6 +974,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_OBSERVACIONES_RES_1, notificacion.getObservacionesRes1());
                 cv.put(KEY_NOTIFICACION_NOTIFICADOR_RES_1, notificacion.getNotificadorRes1());
                 cv.put(KEY_NOTIFICACION_OBSERVACIONES_RES_1, notificacion.getObservacionesRes1());
+                cv.put(KEY_NOTIFICACION_FIRMA_NOTIFICADOR_RES_1, notificacion.getFirmaNotificadorRes1());
 
             } else {
                 cv.put(KEY_NOTIFICACION_RESULTADO_2, notificacion.getResultado2());
@@ -879,6 +985,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_OBSERVACIONES_RES_2, notificacion.getObservacionesRes2());
                 cv.put(KEY_NOTIFICACION_NOTIFICADOR_RES_2, notificacion.getNotificadorRes2());
                 cv.put(KEY_NOTIFICACION_OBSERVACIONES_RES_2, notificacion.getObservacionesRes2());
+                cv.put(KEY_NOTIFICACION_FIRMA_NOTIFICADOR_RES_1, notificacion.getFirmaNotificadorRes2());
 
             }
 
@@ -897,6 +1004,12 @@ public class DBHelper extends SQLiteOpenHelper {
         return guardadoOk;
     }
 
+    /**
+     * Elimina un resultado de notificadion a partir de su id y si es primer o segundo resultado
+     * @param idNotificacion
+     * @param resultado
+     * @return Boolean
+     */
     public Boolean eliminarResultadoNotificacion(Integer idNotificacion, int resultado) {
         Boolean eliminado = Boolean.TRUE;
 
@@ -939,10 +1052,13 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         db.close();
 
-
         return eliminado;
     }
 
+    /**
+     * Borra todas las notificaciones de la base de datos
+     * @return Boolean
+     */
     public Boolean borrarNotificaciones() {
         Boolean eliminado = Boolean.FALSE;
 
@@ -957,6 +1073,7 @@ public class DBHelper extends SQLiteOpenHelper {
         } finally {
             db.endTransaction();
         }
+        db.close();
 
         return eliminado;
     }
@@ -999,7 +1116,10 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(qry);
     }
 
-
+    /**
+     * Crea los resultados por defecto de la aplicación
+     * @param db
+     */
     private void crearResultadosPorDefecto(SQLiteDatabase db) {
 
         List<Resultado> listaResultados = new ArrayList<>();

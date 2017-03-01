@@ -155,6 +155,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                 intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
 
                 intent.putExtra("referenciaPostal", notificacion.getReferencia());
+                intent.putExtra("referenciaPostalSCB", notificacion.getReferenciaSCB());
                 intent.putExtra("idNotificacion", idNotificacion);
                 intent.putExtra("posicionAdapter", posicionAdapter);
                 intent.putExtra("latitud", tv_latitud.getText().toString());
@@ -174,17 +175,22 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         super.onStop();
     }
 
+    /**
+     * Clase privada que se ejecuta en segundo plano y sirve para cargar los resultados posibles de la notificacion
+     */
     private class CargarResultadosTask extends AsyncTask<Void, Void, List<Resultado>> {
         ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = ProgressDialog.show(NuevaNotificacionActivity.this, getString(R.string.cargando_resultados), getString(R.string.espere_info_resultados));
+        }
 
         @Override
         protected List<Resultado> doInBackground(Void... voids) {
             List<Resultado> listaResultados = dbHelper.obtenerResultadosNoNotifican();
 
             return listaResultados;
-        }
-        protected void onPreExecute() {
-            progressDialog = ProgressDialog.show(NuevaNotificacionActivity.this, getMessageResources(R.string.cargando_notificacion), getMessageResources(R.string.espere_info_notificacion));
         }
 
         @Override
@@ -216,7 +222,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
 
         @Override
         protected void onPreExecute() {
-            progressDialog = ProgressDialog.show(NuevaNotificacionActivity.this, getMessageResources(R.string.cargando_notificacion), getMessageResources(R.string.espere_info_notificacion));
+            progressDialog = ProgressDialog.show(NuevaNotificacionActivity.this, getString(R.string.cargando_notificacion), getString(R.string.espere_info_notificacion));
         }
 
         @Override
@@ -315,6 +321,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                 notificacion.setLongitudRes1(tv_longitud.getText().toString().trim().length() == 0 ? null : tv_longitud.getText().toString());
                 notificacion.setObservacionesRes1(edt_observaciones.getText().toString().trim().length() == 0 ? null : edt_observaciones.getText().toString());
                 notificacion.setNotificadorRes1(obtenerNombreNotificador());
+                notificacion.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador()+File.separator+obtenerCodigoNotificador()+".png");
             } else {
                 notificacion.setFechaHoraRes2(fechaHoraString);
                 notificacion.setResultado2(codResultado);
@@ -323,6 +330,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                 notificacion.setLongitudRes2(tv_longitud.getText().toString().trim().length() == 0 ? null : tv_longitud.getText().toString());
                 notificacion.setObservacionesRes2(edt_observaciones.getText().toString().trim().length() == 0 ? null : edt_observaciones.getText().toString());
                 notificacion.setNotificadorRes2(obtenerNombreNotificador());
+                notificacion.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador()+File.separator+obtenerCodigoNotificador()+".png");
             }
 
             GuardarResultadoNegativoTask guardarResultadoNegativoTask = new GuardarResultadoNegativoTask();
@@ -445,7 +453,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         @Override
         protected void onPreExecute() {
             guardadoNotificacionEnBD = false;
-            progressDialog = ProgressDialog.show(NuevaNotificacionActivity.this, getMessageResources(R.string.guardar), getMessageResources(R.string.guardando_datos_en_bd_interna));
+            progressDialog = ProgressDialog.show(NuevaNotificacionActivity.this, getString(R.string.guardar), getString(R.string.guardando_datos_en_bd_interna));
         }
 
         @Override
@@ -470,11 +478,12 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     TimeStampRequestParameters timeStampRequestParameters = null;
                     if(StringUtils.isNotBlank(tsaUser)) {
                         String tsaPassword = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_PASSWORD, getBaseContext());
+                        timeStampRequestParameters = new TimeStampRequestParameters();
                         timeStampRequestParameters.setUser(tsaUser);
                         timeStampRequestParameters.setPassword(tsaPassword);
                     }
                     TimeStamp t = TimeStamp.stampDocument(FileUtils.readFileToByteArray(ficheroXML), new URL(tsaUrl), timeStampRequestParameters, null);
-                    Util.guardarFicheroSelloTiempo(notificacion.getReferencia()+".ts", t.toDER());
+                    Util.guardarFicheroSelloTiempo(notificacion, t.toDER());
 
                 } catch (CiMobileException e) {
                     fallo = e.getError();

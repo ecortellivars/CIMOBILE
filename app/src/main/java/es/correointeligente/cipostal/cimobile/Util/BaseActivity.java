@@ -27,6 +27,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         sp = this.getSharedPreferences(Util.FICHERO_PREFERENCIAS_SESION, MODE_PRIVATE);
     }
@@ -47,21 +49,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         mTextViewFecha = (TextView) findViewById(R.id.textView_fecha_value);
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
         mTextViewFecha.setText(format.format(new Date()));
-    }
-
-    protected String getMessageResources(int valor) {
-        String resultado = null;
-        try {
-            resultado = getResources().getString(valor);
-            if (resultado == null) {
-                resultado = "";
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            resultado = "";
-        }
-
-        return resultado;
     }
 
     public String obtenerNombreNotificador() { return sp.getString(Util.CLAVE_SESION_NOTIFICADOR, ""); }
