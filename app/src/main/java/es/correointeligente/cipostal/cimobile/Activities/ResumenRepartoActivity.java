@@ -82,6 +82,9 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
         }
     }
 
+    /**
+     * Clase privada para mapear todas las vistas del layout
+     */
     private void mapearVistaTextViews() {
         tv_totFicheros = (TextView) findViewById(R.id.textView_resumen_total_ficheros_value);
         tv_totNotificaciones = (TextView) findViewById(R.id.textView_resumen_total_notificaciones_value);
@@ -119,19 +122,23 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Clase privada que se lanza en background para realizar las consultas a la BD SQLite y
+     * cargar el resumen de las notificaciones
+     */
     private class CargaResumenTask extends AsyncTask<Void, Void, ResumenReparto> {
         ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = ProgressDialog.show(ResumenRepartoActivity.this, getString(R.string.resumen_reparto), getString(R.string.espere_info_reparto));
+        }
 
         @Override
         protected ResumenReparto doInBackground(Void... voids) {
             ResumenReparto resumen = dbHelper.obtenerResumenReparto();
 
             return resumen;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            progressDialog = ProgressDialog.show(ResumenRepartoActivity.this, getString(R.string.resumen_reparto), getString(R.string.espere_info_reparto));
         }
 
         @Override
@@ -154,6 +161,9 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
         }
     }
 
+    /**
+     * Método privado que pide confirmación para el cierre del reparto indicando todas las acciones a realizar
+     */
     private void crearDialogoAvisoCierreReparto() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.cerrar_reparto);
@@ -207,7 +217,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                 if(ftpHelper != null && ftpHelper.connect(ResumenRepartoActivity.this)) {
 
                     // Se comprueba si existe la carpeta del notificador, sino se crea
-                    String rutaCarpetaSICER = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, ResumenRepartoActivity.this);
+                    String rutaCarpetaSICER = Util.obtenerValorPreferencia((String)Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, ResumenRepartoActivity.this, String.class.getSimpleName());
                     String pathVolcado = rutaCarpetaSICER + File.separator + obtenerCodigoNotificador();
                     if(ftpHelper.cargarCarpetaNotificador(pathVolcado)) {
 

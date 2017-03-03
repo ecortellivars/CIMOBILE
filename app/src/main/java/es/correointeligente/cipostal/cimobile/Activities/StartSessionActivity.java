@@ -4,15 +4,17 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -52,11 +54,16 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
             finish();
         }
 
+        // Antes de continuar se comprueba que hay configuracion por defecto
+        Util.cargarConfiguracionAplicacionPorDefecto(getBaseContext());
+
         mButton_inciarSesion = (Button) findViewById(R.id.button_iniciar_sesion);
         mButton_inciarSesion.setOnClickListener(this);
 
         edt_usuario = (EditText) findViewById(R.id.edt_startSession_usuario);
         edt_password = (EditText) findViewById(R.id.edt_startSession_password);
+        edt_password.setTypeface(Typeface.DEFAULT);
+        edt_password.setTransformationMethod(new PasswordTransformationMethod());
 
         // Lanza una tarea en background para la conexión FTP y comprobar si hay actualizaciones
         FtpCheckUpdatesTask ftpCheckUpdatesTask = new FtpCheckUpdatesTask();
@@ -89,9 +96,9 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                 // Inicializamos la clase Singleton para la gestion FTP
                 ftpHelper = FTPHelper.getInstancia();
                 if (ftpHelper != null && ftpHelper.connect(StartSessionActivity.this)) {
-                    if(ftpHelper.cargarCarpeta(Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_UPDATES_CARPETA, getBaseContext()))) {
+                    if(ftpHelper.cargarCarpeta((String)Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_UPDATES_CARPETA, getBaseContext(), String.class.getSimpleName()))) {
 
-                        String fichero = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_UPDATES_FICHERO, getBaseContext());
+                        String fichero = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_UPDATES_FICHERO, getBaseContext(), String.class.getSimpleName());
                         try (BufferedReader reader = new BufferedReader(new InputStreamReader(ftpHelper.leerFichero(fichero)))) {
                             // Se lee solo la primera linea
                             String linea = reader.readLine();
@@ -144,7 +151,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
      * Clase privada que se encarga descargar el apk con la nueva version e iniciar el
      * instalador
      */
-    private class DescargarEInstalarAPKTask extends AsyncTask<String, Void, Boolean> {
+    private class DescargarEInstalarAPKTask extends AsyncTask<String, Void, Void> {
         ProgressDialog progressDialog;
 
         @Override
@@ -153,7 +160,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         }
 
         @Override
-        protected Boolean doInBackground(String... args) {
+        protected Void doInBackground(String... args) {
             String version = args[0];
 
             try {
@@ -161,42 +168,36 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                 ftpHelper = FTPHelper.getInstancia();
 
                 if (ftpHelper != null && ftpHelper.connect(StartSessionActivity.this)) {
-                    if (ftpHelper.cargarCarpeta(Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_UPDATES_CARPETA, getBaseContext()))) {
+                    if (ftpHelper.cargarCarpeta((String)Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_UPDATES_CARPETA, getBaseContext(), String.class.getSimpleName()))) {
                         String fichero = "CIMobile-release-" + version + ".apk";
-                        String carpeta = Environment.getExternalStorageDirectory()+ File.separator+Util.EXTERNAL_DIRECTORY_UPDATES_APP;
-                        File carpetaFile = new File(carpeta);
-                        if(!carpetaFile.exists()) {
-                            carpetaFile.mkdirs();
-                        }
-                        File outputFile = new File(carpetaFile, fichero);
-                        if(outputFile.exists()){
-                            outputFile.delete();
-                        }
-                        ftpHelper.descargarFichero(fichero, outputFile.getPath());
-                        Intent goToMarket = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(outputFile.getPath()));
-                        startActivity(goToMarket);
+                        ftpHelper.descargarFichero(fichero, Util.obtenerRutaActualizaciones());
+                        String rutaFinalFicheroUpdate = Util.obtenerRutaActualizaciones()+File.separator+fichero;
+                        ftpHelper.disconnect();
+                        progressDialog.dismiss();
 
-//                        startActivity(goToMarket);
-//                        try (InputStream is = ftpHelper.leerFichero(fichero);) {
-//                            String path = Util.guardarFicheroAPK(is, fichero);
-//                            Intent goToMarket = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(path));
-//                            startActivity(goToMarket);
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
+                        // Se lanza la actividad de actualizacion(Lanza el gestor de instalaciones)
+                        Intent install = new Intent(Intent.ACTION_VIEW);
+                        install.setDataAndType(Uri.fromFile(new File(rutaFinalFicheroUpdate)), "application/vnd.android.package-archive");
+                        install.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(install);
                     }
-                    ftpHelper.disconnect();
+
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
+                Toast.makeText(StartSessionActivity.this, R.string.error_durante_actualizacion,Toast.LENGTH_SHORT).show();
+            }
+
+            if(ftpHelper != null && BooleanUtils.isTrue(ftpHelper.isConnected())) {
+                ftpHelper.disconnect();
             }
 
             return null;
         }
 
         @Override
-        protected void onPostExecute(Boolean descargado) {
+        protected void onPostExecute(Void Void) {
             progressDialog.dismiss();
         }
     }
@@ -219,9 +220,9 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
             Notificador notificador = null;
 
             try {
-                String NAMESPACE = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_WS_NAMESPACE, getBaseContext());
-                String METHOD_NAME = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_WS_METHOD_NAME, getBaseContext());
-                String URL = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_WS_METHOD_URL, getBaseContext());
+                String NAMESPACE = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_WS_NAMESPACE, getBaseContext(), String.class.getSimpleName());
+                String METHOD_NAME = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_WS_METHOD_NAME, getBaseContext(), String.class.getSimpleName());
+                String URL = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_WS_METHOD_URL, getBaseContext(), String.class.getSimpleName());
 
                 SoapObject request = new SoapObject(NAMESPACE, METHOD_NAME);
                 request.addProperty("nombreUsuario", params[0]);
@@ -240,7 +241,8 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                     SoapObject s = (SoapObject) sobre.bodyIn;
                     Boolean valido = BooleanUtils.toBoolean(s.getProperty("valido").toString());
                     if(BooleanUtils.isTrue(valido)) {
-                        notificador = new Notificador("A1", s.getProperty("nombreUsuario").toString(),  s.getProperty("corporacion").toString());
+                        String codigoEscaner = s.hasProperty("codigo")? s.getProperty("codigo").toString() : s.getProperty("nombreUsuario").toString();
+                        notificador = new Notificador(codigoEscaner, s.getProperty("nombreUsuario").toString(),  s.getProperty("corporacion").toString());
                     } else {
                         switch (s.getProperty("error").toString()) {
                             case "UNV": fallo = getString(R.string.usuario_no_valido);
@@ -274,9 +276,6 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                 e.putString(Util.CLAVE_SESION_DELEGACION, notificador.getDelegacion());
                 e.putString(Util.CLAVE_SESION_COD_NOTIFICADOR, notificador.getCodigo());
                 e.commit();
-
-                // Antes de llamar a la pantalla principal, se comprueba si tiene cargadas las preferencias por defecto
-                Util.cargarConfiguracionAplicacionPorDefecto(getBaseContext());
 
                 Intent i = new Intent(getBaseContext(), MainActivity.class);
                 startActivity(i);

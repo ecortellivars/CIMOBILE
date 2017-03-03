@@ -11,10 +11,16 @@ import com.jcraft.jsch.SftpException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,11 +59,11 @@ public class FTPHelper {
             this.context = context;
             JSch jsch = new JSch();
 
-            String usuario = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_USER, context);
-            String ipFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_IP, context);
-            String puertoFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, context);
-            String passFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_PASSWORD, context);
-            String timeoutFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_TIMEOUT, context);
+            String usuario = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_USER, context, String.class.getSimpleName());
+            String ipFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_IP, context, String.class.getSimpleName());
+            String puertoFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, context, String.class.getSimpleName());
+            String passFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_PASSWORD, context, String.class.getSimpleName());
+            String timeoutFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_TIMEOUT, context, String.class.getSimpleName());
 
             session = jsch.getSession(usuario,ipFTP, Integer.parseInt(puertoFTP));
             session.setPassword(passFTP);
@@ -177,8 +183,27 @@ public class FTPHelper {
         return channelSftp.get(nombreFichero);
     }
 
-    public void descargarFichero(String nombreFichero, String destino) throws SftpException {
-        channelSftp.get(nombreFichero, destino);
+    public void descargarFichero(String nombreFichero, String rutaCapeta) throws SftpException {
+
+        File file = new File(rutaCapeta);
+        if(!file.exists()) {
+            file.mkdirs();
+        }
+        File outputFile = new File(file, nombreFichero);
+        if(outputFile.exists()){
+            outputFile.delete();
+        }
+        try (BufferedInputStream  is = new BufferedInputStream(channelSftp.get(nombreFichero));
+             OutputStream fos = new FileOutputStream(outputFile);){
+
+            // copia el fichero desde el ftp a la carpeta indicada
+            IOUtils.copy(is, fos);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

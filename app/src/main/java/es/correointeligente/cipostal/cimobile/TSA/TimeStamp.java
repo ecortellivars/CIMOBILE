@@ -32,11 +32,6 @@ import java.util.Map;
 
 import es.correointeligente.cipostal.cimobile.Util.CiMobileException;
 
-
-/**
- * Created by JorgeCasa on 16/02/2017.
- */
-
 public class TimeStamp {
 
     private static final Provider CRYPTOGRAPHIC_PROVIDER = new org.spongycastle.jce.provider.BouncyCastleProvider();

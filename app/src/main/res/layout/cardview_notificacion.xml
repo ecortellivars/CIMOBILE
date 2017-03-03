@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:text="TextView"
+                android:text="@string/referencia_postal"
                 android:textStyle="bold" />
 
             <CheckBox
@@ -34,6 +34,16 @@
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/textView_cardView_referenciaSCB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="@string/referencia_scb"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textView_cardView_nombre"

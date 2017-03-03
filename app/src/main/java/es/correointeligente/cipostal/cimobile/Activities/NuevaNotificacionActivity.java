@@ -36,6 +36,7 @@ import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -66,7 +67,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     Integer posicionAdapter;
     DBHelper dbHelper;
     TextView tv_refPostal, tv_nombre, tv_direccion, tv_resultadoDetallePrimerIntento, tv_consejoSegundoIntento,
-             tv_latitud, tv_longitud, tv_fechaDetallePrimerIntento;
+             tv_latitud, tv_longitud, tv_fechaDetallePrimerIntento, tv_refSCB;
     EditText edt_observaciones;
     Button btn_noEntregado, btn_entregado;
     LinearLayout ll_detallePrimerIntento, ll_botonera;
@@ -126,6 +127,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         ll_detallePrimerIntento = (LinearLayout) findViewById(R.id.linearLayout_detalle_primer_intento);
         ll_botonera = (LinearLayout) findViewById(R.id.linearLayout_nueva_notificacion_botonera);
         tv_refPostal = (TextView) findViewById(R.id.textView_nuevaNotificacion_refPostal);
+        tv_refSCB = (TextView) findViewById(R.id.textView_nuevaNotificacion_refSCB);
         tv_nombre = (TextView) findViewById(R.id.textView_nuevaNotificacion_nombre);
         tv_direccion = (TextView) findViewById(R.id.textView_nuevaNotificacion_direccion);
         tv_latitud = (TextView) findViewById(R.id.textView_nuevaNotificacion_latitud);
@@ -231,26 +233,38 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             notificacion = notificacionAux;
 
             tv_refPostal.setText(notificacion.getReferencia().toString());
+            tv_refSCB.setText(notificacion.getReferenciaSCB().toString());
             tv_nombre.setText(notificacion.getNombre().toString());
             tv_direccion.setText(notificacion.getDireccion().toString());
             ll_detallePrimerIntento.setVisibility(View.INVISIBLE);
             ll_botonera.setVisibility(View.VISIBLE);
 
-            if(notificacion.getSegundoIntento() != null && notificacion.getSegundoIntento()) {
+            if(BooleanUtils.isTrue(notificacion.getSegundoIntento())) {
                 // Se muestra el layout de información referente al primer resultado
                 String horaApartirDe = null;
                 String horaAntesDe = null;
+                String diaLimite = null;
                 Boolean invalidarBotonera = Boolean.FALSE;
                 try {
+
+                    Integer numHoras = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_HORAS, getBaseContext(), Integer.class.getSimpleName());
+                    numHoras = numHoras == null ? 3 : numHoras; // en caso de no obtener el valor de las preferencias, por defecto son 3
+                    Integer numDias = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_DIAS, getBaseContext(), Integer.class.getSimpleName());
+                    numDias = numDias == null ? 3 : numDias; // en caso de no obtener el valor de las preferencias, por defecto son 3
+
                     String fechaString = notificacion.getFechaHoraRes1();
                     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                     Date date = formatter.parse(fechaString);
                     Calendar calendarApartirDe = Calendar.getInstance();
                     Calendar calendarAntesDe = Calendar.getInstance();
+                    Calendar calendarDiaLimite = Calendar.getInstance();
                     calendarApartirDe.setTime(date);
-                    calendarApartirDe.add(Calendar.HOUR, 3);
+                    calendarApartirDe.add(Calendar.HOUR, numHoras);
                     calendarAntesDe.setTime(date);
-                    calendarAntesDe.add(Calendar.HOUR, -3);
+                    calendarAntesDe.add(Calendar.HOUR, -numHoras);
+                    calendarDiaLimite.setTime(date);
+                    calendarDiaLimite.add(Calendar.DATE, numDias);
+                    calendarDiaLimite.add(Calendar.HOUR, numHoras);
 
                     DateFormat df = new SimpleDateFormat("HH:mm");
                     horaApartirDe = df.format(calendarApartirDe.getTime());
@@ -259,13 +273,18 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     Calendar calendarParaComparaHoras = Calendar.getInstance();
                     calendarParaComparaHoras.setTime(date);
 
-                    invalidarBotonera = !(calendarParaComparaHoras.after(calendarAntesDe) && calendarParaComparaHoras.before(calendarApartirDe));
+                    df = new SimpleDateFormat("dd/MM/yyyy");
+                    diaLimite = df.format(calendarDiaLimite.getTime());
+
+                    invalidarBotonera = !(calendarParaComparaHoras.after(calendarAntesDe) &&
+                                          calendarParaComparaHoras.before(calendarApartirDe) &&
+                                          calendarDiaLimite.after(Calendar.getInstance()));
 
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
-                String consejoSegundoIntento = R.string.informacion_segundo_intento_1 + " " + horaAntesDe + " " + R.string.informacion_segundo_intento_2 + " " + horaApartirDe;
+                String consejoSegundoIntento = getString(R.string.dia_limite)+" "+diaLimite+"\n"+getString(R.string.informacion_segundo_intento_1) + " " + horaAntesDe + " " + getString(R.string.informacion_segundo_intento_2) + " " + horaApartirDe;
                 ll_detallePrimerIntento.setVisibility(View.VISIBLE);
                 ll_botonera.setVisibility(invalidarBotonera ? View.INVISIBLE : View.VISIBLE);
                 tv_resultadoDetallePrimerIntento.setText(notificacion.getResultado1()+" "+notificacion.getDescResultado1());
@@ -313,7 +332,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             String codResultado = listaResultadosNoNotifica.get(checkedItem).getCodigo();
             String descResultado = listaResultadosNoNotifica.get(checkedItem).getDescripcion();
 
-            if(notificacion.getSegundoIntento() == null || !notificacion.getSegundoIntento()) {
+            if(BooleanUtils.isFalse(notificacion.getSegundoIntento())) {
                 notificacion.setFechaHoraRes1(fechaHoraString);
                 notificacion.setResultado1(codResultado);
                 notificacion.setDescResultado1(descResultado);
@@ -353,8 +372,8 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         mDialog.show();
     }
 
+    // Se inicializa el cliente Api de Google
     public void connectGPS() {
-        // Se inicializa el cliente Api de Google
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(getBaseContext()).addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
@@ -392,7 +411,6 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                             }
                         } else {
                             // La aplicacion no tiene los permisos concedidos, por lo que se le solicita al usuario si lo permite
-                            // TODO: hay que devolver el resultado denegado y desde la pantalla del activity hacer el request de los permisos
                             // ActivityCompat.requestPermissions(NuevaNotificacionActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
                         }
                         break;
@@ -472,18 +490,21 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     ficheroXML = Util.NotificacionToXML(notificacion, getBaseContext());
 
                     // Se realiza la llamada al servidor del sellado de tiempo y se genera el fichero de sello de tiempo
-                    publishProgress(getString(R.string.generado_sello_de_tiempo));
-                    String tsaUrl = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_URL, getBaseContext());
-                    String tsaUser = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_USER, getBaseContext());
-                    TimeStampRequestParameters timeStampRequestParameters = null;
-                    if(StringUtils.isNotBlank(tsaUser)) {
-                        String tsaPassword = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_PASSWORD, getBaseContext());
-                        timeStampRequestParameters = new TimeStampRequestParameters();
-                        timeStampRequestParameters.setUser(tsaUser);
-                        timeStampRequestParameters.setPassword(tsaPassword);
+                    Boolean tsaActivo = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_ACTIVO, getBaseContext(), Boolean.class.getSimpleName());
+                    if(BooleanUtils.isTrue(tsaActivo)) {
+                        publishProgress(getString(R.string.generado_sello_de_tiempo));
+                        String tsaUrl = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_URL, getBaseContext(), String.class.getSimpleName());
+                        String tsaUser = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_USER, getBaseContext(), String.class.getSimpleName());
+                        TimeStampRequestParameters timeStampRequestParameters = null;
+                        if (StringUtils.isNotBlank(tsaUser)) {
+                            String tsaPassword = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_PASSWORD, getBaseContext(), String.class.getSimpleName());
+                            timeStampRequestParameters = new TimeStampRequestParameters();
+                            timeStampRequestParameters.setUser(tsaUser);
+                            timeStampRequestParameters.setPassword(tsaPassword);
+                        }
+                        TimeStamp t = TimeStamp.stampDocument(FileUtils.readFileToByteArray(ficheroXML), new URL(tsaUrl), timeStampRequestParameters, null);
+                        Util.guardarFicheroSelloTiempo(notificacion, t.toDER());
                     }
-                    TimeStamp t = TimeStamp.stampDocument(FileUtils.readFileToByteArray(ficheroXML), new URL(tsaUrl), timeStampRequestParameters, null);
-                    Util.guardarFicheroSelloTiempo(notificacion, t.toDER());
 
                 } catch (CiMobileException e) {
                     fallo = e.getError();

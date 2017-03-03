@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import com.google.android.gms.common.api.CommonStatusCodes;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -96,6 +97,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
         spinner_tipoDocumentoReceptor.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                // Escuchador del item seleccionado del spinner para validar numero de documento
                 if(edt_numeroDocumentoReceptor.getText().toString().length() > 0) {
                     numeroDocumentoValido = Util.validarNumeroDocumento(edt_numeroDocumentoReceptor.getText().toString(), ((Spinner)adapterView).getSelectedItem().toString());
                     if(!numeroDocumentoValido) {
@@ -197,9 +199,14 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
             notificacionAux.setNombreReceptor(args[1]);
             notificacionAux.setNumDocReceptor(args[2]);
 
-            // TODO: Cuando se implemente las preferencias de en oficia hay que distinguir
-            // TODO: aqui entre "ENTREGADO" y "ENTREGADO OFICINA"
-            Resultado resultado = dbHelper.obtenerResultado(Util.RESULTADO_ENTREGADO);
+            // Dependiendo de si es una aplicación de oficina o no, el resultado entregado tiene un código u otro
+            Boolean esAplicacionDeOficina = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_DE_OFICINA, getBaseContext(), Boolean.class.getSimpleName());
+            Resultado resultado = null;
+            if(esAplicacionDeOficina) {
+                resultado = dbHelper.obtenerResultado(Util.RESULTADO_ENTREGADO_OFICINA);
+            } else {
+                resultado = dbHelper.obtenerResultado(Util.RESULTADO_ENTREGADO);
+            }
 
             if(esPrimerResultado) {
 
@@ -211,7 +218,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setObservacionesRes1(observaciones);
                 notificacionAux.setNotificadorRes1(obtenerNombreNotificador());
                 notificacionAux.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador()+File.separator+obtenerCodigoNotificador()+".png");
-
+                notificacionAux.setSegundoIntento(!esPrimerResultado);
             } else {
 
                 notificacionAux.setDescResultado2(resultado.getDescripcion().toUpperCase());
@@ -222,10 +229,11 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setObservacionesRes2(observaciones);
                 notificacionAux.setNotificadorRes2(obtenerNombreNotificador());
                 notificacionAux.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador()+File.separator+obtenerCodigoNotificador()+".png");
-
+                notificacionAux.setSegundoIntento(esPrimerResultado);
             }
 
             guardadoNotificacionEnBD = dbHelper.guardaResultadoNotificacion(notificacionAux);
+
             if(!guardadoNotificacionEnBD) {
                 fallo = getString(R.string.error_guardar_en_bd);
             } else {
@@ -237,19 +245,21 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                     ficheroXML = Util.NotificacionToXML(notificacionAux, getBaseContext());
 
                     // Se realiza la llamada al servidor del sellado de tiempo y se genera el fichero de sello de tiempo
-                    String tsaUrl = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_URL, getBaseContext());
-                    String tsaUser = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_USER, getBaseContext());
-                    TimeStampRequestParameters timeStampRequestParameters = null;
-                    if(StringUtils.isNotBlank(tsaUser)) {
-                        String tsaPassword = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_PASSWORD, getBaseContext());
-                        timeStampRequestParameters = new TimeStampRequestParameters();
-                        timeStampRequestParameters.setUser(tsaUser);
-                        timeStampRequestParameters.setPassword(tsaPassword);
+                    Boolean tsaActivo = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_ACTIVO, getBaseContext(), Boolean.class.getSimpleName());
+                    if(BooleanUtils.isTrue(tsaActivo)) {
+                        String tsaUrl = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_URL, getBaseContext(), String.class.getSimpleName());
+                        String tsaUser = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_USER, getBaseContext(), String.class.getSimpleName());
+                        TimeStampRequestParameters timeStampRequestParameters = null;
+                        if (StringUtils.isNotBlank(tsaUser)) {
+                            String tsaPassword = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_PASSWORD, getBaseContext(), String.class.getSimpleName());
+                            timeStampRequestParameters = new TimeStampRequestParameters();
+                            timeStampRequestParameters.setUser(tsaUser);
+                            timeStampRequestParameters.setPassword(tsaPassword);
+                        }
+                        publishProgress(getString(R.string.generado_sello_de_tiempo));
+                        TimeStamp t = TimeStamp.stampDocument(FileUtils.readFileToByteArray(ficheroXML), new URL(tsaUrl), timeStampRequestParameters, null);
+                        Util.guardarFicheroSelloTiempo(notificacionAux, t.toDER());
                     }
-                    publishProgress(getString(R.string.generado_sello_de_tiempo));
-                    TimeStamp t = TimeStamp.stampDocument(FileUtils.readFileToByteArray(ficheroXML), new URL(tsaUrl), timeStampRequestParameters, null);
-                    Util.guardarFicheroSelloTiempo(notificacionAux, t.toDER());
-
                 } catch (CiMobileException e) {
                     fallo = e.getError();
                 } catch (IOException e) {

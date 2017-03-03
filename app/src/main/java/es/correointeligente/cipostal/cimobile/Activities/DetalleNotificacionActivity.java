@@ -18,6 +18,9 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.api.CommonStatusCodes;
 
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -34,7 +37,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
     DBHelper dbHelper;
     Integer idNotificacion, posicionAdapter;
     Notificacion notificacion;
-    TextView tv_refPostal, tv_nombre, tv_direccion;
+    TextView tv_refPostal, tv_refSCB, tv_nombre, tv_direccion;
     private ViewGroup layoutResultado1, layoutResultado2;
     int resultadoEliminable = 0;
 
@@ -95,12 +98,21 @@ public class DetalleNotificacionActivity extends BaseActivity {
 
     private void mapearVista() {
         tv_refPostal = (TextView) findViewById(R.id.textView_detalleNotificacion_refPostal);
+        tv_refSCB = (TextView) findViewById(R.id.textView_detalleNotificacion_refSCB);
         tv_nombre = (TextView) findViewById(R.id.textView_detalleNotificacion_nombre);
         tv_direccion = (TextView) findViewById(R.id.textView_detalleNotificacion_direccion);
     }
 
+    /**
+     * Clase privada que se encarga de cargar el detalle de la notificación en segundo plano
+     */
     private class CargarDetalleNotificacionTask extends AsyncTask<Void, Void, Notificacion> {
         ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = ProgressDialog.show(DetalleNotificacionActivity.this, getString(R.string.cargando_notificacion), getString(R.string.espere_info_notificacion));
+        }
 
         @Override
         protected Notificacion doInBackground(Void... voids) {
@@ -110,16 +122,12 @@ public class DetalleNotificacionActivity extends BaseActivity {
         }
 
         @Override
-        protected void onPreExecute() {
-            progressDialog = ProgressDialog.show(DetalleNotificacionActivity.this, getString(R.string.cargando_notificacion), getString(R.string.espere_info_notificacion));
-        }
-
-        @Override
         protected void onPostExecute(Notificacion notificacionAux) {
 
             notificacion = notificacionAux;
 
             tv_refPostal.setText(notificacion.getReferencia().toString());
+            tv_refSCB.setText(notificacion.getReferenciaSCB().toString());
             tv_nombre.setText(notificacion.getNombre().toString());
             tv_direccion.setText(notificacion.getDireccion().toString());
 
@@ -267,6 +275,9 @@ public class DetalleNotificacionActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Método privado que pide confiramación para eliminar el resultado
+     */
     private void crearDialogoEliminarResultado() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.eliminar_resultado);
@@ -304,23 +315,47 @@ public class DetalleNotificacionActivity extends BaseActivity {
 
         @Override
         protected Boolean doInBackground(Void... voids) {
+            File file = null;
             String firmaPath = notificacion.getFirmaReceptor();
+            String referencia = notificacion.getReferencia();
+            String referenciaSCB = notificacion.getReferenciaSCB();
 
             Boolean eliminado = dbHelper.eliminarResultadoNotificacion(idNotificacion, resultadoEliminable);
 
-                if(eliminado && firmaPath != null && firmaPath.trim().length() > 0) {
-                    try {
-                        // Si se ha eliminado de la base de datos correctamente, se intenta eliminar si tuviera imagen asociada
-                        File file = new File(firmaPath);
-                        if (file.exists()) {
-                            file.delete();
-                        }
-
-                        //TODO: eliminar fichero XML y sello de tiempo
-                    }catch (Exception e) {
-                        e.printStackTrace();
+            // Se elimina la firma del receptor si la tuviera
+            if(BooleanUtils.isTrue(eliminado) && StringUtils.isNotBlank(firmaPath)) {
+                try {
+                    // Si se ha eliminado de la base de datos correctamente, se intenta eliminar si tuviera imagen asociada
+                    file = new File(firmaPath);
+                    if (file.exists()) {
+                        file.delete();
                     }
+                }catch (Exception e) {
+                    e.printStackTrace();
                 }
+            }
+
+            // Elimina el fichero xml
+            try {
+                String nombeFichero = referencia+"_"+StringUtils.defaultIfBlank(referenciaSCB,"")+".xml";
+                file = new File(Util.obtenerRutaXML()+File.separator+nombeFichero);
+                if (file.exists()) {
+                    file.delete();
+                }
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // Elimina el fichero xml
+            try {
+                String nombeFichero = referencia+"_"+StringUtils.defaultIfBlank(referenciaSCB,"")+".ts";
+                file = new File(Util.obtenerRutaSelloDeTiempo()+File.separator+nombeFichero);
+                if (file.exists()) {
+                    file.delete();
+                }
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
 
             return eliminado;
         }

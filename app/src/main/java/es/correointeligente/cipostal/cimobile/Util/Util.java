@@ -118,6 +118,8 @@ public class Util {
     public final static String CLAVE_PREFERENCIAS_UPDATES_CARPETA = "updatesCarpeta";
     public final static String CLAVE_PREFERENCIAS_UPDATES_FICHERO = "updatesFichero";
 
+    public final static String CLAVE_PREFERENCIAS_APP_DE_OFICINA = "usarAPPEnOficina";
+
 
     /**
      * Obtiene una configuración de la aplicación por defecto
@@ -138,7 +140,7 @@ public class Util {
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, "/SICERS");
 
             // Preferncias TSA
-            e.putBoolean(Util.CLAVE_PREFERENCIAS_TSA_ACTIVO, true); // http://tss.accv.es:8318/tsaup
+            e.putBoolean(Util.CLAVE_PREFERENCIAS_TSA_ACTIVO, true);
             e.putString(Util.CLAVE_PREFERENCIAS_TSA_URL, "http://tss.accv.es:8318/tsa"); // http://tss.accv.es:8318/tsaup
             e.putString(Util.CLAVE_PREFERENCIAS_TSA_USER, ""); //cipostaluser
             e.putString(Util.CLAVE_PREFERENCIAS_TSA_PASSWORD, ""); //8ttErr32
@@ -149,12 +151,15 @@ public class Util {
             e.putString(Util.CLAVE_PREFERENCIAS_WS_METHOD_URL, "http://correointeligente.es:9995/PostalService");
 
             // Preferencias Siguiente visita
-            e.putString(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_DIAS, "3");
-            e.putString(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_HORAS, "3");
+            e.putInt(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_DIAS, 3);
+            e.putInt(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_HORAS, 3);
 
             // Preferencias para la actualización automática de la aplicación
             e.putString(Util.CLAVE_PREFERENCIAS_UPDATES_CARPETA, "Actualizaciones");
             e.putString(Util.CLAVE_PREFERENCIAS_UPDATES_FICHERO, "version.txt");
+
+            // Preferencias para el uso de la aplicación en oficina
+            e.putBoolean(Util.CLAVE_PREFERENCIAS_APP_DE_OFICINA, false);
 
 
             e.commit();
@@ -162,13 +167,33 @@ public class Util {
         }
     }
 
-    public static String obtenerValorPreferencia(String clave, Context context) {
-        String valor = "";
+    /**
+     * Metodo genérico que devuelve el valor de la preferencia independientemente de la clase
+     * @param clave
+     * @param context
+     * @param clase
+     * @param <T>
+     * @return
+     */
+    public static <T> T obtenerValorPreferencia(String clave, Context context, String clase) {
+        T valor = null;
+        Object result = null;
         SharedPreferences sp = context.getSharedPreferences(Util.FICHERO_PREFERENCIAS_APP, context.MODE_PRIVATE);
         if (sp.contains(clave)) {
-            valor = sp.getString(clave, "");
+            if(clase.equalsIgnoreCase(String.class.getSimpleName())) {
+                result = sp.getString(clave, "");
+            } else if(clase.equalsIgnoreCase(Integer.class.getSimpleName())) {
+                result = sp.getInt(clave, 0);
+            } else if(clase.equalsIgnoreCase(Boolean.class.getSimpleName())) {
+                result = sp.getBoolean(clave, false);
+            } else if(clase.equalsIgnoreCase(Long.class.getSimpleName())) {
+                result = sp.getLong(clave, 0);
+            } else if(clase.equalsIgnoreCase(Float.class.getSimpleName())) {
+                result = sp.getFloat(clave, 0);
+            }
         }
-        return valor;
+
+        return valor = ((T) result);
     }
 
     /**
@@ -231,6 +256,18 @@ public class Util {
         return file.getPath();
     }
 
+    /**
+     * Obtiene la ruta del directorio donde se aloja los apk con las actualizaciones
+     * @return String
+     */
+    public static String obtenerRutaActualizaciones() {
+        File file = new File(obtenerRutaAPP()+File.separator+EXTERNAL_DIRECTORY_UPDATES_APP);
+        if(!file.exists()) {
+            file.mkdirs();
+        }
+        return file.getPath();
+    }
+
     public static String obtenerTamanyoFicheroString(long bytes) {
         String result;
         if (bytes == 0) {
@@ -281,7 +318,7 @@ public class Util {
             String notificadorString = null;
             String firmaNotificadorString = null;
 
-            if(notificacion.getResultado2() != null && !notificacion.getResultado2().trim().isEmpty()) {
+            if(StringUtils.isNotBlank(notificacion.getResultado2())) {
                 resultadoString = notificacion.getResultado2();
                 resultadoDescString = notificacion.getDescResultado2();
                 date = formatter.parse(notificacion.getFechaHoraRes2());
@@ -420,6 +457,12 @@ public class Util {
         return xmlFile;
     }
 
+    /**
+     * Comprime en zip el reparto  del dia
+     * @param codigoNotificador
+     * @param delegacion
+     * @return
+     */
     public static File comprimirZIP(String codigoNotificador, String delegacion) {
         DateFormat dfDia = new SimpleDateFormat("ddMMyyyy");
         String nombreFichero = delegacion+"_"+codigoNotificador+"_"+dfDia.format(Calendar.getInstance().getTime())+".zip";
@@ -439,6 +482,11 @@ public class Util {
         return ficheroZIP;
     }
 
+    /**
+     * Realiza una validación de si existe la firma del notificador fisicamente en un archivo
+     * @param codigoNotificador
+     * @return
+     */
     public static  Boolean existeFirmaNotificador(String codigoNotificador) {
         Boolean existe = false;
         try {

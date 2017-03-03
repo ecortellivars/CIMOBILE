@@ -86,9 +86,9 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        // Este metodo recoge el item seleccionado de la lista mostrada por pantalla
 
         final String nombreFicheroSeleccionado = ((FicheroViewHolder) adapterView.getItemAtPosition(position)).getNombreFichero();
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.cargar_fichero_sicer);
         builder.setMessage(R.string.esta_seguro_de_cargar_el_fichero_sicer+" "+ nombreFicheroSeleccionado + "?");
@@ -129,7 +129,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                ftpHelper = FTPHelper.getInstancia();
                if(ftpHelper != null && ftpHelper.connect(CargarRepartoActivity.this)) {
 
-                   if(ftpHelper.cargarCarpeta(Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, getBaseContext()))) {
+                   if(ftpHelper.cargarCarpeta((String)Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, getBaseContext(), String.class.getSimpleName()))) {
 
                        List<FicheroViewHolder> listaFicheros = ftpHelper.obtenerFicherosDirectorio();
                        itemsAdapter = new FicheroAdapter(getBaseContext(), R.layout.item_fichero, listaFicheros);
@@ -208,6 +208,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                         for (String linea = reader.readLine(); linea != null; linea = reader.readLine()) {
 
                             if (linea.startsWith("P")) { // DETALLE (nosotros usaremos "P" para primera entrega
+
                                 Notificacion notificacion = new Notificacion();
                                 notificacion.setNombreFichero(nombreFicheroSeleccionado);
                                 notificacion.setReferencia(linea.substring(1, 71).trim());
@@ -216,8 +217,8 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                 notificacion.setCodigoPostal(linea.substring(456, 461).trim());
                                 notificacion.setPoblacion(linea.substring(461, 561).trim());
                                 notificacion.setReferenciaSCB(linea.substring(561, 631).trim());
-
                                 notificacion.setSegundoIntento(false);
+
                                 if(!mapaNotificacion.containsKey(notificacion.getReferencia())) {
                                     listaNotificaciones.add(notificacion);
                                     mapaNotificacion.put(notificacion.getReferencia(), notificacion.getReferenciaSCB());
@@ -232,6 +233,12 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
 
                             } else if(linea.startsWith("S")) { // Determina que es el formato del sicer de segundo intento
 
+                                if(esCargaPrimeraEntrega) {
+                                    // Si es la primera vez que entra aquí, se tiene que comprobar si se ha cargado antes el primer fichero
+                                    if(dbHelper.obtenerNotificacion(1) == null) {
+                                        throw new CiMobileException(getString(R.string.error_cargar_primero_reparto_sicer));
+                                    }
+                                }
                                 esCargaPrimeraEntrega = Boolean.FALSE;
 
                                 // Se recupera la referencia postal

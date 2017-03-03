@@ -14,52 +14,58 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/fieldset_shape">
-
-        <TextView
-            android:text="Para facilitar el trabajo durante el trabajo de reparto, se precisa que firme por primera vez para dejar constancia de la persona que notifica."
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="5dp">
+        android:padding="16dp">
 
-        <android.support.v4.widget.Space
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <es.correointeligente.cipostal.cimobile.Util.Lienzo
-            android:id="@+id/lienzo_firma_notificador"
-            android:layout_width="match_parent"
-            android:layout_height="275dp"
-            android:background="@drawable/edit_text_shape"/>
-
-        <android.support.v4.widget.Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <Button
-            android:id="@+id/btn_firma_notificador_guardar"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/button_selector"
-            android:padding="10dp"
-            android:text="@string/guardar"
-            android:textAllCaps="false"
-            android:textColor="#FFFFFF" />
+            android:padding="5dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/fieldset_shape">
+
+            <TextView
+                android:text="@string/info_firma_notificador"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5dp">
+
+            <android.support.v4.widget.Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <es.correointeligente.cipostal.cimobile.Util.Lienzo
+                android:id="@+id/lienzo_firma_notificador"
+                android:layout_width="match_parent"
+                android:layout_height="275dp"
+                android:background="@drawable/edit_text_shape"/>
+
+            <android.support.v4.widget.Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/btn_firma_notificador_guardar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/button_selector"
+                android:text="@string/guardar"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

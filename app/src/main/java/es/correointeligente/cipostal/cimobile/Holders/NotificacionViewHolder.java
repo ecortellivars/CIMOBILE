@@ -12,6 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Calendar;
 
 import es.correointeligente.cipostal.cimobile.Activities.DetalleNotificacionActivity;
@@ -24,7 +26,7 @@ import es.correointeligente.cipostal.cimobile.Util.Util;
 
 public class NotificacionViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    TextView referencia, nombre, direccion, resultado1, resultado2;
+    TextView referencia, referenciaSCB, nombre, direccion, resultado1, resultado2;
     CheckBox marcada;
     LinearLayout ll_contentItems;
     TableLayout tbl_resultados;
@@ -45,6 +47,7 @@ public class NotificacionViewHolder extends RecyclerView.ViewHolder implements V
         this.listaNotificacionesActivity = listaNotificacionesActivity;
 
         referencia = (TextView) itemView.findViewById(R.id.textView_cardView_referencia);
+        referenciaSCB = (TextView) itemView.findViewById(R.id.textView_cardView_referenciaSCB);
         nombre = (TextView) itemView.findViewById(R.id.textView_cardView_nombre);
         direccion = (TextView) itemView.findViewById(R.id.textView_cardView_direccion);
         resultado1 = (TextView) itemView.findViewById(R.id.textView_cardView_resutado_1);
@@ -63,11 +66,11 @@ public class NotificacionViewHolder extends RecyclerView.ViewHolder implements V
 
         this.notificacion = notificacion;
 
-        String textoResultado1 = notificacion.getResultado1() != null && notificacion.getResultado1().trim().length() > 0 ? notificacion.getResultado1() + " " + notificacion.getDescResultado1() : "";
-        String textoResultado2 = notificacion.getResultado2() != null && notificacion.getResultado2().trim().length() > 0 ? notificacion.getResultado2() + " " + notificacion.getDescResultado2() : "";
-
+        String textoResultado1 = StringUtils.defaultIfBlank(notificacion.getDescResultado1(), "");
+        String textoResultado2 = StringUtils.defaultIfBlank(notificacion.getDescResultado2(), "");
 
         referencia.setText(notificacion.getReferencia());
+        referenciaSCB.setText(notificacion.getReferenciaSCB());
         nombre.setText(notificacion.getNombre());
         direccion.setText(notificacion.getDireccion());
         resultado1.setText(textoResultado1.toUpperCase());

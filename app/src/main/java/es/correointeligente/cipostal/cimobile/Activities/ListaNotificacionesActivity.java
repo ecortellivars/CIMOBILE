@@ -108,8 +108,14 @@ public class ListaNotificacionesActivity extends BaseActivity {
         return true;
     }
 
+    /**
+     * Método que se encarga de hacer la petición de la siguiente pagina para el scroll una vez ha
+     * llegado a los 10 items que se cargan (THRESHOLD_PAGINA)
+     */
     public void loadMoreData() {
         mFiltroNotificacion.setPagina(mFiltroNotificacion.getPagina() + 1);
+
+        // Lanza en background la petición de obtener mas notificaciones
         ObtenerNotificacionesTask obtenerNotificacionesTask = new ObtenerNotificacionesTask();
         obtenerNotificacionesTask.execute(mFiltroNotificacion);
     }
@@ -317,6 +323,10 @@ public class ListaNotificacionesActivity extends BaseActivity {
         });
     }
 
+    /**
+     * Mapeo el boton de escaner de codigos de barra, y se le añade un escuchador para lanzar
+     * su actividad
+     */
     public void mapearImageButtonScanBar() {
         mButtonScanBar = (ImageButton) findViewById(R.id.imageButton_listaNotificaciones_barScan);
         mButtonScanBar.setOnClickListener(new View.OnClickListener() {
@@ -331,6 +341,8 @@ public class ListaNotificacionesActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Método que determina los resultados de las diferentes actividades que se han lanzado
+        // y dependiendo de su requestCode sabemos que actividad ha sido.
         if (requestCode == Util.REQUEST_CODE_BARCODE_SCAN) {
             if (resultCode == CommonStatusCodes.SUCCESS) {
                 if (data != null) {

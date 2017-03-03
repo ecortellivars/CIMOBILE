@@ -574,7 +574,7 @@ public class DBHelper extends SQLiteOpenHelper {
         parametros[0] = referencia;
         if(StringUtils.isNotBlank(referenciaSCB)) {
             whereClause += " AND "+ KEY_NOTIFICACION_REFERENCIA_SCB + " = ?";
-            parametros[0] = referenciaSCB;
+            parametros[1] = referenciaSCB;
         }
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -985,7 +985,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_OBSERVACIONES_RES_2, notificacion.getObservacionesRes2());
                 cv.put(KEY_NOTIFICACION_NOTIFICADOR_RES_2, notificacion.getNotificadorRes2());
                 cv.put(KEY_NOTIFICACION_OBSERVACIONES_RES_2, notificacion.getObservacionesRes2());
-                cv.put(KEY_NOTIFICACION_FIRMA_NOTIFICADOR_RES_1, notificacion.getFirmaNotificadorRes2());
+                cv.put(KEY_NOTIFICACION_FIRMA_NOTIFICADOR_RES_2, notificacion.getFirmaNotificadorRes2());
 
             }
 

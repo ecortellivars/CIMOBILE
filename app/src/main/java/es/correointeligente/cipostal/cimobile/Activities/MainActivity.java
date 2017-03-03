@@ -109,6 +109,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         this.cerrarSesion();
     }
 
+    /**
+     * Método privado que muestra un dialogo donde se pide confirmación para cerrar la sesión
+     */
     private void cerrarSesion() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.titulo_logout);

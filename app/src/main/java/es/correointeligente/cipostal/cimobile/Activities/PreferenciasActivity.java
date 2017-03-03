@@ -23,6 +23,7 @@ public class PreferenciasActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        // Inicia la transacción al fragment que contiene el xml de preferencias
         getFragmentManager().beginTransaction().replace(R.id.fragment_preferencias_container, new PrefFragment()).commit();
     }
 
@@ -39,6 +40,9 @@ public class PreferenciasActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Clase publica que carga el fichero de preferencias con la codificación inicial que se hace en UTIL
+     */
     public static class PrefFragment extends PreferenceFragment{
         @Override
         public void onCreate(final Bundle savedInstanceState) {

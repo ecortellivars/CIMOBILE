@@ -37,7 +37,7 @@
             android:id="@+id/edt_startSession_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
+            android:inputType="textPassword"
             android:background="@drawable/edit_text_shape"
             android:maxLines="1"
             android:padding="8dp"

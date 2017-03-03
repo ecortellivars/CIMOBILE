@@ -1,9 +1,5 @@
 package es.correointeligente.cipostal.cimobile.Util;
 
-/**
- * Created by JorgeCasa on 17/02/2017.
- */
-
 public class CiMobileException extends Exception {
 
     private String error;

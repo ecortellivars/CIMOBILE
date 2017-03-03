@@ -61,6 +61,7 @@
     <string name="observaciones">Observaciones</string>
     <string name="hint_observaciones">Mis observaciones...</string>
     <string name="referencia_postal">Referencia postal</string>
+    <string name="referencia_scb">Referencia SCB</string>
     <string name="direccion">Dirección</string>
     <string name="receptor">Receptor</string>
     <string name="informacion_segundo_intento_1">El segundo intento de notificación debería ser antes de las</string>
@@ -109,6 +110,10 @@
     <string name="actualizacion">Actualización</string>
     <string name="detalle_actualizacion">Se ha encontrado un nueva versión. ¿Dese actualizar? Versión: </string>
     <string name="descargando_version">Descargando versión...</string>
+    <string name="error_durante_actualizacion">Se ha producido un fallo durante la actualización</string>
+    <string name="error_cargar_primero_reparto_sicer">Debes cargar primero el SICER de reparto</string>
+    <string name="info_firma_notificador">Para facilitar el trabajo durante el trabajo de reparto, se precisa que firme por primera vez para dejar constancia de la persona que notifica.</string>
+    <string name="dia_limite">Día límite</string>
 
     <string-array name="filtro_busqueda_array">
         <item>Entregado</item>

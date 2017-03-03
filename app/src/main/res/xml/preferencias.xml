@@ -29,11 +29,6 @@
             android:summary="Dirección IP del servidor FTP" />
 
         <EditTextPreference
-            android:key="ftpPuerto"
-            android:title="Puerto"
-            android:summary="Puerto del servidor FTP" />
-
-        <EditTextPreference
             android:key="ftpUser"
             android:title="Usuario"
             android:summary="Usuario servidor FTP" />
@@ -53,6 +48,10 @@
             android:key="ftpCarpetaSicers"
             android:title="Carpeta ficheros"
             android:summary="Carpeta ficheros SICER" />
+        <EditTextPreference
+            android:key="ftpPuerto"
+            android:title="Puerto"
+            android:summary="Puerto del servidor FTP" />
 
     </PreferenceCategory>
 
@@ -89,11 +88,13 @@
         <EditTextPreference
             android:key="sigVisitaDias"
             android:title="Dias"
+            android:numeric="integer"
             android:summary="Dias de margen para el segundo intento"/>
 
         <EditTextPreference
             android:key="sigVisitaHoras"
             android:title="Horas"
+            android:numeric="integer"
             android:summary="Horas de margen para el segundo intento"/>
 
     </PreferenceCategory>
@@ -114,7 +115,8 @@
     <PreferenceCategory android:title="Aplicación de oficina">
         <CheckBoxPreference
             android:key="usarAPPEnOficina"
-            android:title="Uso de la aplicación en la oficina"
+            android:title="Aplicación de oficina"
+            android:summary="Determina si se va a usar solo en oficina"
             android:defaultValue="false"/>
     </PreferenceCategory>
 

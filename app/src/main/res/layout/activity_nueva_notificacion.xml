@@ -58,6 +58,18 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:text="@string/referencia_scb"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/textView_nuevaNotificacion_refSCB"
+                        android:text="TextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="@string/nombre_y_apellidos"
                         android:textStyle="bold"
                         android:layout_marginTop="5dp"/>
@@ -148,7 +160,7 @@
                     android:overScrollMode="always"
                     android:scrollbarStyle="insideInset"
                     android:scrollbars="vertical"
-                    android:lines="4"
+                    android:lines="3"
                     android:padding="3dp"
                     android:background="@drawable/edit_text_shape"
                     android:textAppearance="?android:attr/textAppearanceMedium"
@@ -163,7 +175,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:paddingTop="10dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
 
                 <TextView
                     android:text="@string/detalle_primer_intento"
@@ -179,36 +193,52 @@
                     android:padding="5dp"
                     android:background="@drawable/fieldset_shape">
 
-                    <TextView
-                        android:text="@string/resultado"
-                        android:layout_width="wrap_content"
+                    <TableLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"/>
+                        android:stretchColumns="*">
 
-                    <TextView
-                        android:id="@+id/textView_nuevaNotificacion_resultadoDetalle_primerIntento"
-                        android:text="@string/resultado"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAllCaps="true"/>
+                        <TableRow>
 
-                    <TextView
-                        android:text="@string/fecha"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textStyle="bold"/>
+                            <TextView
+                                android:text="@string/resultado"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textStyle="bold"/>
 
-                    <TextView
-                        android:id="@+id/textView_nuevaNotificacion_resultadoDetalle_primerIntento_fecha"
-                        android:text="@string/fecha"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                            <TextView
+                                android:text="@string/fecha"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textStyle="bold"/>
+
+                        </TableRow>
+
+                        <TableRow>
+
+                            <TextView
+                                android:id="@+id/textView_nuevaNotificacion_resultadoDetalle_primerIntento"
+                                android:text="@string/resultado"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAllCaps="true"/>
+
+                            <TextView
+                                android:id="@+id/textView_nuevaNotificacion_resultadoDetalle_primerIntento_fecha"
+                                android:text="@string/fecha"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                        </TableRow>
+
+                    </TableLayout>
 
                     <TextView
                         android:id="@+id/textView_nuevaNotificacion_consejo_segundo_intento"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold"
+                        android:layout_marginTop="5dp"/>
 
                 </LinearLayout>
 
