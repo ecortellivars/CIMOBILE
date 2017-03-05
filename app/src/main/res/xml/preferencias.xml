@@ -42,7 +42,8 @@
         <EditTextPreference
             android:key="ftpTimeOut"
             android:title="Timeout"
-            android:summary="Tiempo de espera" />
+            android:numeric="integer"
+            android:summary="Tiempo de espera en ms" />
 
         <EditTextPreference
             android:key="ftpCarpetaSicers"
@@ -51,6 +52,7 @@
         <EditTextPreference
             android:key="ftpPuerto"
             android:title="Puerto"
+            android:numeric="integer"
             android:summary="Puerto del servidor FTP" />
 
     </PreferenceCategory>

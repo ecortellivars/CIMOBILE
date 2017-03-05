@@ -61,17 +61,17 @@ public class FTPHelper {
 
             String usuario = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_USER, context, String.class.getSimpleName());
             String ipFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_IP, context, String.class.getSimpleName());
-            String puertoFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, context, String.class.getSimpleName());
+            Integer puertoFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, context, Integer.class.getSimpleName());
             String passFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_PASSWORD, context, String.class.getSimpleName());
-            String timeoutFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_TIMEOUT, context, String.class.getSimpleName());
+            Integer timeoutFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_TIMEOUT, context, Integer.class.getSimpleName());
 
-            session = jsch.getSession(usuario,ipFTP, Integer.parseInt(puertoFTP));
+            session = jsch.getSession(usuario,ipFTP, puertoFTP);
             session.setPassword(passFTP);
 
             Properties prop = new Properties();
             prop.put("StrictHostKeyChecking", "no");
             session.setConfig(prop);
-            session.connect(Integer.parseInt(timeoutFTP));
+            session.connect(timeoutFTP);
 
             conectado = Boolean.TRUE;
 
