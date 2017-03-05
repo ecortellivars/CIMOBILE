@@ -241,7 +241,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                     SoapObject s = (SoapObject) sobre.bodyIn;
                     Boolean valido = BooleanUtils.toBoolean(s.getProperty("valido").toString());
                     if(BooleanUtils.isTrue(valido)) {
-                        String codigoEscaner = s.hasProperty("codigo")? s.getProperty("codigo").toString() : s.getProperty("nombreUsuario").toString();
+                        String codigoEscaner = s.hasProperty("codigoEscaner")? s.getProperty("codigoEscaner").toString() : s.getProperty("nombreUsuario").toString();
                         notificador = new Notificador(codigoEscaner, s.getProperty("nombreUsuario").toString(),  s.getProperty("corporacion").toString());
                     } else {
                         switch (s.getProperty("error").toString()) {

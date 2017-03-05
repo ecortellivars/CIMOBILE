@@ -154,6 +154,7 @@ public class FTPHelper {
 
         try {
             Vector<ChannelSftp.LsEntry> list = channelSftp.ls("*.txt");
+            list.addAll(channelSftp.ls("*.TXT"));
 
             for(ChannelSftp.LsEntry entry : list) {
                 if(entry.getAttrs().isReg() && FilenameUtils.getExtension(entry.getFilename()).equalsIgnoreCase("txt")) {

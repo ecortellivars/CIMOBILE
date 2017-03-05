@@ -260,6 +260,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                         linea += StringUtils.rightPad(notificacion.getLongitudRes1(), 20);
                                         linea += StringUtils.rightPad(notificacion.getLatitudRes1(), 20);
                                         linea += StringUtils.rightPad(notificacion.getNotificadorRes1(), 50);
+                                        linea += StringUtils.rightPad(notificacion.getReferenciaSCB(), 70);
                                         linea += "\n";
                                         writerTXT.append(linea);
                                     }
