@@ -132,18 +132,18 @@ public class Util {
 
             SharedPreferences.Editor e = sp.edit();
             // Preferencias FTP
-            e.putString(Util.CLAVE_PREFERENCIAS_FTP_IP, "192.168.0.105");//46.17.141.94
-            e.putInt(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, 23); //1984
-            e.putString(Util.CLAVE_PREFERENCIAS_FTP_USER, "jorge");//valencia
-            e.putString(Util.CLAVE_PREFERENCIAS_FTP_PASSWORD, "abc123.");//9ca174324c
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_IP, "46.17.141.94");//192.168.0.105
+            e.putInt(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, 1984); //23
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_USER, "valencia");//valencia
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_PASSWORD, "9ca174324c");//9ca174324c
             e.putInt(Util.CLAVE_PREFERENCIAS_FTP_TIMEOUT, 10000);
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, "/SICERS");
 
             // Preferncias TSA
             e.putBoolean(Util.CLAVE_PREFERENCIAS_TSA_ACTIVO, true);
-            e.putString(Util.CLAVE_PREFERENCIAS_TSA_URL, "http://tss.accv.es:8318/tsa"); // http://tss.accv.es:8318/tsaup
-            e.putString(Util.CLAVE_PREFERENCIAS_TSA_USER, ""); //cipostaluser
-            e.putString(Util.CLAVE_PREFERENCIAS_TSA_PASSWORD, ""); //8ttErr32
+            e.putString(Util.CLAVE_PREFERENCIAS_TSA_URL, "http://tss.accv.es:8318/tsaup"); // http://tss.accv.es:8318/tsaup
+            e.putString(Util.CLAVE_PREFERENCIAS_TSA_USER, "cipostaluser"); //cipostaluser
+            e.putString(Util.CLAVE_PREFERENCIAS_TSA_PASSWORD, "8ttErr32"); //8ttErr32
 
             // Preferencias WS
             e.putString(Util.CLAVE_PREFERENCIAS_WS_NAMESPACE, "http://impl.v01.srvPostal.business.postal.sdci.es/");
@@ -272,10 +272,11 @@ public class Util {
         String result;
         if (bytes == 0) {
             result = "0 Bytes";
+        } else {
+            Double valor = (Math.floor(Math.log(bytes) / Math.log(1024)));
+            Long nuevoTamanyo = Math.round((bytes / Math.pow(1024, valor.intValue())));
+            result = nuevoTamanyo.toString() + " " + tamanyosMemoria.get(valor.intValue());
         }
-        Double valor = (Math.floor(Math.log(bytes) / Math.log(1024)));
-        Long nuevoTamanyo = Math.round((bytes / Math.pow(1024, valor.intValue())));
-        result = nuevoTamanyo.toString() + " " + tamanyosMemoria.get(valor.intValue());
 
         return result;
     }
@@ -295,6 +296,7 @@ public class Util {
     /**
      * Crear un fichero XML a partir de una notificacion dada
      * @param notificacion
+     * @param context
      * @return File
      */
     public static File NotificacionToXML(Notificacion notificacion, Context context) throws CiMobileException {
