@@ -282,7 +282,7 @@ public class Util {
         String ruta = "";
 
         ruta = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_BASE, context, String.class.getSimpleName());
-        ruta = ruta + File.separator+delegacion+Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, context, String.class.getSimpleName());
+        ruta = ruta + File.separator+delegacion.toUpperCase()+Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, context, String.class.getSimpleName());
 
         return ruta;
     }
