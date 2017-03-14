@@ -217,7 +217,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                 if(ftpHelper != null && ftpHelper.connect(ResumenRepartoActivity.this)) {
 
                     // Se comprueba si existe la carpeta del notificador, sino se crea
-                    String rutaCarpetaSICER = Util.obtenerValorPreferencia((String)Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, ResumenRepartoActivity.this, String.class.getSimpleName());
+                    String rutaCarpetaSICER = Util.obtenerRutaFtpSICER(getBaseContext(), obtenerDelegacion());
                     String pathVolcado = rutaCarpetaSICER + File.separator + obtenerCodigoNotificador();
                     String pathVolcadoSegundoIntento = rutaCarpetaSICER;
                     if(ftpHelper.cargarCarpetaNotificador(pathVolcado)) {

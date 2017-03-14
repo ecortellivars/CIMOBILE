@@ -29,6 +29,12 @@
             android:summary="Dirección IP del servidor FTP" />
 
         <EditTextPreference
+            android:key="ftpPuerto"
+            android:title="Puerto"
+            android:numeric="integer"
+            android:summary="Puerto del servidor FTP" />
+
+        <EditTextPreference
             android:key="ftpUser"
             android:title="Usuario"
             android:summary="Usuario servidor FTP" />
@@ -46,14 +52,14 @@
             android:summary="Tiempo de espera en ms" />
 
         <EditTextPreference
+            android:key="ftpCarpetaBase"
+            android:title="Carpeta Base FTP"
+            android:summary="Carpeta Base de acceso a los ficheros" />
+
+        <EditTextPreference
             android:key="ftpCarpetaSicers"
             android:title="Carpeta ficheros"
             android:summary="Carpeta ficheros SICER" />
-        <EditTextPreference
-            android:key="ftpPuerto"
-            android:title="Puerto"
-            android:numeric="integer"
-            android:summary="Puerto del servidor FTP" />
 
     </PreferenceCategory>
 

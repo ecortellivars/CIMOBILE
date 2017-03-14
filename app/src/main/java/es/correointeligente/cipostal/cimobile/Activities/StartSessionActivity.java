@@ -96,9 +96,11 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                 // Inicializamos la clase Singleton para la gestion FTP
                 ftpHelper = FTPHelper.getInstancia();
                 if (ftpHelper != null && ftpHelper.connect(StartSessionActivity.this)) {
-                    if(ftpHelper.cargarCarpeta((String)Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_UPDATES_CARPETA, getBaseContext(), String.class.getSimpleName()))) {
+                    String carpetaUpdates = Util.obtenerRutaFtpActualizaciones(getBaseContext());
 
-                        String fichero = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_UPDATES_FICHERO, getBaseContext(), String.class.getSimpleName());
+                    if(ftpHelper.cargarCarpeta(carpetaUpdates)) {
+
+                        String fichero = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_FICHERO, getBaseContext(), String.class.getSimpleName());;
                         try (BufferedReader reader = new BufferedReader(new InputStreamReader(ftpHelper.leerFichero(fichero)))) {
                             // Se lee solo la primera linea
                             String linea = reader.readLine();
@@ -151,7 +153,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
      * Clase privada que se encarga descargar el apk con la nueva version e iniciar el
      * instalador
      */
-    private class DescargarEInstalarAPKTask extends AsyncTask<String, Void, Void> {
+    private class DescargarEInstalarAPKTask extends AsyncTask<String, Void, String> {
         ProgressDialog progressDialog;
 
         @Override
@@ -160,7 +162,8 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         }
 
         @Override
-        protected Void doInBackground(String... args) {
+        protected String doInBackground(String... args) {
+            String fallo = null;
             String version = args[0];
 
             try {
@@ -168,7 +171,8 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                 ftpHelper = FTPHelper.getInstancia();
 
                 if (ftpHelper != null && ftpHelper.connect(StartSessionActivity.this)) {
-                    if (ftpHelper.cargarCarpeta((String)Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_UPDATES_CARPETA, getBaseContext(), String.class.getSimpleName()))) {
+                    String carpetaUpdates = Util.obtenerRutaFtpActualizaciones(getBaseContext());
+                    if (ftpHelper.cargarCarpeta(carpetaUpdates)) {
                         String fichero = "CIMobile-release-" + version + ".apk";
                         ftpHelper.descargarFichero(fichero, Util.obtenerRutaActualizaciones());
                         String rutaFinalFicheroUpdate = Util.obtenerRutaActualizaciones()+File.separator+fichero;
@@ -186,19 +190,23 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(StartSessionActivity.this, R.string.error_durante_actualizacion,Toast.LENGTH_SHORT).show();
+                fallo = getString(R.string.error_durante_actualizacion);
             }
 
             if(ftpHelper != null && BooleanUtils.isTrue(ftpHelper.isConnected())) {
                 ftpHelper.disconnect();
             }
 
-            return null;
+            return fallo;
         }
 
         @Override
-        protected void onPostExecute(Void Void) {
+        protected void onPostExecute(String fallo) {
             progressDialog.dismiss();
+
+            if(StringUtils.isNotBlank(fallo)) {
+                Toast.makeText(StartSessionActivity.this, fallo, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

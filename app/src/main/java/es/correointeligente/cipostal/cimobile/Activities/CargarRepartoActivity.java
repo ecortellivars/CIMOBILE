@@ -129,7 +129,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                ftpHelper = FTPHelper.getInstancia();
                if(ftpHelper != null && ftpHelper.connect(CargarRepartoActivity.this)) {
 
-                   if(ftpHelper.cargarCarpeta((String)Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, getBaseContext(), String.class.getSimpleName()))) {
+                   if(ftpHelper.cargarCarpeta(Util.obtenerRutaFtpSICER(getBaseContext(), obtenerDelegacion()))) {
 
                        List<FicheroViewHolder> listaFicheros = ftpHelper.obtenerFicherosDirectorio();
                        itemsAdapter = new FicheroAdapter(getBaseContext(), R.layout.item_fichero, listaFicheros);

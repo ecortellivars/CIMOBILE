@@ -102,6 +102,9 @@ public class Util {
     public final static String CLAVE_PREFERENCIAS_FTP_PASSWORD = "ftpPassword";
     public final static String CLAVE_PREFERENCIAS_FTP_TIMEOUT = "ftpTimeOut";
     public final static String CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS = "ftpCarpetaSicers";
+    public final static String CLAVE_PREFERENCIAS_FTP_CARPETA_BASE = "ftpCarpetaBase";
+    public final static String CLAVE_PREFERENCIAS_FTP_UPDATES_CARPETA = "updatesCarpeta";
+    public final static String CLAVE_PREFERENCIAS_FTP_UPDATES_FICHERO = "updatesFichero";
 
     public final static String CLAVE_PREFERENCIAS_TSA_ACTIVO = "tsaActivo";
     public final static String CLAVE_PREFERENCIAS_TSA_URL = "tsaURL";
@@ -114,9 +117,6 @@ public class Util {
 
     public final static String CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_DIAS = "sigVisitaDias";
     public final static String CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_HORAS = "sigVisitaHoras";
-
-    public final static String CLAVE_PREFERENCIAS_UPDATES_CARPETA = "updatesCarpeta";
-    public final static String CLAVE_PREFERENCIAS_UPDATES_FICHERO = "updatesFichero";
 
     public final static String CLAVE_PREFERENCIAS_APP_DE_OFICINA = "usarAPPEnOficina";
 
@@ -133,11 +133,14 @@ public class Util {
             SharedPreferences.Editor e = sp.edit();
             // Preferencias FTP
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_IP, "46.17.141.94");//192.168.0.105
-            e.putInt(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, 1984); //23
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, "1984"); //23
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_USER, "valencia");//valencia
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_PASSWORD, "9ca174324c");//9ca174324c
-            e.putInt(Util.CLAVE_PREFERENCIAS_FTP_TIMEOUT, 10000);
-            e.putString(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, "/SICERS");
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_TIMEOUT, "10000");
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, "/SICER");
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_BASE, "/ftpData");
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_CARPETA, "/ULTIMAVERSION/CIMOBILE");
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_FICHERO, "/version.txt");
 
             // Preferncias TSA
             e.putBoolean(Util.CLAVE_PREFERENCIAS_TSA_ACTIVO, true);
@@ -151,12 +154,8 @@ public class Util {
             e.putString(Util.CLAVE_PREFERENCIAS_WS_METHOD_URL, "http://correointeligente.es:9995/PostalService");
 
             // Preferencias Siguiente visita
-            e.putInt(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_DIAS, 3);
-            e.putInt(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_HORAS, 3);
-
-            // Preferencias para la actualización automática de la aplicación
-            e.putString(Util.CLAVE_PREFERENCIAS_UPDATES_CARPETA, "Actualizaciones");
-            e.putString(Util.CLAVE_PREFERENCIAS_UPDATES_FICHERO, "version.txt");
+            e.putString(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_DIAS, "3");
+            e.putString(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_HORAS, "3");
 
             // Preferencias para el uso de la aplicación en oficina
             e.putBoolean(Util.CLAVE_PREFERENCIAS_APP_DE_OFICINA, false);
@@ -183,7 +182,12 @@ public class Util {
             if(clase.equalsIgnoreCase(String.class.getSimpleName())) {
                 result = sp.getString(clave, "");
             } else if(clase.equalsIgnoreCase(Integer.class.getSimpleName())) {
-                result = sp.getInt(clave, 0);
+                try {
+                    result = sp.getInt(clave, 0);
+                }catch (ClassCastException e) {
+                    // En caso de fallar por la clase (Integer cuando es string), se prueba recuperar como string y castear a int
+                    result = Integer.parseInt(sp.getString(clave, ""));
+                }
             } else if(clase.equalsIgnoreCase(Boolean.class.getSimpleName())) {
                 result = sp.getBoolean(clave, false);
             } else if(clase.equalsIgnoreCase(Long.class.getSimpleName())) {
@@ -266,6 +270,34 @@ public class Util {
             file.mkdirs();
         }
         return file.getPath();
+    }
+
+    /**
+     * Obtiene la ruta del FTP del SICER de la delegacion a la que pertenece el notificador
+     * @param context
+     * @param delegacion
+     * @return
+     */
+    public static String obtenerRutaFtpSICER(Context context, String delegacion) {
+        String ruta = "";
+
+        ruta = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_BASE, context, String.class.getSimpleName());
+        ruta = ruta + File.separator+delegacion+Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, context, String.class.getSimpleName());
+
+        return ruta;
+    }
+
+    /**
+     * Obtiene la ruta del FTP de la carpeta donde se enceuntran los apks de las nuevas versiones de la APP
+     * @param context
+     * @return
+     */
+    public static String obtenerRutaFtpActualizaciones(Context context) {
+        String ruta = "";
+
+        ruta = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_CARPETA, context, String.class.getSimpleName());
+
+        return ruta;
     }
 
     public static String obtenerTamanyoFicheroString(long bytes) {
