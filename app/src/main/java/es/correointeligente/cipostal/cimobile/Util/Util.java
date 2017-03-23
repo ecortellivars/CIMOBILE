@@ -295,7 +295,8 @@ public class Util {
     public static String obtenerRutaFtpActualizaciones(Context context) {
         String ruta = "";
 
-        ruta = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_CARPETA, context, String.class.getSimpleName());
+        ruta = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_BASE, context, String.class.getSimpleName());
+        ruta = ruta + Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_CARPETA, context, String.class.getSimpleName());
 
         return ruta;
     }

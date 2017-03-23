@@ -100,7 +100,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
 
                     if(ftpHelper.cargarCarpeta(carpetaUpdates)) {
 
-                        String fichero = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_FICHERO, getBaseContext(), String.class.getSimpleName());;
+                        String fichero = carpetaUpdates+Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_FICHERO, getBaseContext(), String.class.getSimpleName());;
                         try (BufferedReader reader = new BufferedReader(new InputStreamReader(ftpHelper.leerFichero(fichero)))) {
                             // Se lee solo la primera linea
                             String linea = reader.readLine();
