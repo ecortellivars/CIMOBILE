@@ -413,15 +413,19 @@ public class Util {
             hora.appendChild(doc.createTextNode(horaString));
             rootElement.appendChild(hora);
 
-            Element latitud = doc.createElement("latitud");
-            latitud.appendChild(doc.createTextNode(latitudString));
-            rootElement.appendChild(latitud);
+            if(StringUtils.isNotBlank(latitudString)) {
+                Element latitud = doc.createElement("latitud");
+                latitud.appendChild(doc.createTextNode(latitudString));
+                rootElement.appendChild(latitud);
+            }
 
-            Element longitud = doc.createElement("longitud");
-            longitud.appendChild(doc.createTextNode(longitudString));
-            rootElement.appendChild(longitud);
+            if(StringUtils.isNotBlank(longitudString)) {
+                Element longitud = doc.createElement("longitud");
+                longitud.appendChild(doc.createTextNode(longitudString));
+                rootElement.appendChild(longitud);
+            }
 
-            if(observacionesString != null && !observacionesString.trim().isEmpty()) {
+            if(StringUtils.isNotBlank(observacionesString)) {
                 Element observaciones = doc.createElement("observaciones");
                 observaciones.appendChild(doc.createTextNode(observacionesString));
                 rootElement.appendChild(observaciones);
