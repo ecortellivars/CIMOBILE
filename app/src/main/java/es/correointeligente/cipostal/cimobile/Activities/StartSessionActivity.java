@@ -33,8 +33,11 @@ import es.correointeligente.cipostal.cimobile.R;
 import es.correointeligente.cipostal.cimobile.Util.FTPHelper;
 import es.correointeligente.cipostal.cimobile.Util.Util;
 
+// Actividad inicial dada de alta en AndroidManifest con intent lo que significa que desde esta empezaremos siempre a debugar
+// Esta Actividad gestiona el layout llamado activity_start_session
 public class StartSessionActivity extends AppCompatActivity implements View.OnClickListener {
 
+    // Declaracion de variables a utilizar en el metodo
     EditText edt_usuario, edt_password;
     Button mButton_inciarSesion;
     SharedPreferences sp;
@@ -42,21 +45,26 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Creamos la actividad para poder darle logica
         super.onCreate(savedInstanceState);
+        // Obtenemos el layout al que queremos darle logica
         setContentView(R.layout.activity_start_session);
-
+        // Obtenemos el objeto que contiene las preferencias de la aplicacion
         sp = this.getSharedPreferences(Util.FICHERO_PREFERENCIAS_SESION, MODE_PRIVATE);
 
-        //Si SharedPreferences contiene el dato de la sesion se salta la pantalla de inicio de sesion
+        // Si SharedPreferences contiene el dato de la sesion se salta la pantalla de inicio de sesion
         if (sp.contains(Util.CLAVE_SESION_NOTIFICADOR)) {
+            //Invocamos a la actividad siguiente del siguiente layout finalizando el inicio de sesion
             Intent i = new Intent(this, MainActivity.class);
             startActivity(i);
             finish();
         }
 
-        // Antes de continuar se comprueba que hay configuracion por defecto
+        // Al ser el primer inicio de sesion continuamos por aqui
+        // Antes de continuar se comprueba que hay configuracion por defecto donde estan todos los datos para poder trabajar
         Util.cargarConfiguracionAplicacionPorDefecto(getBaseContext());
 
+        // Invocamos al boton de inicioSesion para darle su logica
         mButton_inciarSesion = (Button) findViewById(R.id.button_iniciar_sesion);
         mButton_inciarSesion.setOnClickListener(this);
 
@@ -70,6 +78,9 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         ftpCheckUpdatesTask.execute();
     }
 
+    /**
+     * Clase publica que tiene la logica necesaria cuando el usuario hace click en el boton llamado button_iniciar_sesion
+     */
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -80,12 +91,11 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
 
                 break;
         }
-
     }
 
     /**
      * Clase privada que se encarga de ejecutar en segundo plano la conexión via FTP,
-     * y comprobar las actualizaciones de la aplicacion
+     * y devuelve si la aplicacion instalada en el smartPhone tiene o no la ultima version
      */
     private class FtpCheckUpdatesTask extends AsyncTask<Void, Void, Boolean> {
         String version = null;
@@ -107,7 +117,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                             //Se separa el string "version:" del resto
                             version = linea.replace("version:", "").trim();
                             if (!version.equalsIgnoreCase(getPackageManager().getPackageInfo(getPackageName(), 0).versionName)) {
-                                // si no es la misma versión se saca
+                                // Si no es la misma versión se saca
                                 hayNuevaVersion = true;
                             }
 
@@ -125,18 +135,27 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
             return hayNuevaVersion;
         }
 
+        /**
+         * Clase que informa al usuario que existe una nueva version de la app mas actual que la instalada en su smartPhone
+         * @param hayNuevaVersion
+         */
         @Override
         protected void onPostExecute(Boolean hayNuevaVersion) {
 
             if(hayNuevaVersion) {
+                // Usamos la clase AlertDialog para mandar mensajes al usuario
+                // Primero le damos el contexto de la aplicacion
                 AlertDialog.Builder builder = new AlertDialog.Builder(StartSessionActivity.this);
+                // Le incluimos al objeto los mensajes a mostrar
                 builder.setTitle(R.string.actualizacion);
                 builder.setMessage(getString(R.string.detalle_actualizacion)+" "+version);
+                // Si el usuario no quiere actualizar la app
                 builder.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int which) {
                         dialogInterface.cancel();
                     }
                 });
+                // Si el usuario si quiere actualizarse
                 builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int which) {
                         DescargarEInstalarAPKTask descargarEInstalarAPKTask = new DescargarEInstalarAPKTask();
