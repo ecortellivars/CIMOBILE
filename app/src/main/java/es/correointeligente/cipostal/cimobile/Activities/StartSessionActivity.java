@@ -74,6 +74,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         edt_password.setTransformationMethod(new PasswordTransformationMethod());
 
         // Lanza una tarea en background para la conexión FTP y comprobar si hay actualizaciones
+        // Solo se puede conectar al FTP dentro de la red de SCI y CIPOSTAL
         FtpCheckUpdatesTask ftpCheckUpdatesTask = new FtpCheckUpdatesTask();
         ftpCheckUpdatesTask.execute();
     }
@@ -85,7 +86,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.button_iniciar_sesion:
-                // Se llama en background al webservice que valida el usuario y password
+                // Se llama en background al webservice implementado en CIPOSTAL que valida el usuario y password
                 LoginUsuarioTask loginUsuarioTask = new LoginUsuarioTask();
                 loginUsuarioTask.execute(edt_usuario.getText().toString(), edt_password.getText().toString());
 
@@ -96,6 +97,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
     /**
      * Clase privada que se encarga de ejecutar en segundo plano la conexión via FTP,
      * y devuelve si la aplicacion instalada en el smartPhone tiene o no la ultima version
+     * Solo funciona desde la red de oficinas de SCI y CIPOSTAL
      */
     private class FtpCheckUpdatesTask extends AsyncTask<Void, Void, Boolean> {
         String version = null;
@@ -114,8 +116,9 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                         try (BufferedReader reader = new BufferedReader(new InputStreamReader(ftpHelper.leerFichero(fichero)))) {
                             // Se lee solo la primera linea
                             String linea = reader.readLine();
-                            //Se separa el string "version:" del resto
+                            // Se separa el string "version:" del resto
                             version = linea.replace("version:", "").trim();
+                            // La version esta ubicada en el buid.gradle app
                             if (!version.equalsIgnoreCase(getPackageManager().getPackageInfo(getPackageName(), 0).versionName)) {
                                 // Si no es la misma versión se saca
                                 hayNuevaVersion = true;
@@ -158,7 +161,9 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                 // Si el usuario si quiere actualizarse
                 builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int which) {
+                        // Creamos el objeto que descargara la apk
                         DescargarEInstalarAPKTask descargarEInstalarAPKTask = new DescargarEInstalarAPKTask();
+                        // Ejecutamos la logica pasandole como parametro un NULL
                         descargarEInstalarAPKTask.execute(version);
                     }
                 });
@@ -173,6 +178,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
      * instalador
      */
     private class DescargarEInstalarAPKTask extends AsyncTask<String, Void, String> {
+        // Creamos una tarea de progreso para mostrar al usuario que estamos bajandonos la apk del FTP
         ProgressDialog progressDialog;
 
         @Override
