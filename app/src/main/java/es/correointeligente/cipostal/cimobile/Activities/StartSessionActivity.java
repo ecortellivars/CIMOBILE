@@ -14,6 +14,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -38,14 +39,18 @@ import es.correointeligente.cipostal.cimobile.Util.Util;
 public class StartSessionActivity extends AppCompatActivity implements View.OnClickListener {
 
     // Declaracion de variables a utilizar en el metodo
-    EditText edt_usuario, edt_password;
+    EditText edt_usuario, edt_password, edt_version;
     Button mButton_inciarSesion;
     SharedPreferences sp;
     FTPHelper ftpHelper;
+    TextView txt_version_value;
+    String versionMandada = null;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Creamos la actividad para poder darle logica
+        // Instanciamos la actividad para poder darle logica
         super.onCreate(savedInstanceState);
         // Obtenemos el layout al que queremos darle logica
         setContentView(R.layout.activity_start_session);
@@ -68,15 +73,29 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         mButton_inciarSesion = (Button) findViewById(R.id.button_iniciar_sesion);
         mButton_inciarSesion.setOnClickListener(this);
 
+        // Creamos los objetos necesarios
         edt_usuario = (EditText) findViewById(R.id.edt_startSession_usuario);
         edt_password = (EditText) findViewById(R.id.edt_startSession_password);
+        txt_version_value= (TextView) findViewById(R.id.edt_startSession_version_value);
+        String versionInstalada = null;
+
         edt_password.setTypeface(Typeface.DEFAULT);
         edt_password.setTransformationMethod(new PasswordTransformationMethod());
+
+        try {
+            versionInstalada = (getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        txt_version_value.setText("Versión Instalada: " + versionInstalada);
 
         // Lanza una tarea en background para la conexión FTP y comprobar si hay actualizaciones
         // Solo se puede conectar al FTP dentro de la red de SCI y CIPOSTAL
         FtpCheckUpdatesTask ftpCheckUpdatesTask = new FtpCheckUpdatesTask();
         ftpCheckUpdatesTask.execute();
+        // La version esta ubicada en el buid.gradle app
+
+
     }
 
     /**
@@ -100,7 +119,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
      * Solo funciona desde la red de oficinas de SCI y CIPOSTAL
      */
     private class FtpCheckUpdatesTask extends AsyncTask<Void, Void, Boolean> {
-        String version = null;
+
         protected Boolean doInBackground(Void... args) {
             Boolean hayNuevaVersion = false;
             try {
@@ -117,10 +136,11 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                         try (BufferedReader reader = new BufferedReader(new InputStreamReader(ftpHelper.leerFichero(fichero)))) {
                             // Se lee solo la primera linea del fichero txt
                             String linea = reader.readLine();
+
                             // Se separa el string "version:" del resto
-                            version = linea.replace("version:", "").trim();
-                            // La version esta ubicada en el buid.gradle app
-                            if (!version.equalsIgnoreCase(getPackageManager().getPackageInfo(getPackageName(), 0).versionName)) {
+                            versionMandada = linea.replace("version:", "").trim();
+                            // Si la version del TXT del FTP es igual a la del build.gradle variable versionName
+                            if (!versionMandada.equalsIgnoreCase(getPackageManager().getPackageInfo(getPackageName(), 0).versionName)) {
                                 // Si no es la misma versión se saca
                                 hayNuevaVersion = true;
                             }
@@ -152,7 +172,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                 AlertDialog.Builder builder = new AlertDialog.Builder(StartSessionActivity.this);
                 // Le incluimos al objeto los mensajes a mostrar
                 builder.setTitle(R.string.actualizacion);
-                builder.setMessage(getString(R.string.detalle_actualizacion)+" "+version);
+                builder.setMessage(getString(R.string.detalle_actualizacion)+" "+versionMandada);
                 // Si el usuario no quiere actualizar la app
                 builder.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int which) {
@@ -165,7 +185,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                         // Creamos el objeto que descargara la apk
                         DescargarEInstalarAPKTask descargarEInstalarAPKTask = new DescargarEInstalarAPKTask();
                         // Ejecutamos la logica pasandole como parametro un NULL
-                        descargarEInstalarAPKTask.execute(version);
+                        descargarEInstalarAPKTask.execute(versionMandada);
                     }
                 });
                 builder.show();
