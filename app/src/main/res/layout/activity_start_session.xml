@@ -66,7 +66,7 @@
             android:id="@+id/edt_startSession_version_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="190dp"
+            android:layout_marginLeft="250dp"
             android:textStyle="italic" />
 
     </LinearLayout>

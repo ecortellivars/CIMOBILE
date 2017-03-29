@@ -87,7 +87,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         } catch (Exception e) {
             e.printStackTrace();
         }
-        txt_version_value.setText("Versión Instalada: " + versionInstalada);
+        txt_version_value.setText("Versión: " + versionInstalada);
 
         // Lanza una tarea en background para la conexión FTP y comprobar si hay actualizaciones
         // Solo se puede conectar al FTP dentro de la red de SCI y CIPOSTAL
