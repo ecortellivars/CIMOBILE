@@ -108,13 +108,14 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                 // Inicializamos la clase Singleton para la gestion FTP
                 ftpHelper = FTPHelper.getInstancia();
                 if (ftpHelper != null && ftpHelper.connect(StartSessionActivity.this)) {
+                    // ftpData/ULTIMAVERSION/CIMOBILE
                     String carpetaUpdates = Util.obtenerRutaFtpActualizaciones(getBaseContext());
 
                     if(ftpHelper.cargarCarpeta(carpetaUpdates)) {
-
+                        // ftpData/ULTIMAVERSION/CIMOBILE/version.txt
                         String fichero = carpetaUpdates+Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_FICHERO, getBaseContext(), String.class.getSimpleName());;
                         try (BufferedReader reader = new BufferedReader(new InputStreamReader(ftpHelper.leerFichero(fichero)))) {
-                            // Se lee solo la primera linea
+                            // Se lee solo la primera linea del fichero txt
                             String linea = reader.readLine();
                             // Se separa el string "version:" del resto
                             version = linea.replace("version:", "").trim();
@@ -253,8 +254,11 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
             Notificador notificador = null;
 
             try {
+                // http://impl.v01.srvPostal.business.postal.sdci.es/
                 String NAMESPACE = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_WS_NAMESPACE, getBaseContext(), String.class.getSimpleName());
+                // validarLoginWS
                 String METHOD_NAME = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_WS_METHOD_NAME, getBaseContext(), String.class.getSimpleName());
+                // http://correointeligente.es:9995/PostalService
                 String URL = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_WS_METHOD_URL, getBaseContext(), String.class.getSimpleName());
 
                 SoapObject request = new SoapObject(NAMESPACE, METHOD_NAME);
@@ -265,7 +269,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                 sobre.dotNet = false; // para los webservice asmx true, sino false
                 sobre.setOutputSoapObject(request);
 
-                //Modelo el transporte
+                // Modelo el transporte: Llamada al WS
                 HttpTransportSE transporte = new HttpTransportSE(URL);
                 transporte.debug = true;
                 transporte.call(URL+"/"+METHOD_NAME, sobre);

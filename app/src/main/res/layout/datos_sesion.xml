@@ -26,7 +26,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:text="Jorge Zaldivar"
                 android:textStyle="bold" />
 
         </TableRow>
@@ -46,7 +45,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:text="Valencia"
                 android:textStyle="bold" />
         </TableRow>
 
@@ -68,6 +66,8 @@
                 android:text="07/01/2017 18:56"
                 android:textStyle="bold" />
         </TableRow>
+
+
 
     </TableLayout>
 

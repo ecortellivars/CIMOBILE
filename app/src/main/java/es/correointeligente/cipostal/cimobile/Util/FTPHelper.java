@@ -58,7 +58,7 @@ public class FTPHelper {
         try {
             this.context = context;
             JSch jsch = new JSch();
-
+            //Carga los datos de conexion al FTp desde las preferencias
             String usuario = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_USER, context, String.class.getSimpleName());
             String ipFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_IP, context, String.class.getSimpleName());
             Integer puertoFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, context, Integer.class.getSimpleName());
@@ -149,6 +149,10 @@ public class FTPHelper {
         return ok;
     }
 
+    /**
+     * Conectamos con el servidor FTp via WIFI y si existe un SICER nos lo bajamos
+     * @return
+     */
     public List<FicheroViewHolder> obtenerFicherosDirectorio() {
         List<FicheroViewHolder> listaFicheros = new ArrayList<>();
 
@@ -185,7 +189,7 @@ public class FTPHelper {
     }
 
     public void descargarFichero(String nombreFichero, String rutaCapeta) throws SftpException {
-
+        // storage/emulated/0/CIMobile/UPDATES_APP
         File file = new File(rutaCapeta);
         if(!file.exists()) {
             file.mkdirs();

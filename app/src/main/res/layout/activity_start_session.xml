@@ -57,7 +57,14 @@
             android:textColor="#FFFFFF"
             android:text="@string/iniciar_sesion" />
 
+        <TextView
+            android:id="@+id/textView_version_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="135dp"
+            android:text="version 3.0"
+            android:textStyle="italic" />
+
 
     </LinearLayout>
-
 </LinearLayout>
