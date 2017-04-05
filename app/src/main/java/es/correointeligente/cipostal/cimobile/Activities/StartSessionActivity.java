@@ -55,9 +55,11 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         // Obtenemos el layout al que queremos darle logica
         setContentView(R.layout.activity_start_session);
         // Obtenemos el objeto que contiene las preferencias de la aplicacion
+        // /data/user/0/es.correointeligente.cipostal.cimobile/shared_prefs/sesion.xml
         sp = this.getSharedPreferences(Util.FICHERO_PREFERENCIAS_SESION, MODE_PRIVATE);
 
         // Si SharedPreferences contiene el dato de la sesion se salta la pantalla de inicio de sesion
+        // Es decir el usuario ya estaba logado no hace falta que se vuelva a logar
         if (sp.contains(Util.CLAVE_SESION_NOTIFICADOR)) {
             //Invocamos a la actividad siguiente del siguiente layout finalizando el inicio de sesion
             Intent i = new Intent(this, MainActivity.class);
@@ -136,7 +138,6 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                         try (BufferedReader reader = new BufferedReader(new InputStreamReader(ftpHelper.leerFichero(fichero)))) {
                             // Se lee solo la primera linea del fichero txt
                             String linea = reader.readLine();
-
                             // Se separa el string "version:" del resto
                             versionMandada = linea.replace("version:", "").trim();
                             // Si la version del TXT del FTP es igual a la del build.gradle variable versionName
@@ -172,7 +173,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                 AlertDialog.Builder builder = new AlertDialog.Builder(StartSessionActivity.this);
                 // Le incluimos al objeto los mensajes a mostrar
                 builder.setTitle(R.string.actualizacion);
-                builder.setMessage(getString(R.string.detalle_actualizacion)+" "+versionMandada);
+                builder.setMessage(getString(R.string.detalle_actualizacion) + " " + versionMandada);
                 // Si el usuario no quiere actualizar la app
                 builder.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int which) {
@@ -185,6 +186,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                         // Creamos el objeto que descargara la apk
                         DescargarEInstalarAPKTask descargarEInstalarAPKTask = new DescargarEInstalarAPKTask();
                         // Ejecutamos la logica pasandole como parametro un NULL
+                        // versionMandada = null;
                         descargarEInstalarAPKTask.execute(versionMandada);
                     }
                 });
@@ -219,9 +221,9 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                 if (ftpHelper != null && ftpHelper.connect(StartSessionActivity.this)) {
                     String carpetaUpdates = Util.obtenerRutaFtpActualizaciones(getBaseContext());
                     if (ftpHelper.cargarCarpeta(carpetaUpdates)) {
-                        String fichero = "CIMobile-release-" + version + ".apk";
+                        String fichero = "CIMobile-release-" + versionMandada + ".apk";
                         ftpHelper.descargarFichero(fichero, Util.obtenerRutaActualizaciones());
-                        String rutaFinalFicheroUpdate = Util.obtenerRutaActualizaciones()+File.separator+fichero;
+                        String rutaFinalFicheroUpdate = Util.obtenerRutaActualizaciones() + File.separator + fichero;
                         ftpHelper.disconnect();
                         progressDialog.dismiss();
 
@@ -292,7 +294,9 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                 // Modelo el transporte: Llamada al WS
                 HttpTransportSE transporte = new HttpTransportSE(URL);
                 transporte.debug = true;
-                transporte.call(URL+"/"+METHOD_NAME, sobre);
+                transporte.call(URL + "/" + METHOD_NAME, sobre);
+                // bodyIn = RespuestaValidarUsuarioWS{codigoEscaner=A22; corporacion=valencia; nombreUsuario=usuValencia; valido=true; }
+                // bodyOut = validarLoginWS{nombreUsuario=usuValencia; contrasenya=sdci; }
 
                 if(sobre.bodyIn instanceof SoapObject) {
                     SoapObject s = (SoapObject) sobre.bodyIn;

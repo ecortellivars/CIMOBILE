@@ -113,7 +113,7 @@ public class Util {
 
     public final static String CLAVE_PREFERENCIAS_WS_NAMESPACE = "wsNamespace";
     public final static String CLAVE_PREFERENCIAS_WS_METHOD_NAME = "wsMetodo";
-    public final static String CLAVE_PREFERENCIAS_WS_METHOD_URL= "wsURL";
+    public final static String CLAVE_PREFERENCIAS_WS_METHOD_URL = "wsURL";
 
     public final static String CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_DIAS = "sigVisitaDias";
     public final static String CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_HORAS = "sigVisitaHoras";
@@ -205,7 +205,7 @@ public class Util {
      * @return String
      */
     public static String obtenerRutaAPP() {
-        File file = new File(Environment.getExternalStorageDirectory()+File.separator+DEFAULT_EXTERNAL_DIRECTORY_APP);
+        File file = new File(Environment.getExternalStorageDirectory() + File.separator + DEFAULT_EXTERNAL_DIRECTORY_APP);
         if(!file.exists()) {
             file.mkdirs();
         }
@@ -217,7 +217,7 @@ public class Util {
      * @return String
      */
     public static String obtenerRutaFirmasReceptor() {
-        File file = new File(obtenerRutaAPP()+File.separator+EXTERNAL_DIRECTORY_FIRMAS_RECEPTOR);
+        File file = new File(obtenerRutaAPP() + File.separator+EXTERNAL_DIRECTORY_FIRMAS_RECEPTOR);
         if(!file.exists()) {
             file.mkdirs();
         }
@@ -229,7 +229,7 @@ public class Util {
      * @return String
      */
     public static String obtenerRutaXML() {
-        File file = new File(obtenerRutaAPP()+File.separator+EXTERNAL_DIRECTORY_XML);
+        File file = new File(obtenerRutaAPP() + File.separator + EXTERNAL_DIRECTORY_XML);
         if(!file.exists()) {
             file.mkdirs();
         }
@@ -241,7 +241,7 @@ public class Util {
      * @return String
      */
     public static String obtenerRutaSelloDeTiempo() {
-        File file = new File(obtenerRutaAPP()+File.separator+EXTERNAL_DIRECTORY_SELLO_TIEMPO);
+        File file = new File(obtenerRutaAPP() + File.separator + EXTERNAL_DIRECTORY_SELLO_TIEMPO);
         if(!file.exists()) {
             file.mkdirs();
         }
@@ -253,7 +253,7 @@ public class Util {
      * @return String
      */
     public static String obtenerRutaFirmaNotificador() {
-        File file = new File(obtenerRutaAPP()+File.separator+EXTERNAL_DIRECTORY_FIRMA_NOTIFICADOR);
+        File file = new File(obtenerRutaAPP() + File.separator + EXTERNAL_DIRECTORY_FIRMA_NOTIFICADOR);
         if(!file.exists()) {
             file.mkdirs();
         }
@@ -265,7 +265,7 @@ public class Util {
      * @return String
      */
     public static String obtenerRutaActualizaciones() {
-        File file = new File(obtenerRutaAPP()+File.separator+EXTERNAL_DIRECTORY_UPDATES_APP);
+        File file = new File(obtenerRutaAPP() + File.separator + EXTERNAL_DIRECTORY_UPDATES_APP);
         if(!file.exists()) {
             file.mkdirs();
         }
@@ -282,7 +282,7 @@ public class Util {
         String ruta = "";
 
         ruta = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_BASE, context, String.class.getSimpleName());
-        ruta = ruta + File.separator+delegacion.toUpperCase()+Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, context, String.class.getSimpleName());
+        ruta = ruta + File.separator+delegacion.toUpperCase() + Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, context, String.class.getSimpleName());
 
         return ruta;
     }
@@ -322,7 +322,7 @@ public class Util {
      */
     public static void guardarFicheroSelloTiempo(Notificacion notificacion, byte[] contenido) throws IOException {
         // Los guardamos a disco.
-        String nombreFichero = notificacion.getReferencia()+"_"+StringUtils.defaultIfBlank(notificacion.getReferenciaSCB(),"")+".ts";
+        String nombreFichero = notificacion.getReferencia() + "_" + StringUtils.defaultIfBlank(notificacion.getReferenciaSCB(),"") + ".ts";
         FileUtils.writeByteArrayToFile(new File(obtenerRutaSelloDeTiempo(), nombreFichero), contenido);
     }
 
@@ -336,7 +336,7 @@ public class Util {
         File xmlFile = null;
         try {
 
-            String nombeFichero = notificacion.getReferencia()+"_"+StringUtils.defaultIfBlank(notificacion.getReferenciaSCB(),"")+".xml";
+            String nombeFichero = notificacion.getReferencia() + "_" + StringUtils.defaultIfBlank(notificacion.getReferenciaSCB(),"") + ".xml";
 
             // Se Determina si viene del primer o del segundo resultado
             Date date = null;
@@ -504,7 +504,7 @@ public class Util {
      */
     public static File comprimirZIP(String codigoNotificador, String delegacion) {
         DateFormat dfDia = new SimpleDateFormat("ddMMyyyy");
-        String nombreFichero = delegacion+"_"+codigoNotificador+"_"+dfDia.format(Calendar.getInstance().getTime())+".zip";
+        String nombreFichero = delegacion + "_" + codigoNotificador + "_" + dfDia.format(Calendar.getInstance().getTime()) + ".zip";
 
         File directorioAGenerarZIP = new File(obtenerRutaAPP());
         File ficheroZIP = new File(Environment.getExternalStorageDirectory(),nombreFichero);
@@ -596,7 +596,7 @@ public class Util {
      * @return String
      */
     public static String guardarFicheroAPK(InputStream is, String nombreFichero) {
-        String carpeta = Environment.getExternalStorageDirectory()+File.separator+EXTERNAL_DIRECTORY_UPDATES_APP;
+        String carpeta = Environment.getExternalStorageDirectory() + File.separator+EXTERNAL_DIRECTORY_UPDATES_APP;
 
         File file = new File(carpeta);
         if(!file.exists()) {

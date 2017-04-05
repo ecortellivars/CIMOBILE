@@ -58,7 +58,7 @@ public class FTPHelper {
         try {
             this.context = context;
             JSch jsch = new JSch();
-            //Carga los datos de conexion al FTp desde las preferencias
+            // Carga los datos de conexion al FTP desde las preferencias
             String usuario = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_USER, context, String.class.getSimpleName());
             String ipFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_IP, context, String.class.getSimpleName());
             Integer puertoFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, context, Integer.class.getSimpleName());
