@@ -242,6 +242,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                         install.setDataAndType(FileProvider.getUriForFile(getBaseContext(), getBaseContext().getApplicationContext().getPackageName() + ".provider",new File(rutaFinalFicheroUpdate)),"application/vnd.android.package-archive");
                         install.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(install);
+
                     }
                 }
 
@@ -252,6 +253,10 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
 
             if(ftpHelper != null && BooleanUtils.isTrue(ftpHelper.isConnected())) {
                 ftpHelper.disconnect();
+            }
+
+            if (fallo == null) {
+                fallo = getString(R.string.no_error_durante_actualizacion);
             }
 
             return fallo;
