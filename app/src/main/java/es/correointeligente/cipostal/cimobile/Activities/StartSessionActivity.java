@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.PasswordTransformationMethod;
@@ -34,6 +35,7 @@ import es.correointeligente.cipostal.cimobile.R;
 import es.correointeligente.cipostal.cimobile.Util.FTPHelper;
 import es.correointeligente.cipostal.cimobile.Util.Util;
 
+
 // Actividad inicial dada de alta en AndroidManifest con intent lo que significa que desde esta empezaremos siempre a debugar
 // Esta Actividad gestiona el layout llamado activity_start_session
 public class StartSessionActivity extends AppCompatActivity implements View.OnClickListener {
@@ -45,6 +47,8 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
     FTPHelper ftpHelper;
     TextView txt_version_value;
     String versionMandada = null;
+    Boolean hayNuevaVersion = false;
+    String fallo = null;
 
 
 
@@ -85,7 +89,9 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         edt_password.setTransformationMethod(new PasswordTransformationMethod());
 
         try {
+            // La version esta ubicada en el buid.gradle app
             versionInstalada = (getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -95,7 +101,10 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         // Solo se puede conectar al FTP dentro de la red de SCI y CIPOSTAL
         FtpCheckUpdatesTask ftpCheckUpdatesTask = new FtpCheckUpdatesTask();
         ftpCheckUpdatesTask.execute();
-        // La version esta ubicada en el buid.gradle app
+        if(fallo != null) {
+            txt_version_value = (TextView) findViewById(R.id.edt_startSession_version_value);
+            txt_version_value.setText("Versión: " + versionMandada);
+        }
 
 
     }
@@ -123,7 +132,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
     private class FtpCheckUpdatesTask extends AsyncTask<Void, Void, Boolean> {
 
         protected Boolean doInBackground(Void... args) {
-            Boolean hayNuevaVersion = false;
+
             try {
 
                 // Inicializamos la clase Singleton para la gestion FTP
@@ -134,7 +143,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
 
                     if(ftpHelper.cargarCarpeta(carpetaUpdates)) {
                         // ftpData/ULTIMAVERSION/CIMOBILE/version.txt
-                        String fichero = carpetaUpdates+Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_FICHERO, getBaseContext(), String.class.getSimpleName());;
+                        String fichero = carpetaUpdates + Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_FICHERO, getBaseContext(), String.class.getSimpleName());;
                         try (BufferedReader reader = new BufferedReader(new InputStreamReader(ftpHelper.leerFichero(fichero)))) {
                             // Se lee solo la primera linea del fichero txt
                             String linea = reader.readLine();
@@ -188,11 +197,11 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                         // Ejecutamos la logica pasandole como parametro un NULL
                         // versionMandada = null;
                         descargarEInstalarAPKTask.execute(versionMandada);
+
                     }
                 });
                 builder.show();
             }
-
         }
     }
 
@@ -211,7 +220,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
 
         @Override
         protected String doInBackground(String... args) {
-            String fallo = null;
+
             String version = args[0];
 
             try {
@@ -229,11 +238,11 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
 
                         // Se lanza la actividad de actualizacion(Lanza el gestor de instalaciones)
                         Intent install = new Intent(Intent.ACTION_VIEW);
-                        install.setDataAndType(Uri.fromFile(new File(rutaFinalFicheroUpdate)), "application/vnd.android.package-archive");
+                        // install.setDataAndType(Uri.fromFile(new File(rutaFinalFicheroUpdate)), "application/vnd.android.package-archive");
+                        install.setDataAndType(FileProvider.getUriForFile(getBaseContext(), getBaseContext().getApplicationContext().getPackageName() + ".provider",new File(rutaFinalFicheroUpdate)),"application/vnd.android.package-archive");
                         install.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(install);
                     }
-
                 }
 
             } catch (Exception e) {

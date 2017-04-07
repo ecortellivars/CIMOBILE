@@ -12,8 +12,8 @@
         android:layout_height="match_parent"
         android:background="@drawable/background_gradient"
         android:orientation="vertical"
-        android:weightSum="1"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:weightSum="1">
 
         <ImageView
             android:id="@+id/imageView3"
@@ -25,26 +25,26 @@
             android:id="@+id/edt_startSession_usuario"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
+            android:layout_marginLeft="5dp"
             android:background="@drawable/edit_text_shape"
+            android:hint="@string/usuario"
+            android:inputType="textPersonName"
             android:maxLines="1"
             android:padding="8dp"
-            android:textStyle="bold"
-            android:layout_marginLeft="5dp"
-            android:hint="@string/usuario"/>
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/edt_startSession_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/edit_text_shape"
+            android:hint="@string/password"
+            android:inputType="textPassword"
             android:maxLines="1"
             android:padding="8dp"
-            android:textStyle="bold"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="5dp"
-            android:hint="@string/password"/>
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/button_iniciar_sesion"
@@ -53,9 +53,9 @@
             android:layout_gravity="center_horizontal|center_vertical"
             android:layout_marginTop="50dp"
             android:background="@drawable/button_selector"
+            android:text="@string/iniciar_sesion"
             android:textAllCaps="false"
-            android:textColor="#FFFFFF"
-            android:text="@string/iniciar_sesion" />
+            android:textColor="#FFFFFF" />
 
         <android.support.v4.widget.Space
             android:layout_width="match_parent"
