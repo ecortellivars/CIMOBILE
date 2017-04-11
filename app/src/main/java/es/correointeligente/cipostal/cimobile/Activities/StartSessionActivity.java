@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.FileProvider;
@@ -17,7 +16,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ksoap2.SoapEnvelope;
@@ -41,7 +39,7 @@ import es.correointeligente.cipostal.cimobile.Util.Util;
 public class StartSessionActivity extends AppCompatActivity implements View.OnClickListener {
 
     // Declaracion de variables a utilizar en el metodo
-    EditText edt_usuario, edt_password, edt_version;
+    EditText edt_usuario, edt_password;
     Button mButton_inciarSesion;
     SharedPreferences sp;
     FTPHelper ftpHelper;
@@ -79,15 +77,16 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         mButton_inciarSesion = (Button) findViewById(R.id.button_iniciar_sesion);
         mButton_inciarSesion.setOnClickListener(this);
 
-        // Creamos los objetos necesarios
+        // Creamos los objetos necesarios y almacenamos lo que el usuario introdujo
+        // Usuario
         edt_usuario = (EditText) findViewById(R.id.edt_startSession_usuario);
+        // Password
         edt_password = (EditText) findViewById(R.id.edt_startSession_password);
-        txt_version_value= (TextView) findViewById(R.id.edt_startSession_version_value);
-        String versionInstalada = null;
-
         edt_password.setTypeface(Typeface.DEFAULT);
         edt_password.setTransformationMethod(new PasswordTransformationMethod());
-
+        // Version
+        txt_version_value= (TextView) findViewById(R.id.edt_startSession_version_value);
+        String versionInstalada = null;
         try {
             // La version esta ubicada en el buid.gradle app
             versionInstalada = (getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
@@ -105,8 +104,6 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
             txt_version_value = (TextView) findViewById(R.id.edt_startSession_version_value);
             txt_version_value.setText("Versión: " + versionMandada);
         }
-
-
     }
 
     /**
@@ -134,7 +131,6 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         protected Boolean doInBackground(Void... args) {
 
             try {
-
                 // Inicializamos la clase Singleton para la gestion FTP
                 ftpHelper = FTPHelper.getInstancia();
                 if (ftpHelper != null && ftpHelper.connect(StartSessionActivity.this)) {
@@ -157,6 +153,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
 
                         } catch (Exception e) {
                             e.printStackTrace();
+                            fallo = getString(R.string.error_durante_comprobacion_version);
                         }
                     }
                     ftpHelper.disconnect();
@@ -164,6 +161,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
 
             } catch (Exception e) {
                 e.printStackTrace();
+                fallo = getString(R.string.error_durante_comprobacion_version);
             }
 
             return hayNuevaVersion;
@@ -195,7 +193,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                         // Creamos el objeto que descargara la apk
                         DescargarEInstalarAPKTask descargarEInstalarAPKTask = new DescargarEInstalarAPKTask();
                         // Ejecutamos la logica pasandole como parametro un NULL
-                        // versionMandada = null;
+                        versionMandada = null;
                         descargarEInstalarAPKTask.execute(versionMandada);
 
                     }
