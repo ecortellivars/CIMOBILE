@@ -131,14 +131,25 @@ public class Util {
             // Si no contiene la preferencia de la ip del FTP, se cargan todas
 
             SharedPreferences.Editor e = sp.edit();
-            // Preferencias FTP
-            e.putString(Util.CLAVE_PREFERENCIAS_FTP_IP, "46.17.141.94");//192.168.0.105
-            e.putString(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, "1984"); //23
-            e.putString(Util.CLAVE_PREFERENCIAS_FTP_USER, "valencia");//valencia
-            e.putString(Util.CLAVE_PREFERENCIAS_FTP_PASSWORD, "9ca174324c");//9ca174324c
+            // Preferencias FTP Ibermatica
+            //e.putString(Util.CLAVE_PREFERENCIAS_FTP_IP, "46.17.141.94");
+            //e.putString(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, "1984");
+            //e.putString(Util.CLAVE_PREFERENCIAS_FTP_USER, "valencia");
+            //e.putString(Util.CLAVE_PREFERENCIAS_FTP_PASSWORD, "9ca174324c");
+            //e.putString(Util.CLAVE_PREFERENCIAS_FTP_TIMEOUT, "10000");
+            //e.putString(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, "/SICER");
+            //e.putString(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_BASE, "/ftpData");
+            //e.putString(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_CARPETA, "/ULTIMAVERSION/CIMOBILE");
+            //e.putString(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_FICHERO, "/version.txt");
+
+            // Preferencias FTP CIPOSTAL para pruebas
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_IP, "home557660407.1and1-data.host");
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, "22");
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_USER, "u79475687");
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_PASSWORD, "abc123.");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_TIMEOUT, "10000");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, "/SICER");
-            e.putString(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_BASE, "/ftpData");
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_BASE, "/ENRIQUE");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_CARPETA, "/ULTIMAVERSION/CIMOBILE");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_FICHERO, "/version.txt");
 

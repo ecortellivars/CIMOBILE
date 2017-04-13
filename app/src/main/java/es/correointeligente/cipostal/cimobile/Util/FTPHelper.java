@@ -65,6 +65,12 @@ public class FTPHelper {
             String passFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_PASSWORD, context, String.class.getSimpleName());
             Integer timeoutFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_TIMEOUT, context, Integer.class.getSimpleName());
 
+            // Carga los datos de conexion al FTP de CIPOSTAL
+            //String usuario = "u79475687";
+            //String ipFTP = "home557660407.1and1-data.host";
+            //Integer puertoFTP = 22;
+            //String passFTP = "abc123.";
+
             session = jsch.getSession(usuario,ipFTP, puertoFTP);
             session.setPassword(passFTP);
 

@@ -133,6 +133,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
             try {
                 // Inicializamos la clase Singleton para la gestion FTP
                 ftpHelper = FTPHelper.getInstancia();
+                // Obtenemos class es.correointeligente.cipostal.cimobile.Util.FTPHelper
                 if (ftpHelper != null && ftpHelper.connect(StartSessionActivity.this)) {
                     // ftpData/ULTIMAVERSION/CIMOBILE
                     String carpetaUpdates = Util.obtenerRutaFtpActualizaciones(getBaseContext());
