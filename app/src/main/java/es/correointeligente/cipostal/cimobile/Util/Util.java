@@ -127,8 +127,8 @@ public class Util {
     public static void cargarConfiguracionAplicacionPorDefecto(Context context) {
         // Preferencias por defecto
         SharedPreferences sp = context.getSharedPreferences(Util.FICHERO_PREFERENCIAS_APP, context.MODE_PRIVATE);
+        // Si no contiene la preferencia de la ip del FTP, se cargan todas
         if (!sp.contains(Util.CLAVE_PREFERENCIAS_FTP_IP)) {
-            // Si no contiene la preferencia de la ip del FTP, se cargan todas
 
             SharedPreferences.Editor e = sp.edit();
             // Preferencias FTP Ibermatica
@@ -183,12 +183,14 @@ public class Util {
      * @param context
      * @param clase
      * @param <T>
-     * @return
+     * @return valor
      */
     public static <T> T obtenerValorPreferencia(String clave, Context context, String clase) {
         T valor = null;
         Object result = null;
+        // Llamamos al fichero preferencias.xml en modo privado
         SharedPreferences sp = context.getSharedPreferences(Util.FICHERO_PREFERENCIAS_APP, context.MODE_PRIVATE);
+        // Si el dato que buscamos esta en el XML
         if (sp.contains(clave)) {
             if(clase.equalsIgnoreCase(String.class.getSimpleName())) {
                 result = sp.getString(clave, "");

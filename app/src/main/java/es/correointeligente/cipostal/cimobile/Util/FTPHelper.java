@@ -58,7 +58,7 @@ public class FTPHelper {
         try {
             this.context = context;
             JSch jsch = new JSch();
-            // Carga los datos de conexion al FTP desde las preferencias
+            // Carga los datos de conexion al FTP desde las preferencias.xml que esta en la carpeta /res/xml
             String usuario = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_USER, context, String.class.getSimpleName());
             String ipFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_IP, context, String.class.getSimpleName());
             Integer puertoFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, context, Integer.class.getSimpleName());
@@ -71,14 +71,15 @@ public class FTPHelper {
             //Integer puertoFTP = 22;
             //String passFTP = "abc123.";
 
+            // Preparamos la sesion para conectar con los valores obtenidos en las preferencia
             session = jsch.getSession(usuario,ipFTP, puertoFTP);
             session.setPassword(passFTP);
-
             Properties prop = new Properties();
             prop.put("StrictHostKeyChecking", "no");
             session.setConfig(prop);
-            session.connect(timeoutFTP);
 
+            //Conectamos
+            session.connect(timeoutFTP);
             conectado = Boolean.TRUE;
 
         } catch (JSchException e) {

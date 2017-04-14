@@ -137,7 +137,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                 if (ftpHelper != null && ftpHelper.connect(StartSessionActivity.this)) {
                     // ftpData/ULTIMAVERSION/CIMOBILE
                     String carpetaUpdates = Util.obtenerRutaFtpActualizaciones(getBaseContext());
-
+                    // Si existe la carpeta obtenemos el fichero version.txt
                     if(ftpHelper.cargarCarpeta(carpetaUpdates)) {
                         // ftpData/ULTIMAVERSION/CIMOBILE/version.txt
                         String fichero = carpetaUpdates + Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_FICHERO, getBaseContext(), String.class.getSimpleName());;
@@ -194,7 +194,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                         // Creamos el objeto que descargara la apk
                         DescargarEInstalarAPKTask descargarEInstalarAPKTask = new DescargarEInstalarAPKTask();
                         // Ejecutamos la logica pasandole como parametro un NULL
-                        versionMandada = null;
+                        // versionMandada = null;
                         descargarEInstalarAPKTask.execute(versionMandada);
 
                     }

@@ -118,6 +118,7 @@
             android:title="Fichero UPDATES"
             android:summary="Fichero que describe la versión" />
 
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Aplicación de oficina">

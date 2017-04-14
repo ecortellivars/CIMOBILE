@@ -49,6 +49,11 @@ public class PreferenciasActivity extends BaseActivity {
             super.onCreate(savedInstanceState);
             PreferenceManager prefMgr = getPreferenceManager();
             prefMgr.setSharedPreferencesName(Util.FICHERO_PREFERENCIAS_APP);
+            // El modo de operación del archivo puede ser:
+            // MODE_PRIVATE solo la aplicación puede acceder al archivo de preferencias.
+            // MODE_WORLD_READABLE otras aplicaciones pueden consultar el archivo de preferencias
+            // MODE_WORLD_WRITEABLE otras aplicaciones pueden consultar y modificar el archivo.
+            // MODE_MULTI_PROCESS varios procesos pueden acceder (Requiere Android 2.3)
             prefMgr.setSharedPreferencesMode(MODE_PRIVATE);
 
             addPreferencesFromResource(R.xml.preferencias);
