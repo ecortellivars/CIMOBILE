@@ -11,9 +11,8 @@
 
         <EditTextPreference
             android:key="wsMetodo"
-            android:title="Método"
-            android:summary="Método del login" />
-
+            android:summary="Método del login"
+            android:title="Método" />
         <EditTextPreference
             android:key="wsURL"
             android:title="URL"

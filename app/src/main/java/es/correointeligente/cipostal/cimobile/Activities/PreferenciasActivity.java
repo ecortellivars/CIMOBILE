@@ -16,10 +16,18 @@ public class PreferenciasActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Instanciamos la pantalla de preferencias
         setContentView(R.layout.activity_preferencias);
+
+        // Instanciamos la barra de herramientas
         mToolbar = (Toolbar) findViewById(R.id.tool_bar);
+        // Damos funcionalidad a la la barra de herramientas
         setSupportActionBar(mToolbar);
+        // No mostrar el título de la Activity (obligatorio si está junto con el icono)
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        // Muestra la flecha para ir a la actividad anterior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
