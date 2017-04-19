@@ -23,10 +23,12 @@ import org.ksoap2.SoapFault;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
+import org.spongycastle.util.StringList;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 
 import es.correointeligente.cipostal.cimobile.Model.Notificador;
 import es.correointeligente.cipostal.cimobile.R;
@@ -34,8 +36,8 @@ import es.correointeligente.cipostal.cimobile.Util.FTPHelper;
 import es.correointeligente.cipostal.cimobile.Util.Util;
 
 
-// Actividad inicial dada de alta en AndroidManifest con intent lo que significa que desde esta empezaremos siempre a debugar
-// Esta Actividad gestiona el layout llamado activity_start_session
+/** Actividad inicial dada de alta en AndroidManifest con intent lo que significa que desde esta empezaremos
+    siempre a debugar. Esta Actividad gestiona el layout llamado activity_start_session **/
 public class StartSessionActivity extends AppCompatActivity implements View.OnClickListener {
 
     // Declaracion de variables a utilizar en el metodo
@@ -44,11 +46,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
     SharedPreferences sp;
     FTPHelper ftpHelper;
     TextView txt_version_value;
-    String versionMandada = null;
-    Boolean hayNuevaVersion = false;
     String fallo = null;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,11 +78,13 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         // Creamos los objetos necesarios y almacenamos lo que el usuario introdujo
         // Usuario
         edt_usuario = (EditText) findViewById(R.id.edt_startSession_usuario);
+
         // Password
         edt_password = (EditText) findViewById(R.id.edt_startSession_password);
         edt_password.setTypeface(Typeface.DEFAULT);
         edt_password.setTransformationMethod(new PasswordTransformationMethod());
-        // Version
+
+        // Version instalada
         txt_version_value= (TextView) findViewById(R.id.edt_startSession_version_value);
         String versionInstalada = null;
         try {
@@ -97,39 +97,30 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         txt_version_value.setText("Versión: " + versionInstalada);
 
         // Lanza una tarea en background para la conexión FTP y comprobar si hay actualizaciones
-        // Solo se puede conectar al FTP dentro de la red de SCI y CIPOSTAL
-        FtpCheckUpdatesTask ftpCheckUpdatesTask = new FtpCheckUpdatesTask();
-        ftpCheckUpdatesTask.execute();
-        if(fallo != null) {
-            txt_version_value = (TextView) findViewById(R.id.edt_startSession_version_value);
-            txt_version_value.setText("Versión: " + versionMandada);
-        }
+        // Solo se puede conectar al FTP de Ibermatica dentro de la red de SCI y CIPOSTAL
+        // Cambiando las preferencias del FTP se podria conectar a un FTP Publico como el de 1and1
+        FtpCheckUpdatesTask ftpCheckUpdatesTask = new FtpCheckUpdatesTask(versionInstalada);
+        ftpCheckUpdatesTask.execute(versionInstalada);
     }
 
     /**
-     * Clase publica que tiene la logica necesaria cuando el usuario hace click en el boton llamado button_iniciar_sesion
-     */
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.button_iniciar_sesion:
-                // Se llama en background al webservice implementado en CIPOSTAL que valida el usuario y password
-                LoginUsuarioTask loginUsuarioTask = new LoginUsuarioTask();
-                loginUsuarioTask.execute(edt_usuario.getText().toString(), edt_password.getText().toString());
-
-                break;
-        }
-    }
-
-    /**
-     * Clase privada que se encarga de ejecutar en segundo plano la conexión via FTP,
+     * Clase privada ASINCRONA que se encarga de ejecutar en segundo plano la conexión via FTP,
      * y devuelve si la aplicacion instalada en el smartPhone tiene o no la ultima version
      * Solo funciona desde la red de oficinas de SCI y CIPOSTAL
      */
-    private class FtpCheckUpdatesTask extends AsyncTask<Void, Void, Boolean> {
+    private class FtpCheckUpdatesTask extends AsyncTask<String, Void, String[]>  {
+        // Parametros de entrada son (Tipo_empezarBackground, Tipo_duranteBackground, Tipo_terminarBackground)
+        //                           <Params,                 Progress,               Result>
+        private String versionInstalada;
 
-        protected Boolean doInBackground(Void... args) {
+        // Constructor
+        public FtpCheckUpdatesTask (String versionInstalada){
+            this.versionInstalada = versionInstalada;
+        }
 
+        // Estructura de una AsyncTask -> onPreExecute() + onProgressUpdate() + onCancelled() + doInBackground()
+        protected String[] doInBackground(String... variableNoUsada) {
+            String[] args = null;
             try {
                 // Inicializamos la clase Singleton para la gestion FTP
                 ftpHelper = FTPHelper.getInstancia();
@@ -145,11 +136,13 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                             // Se lee solo la primera linea del fichero txt
                             String linea = reader.readLine();
                             // Se separa el string "version:" del resto
-                            versionMandada = linea.replace("version:", "").trim();
+                            String versionMandada = linea.replace("version:", "").trim();
+                            args[0] = versionMandada;
                             // Si la version del TXT del FTP es igual a la del build.gradle variable versionName
                             if (!versionMandada.equalsIgnoreCase(getPackageManager().getPackageInfo(getPackageName(), 0).versionName)) {
                                 // Si no es la misma versión se saca
-                                hayNuevaVersion = true;
+                                String hayNuevaVersion = "1";
+                                args[1] = hayNuevaVersion;
                             }
 
                         } catch (Exception e) {
@@ -165,17 +158,21 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                 fallo = getString(R.string.error_durante_comprobacion_version);
             }
 
-            return hayNuevaVersion;
+            return args;
         }
 
         /**
          * Clase que informa al usuario que existe una nueva version de la app mas actual que la instalada en su smartPhone
-         * @param hayNuevaVersion
+         * @param args
          */
-        @Override
-        protected void onPostExecute(Boolean hayNuevaVersion) {
 
-            if(hayNuevaVersion) {
+        protected void onPostExecute(String[] args) {
+
+            String hayNuevaVersion = args[1].toString();
+            String versionMandada = args[0].toString();
+
+            if(hayNuevaVersion == "1") {
+
                 // Usamos la clase AlertDialog para mandar mensajes al usuario
                 // Primero le damos el contexto de la aplicacion
                 AlertDialog.Builder builder = new AlertDialog.Builder(StartSessionActivity.this);
@@ -193,10 +190,9 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                     public void onClick(DialogInterface dialogInterface, int which) {
                         // Creamos el objeto que descargara la apk
                         DescargarEInstalarAPKTask descargarEInstalarAPKTask = new DescargarEInstalarAPKTask();
+                        // Tarea en background
                         // Ejecutamos la logica pasandole como parametro un NULL
-                        // versionMandada = null;
-                        descargarEInstalarAPKTask.execute(versionMandada);
-
+                        descargarEInstalarAPKTask.execute();
                     }
                 });
                 builder.show();
@@ -205,22 +201,25 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
     }
 
     /**
-     * Clase privada que se encarga descargar el apk con la nueva version e iniciar el
+     * Clase privada ASINCRONA que se encarga descargar el apk con la nueva version e iniciar el
      * instalador
      */
-    private class DescargarEInstalarAPKTask extends AsyncTask<String, Void, String> {
+    private class DescargarEInstalarAPKTask extends AsyncTask<String, Void, String[]> {
         // Creamos una tarea de progreso para mostrar al usuario que estamos bajandonos la apk del FTP
         ProgressDialog progressDialog;
+        String[] args;
 
-        @Override
+        // Constructor
+        public DescargarEInstalarAPKTask () {
+        }
+
         protected void onPreExecute() {
             progressDialog = ProgressDialog.show(StartSessionActivity.this, getString(R.string.actualizacion), getString(R.string.descargando_version));
         }
 
-        @Override
-        protected String doInBackground(String... args) {
+        protected String[] doInBackground(String... args) {
 
-            String version = args[0];
+            String versionMandada = args[0].toString();
 
             try {
                 // Inicializamos la clase Singleton para la gestion FTP
@@ -241,38 +240,62 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                         install.setDataAndType(FileProvider.getUriForFile(getBaseContext(), getBaseContext().getApplicationContext().getPackageName() + ".provider",new File(rutaFinalFicheroUpdate)),"application/vnd.android.package-archive");
                         install.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(install);
-
                     }
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
                 fallo = getString(R.string.error_durante_actualizacion);
+                args[2] = fallo;
             }
 
             if(ftpHelper != null && BooleanUtils.isTrue(ftpHelper.isConnected())) {
                 ftpHelper.disconnect();
             }
-
+            // No ha habido error
             if (fallo == null) {
                 fallo = getString(R.string.no_error_durante_actualizacion);
+                args[3] = fallo;
             }
 
-            return fallo;
+            return args;
         }
 
-        @Override
-        protected void onPostExecute(String fallo) {
+
+        protected void onPostExecute(Object...args) {
             progressDialog.dismiss();
+            String versionMandada = args[0].toString();
 
             if(StringUtils.isNotBlank(fallo)) {
                 Toast.makeText(StartSessionActivity.this, fallo, Toast.LENGTH_SHORT).show();
+                if(args[3] != null) {
+                    txt_version_value = (TextView) findViewById(R.id.edt_startSession_version_value);
+                    txt_version_value.setText("Versión: " + versionMandada);
+                }
             }
         }
     }
 
+
     /**
-     * Clase privada que se ejecuta en segundo plano y se encarga de iniciar la sesion contra el
+     * Clase publica que tiene la logica necesaria cuando el usuario hace click en el boton
+     * llamado button_iniciar_sesion y lanza en backGroung la llamada al WS para validarlos
+     */
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.button_iniciar_sesion:
+                // Se llama en background al webservice implementado en CIPOSTAL
+                // que valida el usuario y password introducido por el usuario
+                LoginUsuarioTask loginUsuarioTask = new LoginUsuarioTask();
+                loginUsuarioTask.execute(edt_usuario.getText().toString(), edt_password.getText().toString());
+
+                break;
+        }
+    }
+
+    /**
+     * Clase privada ASINCRONA que se ejecuta en segundo plano y se encarga de iniciar la sesion contra el
      * webservice publicado por CI POSTAL
      */
     private class LoginUsuarioTask extends AsyncTask<String, Void, Notificador> {

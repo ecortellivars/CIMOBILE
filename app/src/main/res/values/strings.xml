@@ -111,7 +111,7 @@
     <string name="detalle_actualizacion">Se ha encontrado un nueva versión. ¿Dese actualizar? Versión: </string>
     <string name="descargando_version">Descargando versión...</string>
     <string name="error_durante_actualizacion">Se ha producido un fallo durante la actualización</string>
-    <string name="no_error_durante_actualizacion">Se actualizó correctamente la nueva versión</string>
+    <string name="no_error_durante_actualizacion">Se actualizó correctamente la nueva versión </string>
     <string name="error_durante_comprobacion_version">Se ha producido un fallo durante la comprobacion de versiones</string>
     <string name="error_cargar_primero_reparto_sicer">Debes cargar primero el SICER de reparto</string>
     <string name="info_firma_notificador">Para facilitar el trabajo durante el trabajo de reparto, se precisa que firme por primera vez para dejar constancia de la persona que notifica.</string>
