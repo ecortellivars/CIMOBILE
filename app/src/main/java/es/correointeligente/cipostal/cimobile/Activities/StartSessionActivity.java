@@ -99,28 +99,23 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         // Lanza una tarea en background para la conexión FTP y comprobar si hay actualizaciones
         // Solo se puede conectar al FTP de Ibermatica dentro de la red de SCI y CIPOSTAL
         // Cambiando las preferencias del FTP se podria conectar a un FTP Publico como el de 1and1
-        FtpCheckUpdatesTask ftpCheckUpdatesTask = new FtpCheckUpdatesTask(versionInstalada);
-        ftpCheckUpdatesTask.execute(versionInstalada);
+        FtpCheckUpdatesTask ftpCheckUpdatesTask = new FtpCheckUpdatesTask();
+        ftpCheckUpdatesTask.execute();
     }
 
     /**
      * Clase privada ASINCRONA que se encarga de ejecutar en segundo plano la conexión via FTP,
      * y devuelve si la aplicacion instalada en el smartPhone tiene o no la ultima version
-     * Solo funciona desde la red de oficinas de SCI y CIPOSTAL
      */
     private class FtpCheckUpdatesTask extends AsyncTask<String, Void, String[]>  {
         // Parametros de entrada son (Tipo_empezarBackground, Tipo_duranteBackground, Tipo_terminarBackground)
         //                           <Params,                 Progress,               Result>
-        private String versionInstalada;
 
-        // Constructor
-        public FtpCheckUpdatesTask (String versionInstalada){
-            this.versionInstalada = versionInstalada;
-        }
 
         // Estructura de una AsyncTask -> onPreExecute() + onProgressUpdate() + onCancelled() + doInBackground()
         protected String[] doInBackground(String... variableNoUsada) {
-            String[] args = null;
+            String[] args = new String[6];
+
             try {
                 // Inicializamos la clase Singleton para la gestion FTP
                 ftpHelper = FTPHelper.getInstancia();
@@ -140,9 +135,8 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                             args[0] = versionMandada;
                             // Si la version del TXT del FTP es igual a la del build.gradle variable versionName
                             if (!versionMandada.equalsIgnoreCase(getPackageManager().getPackageInfo(getPackageName(), 0).versionName)) {
-                                // Si no es la misma versión se saca
-                                String hayNuevaVersion = "1";
-                                args[1] = hayNuevaVersion;
+                                // Si no es la misma versión se informa a onPostExecute
+                                args[1] =  "1";
                             }
 
                         } catch (Exception e) {
@@ -165,11 +159,10 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
          * Clase que informa al usuario que existe una nueva version de la app mas actual que la instalada en su smartPhone
          * @param args
          */
-
         protected void onPostExecute(String[] args) {
 
             String hayNuevaVersion = args[1].toString();
-            String versionMandada = args[0].toString();
+            final String versionMandada = args[0].toString();
 
             if(hayNuevaVersion == "1") {
 
@@ -189,10 +182,10 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                 builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int which) {
                         // Creamos el objeto que descargara la apk
-                        DescargarEInstalarAPKTask descargarEInstalarAPKTask = new DescargarEInstalarAPKTask();
+                        DescargarEInstalarAPKTask descargarEInstalarAPKTask = new DescargarEInstalarAPKTask(versionMandada);
                         // Tarea en background
                         // Ejecutamos la logica pasandole como parametro un NULL
-                        descargarEInstalarAPKTask.execute();
+                        descargarEInstalarAPKTask.execute(versionMandada);
                     }
                 });
                 builder.show();
@@ -207,19 +200,19 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
     private class DescargarEInstalarAPKTask extends AsyncTask<String, Void, String[]> {
         // Creamos una tarea de progreso para mostrar al usuario que estamos bajandonos la apk del FTP
         ProgressDialog progressDialog;
-        String[] args;
+        String versionMandada;
 
         // Constructor
-        public DescargarEInstalarAPKTask () {
+        public DescargarEInstalarAPKTask (String versionMandada) {
+            this.versionMandada = versionMandada;
         }
 
         protected void onPreExecute() {
             progressDialog = ProgressDialog.show(StartSessionActivity.this, getString(R.string.actualizacion), getString(R.string.descargando_version));
         }
 
-        protected String[] doInBackground(String... args) {
-
-            String versionMandada = args[0].toString();
+        protected String[] doInBackground(String... versionMandada) {
+            String[] args = new String[2];
 
             try {
                 // Inicializamos la clase Singleton para la gestion FTP
@@ -228,7 +221,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                 if (ftpHelper != null && ftpHelper.connect(StartSessionActivity.this)) {
                     String carpetaUpdates = Util.obtenerRutaFtpActualizaciones(getBaseContext());
                     if (ftpHelper.cargarCarpeta(carpetaUpdates)) {
-                        String fichero = "CIMobile-release-" + versionMandada + ".apk";
+                        String fichero = "CIMobile-release-" + versionMandada[0] + ".apk";
                         ftpHelper.descargarFichero(fichero, Util.obtenerRutaActualizaciones());
                         String rutaFinalFicheroUpdate = Util.obtenerRutaActualizaciones() + File.separator + fichero;
                         ftpHelper.disconnect();
@@ -246,7 +239,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
             } catch (Exception e) {
                 e.printStackTrace();
                 fallo = getString(R.string.error_durante_actualizacion);
-                args[2] = fallo;
+                args[0] = fallo;
             }
 
             if(ftpHelper != null && BooleanUtils.isTrue(ftpHelper.isConnected())) {
@@ -255,20 +248,24 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
             // No ha habido error
             if (fallo == null) {
                 fallo = getString(R.string.no_error_durante_actualizacion);
-                args[3] = fallo;
+                args[1] = fallo;
+                args[2] = versionMandada[0];
             }
 
             return args;
         }
 
 
-        protected void onPostExecute(Object...args) {
+        protected void onPostExecute(String[] args) {
+
             progressDialog.dismiss();
-            String versionMandada = args[0].toString();
+
+            String versionMandada = args[2].toString();
 
             if(StringUtils.isNotBlank(fallo)) {
                 Toast.makeText(StartSessionActivity.this, fallo, Toast.LENGTH_SHORT).show();
-                if(args[3] != null) {
+                // Si no ha habido error mando al layout el nuevo TexyView con la nueva version instalada
+                if(args[1] != null) {
                     txt_version_value = (TextView) findViewById(R.id.edt_startSession_version_value);
                     txt_version_value.setText("Versión: " + versionMandada);
                 }

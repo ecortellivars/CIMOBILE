@@ -208,7 +208,7 @@ public class FTPHelper {
         try (BufferedInputStream  is = new BufferedInputStream(channelSftp.get(nombreFichero));
              OutputStream fos = new FileOutputStream(outputFile);){
 
-            // copia el fichero desde el ftp a la carpeta indicada
+            // Copia el fichero desde el ftp a la carpeta indicada
             IOUtils.copy(is, fos);
 
         } catch (FileNotFoundException e) {
