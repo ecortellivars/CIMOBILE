@@ -222,17 +222,21 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                     String carpetaUpdates = Util.obtenerRutaFtpActualizaciones(getBaseContext());
                     if (ftpHelper.cargarCarpeta(carpetaUpdates)) {
                         String fichero = "CIMobile-release-" + versionMandada[0] + ".apk";
-                        ftpHelper.descargarFichero(fichero, Util.obtenerRutaActualizaciones());
-                        String rutaFinalFicheroUpdate = Util.obtenerRutaActualizaciones() + File.separator + fichero;
-                        ftpHelper.disconnect();
-                        progressDialog.dismiss();
-
-                        // Se lanza la actividad de actualizacion(Lanza el gestor de instalaciones)
-                        Intent install = new Intent(Intent.ACTION_VIEW);
-                        // install.setDataAndType(Uri.fromFile(new File(rutaFinalFicheroUpdate)), "application/vnd.android.package-archive");
-                        install.setDataAndType(FileProvider.getUriForFile(getBaseContext(), getBaseContext().getApplicationContext().getPackageName() + ".provider",new File(rutaFinalFicheroUpdate)),"application/vnd.android.package-archive");
-                        install.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(install);
+                        // Descargamos el fichero apk del ftp
+                        String falloDescarga = ftpHelper.descargarFichero(fichero, Util.obtenerRutaActualizaciones());
+                        // Si no hubo problemas con la descarga instalo la apk bajada
+                        if (falloDescarga != null) {
+                            // /storage/emulated/0/CIMobile/UPDATES_APP/CIMobile-release-3.0.apk
+                            String rutaFinalFicheroUpdate = Util.obtenerRutaActualizaciones() + File.separator + fichero;
+                            ftpHelper.disconnect();
+                            progressDialog.dismiss();
+                            // Se lanza la actividad de actualizacion(Lanza el gestor de instalaciones)
+                            Intent install = new Intent(Intent.ACTION_VIEW);
+                            // install.setDataAndType(Uri.fromFile(new File(rutaFinalFicheroUpdate)), "application/vnd.android.package-archive");
+                            install.setDataAndType(FileProvider.getUriForFile(getBaseContext(), getBaseContext().getApplicationContext().getPackageName() + ".provider", new File(rutaFinalFicheroUpdate)), "application/vnd.android.package-archive");
+                            install.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(install);
+                        }
                     }
                 }
 

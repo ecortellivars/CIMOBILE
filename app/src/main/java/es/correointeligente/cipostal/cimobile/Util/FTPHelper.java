@@ -29,6 +29,7 @@ import java.util.Properties;
 import java.util.Vector;
 
 import es.correointeligente.cipostal.cimobile.Holders.FicheroViewHolder;
+import es.correointeligente.cipostal.cimobile.R;
 
 public class FTPHelper {
 
@@ -195,13 +196,16 @@ public class FTPHelper {
         return channelSftp.get(nombreFichero);
     }
 
-    public void descargarFichero(String nombreFichero, String rutaCapeta) throws SftpException {
+    public String descargarFichero(String nombreFichero, String rutaCapeta) throws SftpException {
         // storage/emulated/0/CIMobile/UPDATES_APP
         File file = new File(rutaCapeta);
+        String fallo = null;
+        // Sino existe la carpeta la creo
         if(!file.exists()) {
             file.mkdirs();
         }
         File outputFile = new File(file, nombreFichero);
+        // Si existe el fichero apk que estoy mandando lo borro
         if(outputFile.exists()){
             outputFile.delete();
         }
@@ -211,11 +215,20 @@ public class FTPHelper {
             // Copia el fichero desde el ftp a la carpeta indicada
             IOUtils.copy(is, fos);
 
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            fallo = "Error en la descarga del fichero";
+            return fallo;
+
         } catch (IOException e) {
             e.printStackTrace();
+            fallo = "Error en la descarga del fichero por problemasd  de conexión";
+            return fallo;
+
         }
+
+     return fallo;
     }
 
 

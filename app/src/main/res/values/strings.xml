@@ -111,6 +111,9 @@
     <string name="detalle_actualizacion">Se ha encontrado un nueva versión. ¿Dese actualizar? Versión: </string>
     <string name="descargando_version">Descargando versión...</string>
     <string name="error_durante_actualizacion">Se ha producido un fallo durante la actualización</string>
+    <string name="error_descarga_fichero">Se ha producido un fallo durante la descarga del fichero</string>
+    <string name="no_error_descarga_fichero">No se ha producido ningun fallo durante la descarga del fichero</string>
+    <string name="error_descarga_fichero_conexion">Se ha producido un fallo durante la descarga del fichero debido a un fallo de conexion</string>
     <string name="no_error_durante_actualizacion">Se actualizó correctamente la nueva versión </string>
     <string name="error_durante_comprobacion_version">Se ha producido un fallo durante la comprobacion de versiones</string>
     <string name="error_cargar_primero_reparto_sicer">Debes cargar primero el SICER de reparto</string>
