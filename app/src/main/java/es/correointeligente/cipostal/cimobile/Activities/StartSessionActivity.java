@@ -161,8 +161,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
 
             } catch (Exception e) {
                 e.printStackTrace();
-                fallo = getString(R.string.error_durante_comprobacion_version);
-                args[2] = fallo;
+                args[2] = getString(R.string.error_durante_comprobacion_version);;
             }
 
             return args;
@@ -267,6 +266,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                         else {
                             args2[1] = null;
                             args2[3] = falloDescarga;
+                            args2[2] = versionMandada[0];
                         }
                     }
                 }
@@ -276,6 +276,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                 fallo = getString(R.string.error_durante_actualizacion);
                 args2[1] = null;
                 args2[3] = fallo;
+                args2[2] = versionMandada[0];
             }
 
             if(ftpHelper != null && BooleanUtils.isTrue(ftpHelper.isConnected())) {
@@ -284,24 +285,25 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
             return args2;
         }
 
-        // Taarea que finaliza el hilo en backGround
+        // Tarea que finaliza el hilo en backGround
         protected void onPostExecute(String[] args2) {
 
             progressDialog.dismiss();
 
             String versionMandada = args2[2].toString();
+            Toast toast;
 
             // Si no hubo error
             if( args2[3] == null) {
-                Toast toast = Toast.makeText(StartSessionActivity.this, args2[1], Toast.LENGTH_LONG);
+                toast = Toast.makeText(StartSessionActivity.this, args2[1], Toast.LENGTH_LONG);
                 toast.show();
                 // Si no ha habido error mando al layout el nuevo TexyView con la nueva version instalada
                 txt_version_value = (TextView) findViewById(R.id.edt_startSession_version_value);
                 txt_version_value.setText("Versión: " + versionMandada);
                 }
                 // Si hubo error
-                else  {
-                    Toast toast = Toast.makeText(StartSessionActivity.this, args2[3], Toast.LENGTH_LONG);
+                else  if( args2[3] != null)  {
+                    toast = Toast.makeText(StartSessionActivity.this, args2[3], Toast.LENGTH_LONG);
                     toast.show();
                 }
             }
