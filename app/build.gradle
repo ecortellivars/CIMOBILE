@@ -13,7 +13,7 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "es.correointeligente.cipostal.cimobile"
-        minSdkVersion 19
+        minSdkVersion 24
         targetSdkVersion 25
         versionCode 1
         versionName "2.0"

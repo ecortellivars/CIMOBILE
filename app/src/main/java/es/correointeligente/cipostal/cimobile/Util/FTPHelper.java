@@ -211,21 +211,18 @@ public class FTPHelper {
         }
         try (BufferedInputStream  is = new BufferedInputStream(channelSftp.get(nombreFichero));
              OutputStream fos = new FileOutputStream(outputFile);){
-
             // Copia el fichero desde el ftp a la carpeta indicada
-            IOUtils.copy(is, fos);
-
+            IOUtils.copyLarge(is, fos);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            fallo = "Error en la descarga del fichero";
+            fallo = "Error en la descarga del fichero. Revisa los permisos del móvil o tu conexion";
             return fallo;
 
         } catch (IOException e) {
             e.printStackTrace();
-            fallo = "Error en la descarga del fichero por problemasd  de conexión";
+            fallo = "Error en la descarga del fichero. Revisa los permisos del móvil o tu conexion";
             return fallo;
-
         }
 
      return fallo;

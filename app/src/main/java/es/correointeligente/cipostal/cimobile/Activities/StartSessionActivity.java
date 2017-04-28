@@ -5,12 +5,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.icu.text.NumberFormat;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.PasswordTransformationMethod;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -111,10 +113,15 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         // Parametros de entrada son (Tipo_empezarBackground, Tipo_duranteBackground, Tipo_terminarBackground)
         //                           <Params,                 Progress,               Result>
 
-
-        // Estructura de una AsyncTask -> onPreExecute() + onProgressUpdate() + onCancelled() + doInBackground()
+        //            Estructura de una AsyncTask
+        // onPreExecute() + onProgressUpdate() + onCancelled()
+        // <-----------------doInBackground()---------------->
         protected String[] doInBackground(String... variableNoUsada) {
             String[] args = new String[6];
+            // Posicion [o] : versionMandada
+            // Posicion [1] : Hay o no hay nueva version
+            // Posicion [2] : Mensajes de OK o KO
+
 
             try {
                 // Inicializamos la clase Singleton para la gestion FTP
@@ -133,15 +140,20 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                             // Se separa el string "version:" del resto
                             String versionMandada = linea.replace("version:", "").trim();
                             args[0] = versionMandada;
-                            // Si la version del TXT del FTP es igual a la del build.gradle variable versionName
-                            if (!versionMandada.equalsIgnoreCase(getPackageManager().getPackageInfo(getPackageName(), 0).versionName)) {
-                                // Si no es la misma versión se informa a onPostExecute
+                            Integer versionMandadaInteger = NumberFormat.getInstance().parse(versionMandada).intValue();
+                            Integer versionInstaladaInteger = NumberFormat.getInstance().parse(getPackageManager().getPackageInfo(getPackageName(), 0).versionName).intValue();
+                            // Si la version que mandamos es mayor que la instalada se informa a onPostExecute
+                            if (versionMandadaInteger > versionInstaladaInteger) {
                                 args[1] =  "1";
+                            }
+                            else {
+                                args[1] =  "0";
+                                args[2] = "El dispositivo tiene la última version";
                             }
 
                         } catch (Exception e) {
                             e.printStackTrace();
-                            fallo = getString(R.string.error_durante_comprobacion_version);
+                            args[2] = getString(R.string.error_durante_comprobacion_version);;
                         }
                     }
                     ftpHelper.disconnect();
@@ -150,6 +162,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
             } catch (Exception e) {
                 e.printStackTrace();
                 fallo = getString(R.string.error_durante_comprobacion_version);
+                args[2] = fallo;
             }
 
             return args;
@@ -172,12 +185,14 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                 // Le incluimos al objeto los mensajes a mostrar
                 builder.setTitle(R.string.actualizacion);
                 builder.setMessage(getString(R.string.detalle_actualizacion) + " " + versionMandada);
+
                 // Si el usuario no quiere actualizar la app
                 builder.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int which) {
                         dialogInterface.cancel();
                     }
                 });
+
                 // Si el usuario si quiere actualizarse
                 builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int which) {
@@ -189,6 +204,11 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                     }
                 });
                 builder.show();
+            }
+            else {
+                Toast toast = Toast.makeText(StartSessionActivity.this, args[2], Toast.LENGTH_LONG);
+                toast.show();
+
             }
         }
     }
@@ -212,7 +232,11 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         }
 
         protected String[] doInBackground(String... versionMandada) {
-            String[] args = new String[2];
+            String[] args2 = new String[6];
+            // Posicion [1] : OK
+            // Posicion [2] : versionMandada
+            // Posicion [3] : KO
+
 
             try {
                 // Inicializamos la clase Singleton para la gestion FTP
@@ -225,7 +249,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                         // Descargamos el fichero apk del ftp
                         String falloDescarga = ftpHelper.descargarFichero(fichero, Util.obtenerRutaActualizaciones());
                         // Si no hubo problemas con la descarga instalo la apk bajada
-                        if (falloDescarga != null) {
+                        if (falloDescarga == null) {
                             // /storage/emulated/0/CIMobile/UPDATES_APP/CIMobile-release-3.0.apk
                             String rutaFinalFicheroUpdate = Util.obtenerRutaActualizaciones() + File.separator + fichero;
                             ftpHelper.disconnect();
@@ -236,6 +260,13 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                             install.setDataAndType(FileProvider.getUriForFile(getBaseContext(), getBaseContext().getApplicationContext().getPackageName() + ".provider", new File(rutaFinalFicheroUpdate)), "application/vnd.android.package-archive");
                             install.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(install);
+                            args2[1] = getString(R.string.no_error_durante_actualizacion);
+                            args2[2] = versionMandada[0];
+                            args2[3] = null;
+                        }
+                        else {
+                            args2[1] = null;
+                            args2[3] = falloDescarga;
                         }
                     }
                 }
@@ -243,39 +274,39 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
             } catch (Exception e) {
                 e.printStackTrace();
                 fallo = getString(R.string.error_durante_actualizacion);
-                args[0] = fallo;
+                args2[1] = null;
+                args2[3] = fallo;
             }
 
             if(ftpHelper != null && BooleanUtils.isTrue(ftpHelper.isConnected())) {
                 ftpHelper.disconnect();
             }
-            // No ha habido error
-            if (fallo == null) {
-                fallo = getString(R.string.no_error_durante_actualizacion);
-                args[1] = fallo;
-                args[2] = versionMandada[0];
-            }
-
-            return args;
+            return args2;
         }
 
-
-        protected void onPostExecute(String[] args) {
+        // Taarea que finaliza el hilo en backGround
+        protected void onPostExecute(String[] args2) {
 
             progressDialog.dismiss();
 
-            String versionMandada = args[2].toString();
+            String versionMandada = args2[2].toString();
 
-            if(StringUtils.isNotBlank(fallo)) {
-                Toast.makeText(StartSessionActivity.this, fallo, Toast.LENGTH_SHORT).show();
+            // Si no hubo error
+            if( args2[3] == null) {
+                Toast toast = Toast.makeText(StartSessionActivity.this, args2[1], Toast.LENGTH_LONG);
+                toast.show();
                 // Si no ha habido error mando al layout el nuevo TexyView con la nueva version instalada
-                if(args[1] != null) {
-                    txt_version_value = (TextView) findViewById(R.id.edt_startSession_version_value);
-                    txt_version_value.setText("Versión: " + versionMandada);
+                txt_version_value = (TextView) findViewById(R.id.edt_startSession_version_value);
+                txt_version_value.setText("Versión: " + versionMandada);
+                }
+                // Si hubo error
+                else  {
+                    Toast toast = Toast.makeText(StartSessionActivity.this, args2[3], Toast.LENGTH_LONG);
+                    toast.show();
                 }
             }
-        }
     }
+
 
 
     /**
