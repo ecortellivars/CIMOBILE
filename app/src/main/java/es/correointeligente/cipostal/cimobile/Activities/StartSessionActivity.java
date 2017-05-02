@@ -304,19 +304,21 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
             progressDialog.dismiss();
 
             String versionMandada = args2[2].toString();
-            Toast toast;
+            Toast toast = null;
 
             // Si no hubo error
             if( args2[3] == null) {
-                toast = Toast.makeText(StartSessionActivity.this, args2[1], Toast.LENGTH_LONG);
+                toast = Toast.makeText(StartSessionActivity.this, "Se actualizó correctamente", Toast.LENGTH_LONG);
+                toast.setGravity(1,0,500);
                 toast.show();
-                // Si no ha habido error mando al layout el nuevo TexyView con la nueva version instalada
+                // Si no ha habido error mando al layout el nuevo TextView con la nueva version instalada
                 txt_version_value = (TextView) findViewById(R.id.edt_startSession_version_value);
                 txt_version_value.setText("Versión: " + versionMandada);
                 }
                 // Si hubo error
                 else  if( args2[3] != null)  {
-                    toast = Toast.makeText(StartSessionActivity.this, args2[3], Toast.LENGTH_LONG);
+                    toast = Toast.makeText(StartSessionActivity.this, "Se produjo un error durante la actualización. Revisa los permisos del movil", Toast.LENGTH_LONG);
+                    toast.setGravity(1,0,500);
                     toast.show();
                 }
             }
