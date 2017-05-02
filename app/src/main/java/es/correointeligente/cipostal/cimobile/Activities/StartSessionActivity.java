@@ -123,51 +123,45 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
             // Posicion [2] : Mensajes de KO
             // Posicion [3] : Mensajes de dispositivo a la ultima version
 
-
-            try {
-                // Inicializamos la clase Singleton para la gestion FTP
-                ftpHelper = FTPHelper.getInstancia();
-                // Obtenemos class es.correointeligente.cipostal.cimobile.Util.FTPHelper
-                if (ftpHelper != null && ftpHelper.connect(StartSessionActivity.this)) {
-                    // ftpData/ULTIMAVERSION/CIMOBILE
-                    String carpetaUpdates = Util.obtenerRutaFtpActualizaciones(getBaseContext());
-                    // Si existe la carpeta obtenemos el fichero version.txt
-                    if(ftpHelper.cargarCarpeta(carpetaUpdates)) {
-                        // ftpData/ULTIMAVERSION/CIMOBILE/version.txt
-                        String fichero = carpetaUpdates + Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_FICHERO, getBaseContext(), String.class.getSimpleName());;
-                        try (BufferedReader reader = new BufferedReader(new InputStreamReader(ftpHelper.leerFichero(fichero)))) {
-                            // Se lee solo la primera linea del fichero txt
-                            String linea = reader.readLine();
-                            // Se separa el string "version:" del resto
-                            String versionMandada = linea.replace("version:", "").trim();
-                            args[0] = versionMandada;
-                            Integer versionMandadaInteger = NumberFormat.getInstance().parse(versionMandada).intValue();
-                            Integer versionInstaladaInteger = NumberFormat.getInstance().parse(getPackageManager().getPackageInfo(getPackageName(), 0).versionName).intValue();
-                            // Si la version que mandamos es mayor que la instalada se informa a onPostExecute
-                            if (versionMandadaInteger > versionInstaladaInteger) {
-                                args[1] =  "1";
-                            }
-                            else {
-                                args[1] =  "0";
-                                args[3] = "El dispositivo tiene la última version";
-                            }
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            args[2] = getString(R.string.error_durante_comprobacion_version);
-                            Toast toast = Toast.makeText(StartSessionActivity.this, "Se ha producido un fallo durante la comprobacion de versiones", Toast.LENGTH_LONG);
-                            toast.show();
+            // Inicializamos la clase Singleton para la gestion FTP
+            ftpHelper = FTPHelper.getInstancia();
+            // Obtenemos class es.correointeligente.cipostal.cimobile.Util.FTPHelper
+            if (ftpHelper != null && ftpHelper.connect(StartSessionActivity.this)) {
+                // ftpData/ULTIMAVERSION/CIMOBILE
+                String carpetaUpdates = Util.obtenerRutaFtpActualizaciones(getBaseContext());
+                // Si existe la carpeta obtenemos el fichero version.txt
+                if(ftpHelper.cargarCarpeta(carpetaUpdates)) {
+                    // ftpData/ULTIMAVERSION/CIMOBILE/version.txt
+                    String fichero = carpetaUpdates + Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_FICHERO, getBaseContext(), String.class.getSimpleName());;
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(ftpHelper.leerFichero(fichero)))) {
+                        // Se lee solo la primera linea del fichero txt
+                        String linea = reader.readLine();
+                        // Se separa el string "version:" del resto
+                        String versionMandada = linea.replace("version:", "").trim();
+                        args[0] = versionMandada;
+                        Integer versionMandadaInteger = NumberFormat.getInstance().parse(versionMandada).intValue();
+                        Integer versionInstaladaInteger = NumberFormat.getInstance().parse(getPackageManager().getPackageInfo(getPackageName(), 0).versionName).intValue();
+                        // Si la version que mandamos es mayor que la instalada se informa a onPostExecute
+                        if (versionMandadaInteger > versionInstaladaInteger) {
+                            args[1] =  "1";
                         }
-                    }
-                    ftpHelper.disconnect();
-                }
+                        else {
+                            args[1] =  "0";
+                            args[3] = "El dispositivo tiene la última version";
+                        }
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                args[2] = getString(R.string.error_durante_comprobacion_version);
-                Toast toast = Toast.makeText(StartSessionActivity.this, "Se ha producido un fallo durante la comprobacion de versiones", Toast.LENGTH_LONG);
-                toast.show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        args[2] = getString(R.string.error_durante_comprobacion_version);
+                        args[1] = "0";
+                        args[0] = "0";
+
+                    }
+                }
+                ftpHelper.disconnect();
             }
+
+
 
             return args;
         }
@@ -180,6 +174,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
 
             String hayNuevaVersion = args[1].toString();
             final String versionMandada = args[0].toString();
+            Toast toast = null;
 
             // Si no ha habido error y el dispositivo no esta a la ultima version
             if ( args[2] == null && args[3] == null) {
@@ -215,12 +210,14 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
             else {
                 // Si ha habido algun error
                 if (args[2] != null) {
-                    Toast toast = Toast.makeText(StartSessionActivity.this, "Se ha producido un fallo durante la comprobacion de versiones", Toast.LENGTH_LONG);
+                    toast = Toast.makeText(StartSessionActivity.this, "Se ha producido un fallo durante la comprobacion de versiones", Toast.LENGTH_LONG);
+                    toast.setGravity(1,0,500);
                     toast.show();
                 }
                 // Si el dispositivo ya esta a la ultima version
                 if (args[3] != null) {
-                    Toast toast = Toast.makeText(StartSessionActivity.this, "El dispositivo tiene la última version", Toast.LENGTH_LONG);
+                    toast = Toast.makeText(StartSessionActivity.this, "El dispositivo tiene la última version", Toast.LENGTH_LONG);
+                    toast.setGravity(1,0,500);
                     toast.show();
                 }
 
