@@ -120,7 +120,8 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
             String[] args = new String[6];
             // Posicion [o] : versionMandada
             // Posicion [1] : Hay o no hay nueva version
-            // Posicion [2] : Mensajes de OK o KO
+            // Posicion [2] : Mensajes de KO
+            // Posicion [3] : Mensajes de dispositivo a la ultima version
 
 
             try {
@@ -148,12 +149,14 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                             }
                             else {
                                 args[1] =  "0";
-                                args[2] = "El dispositivo tiene la última version";
+                                args[3] = "El dispositivo tiene la última version";
                             }
 
                         } catch (Exception e) {
                             e.printStackTrace();
-                            args[2] = getString(R.string.error_durante_comprobacion_version);;
+                            args[2] = getString(R.string.error_durante_comprobacion_version);
+                            Toast toast = Toast.makeText(StartSessionActivity.this, "Se ha producido un fallo durante la comprobacion de versiones", Toast.LENGTH_LONG);
+                            toast.show();
                         }
                     }
                     ftpHelper.disconnect();
@@ -161,7 +164,9 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
 
             } catch (Exception e) {
                 e.printStackTrace();
-                args[2] = getString(R.string.error_durante_comprobacion_version);;
+                args[2] = getString(R.string.error_durante_comprobacion_version);
+                Toast toast = Toast.makeText(StartSessionActivity.this, "Se ha producido un fallo durante la comprobacion de versiones", Toast.LENGTH_LONG);
+                toast.show();
             }
 
             return args;
@@ -176,37 +181,48 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
             String hayNuevaVersion = args[1].toString();
             final String versionMandada = args[0].toString();
 
-            if(hayNuevaVersion == "1") {
+            // Si no ha habido error y el dispositivo no esta a la ultima version
+            if ( args[2] == null && args[3] == null) {
+                if (hayNuevaVersion == "1") {
 
-                // Usamos la clase AlertDialog para mandar mensajes al usuario
-                // Primero le damos el contexto de la aplicacion
-                AlertDialog.Builder builder = new AlertDialog.Builder(StartSessionActivity.this);
-                // Le incluimos al objeto los mensajes a mostrar
-                builder.setTitle(R.string.actualizacion);
-                builder.setMessage(getString(R.string.detalle_actualizacion) + " " + versionMandada);
+                    // Usamos la clase AlertDialog para mandar mensajes al usuario
+                    // Primero le damos el contexto de la aplicacion
+                    AlertDialog.Builder builder = new AlertDialog.Builder(StartSessionActivity.this);
+                    // Le incluimos al objeto los mensajes a mostrar
+                    builder.setTitle(R.string.actualizacion);
+                    builder.setMessage(getString(R.string.detalle_actualizacion) + " " + versionMandada);
 
-                // Si el usuario no quiere actualizar la app
-                builder.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialogInterface, int which) {
-                        dialogInterface.cancel();
-                    }
-                });
+                    // Si el usuario no quiere actualizar la app
+                    builder.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialogInterface, int which) {
+                            dialogInterface.cancel();
+                        }
+                    });
 
-                // Si el usuario si quiere actualizarse
-                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialogInterface, int which) {
-                        // Creamos el objeto que descargara la apk
-                        DescargarEInstalarAPKTask descargarEInstalarAPKTask = new DescargarEInstalarAPKTask(versionMandada);
-                        // Tarea en background
-                        // Ejecutamos la logica pasandole como parametro un NULL
-                        descargarEInstalarAPKTask.execute(versionMandada);
-                    }
-                });
-                builder.show();
+                    // Si el usuario si quiere actualizarse
+                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialogInterface, int which) {
+                            // Creamos el objeto que descargara la apk
+                            DescargarEInstalarAPKTask descargarEInstalarAPKTask = new DescargarEInstalarAPKTask(versionMandada);
+                            // Tarea en background
+                            // Ejecutamos la logica pasandole como parametro un NULL
+                            descargarEInstalarAPKTask.execute(versionMandada);
+                        }
+                    });
+                    builder.show();
+                }
             }
             else {
-                Toast toast = Toast.makeText(StartSessionActivity.this, args[2], Toast.LENGTH_LONG);
-                toast.show();
+                // Si ha habido algun error
+                if (args[2] != null) {
+                    Toast toast = Toast.makeText(StartSessionActivity.this, "Se ha producido un fallo durante la comprobacion de versiones", Toast.LENGTH_LONG);
+                    toast.show();
+                }
+                // Si el dispositivo ya esta a la ultima version
+                if (args[3] != null) {
+                    Toast toast = Toast.makeText(StartSessionActivity.this, "El dispositivo tiene la última version", Toast.LENGTH_LONG);
+                    toast.show();
+                }
 
             }
         }
