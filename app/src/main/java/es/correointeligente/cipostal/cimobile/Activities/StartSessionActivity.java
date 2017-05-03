@@ -118,10 +118,10 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         // <-----------------doInBackground()---------------->
         protected String[] doInBackground(String... variableNoUsada) {
             String[] args = new String[6];
-            // Posicion [o] : versionMandada
+            // Posicion [0] : versionMandada
             // Posicion [1] : Hay o no hay nueva version
             // Posicion [2] : Mensajes de KO
-            // Posicion [3] : Mensajes de dispositivo a la ultima version
+            // Posicion [3] : Mensajes de dispositivo diciendo que esta a la ultima version
 
             // Inicializamos la clase Singleton para la gestion FTP
             ftpHelper = FTPHelper.getInstancia();
@@ -152,13 +152,19 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
 
                     } catch (Exception e) {
                         e.printStackTrace();
-                        args[2] = getString(R.string.error_durante_comprobacion_version);
+                        args[2] = "No existe ningun fichero para actualizar";
                         args[1] = "0";
                         args[0] = "0";
 
                     }
                 }
                 ftpHelper.disconnect();
+            }
+
+            else {
+                args[2] = "Problemas de conexión con el FTP";
+                args[1] = "0";
+                args[0] = "0";
             }
 
 
@@ -210,7 +216,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
             else {
                 // Si ha habido algun error
                 if (args[2] != null) {
-                    toast = Toast.makeText(StartSessionActivity.this, "Se ha producido un fallo durante la comprobacion de versiones", Toast.LENGTH_LONG);
+                    toast = Toast.makeText(StartSessionActivity.this, "Problemas de conexión con el FTP", Toast.LENGTH_LONG);
                     toast.setGravity(1,0,500);
                     toast.show();
                 }
