@@ -278,7 +278,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                         }
                         else {
                             args2[1] = null;
-                            args2[3] = falloDescarga;
+                            args2[3] = "No hay nueva versión";
                             args2[2] = versionMandada[0];
                         }
                     }
