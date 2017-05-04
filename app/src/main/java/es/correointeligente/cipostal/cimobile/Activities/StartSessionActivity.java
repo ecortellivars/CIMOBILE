@@ -37,6 +37,8 @@ import es.correointeligente.cipostal.cimobile.R;
 import es.correointeligente.cipostal.cimobile.Util.FTPHelper;
 import es.correointeligente.cipostal.cimobile.Util.Util;
 
+import static android.provider.Settings.AUTHORITY;
+
 
 /** Actividad inicial dada de alta en AndroidManifest con intent lo que significa que desde esta empezaremos
     siempre a debugar. Esta Actividad gestiona el layout llamado activity_start_session **/
@@ -272,12 +274,14 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                             String rutaFinalFicheroUpdate = Util.obtenerRutaActualizaciones() + File.separator + fichero;
                             ftpHelper.disconnect();
                             progressDialog.dismiss();
+
+                            // Obtenemos los permisos para acceder a la apk
+                            File file = new File(rutaFinalFicheroUpdate);
+                            Intent i = new Intent(Intent.ACTION_VIEW, FileProvider.getUriForFile(getBaseContext(), "com.your.package.fileProvider", file));
+                            i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                             // Se lanza la actividad de actualizacion(Lanza el gestor de instalaciones)
-                            Intent install = new Intent(Intent.ACTION_VIEW);
-                            // install.setDataAndType(Uri.fromFile(new File(rutaFinalFicheroUpdate)), "application/vnd.android.package-archive");
-                            install.setDataAndType(FileProvider.getUriForFile(getBaseContext(), getBaseContext().getApplicationContext().getPackageName() + ".provider", new File(rutaFinalFicheroUpdate)), "application/vnd.android.package-archive");
-                            install.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(install);
+                            startActivity(i);
+
                             args2[1] = getString(R.string.no_error_durante_actualizacion);
                             args2[2] = versionMandada[0];
                             args2[3] = null;
