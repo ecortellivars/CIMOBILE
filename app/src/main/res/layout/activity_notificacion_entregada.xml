@@ -24,10 +24,10 @@
             android:padding="16dp">
 
             <TextView
-                android:text="@string/numero_documento"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"/>
+                android:text="@string/numero_documento"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -39,79 +39,97 @@
                     android:id="@+id/spinner_notificacionEntregada_tipoDocumento"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:spinnerMode="dialog"
                     android:background="@drawable/edit_text_shape"
-                    android:textStyle="bold"/>
+                    android:spinnerMode="dialog"
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/editText_notificacionEntregada_numeroDocumento"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPersonName"
+                    android:layout_marginLeft="5dp"
                     android:background="@drawable/edit_text_shape"
+                    android:hint="@string/numero_documento"
+                    android:inputType="textPersonName"
                     android:maxLines="1"
                     android:padding="8dp"
-                    android:textStyle="bold"
-                    android:layout_marginLeft="5dp"
-                    android:hint="@string/numero_documento"/>
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
             <TextView
-                android:text="@string/nombre_y_apellidos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="10dp"
+                android:text="@string/nombre_y_apellidos"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/editText_notificacionEntregada_nombreApellidos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
                 android:background="@drawable/edit_text_shape"
+                android:hint="@string/nombre_y_apellidos"
+                android:inputType="textPersonName"
                 android:maxLines="1"
                 android:padding="8dp"
-                android:textStyle="bold"
-                android:hint="@string/nombre_y_apellidos" />
+                android:textStyle="bold" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="269dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:text="@string/firma_receptor"
-                android:textStyle="bold"
-                android:layout_marginTop="10dp"/>
+                android:textStyle="bold" />
 
             <es.correointeligente.cipostal.cimobile.Util.Lienzo
                 android:id="@+id/lienzo_firma"
                 android:layout_width="match_parent"
-                android:layout_height="275dp"
-                android:background="@drawable/edit_text_shape" />
-
-            <android.support.v4.widget.Space
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:layout_height="@dimen/activity_vertical_margin"
+                android:background="@drawable/edit_text_shape"
+                android:layout_weight="0.78" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal"
+                android:weightSum="1">
+
+                <Button
+                    android:id="@+id/button_notif_entregada_foto_acuse"
+                    android:layout_width="145dp"
+                    android:layout_height="37dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/button_selector"
+                    android:text="@string/foto_acuse"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="79dp"
                 android:layout_marginBottom="5dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
                 android:weightSum="1">
 
                 <Button
                     android:id="@+id/button_notif_entregada_guardar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="81dp"
                     android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                     android:background="@drawable/button_selector"
                     android:text="@string/guardar"
-                    android:textAllCaps="false"
-                    android:textColor="#FFFFFF"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"/>
+                    android:textAllCaps="true"
+                    android:textColor="#FFFFFF" />
 
             </LinearLayout>
 

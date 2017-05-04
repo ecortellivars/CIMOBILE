@@ -170,84 +170,9 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/linearLayout_detalle_primer_intento"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingTop="10dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp">
-
-                <TextView
-                    android:text="@string/detalle_primer_intento"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textAllCaps="true"/>
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:background="@drawable/fieldset_shape">
-
-                    <TableLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:stretchColumns="*">
-
-                        <TableRow>
-
-                            <TextView
-                                android:text="@string/resultado"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textStyle="bold"/>
-
-                            <TextView
-                                android:text="@string/fecha"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textStyle="bold"/>
-
-                        </TableRow>
-
-                        <TableRow>
-
-                            <TextView
-                                android:id="@+id/textView_nuevaNotificacion_resultadoDetalle_primerIntento"
-                                android:text="@string/resultado"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAllCaps="true"/>
-
-                            <TextView
-                                android:id="@+id/textView_nuevaNotificacion_resultadoDetalle_primerIntento_fecha"
-                                android:text="@string/fecha"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
-
-                        </TableRow>
-
-                    </TableLayout>
-
-                    <TextView
-                        android:id="@+id/textView_nuevaNotificacion_consejo_segundo_intento"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        android:layout_marginTop="5dp"/>
-
-                </LinearLayout>
-
-            </LinearLayout>
-
             <android.support.v4.widget.Space
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:layout_height="17dp" />
 
             <LinearLayout
                 android:id="@+id/linearLayout_nueva_notificacion_botonera"
@@ -284,6 +209,80 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp" />
 
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout_detalle_primer_intento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/detalle_primer_intento"
+                    android:textAllCaps="true"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/fieldset_shape"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:stretchColumns="*">
+
+                        <TableRow>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/resultado"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/fecha"
+                                android:textStyle="bold" />
+
+                        </TableRow>
+
+                        <TableRow>
+
+                            <TextView
+                                android:id="@+id/textView_nuevaNotificacion_resultadoDetalle_primerIntento"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/resultado"
+                                android:textAllCaps="true" />
+
+                            <TextView
+                                android:id="@+id/textView_nuevaNotificacion_resultadoDetalle_primerIntento_fecha"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/fecha" />
+
+                        </TableRow>
+
+                    </TableLayout>
+
+                    <TextView
+                        android:id="@+id/textView_nuevaNotificacion_consejo_segundo_intento"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
 
             </LinearLayout>
 

@@ -119,6 +119,7 @@
     <string name="error_cargar_primero_reparto_sicer">Debes cargar primero el SICER de reparto</string>
     <string name="info_firma_notificador">Para facilitar el trabajo durante el trabajo de reparto, se precisa que firme por primera vez para dejar constancia de la persona que notifica.</string>
     <string name="dia_limite">Día límite</string>
+    <string name="foto_acuse">Foto Acuse</string>
 
     <string-array name="filtro_busqueda_array">
         <item>Entregado</item>

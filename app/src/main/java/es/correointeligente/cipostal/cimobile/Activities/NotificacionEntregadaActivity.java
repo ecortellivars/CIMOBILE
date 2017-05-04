@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
@@ -47,6 +48,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
     Lienzo mLienzo;
     Toolbar mToolbar;
     Button btn_guardar;
+    Button btn_fotoAcuse;
     DBHelper dbHelper;
     String referenciaPostal, referenciaPostalSCB, longitud, latitud, observaciones;
     Integer idNotificacion, posicionAdapter;
@@ -66,7 +68,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        // Recupera laos datos de la notificacion
+        // Recupera los datos de la notificacion
         referenciaPostal = getIntent().getStringExtra("referenciaPostal");
         referenciaPostalSCB = getIntent().getStringExtra("referenciaPostalSCB");
         idNotificacion = getIntent().getIntExtra("idNotificacion",0);
@@ -117,11 +119,15 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
         edt_numeroDocumentoReceptor.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         edt_nombreReceptor.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
+        // Zona para la firma del ciudadano
         mLienzo = (Lienzo) findViewById(R.id.lienzo_firma);
         mLienzo.setDrawingCacheEnabled(true);
 
         btn_guardar = (Button) findViewById(R.id.button_notif_entregada_guardar);
         btn_guardar.setOnClickListener(this);
+
+        btn_fotoAcuse = (Button) findViewById(R.id.button_notif_entregada_guardar);
+        btn_fotoAcuse.setOnClickListener(this);
 
         // Obtenemos la instancia del helper de la base de datos
         dbHelper = new DBHelper(this);
@@ -134,47 +140,57 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
 
     @Override
     public void onClick(View view) {
-        if(view.getId() == R.id.button_notif_entregada_guardar) {
+        switch (view.getId()) {
 
-            if(numeroDocumentoValido) {
+            // Lógica boton guardar notificacion ENTREGADA
+            case R.id.button_notif_entregada_guardar:
+                if (numeroDocumentoValido) {
+                    // Primero se pone el fondo en su color original para validar posteriormente
+                    edt_nombreReceptor.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape));
+                    if (StringUtils.isNotBlank(edt_nombreReceptor.getText().toString())) {
 
-                // Primero se pone el fondo en su color original para validar posteriormente
-                edt_nombreReceptor.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape));
-                if(StringUtils.isNotBlank(edt_nombreReceptor.getText().toString())) {
+                        // Guarda la imagen firmada en el sistema de archivos
+                        try {
+                            mLienzo.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape));
+                            Bitmap bitmap = mLienzo.getDrawingCache();
+                            File file = new File(Util.obtenerRutaFirmasReceptor(), referenciaPostal + "_" + StringUtils.defaultIfBlank(referenciaPostalSCB, "") + ".png");
 
-                    // Guarda la imagen firmada en el sistema de archivos
-                    try {
-                        mLienzo.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape));
-                        Bitmap bitmap = mLienzo.getDrawingCache();
-                        File file = new File(Util.obtenerRutaFirmasReceptor(), referenciaPostal+"_"+StringUtils.defaultIfBlank(referenciaPostalSCB,"") + ".png");
+                            try (FileOutputStream ostream = new FileOutputStream(file);) {
 
-                        try (FileOutputStream ostream = new FileOutputStream(file);) {
+                                bitmap.compress(Bitmap.CompressFormat.PNG, 10, ostream);
+                                ostream.close();
 
-                            bitmap.compress(Bitmap.CompressFormat.PNG, 10, ostream);
-                            ostream.close();
+                                // Lanza en background el guardado de la notificacion entregada
+                                GuardarNotificacionEntregadaTask guardarNotificacionEntregadaTask = new GuardarNotificacionEntregadaTask();
+                                guardarNotificacionEntregadaTask.execute(file.getPath(), edt_nombreReceptor.getText().toString(), edt_numeroDocumentoReceptor.getText().toString());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
 
-                            // Lanza en background el guardado de la notificacion entregada
-                            GuardarNotificacionEntregadaTask guardarNotificacionEntregadaTask = new GuardarNotificacionEntregadaTask();
-                            guardarNotificacionEntregadaTask.execute(file.getPath(), edt_nombreReceptor.getText().toString(), edt_numeroDocumentoReceptor.getText().toString());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } else {
+                        // Si no se ha introducido texto en el nombre receptor se pinta en rojo
+                        edt_nombreReceptor.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape_error));
                     }
-                } else {
-                    // si no se ha introducido texto en el nombre receptor se pinta en rojo
-                    edt_nombreReceptor.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape_error));
                 }
-            }
+                break;
+
+            // Lógica boton hacer foto acuse
+            case R.id.button_notif_entregada_foto_acuse:
+                final int REQUEST_IMAGE_CAPTURE = 1;
+
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                    break;
+                }
         }
     }
-
-
     /**
-     * Clase privada que se encarga de guardar el resultado en la base de datos, generar el xml
-     * y generar el fichero de sello de tiempo
+     * Clase privada que se encarga de guardar el resultado en la base de datos,
+     * generar el xml y generar el fichero de sello de tiempo
      */
     private class GuardarNotificacionEntregadaTask extends AsyncTask<String, String, String> {
         ProgressDialog progressDialog;

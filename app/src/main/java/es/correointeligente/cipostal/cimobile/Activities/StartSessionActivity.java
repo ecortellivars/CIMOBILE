@@ -279,9 +279,9 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                             File file = new File(rutaFinalFicheroUpdate);
                             Intent i = new Intent(Intent.ACTION_VIEW, FileProvider.getUriForFile(getBaseContext(), "com.your.package.fileProvider", file));
                             i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                            // Se lanza la actividad de actualizacion(Lanza el gestor de instalaciones)
+                            // Se lanza la actividad de actualizacion (Lanza el gestor de instalaciones)
                             startActivity(i);
-
+                            // Todo ha ido OK
                             args2[1] = getString(R.string.no_error_durante_actualizacion);
                             args2[2] = versionMandada[0];
                             args2[3] = null;
