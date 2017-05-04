@@ -177,7 +177,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 }
                 break;
 
-            // Lógica boton hacer foto acuse
+            // Lógica boton hacer foto del acuse rellenado por el notificador
             case R.id.button_notif_entregada_foto_acuse:
                 final int REQUEST_IMAGE_CAPTURE = 1;
 
