@@ -97,18 +97,6 @@
                 android:orientation="horizontal"
                 android:weightSum="1">
 
-                <Button
-                    android:id="@+id/button_notif_entregada_foto_acuse"
-                    android:layout_width="145dp"
-                    android:layout_height="37dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:background="@drawable/button_selector"
-                    android:text="@string/foto_acuse"
-                    android:textAllCaps="false"
-                    android:textColor="#FFFFFF" />
-
             </LinearLayout>
 
             <LinearLayout

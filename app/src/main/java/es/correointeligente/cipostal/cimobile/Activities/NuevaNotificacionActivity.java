@@ -5,13 +5,18 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Vibrator;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -67,7 +72,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     Integer posicionAdapter;
     DBHelper dbHelper;
     TextView tv_refPostal, tv_nombre, tv_direccion, tv_resultadoDetallePrimerIntento, tv_consejoSegundoIntento,
-             tv_latitud, tv_longitud, tv_fechaDetallePrimerIntento, tv_refSCB;
+            tv_latitud, tv_longitud, tv_fechaDetallePrimerIntento, tv_refSCB;
     EditText edt_observaciones;
     Button btn_noEntregado, btn_entregado;
     LinearLayout ll_detallePrimerIntento, ll_botonera;
@@ -85,6 +90,9 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
 //    private final int REQUEST_LOCATION = 200;
 //    private final int REQUEST_CHECK_SETTINGS = 300; Variables para la localizacion de la calle via google Maps
 
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    String mCurrentPhotoPath;
+    static final int REQUEST_TAKE_PHOTO = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,11 +106,13 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         // Se recupera el valor que se nos ha pasado desde la lista de notificaciones
-        idNotificacion = getIntent().getIntExtra("idNotificacion",0);
-        posicionAdapter = getIntent().getIntExtra("posicionAdapter",0);
+        idNotificacion = getIntent().getIntExtra("idNotificacion", 0);
+        posicionAdapter = getIntent().getIntExtra("posicionAdapter", 0);
 
         // Mapeamos toda la vista del layout
         this.mapearVista();
+
+        this.dispatchTakePictureIntent();
 
         connectGPS();
 
@@ -201,7 +211,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             listaResultadosNoEntrega = new String[listaResultadosNoNotifica.size()];
             int index = 0;
             for (Resultado resultado : listaResultadosNoNotifica) {
-                listaResultadosNoEntrega[index] = (String) resultado.getCodigo()+" "+resultado.getDescripcion().toUpperCase();
+                listaResultadosNoEntrega[index] = (String) resultado.getCodigo() + " " + resultado.getDescripcion().toUpperCase();
                 index++;
             }
 
@@ -239,7 +249,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             ll_detallePrimerIntento.setVisibility(View.INVISIBLE);
             ll_botonera.setVisibility(View.VISIBLE);
 
-            if(BooleanUtils.isTrue(notificacion.getSegundoIntento())) {
+            if (BooleanUtils.isTrue(notificacion.getSegundoIntento())) {
                 // Se muestra el layout de información referente al primer resultado
                 String horaApartirDe = null;
                 String horaAntesDe = null;
@@ -277,17 +287,17 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     diaLimite = df.format(calendarDiaLimite.getTime());
 
                     invalidarBotonera = !(calendarParaComparaHoras.after(calendarAntesDe) &&
-                                          calendarParaComparaHoras.before(calendarApartirDe) &&
-                                          calendarDiaLimite.after(Calendar.getInstance()));
+                            calendarParaComparaHoras.before(calendarApartirDe) &&
+                            calendarDiaLimite.after(Calendar.getInstance()));
 
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
-                String consejoSegundoIntento = getString(R.string.dia_limite)+" "+diaLimite+"\n"+getString(R.string.informacion_segundo_intento_1) + " " + horaAntesDe + " " + getString(R.string.informacion_segundo_intento_2) + " " + horaApartirDe;
+                String consejoSegundoIntento = getString(R.string.dia_limite) + " " + diaLimite + "\n" + getString(R.string.informacion_segundo_intento_1) + " " + horaAntesDe + " " + getString(R.string.informacion_segundo_intento_2) + " " + horaApartirDe;
                 ll_detallePrimerIntento.setVisibility(View.VISIBLE);
                 ll_botonera.setVisibility(invalidarBotonera ? View.INVISIBLE : View.VISIBLE);
-                tv_resultadoDetallePrimerIntento.setText(notificacion.getResultado1()+" "+notificacion.getDescResultado1());
+                tv_resultadoDetallePrimerIntento.setText(notificacion.getResultado1() + " " + notificacion.getDescResultado1());
                 tv_fechaDetallePrimerIntento.setText(notificacion.getFechaHoraRes1());
                 tv_consejoSegundoIntento.setText(consejoSegundoIntento);
             }
@@ -327,36 +337,37 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         mBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-            DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-            String fechaHoraString = df.format(Calendar.getInstance().getTime());
-            String codResultado = listaResultadosNoNotifica.get(checkedItem).getCodigo();
-            String descResultado = listaResultadosNoNotifica.get(checkedItem).getDescripcion();
+                DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                String fechaHoraString = df.format(Calendar.getInstance().getTime());
+                String codResultado = listaResultadosNoNotifica.get(checkedItem).getCodigo();
+                String descResultado = listaResultadosNoNotifica.get(checkedItem).getDescripcion();
 
-            if(BooleanUtils.isFalse(notificacion.getSegundoIntento())) {
-                notificacion.setFechaHoraRes1(fechaHoraString);
-                notificacion.setResultado1(codResultado);
-                notificacion.setDescResultado1(descResultado);
-                notificacion.setLatitudRes1(tv_latitud.getText().toString().trim().length() == 0 ? null : tv_latitud.getText().toString());
-                notificacion.setLongitudRes1(tv_longitud.getText().toString().trim().length() == 0 ? null : tv_longitud.getText().toString());
-                notificacion.setObservacionesRes1(edt_observaciones.getText().toString().trim().length() == 0 ? null : edt_observaciones.getText().toString());
-                notificacion.setNotificadorRes1(obtenerNombreNotificador());
-                notificacion.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador()+File.separator+obtenerCodigoNotificador()+".png");
-            } else {
-                notificacion.setFechaHoraRes2(fechaHoraString);
-                notificacion.setResultado2(codResultado);
-                notificacion.setDescResultado2(descResultado);
-                notificacion.setLatitudRes2(tv_latitud.getText().toString().trim().length() == 0 ? null : tv_latitud.getText().toString());
-                notificacion.setLongitudRes2(tv_longitud.getText().toString().trim().length() == 0 ? null : tv_longitud.getText().toString());
-                notificacion.setObservacionesRes2(edt_observaciones.getText().toString().trim().length() == 0 ? null : edt_observaciones.getText().toString());
-                notificacion.setNotificadorRes2(obtenerNombreNotificador());
-                notificacion.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador()+File.separator+obtenerCodigoNotificador()+".png");
-            }
+                if (BooleanUtils.isFalse(notificacion.getSegundoIntento())) {
+                    notificacion.setFechaHoraRes1(fechaHoraString);
+                    notificacion.setResultado1(codResultado);
+                    notificacion.setDescResultado1(descResultado);
+                    notificacion.setLatitudRes1(tv_latitud.getText().toString().trim().length() == 0 ? null : tv_latitud.getText().toString());
+                    notificacion.setLongitudRes1(tv_longitud.getText().toString().trim().length() == 0 ? null : tv_longitud.getText().toString());
+                    notificacion.setObservacionesRes1(edt_observaciones.getText().toString().trim().length() == 0 ? null : edt_observaciones.getText().toString());
+                    notificacion.setNotificadorRes1(obtenerNombreNotificador());
+                    notificacion.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
+                } else {
+                    notificacion.setFechaHoraRes2(fechaHoraString);
+                    notificacion.setResultado2(codResultado);
+                    notificacion.setDescResultado2(descResultado);
+                    notificacion.setLatitudRes2(tv_latitud.getText().toString().trim().length() == 0 ? null : tv_latitud.getText().toString());
+                    notificacion.setLongitudRes2(tv_longitud.getText().toString().trim().length() == 0 ? null : tv_longitud.getText().toString());
+                    notificacion.setObservacionesRes2(edt_observaciones.getText().toString().trim().length() == 0 ? null : edt_observaciones.getText().toString());
+                    notificacion.setNotificadorRes2(obtenerNombreNotificador());
+                    notificacion.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
+                }
 
-            GuardarResultadoNegativoTask guardarResultadoNegativoTask = new GuardarResultadoNegativoTask();
-            guardarResultadoNegativoTask.execute();
+                GuardarResultadoNegativoTask guardarResultadoNegativoTask = new GuardarResultadoNegativoTask();
+                guardarResultadoNegativoTask.execute();
 
-            // Se cierra el cuadro de dialogo de los resultados postales negativos
-            dialogInterface.dismiss();
+
+                // Se cierra el cuadro de dialogo de los resultados postales negativos
+                dialogInterface.dismiss();
             }
         });
 
@@ -385,8 +396,8 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     }
 
     public void disconnectGPS() {
-            mGoogleApiClient.disconnect();
-        }
+        mGoogleApiClient.disconnect();
+    }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -477,12 +488,13 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         @Override
         protected String doInBackground(Void... voids) {
             String fallo = "";
-                // Primero guarda el resultado de notificacion y recupera todos los datos para generar el fichero xml
+            // Primero guarda el resultado de notificacion y recupera todos los datos para generar el fichero xml
             guardadoNotificacionEnBD = dbHelper.guardaResultadoNotificacion(notificacion);
-            if(!guardadoNotificacionEnBD) {
-                fallo = getString(R.string.error_guardar_en_bd)   ;
+            if (!guardadoNotificacionEnBD) {
+                fallo = getString(R.string.error_guardar_en_bd);
             } else {
                 notificacion = dbHelper.obtenerNotificacion(idNotificacion);
+
                 File ficheroXML = null;
                 try {
                     // Se genera el fichero XML
@@ -491,7 +503,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
 
                     // Se realiza la llamada al servidor del sellado de tiempo y se genera el fichero de sello de tiempo
                     Boolean tsaActivo = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_ACTIVO, getBaseContext(), Boolean.class.getSimpleName());
-                    if(BooleanUtils.isTrue(tsaActivo)) {
+                    if (BooleanUtils.isTrue(tsaActivo)) {
                         publishProgress(getString(R.string.generado_sello_de_tiempo));
                         String tsaUrl = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_URL, getBaseContext(), String.class.getSimpleName());
                         String tsaUser = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_USER, getBaseContext(), String.class.getSimpleName());
@@ -531,12 +543,12 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             AlertDialog.Builder builder = new AlertDialog.Builder(NuevaNotificacionActivity.this);
             builder.setTitle(R.string.guardado);
 
-            if(fallo != null && !fallo.isEmpty()) {
+            if (fallo != null && !fallo.isEmpty()) {
                 // Fallo al guardar
-                if(guardadoNotificacionEnBD) {
+                if (guardadoNotificacionEnBD) {
                     // Añadir texto indicando que como no se ha generado ni el sello de tiempo ni el xml, esa notificacion
                     // debera realizarla en papel
-                    fallo += ".\n"+getString(R.string.realizar_notif_en_papel);
+                    fallo += ".\n" + getString(R.string.realizar_notif_en_papel);
                     builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialogInterface, int which) {
                             Intent intentResultado = new Intent();
@@ -572,9 +584,61 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                 });
             }
 
+
             // Crear el dialogo con los parametros que se han definido y se muestra por pantalla
             builder.show();
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+        }
+    }
+
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                notificacion.getReferencia(),  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    private void dispatchTakePictureIntent() {
+
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+                //TODO
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.android.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+
+            }
+        }
+    }
 }
+
+

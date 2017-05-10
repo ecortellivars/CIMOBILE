@@ -278,8 +278,8 @@ public class ListaNotificacionesActivity extends BaseActivity {
     }
 
     /**
-     * Método privado que se encarga de mapear el edittext donde se escribe la refrencia,
-     * se le añaden escuhcadores para detectar que va escribiendo el usuario para ir haciendo
+     * Método privado que se encarga de mapear el editText donde se escribe la referencia,
+     * se le añaden escuchadores para detectar que va escribiendo el usuario para ir haciendo
      * el filtro de búsqueda de forma dinámica
      */
     private void mapearEditTextRefPostal() {
@@ -380,7 +380,6 @@ public class ListaNotificacionesActivity extends BaseActivity {
                             mRecyclerNotificaciones.getAdapter().notifyItemChanged(posicionAdapter);
                        }
                     }
-
                 }
             }
         }

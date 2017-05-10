@@ -130,6 +130,7 @@
         <item>Rehusado</item>
         <item>Nadie se hace cargo</item>
         <item>Marcadas notificador</item>
+        <item>Entregado (Sin Firma)</item>
     </string-array>
 
 </resources>

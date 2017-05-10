@@ -68,6 +68,7 @@ public class Util {
     public final static String EXTERNAL_DIRECTORY_FIRMAS_RECEPTOR = "FIRMAS_RECEPTOR";
     public final static String EXTERNAL_DIRECTORY_FIRMA_NOTIFICADOR = "FIRMAS_NOTIFICADOR";
     public final static String EXTERNAL_DIRECTORY_UPDATES_APP = "UPDATES_APP";
+    public final static String EXTERNAL_DIRECTORY_FOTO_ACUSE = "FOTOS_ACUSE";
 
     // CONSTANTES DE REQUESTS DE LOS ACTIVITY RESULTS
     public final static int REQUEST_CODE_BARCODE_SCAN = 0;
