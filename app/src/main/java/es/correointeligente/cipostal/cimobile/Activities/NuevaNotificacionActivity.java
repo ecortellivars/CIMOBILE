@@ -112,8 +112,6 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         // Mapeamos toda la vista del layout
         this.mapearVista();
 
-        this.dispatchTakePictureIntent();
-
         connectGPS();
 
         // Obtenemos la instancia del helper de la base de datos
@@ -584,6 +582,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                 });
             }
 
+            dispatchTakePictureIntent();
 
             // Crear el dialogo con los parametros que se han definido y se muestra por pantalla
             builder.show();
@@ -631,9 +630,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.android.fileprovider",
-                        photoFile);
+                Uri photoURI = FileProvider.getUriForFile(this,"com.example.android.fileprovider",photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
 
             }
