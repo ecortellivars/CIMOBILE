@@ -495,6 +495,8 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
 
                 File ficheroXML = null;
                 try {
+                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    dispatchTakePictureIntent();
                     // Se genera el fichero XML
                     publishProgress(getString(R.string.generado_xml));
                     ficheroXML = Util.NotificacionToXML(notificacion, getBaseContext());
@@ -581,9 +583,6 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     }
                 });
             }
-
-            dispatchTakePictureIntent();
-
             // Crear el dialogo con los parametros que se han definido y se muestra por pantalla
             builder.show();
         }
@@ -615,25 +614,26 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     }
 
     private void dispatchTakePictureIntent() {
-
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             // Create the File where the photo should go
-            startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
             File photoFile = null;
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
                 // Error occurred while creating the File
-                //TODO
+
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,"com.example.android.fileprovider",photoFile);
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.android.fileprovider",
+                        photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
             }
+
         }
     }
 }
