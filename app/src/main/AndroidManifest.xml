@@ -35,7 +35,7 @@
         <activity android:name=".Activities.NotificacionEntregadaActivity" />
         <activity android:name=".Activities.DetalleNotificacionActivity" />
         <activity android:name=".Activities.PreferenciasActivity" />
-
+        <activity android:name=".Activities.FotoAcuseActivity" />
         <activity android:name=".Activities.FirmaNotificadorActivity"></activity>
 
         <provider
