@@ -23,95 +23,106 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <ImageButton
+                android:id="@+id/imageButton_nueva_noti"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="right|center_vertical"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@android:drawable/ic_menu_camera" />
+
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp">
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:weightSum="1">
 
                 <TextView
-                    android:text="@string/detalle_notificacion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="@string/detalle_notificacion"
+                    android:textAllCaps="true"
                     android:textStyle="bold"
-                    android:textAllCaps="true"/>
+                    android:layout_weight="0.31" />
 
                 <LinearLayout
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:background="@drawable/fieldset_shape">
+                    android:background="@drawable/fieldset_shape"
+                    android:orientation="vertical"
+                    android:padding="5dp">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/referencia_postal"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/textView_nuevaNotificacion_refPostal"
-                        android:text="TextView"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="TextView" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/referencia_scb"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/textView_nuevaNotificacion_refSCB"
-                        android:text="TextView"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="TextView" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
                         android:text="@string/nombre_y_apellidos"
-                        android:textStyle="bold"
-                        android:layout_marginTop="5dp"/>
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/textView_nuevaNotificacion_nombre"
-                        android:text="TextView"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="TextView" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
                         android:text="@string/direccion"
-                        android:textStyle="bold"
-                        android:layout_marginTop="5dp"/>
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/textView_nuevaNotificacion_direccion"
-                        android:text="TextView"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:text="TextView" />
 
                     <TableLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:stretchColumns="*"
-                        android:layout_marginTop="5dp">
+                        android:layout_marginTop="5dp"
+                        android:stretchColumns="*">
 
                         <TableRow>
 
                             <TextView
-                                android:text="@string/latitud"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textStyle="bold"/>
+                                android:text="@string/latitud"
+                                android:textStyle="bold" />
 
                             <TextView
-                                android:text="@string/longitud"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textStyle="bold"/>
+                                android:text="@string/longitud"
+                                android:textStyle="bold" />
 
                         </TableRow>
 
@@ -120,12 +131,12 @@
                             <TextView
                                 android:id="@+id/textView_nuevaNotificacion_latitud"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
+                                android:layout_height="wrap_content" />
 
                             <TextView
                                 android:id="@+id/textView_nuevaNotificacion_longitud"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
+                                android:layout_height="wrap_content" />
 
                         </TableRow>
 
@@ -215,13 +226,14 @@
             <LinearLayout
                 android:id="@+id/linearLayout_detalle_primer_intento"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="81dp"
                 android:orientation="vertical"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:paddingTop="10dp">
 
                 <TextView
+                    android:id="@+id/textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/detalle_primer_intento"
@@ -230,7 +242,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:background="@drawable/fieldset_shape"
                     android:orientation="vertical"
                     android:padding="5dp">

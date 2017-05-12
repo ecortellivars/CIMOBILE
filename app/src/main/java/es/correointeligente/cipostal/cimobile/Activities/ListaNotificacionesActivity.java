@@ -254,7 +254,7 @@ public class ListaNotificacionesActivity extends BaseActivity {
                     }
                 }
 
-                // Se reinicializa la bússqueda limpiando el adaptador y llamando al hilo de obtener notificaciones
+                // Se reinicializa la búsqueda limpiando el adaptador y llamando al hilo de obtener notificaciones
                 mRecyclerNotificaciones.setAdapter(null);
                 listaNotificaciones = new ArrayList<Notificacion>();
                 mFiltroNotificacion.setPagina(0);

@@ -51,8 +51,6 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
 
     Lienzo mLienzo;
     Toolbar mToolbar;
-    Button btn_guardar;
-    Button btn_fotoAcuse;
     DBHelper dbHelper;
     String referenciaPostal, referenciaPostalSCB, longitud, latitud, observaciones;
     Integer idNotificacion, posicionAdapter;
@@ -61,9 +59,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
     Spinner spinner_tipoDocumentoReceptor;
     Boolean numeroDocumentoValido;
     final  String[] listaTiposDocumento = new String[]{Util.TIPO_DOCUMENTO_NIF, Util.TIPO_DOCUMENTO_CIF, Util.TIPO_DOCUMENTO_NIE, Util.TIPO_DOCUMENTO_OTRO};
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    String mCurrentPhotoPath;
-    static final int REQUEST_TAKE_PHOTO = 1;
+
 
 
     @Override
@@ -132,11 +128,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
         mLienzo = (Lienzo) findViewById(R.id.lienzo_firma);
         mLienzo.setDrawingCacheEnabled(true);
 
-        btn_guardar = (Button) findViewById(R.id.button_notif_entregada_guardar);
-        btn_guardar.setOnClickListener(this);
 
-        btn_fotoAcuse = (Button) findViewById(R.id.button_notif_entregada_guardar);
-        btn_fotoAcuse.setOnClickListener(this);
 
         // Obtenemos la instancia del helper de la base de datos
         dbHelper = new DBHelper(this);
@@ -172,6 +164,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                                 // Lanza en background el guardado de la notificacion entregada
                                 GuardarNotificacionEntregadaTask guardarNotificacionEntregadaTask = new GuardarNotificacionEntregadaTask();
                                 guardarNotificacionEntregadaTask.execute(file.getPath(), edt_nombreReceptor.getText().toString(), edt_numeroDocumentoReceptor.getText().toString());
+
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -237,7 +230,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setLongitudRes1(longitud);
                 notificacionAux.setObservacionesRes1(observaciones);
                 notificacionAux.setNotificadorRes1(obtenerNombreNotificador());
-                notificacionAux.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador()+File.separator+obtenerCodigoNotificador()+".png");
+                notificacionAux.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator+obtenerCodigoNotificador() + ".png");
                 notificacionAux.setSegundoIntento(!esPrimerResultado);
             } else {
 
@@ -343,60 +336,9 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                         finish();
                     }
                 });
-
-
             }
-
-
             // Crear el dialogo con los parametros que se han definido y se muestra por pantalla
             builder.show();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-        }
-    }
-
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
-
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-                //TODO
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.android.fileprovider",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-            }
         }
     }
 

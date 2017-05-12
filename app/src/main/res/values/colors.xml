@@ -9,8 +9,10 @@
     <color name="colorBotonEntregadoPressed">#238F16</color>
     <color name="colorBotonNoEntregado">#FF3939</color>
     <color name="colorBotonNoEntregadoPressed">#9C0000</color>
-    <color name="colorBackgroundEntregado">#FFB8F5B8</color>
-    <color name="colorBackgroundAusente">#FFFFCF70</color>
+    <color name="colorBackgroundEntregado">#b8f5b8</color>
+    <color name="colorBackgroundAusente">#ffcf70</color>
     <color name="colorBackgroundNoEntregado">#FFFFADAD</color>
     <color name="colorBackgroundSinGestionar">#FFFFFF</color>
+    <color name="colorBackgroundFotoAcuse">#FFFFCF70</color>    FFFFCF70
+    <color name="colorFotoAcuse">#FFFFCF70</color>
 </resources>

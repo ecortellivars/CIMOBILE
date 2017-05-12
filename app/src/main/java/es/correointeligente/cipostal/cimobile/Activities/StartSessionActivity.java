@@ -168,9 +168,6 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                 args[1] = "0";
                 args[0] = "0";
             }
-
-
-
             return args;
         }
 

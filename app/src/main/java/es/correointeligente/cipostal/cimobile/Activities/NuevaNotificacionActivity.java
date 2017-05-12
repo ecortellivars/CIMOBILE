@@ -6,7 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,6 +25,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -44,8 +48,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -80,6 +87,8 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     List<Resultado> listaResultadosNoNotifica;
     int checkedItem;
     Notificacion notificacion;
+    ImageButton btn_foto;
+
 
     // Variables para la localizacion GPS
     private GoogleApiClient mGoogleApiClient;
@@ -89,10 +98,10 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     private Location mLastLocation;
 //    private final int REQUEST_LOCATION = 200;
 //    private final int REQUEST_CHECK_SETTINGS = 300; Variables para la localizacion de la calle via google Maps
+    private static int TAKE_PICTURE = 1;
+    private static int SELECT_PICTURE = 2;
+    private String name = "";
 
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    String mCurrentPhotoPath;
-    static final int REQUEST_TAKE_PHOTO = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +157,8 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         btn_entregado.setOnClickListener(this);
         btn_noEntregado = (Button) findViewById(R.id.button_nueva_notificacion_entregado);
         btn_noEntregado.setOnClickListener(this);
+        btn_foto = (ImageButton) findViewById(R.id.imageButton_nueva_noti);
+        btn_foto.setOnClickListener(this);
     }
 
     @Override
@@ -155,10 +166,18 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         v.vibrate(20);
 
+
         switch (view.getId()) {
             case R.id.button_nueva_notificacion_noEntregado:
                 this.crearSelectorNoEntregado();
                 break;
+
+            case R.id.imageButton_nueva_noti:
+                Intent intent2 = new Intent(NuevaNotificacionActivity.this, FotoAcuseActivity.class);
+                startActivity(intent2);
+                finish();
+                break;
+
             case R.id.button_nueva_notificacion_entregado:
                 Intent intent = new Intent(NuevaNotificacionActivity.this, NotificacionEntregadaActivity.class);
 
@@ -178,6 +197,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                 break;
         }
     }
+
 
     @Override
     protected void onStop() {
@@ -397,6 +417,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         mGoogleApiClient.disconnect();
     }
 
+
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         mLocationRequest = createLocationRequest();
@@ -495,8 +516,6 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
 
                 File ficheroXML = null;
                 try {
-                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    dispatchTakePictureIntent();
                     // Se genera el fichero XML
                     publishProgress(getString(R.string.generado_xml));
                     ficheroXML = Util.NotificacionToXML(notificacion, getBaseContext());
@@ -588,54 +607,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-        }
-    }
 
-
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                notificacion.getReferencia(),  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
-
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.android.fileprovider",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-            }
-
-        }
-    }
 }
 
 
