@@ -41,7 +41,10 @@ import static android.provider.Settings.AUTHORITY;
 
 
 /** Actividad inicial dada de alta en AndroidManifest con intent lo que significa que desde esta empezaremos
-    siempre a debugar. Esta Actividad gestiona el layout llamado activity_start_session **/
+    siempre a debugar. Esta Actividad gestiona el layout llamado activity_start_session
+    La acción ACTION_MAIN indica que este es el punto de entrada principal y que no se esperan datos de intents.
+    La categoría CATEGORY_LAUNCHER indica que el ícono de esta actividad debe colocarse en el lanzador de
+    la aplicación del sistema. **/
 public class StartSessionActivity extends AppCompatActivity implements View.OnClickListener {
 
     // Declaracion de variables a utilizar en el metodo

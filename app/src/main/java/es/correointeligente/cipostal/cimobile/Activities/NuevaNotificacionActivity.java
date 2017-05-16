@@ -173,8 +173,10 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                 break;
 
             case R.id.imageButton_nueva_noti:
-                Intent intent2 = new Intent(NuevaNotificacionActivity.this, FotoAcuseActivity.class);
-                startActivity(intent2);
+                Intent intentNuevaNoti = new Intent(this, FotoAcuseActivity.class);
+                if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
+                        startActivity(intentNuevaNoti);
+                    }
                 finish();
                 break;
 

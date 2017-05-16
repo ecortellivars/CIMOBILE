@@ -34,9 +34,17 @@
         <activity android:name=".Activities.NuevaNotificacionActivity" android:noHistory="true" />
         <activity android:name=".Activities.NotificacionEntregadaActivity" />
         <activity android:name=".Activities.DetalleNotificacionActivity" />
-        <activity android:name=".Activities.PreferenciasActivity" />
-        <activity android:name=".Activities.FotoAcuseActivity" />
-        <activity android:name=".Activities.FirmaNotificadorActivity"></activity>
+        <activity android:name=".Activities.PreferenciasActivity"/>
+        <activity android:name=".Activities.FirmaNotificadorActivity" />
+        <activity android:name=".Activities.FotoAcuseActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_IMAGE_CAPTURE" />
+                <action android:name="android.intent.action.REQUEST_IMAGE_CAPTURE" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="image/*"/>
+
+            </intent-filter>
+        </activity>
 
         <provider
             android:name="android.support.v4.content.FileProvider"

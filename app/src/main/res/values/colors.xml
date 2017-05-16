@@ -7,7 +7,7 @@
     <color name="colorGrisSuave">#E6E6E6</color>
     <color name="colorBotonEntregado">#19E300</color>
     <color name="colorBotonEntregadoPressed">#238F16</color>
-    <color name="colorBotonNoEntregado">#FF3939</color>
+    <color name="colorBotonNoEntregado">#ff3939</color>
     <color name="colorBotonNoEntregadoPressed">#9C0000</color>
     <color name="colorBackgroundEntregado">#b8f5b8</color>
     <color name="colorBackgroundAusente">#ffcf70</color>
