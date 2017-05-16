@@ -187,7 +187,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                 Intent intent = new Intent(NuevaNotificacionActivity.this, NotificacionEntregadaActivity.class);
 
                 intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-
+                // Mandamos la informacion
                 intent.putExtra("referenciaPostal", notificacion.getReferencia());
                 intent.putExtra("referenciaPostalSCB", notificacion.getReferenciaSCB());
                 intent.putExtra("idNotificacion", idNotificacion);
