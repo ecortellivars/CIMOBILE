@@ -175,6 +175,9 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             case R.id.imageButton_nueva_noti:
                 Intent intentNuevaNoti = new Intent(this, FotoAcuseActivity.class);
                 if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
+                        intentNuevaNoti.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+                        intentNuevaNoti.putExtra("referencia", notificacion.getReferencia());
+                        intentNuevaNoti.putExtra("idNotificacion", idNotificacion);
                         startActivity(intentNuevaNoti);
                     }
                 finish();

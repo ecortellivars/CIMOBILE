@@ -275,6 +275,18 @@ public class Util {
     }
 
     /**
+     * Obtiene la ruta del directorio donde se aloja la foto del acuse
+     * @return String
+     */
+    public static String obtenerRutaFotoAcuse() {
+        File file = new File(obtenerRutaAPP() + File.separator + EXTERNAL_DIRECTORY_FOTO_ACUSE);
+        if(!file.exists()) {
+            file.mkdirs();
+        }
+        return file.getPath();
+    }
+
+    /**
      * Obtiene la ruta del directorio donde se aloja los apk con las actualizaciones
      * @return String
      */
