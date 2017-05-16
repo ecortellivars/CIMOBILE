@@ -8,6 +8,10 @@
         android:orientation="vertical"
         tools:context=".Activities.FotoAcuseActivity">
 
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/tool_bar" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -45,17 +49,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="6" />
-
-        <Button
-            android:id="@+id/btn_foto_acuse_cancelar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/button_no_entregado"
-            android:text="@string/cancelar"
-            android:textAllCaps="true"
-            android:textColor="@color/cardview_dark_background"
-            android:textColorLink="@color/colorBotonNoEntregado" />
 
         <android.support.v4.widget.Space
             android:id="@+id/space3"
