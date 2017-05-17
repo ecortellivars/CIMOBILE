@@ -80,6 +80,7 @@ public class Util {
 
     // CONSTANTES CODIGOS RESULTADOS
     public final static String RESULTADO_ENTREGADO           = "01";
+    public final static String RESULTADO_ENTREGADO_SIN_FIRMA = "01";
     public final static String RESULTADO_DIR_INCORRECTA      = "02";
     public final static String RESULTADO_AUSENTE             = "31";
     public final static String RESULTADO_DESCONOCIDO         = "04";
@@ -622,7 +623,7 @@ public class Util {
      * @return String
      */
     public static String guardarFicheroAPK(InputStream is, String nombreFichero) {
-        String carpeta = Environment.getExternalStorageDirectory() + File.separator+EXTERNAL_DIRECTORY_UPDATES_APP;
+        String carpeta = Environment.getExternalStorageDirectory() + File.separator + EXTERNAL_DIRECTORY_UPDATES_APP;
 
         File file = new File(carpeta);
         if(!file.exists()) {

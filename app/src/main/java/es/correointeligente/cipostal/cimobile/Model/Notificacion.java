@@ -134,17 +134,13 @@ public class Notificacion {
         return notificadorRes1;
     }
 
-    public void setNotificadorRes1(String notificadorRes1) {
-        this.notificadorRes1 = notificadorRes1;
-    }
+    public void setNotificadorRes1(String notificadorRes1) { this.notificadorRes1 = notificadorRes1; }
 
     public String getFirmaNotificadorRes1() {
         return firmaNotificadorRes1;
     }
 
-    public void setFirmaNotificadorRes1(String firmaNotificadorRes1) {
-        this.firmaNotificadorRes1 = firmaNotificadorRes1;
-    }
+    public void setFirmaNotificadorRes1(String firmaNotificadorRes1) { this.firmaNotificadorRes1 = firmaNotificadorRes1; }
 
     public String getLongitudRes1() {
         return longitudRes1;
@@ -190,17 +186,13 @@ public class Notificacion {
         return notificadorRes2;
     }
 
-    public void setNotificadorRes2(String notificadorRes2) {
-        this.notificadorRes2 = notificadorRes2;
-    }
+    public void setNotificadorRes2(String notificadorRes2) { this.notificadorRes2 = notificadorRes2; }
 
     public String getFirmaNotificadorRes2() {
         return firmaNotificadorRes2;
     }
 
-    public void setFirmaNotificadorRes2(String firmaNotificadorRes2) {
-        this.firmaNotificadorRes2 = firmaNotificadorRes2;
-    }
+    public void setFirmaNotificadorRes2(String firmaNotificadorRes2) { this.firmaNotificadorRes2 = firmaNotificadorRes2; }
 
     public String getLongitudRes2() {
         return longitudRes2;
@@ -222,9 +214,7 @@ public class Notificacion {
         return tipoDocReceptor;
     }
 
-    public void setTipoDocReceptor(String tipoDocReceptor) {
-        this.tipoDocReceptor = tipoDocReceptor;
-    }
+    public void setTipoDocReceptor(String tipoDocReceptor) { this.tipoDocReceptor = tipoDocReceptor; }
 
     public String getNumDocReceptor() {
         return numDocReceptor;
@@ -270,9 +260,7 @@ public class Notificacion {
         return timestampMarcada;
     }
 
-    public void setTimestampMarcada(String timestampMarcada) {
-        this.timestampMarcada = timestampMarcada;
-    }
+    public void setTimestampMarcada(String timestampMarcada) { this.timestampMarcada = timestampMarcada; }
 
     public Boolean getSegundoIntento() {
         return segundoIntento;
@@ -286,25 +274,19 @@ public class Notificacion {
         return backgroundColor;
     }
 
-    public void setBackgroundColor(Integer backgroundColor) {
-        this.backgroundColor = backgroundColor;
-    }
+    public void setBackgroundColor(Integer backgroundColor) { this.backgroundColor = backgroundColor; }
 
     public String getObservacionesRes1() {
         return observacionesRes1;
     }
 
-    public void setObservacionesRes1(String observacionesRes1) {
-        this.observacionesRes1 = observacionesRes1;
-    }
+    public void setObservacionesRes1(String observacionesRes1) { this.observacionesRes1 = observacionesRes1; }
 
     public String getObservacionesRes2() {
         return observacionesRes2;
     }
 
-    public void setObservacionesRes2(String observacionesRes2) {
-        this.observacionesRes2 = observacionesRes2;
-    }
+    public void setObservacionesRes2(String observacionesRes2) { this.observacionesRes2 = observacionesRes2; }
 
     public String getReferenciaSCB() {
         return referenciaSCB;

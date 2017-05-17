@@ -33,13 +33,11 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
     Toolbar mToolbar;
     Button btn_guardarFoto, btn_hacerFoto;
     ImageView imagenVista;
-    String referencia;
+    String referencia, notificadorRes1, notificadorRes2, resultado1, resultado2, fechaHoraRes1, fechaHoraRes2;
     Integer idNotificacion;
     static final int EXTRA_OUTPUT = 1;
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    String mCurrentPhotoPath;
-
-
+    Boolean esPrimerResultado;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +58,13 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
         
         // Recupera los datos de la notificacion
         referencia = getIntent().getStringExtra("referencia");
-        idNotificacion = getIntent().getIntExtra("idNotificacion", 0);
+        notificadorRes1 = getIntent().getStringExtra("notificadorRes1");
+        notificadorRes2 = getIntent().getStringExtra("notificadorRes2");
+        resultado1 = getIntent().getStringExtra("resultado1");
+        resultado2 = getIntent().getStringExtra("resultado2");
+        fechaHoraRes1 = getIntent().getStringExtra("fechaHoraRes1");
+        fechaHoraRes2 = getIntent().getStringExtra("fechaHoraRes2");
+        esPrimerResultado = getIntent().getBooleanExtra("esPrimerResultado", Boolean.TRUE);
 
     }
 
@@ -122,7 +126,12 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
             imagenVista.setImageBitmap(imageBitmap);
         }
         if (requestCode == EXTRA_OUTPUT && resultCode == RESULT_OK) {
-            convertBitmapToFile(imageBitmap,referencia + "_" + idNotificacion + ".jpg");
+            if (esPrimerResultado){
+                convertBitmapToFile(imageBitmap,referencia + "_" + notificadorRes1 + "_" + resultado1 + "_" + fechaHoraRes1  + ".jpg");
+            } else {
+                convertBitmapToFile(imageBitmap,referencia + "_" + notificadorRes2 + "_" + resultado2 + "_" + fechaHoraRes2  + ".jpg");
+            }
+
         }
     }
 

@@ -82,6 +82,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
         observaciones = getIntent().getStringExtra("observaciones");
         esPrimerResultado = getIntent().getBooleanExtra("esPrimerResultado", Boolean.TRUE);
 
+        // Logica del DNI
         numeroDocumentoValido = true;
         edt_numeroDocumentoReceptor = (EditText) findViewById(R.id.editText_notificacionEntregada_numeroDocumento);
         edt_numeroDocumentoReceptor.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -127,8 +128,6 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
         // Zona para la firma del ciudadano
         mLienzo = (Lienzo) findViewById(R.id.lienzo_firma);
         mLienzo.setDrawingCacheEnabled(true);
-
-
 
         // Obtenemos la instancia del helper de la base de datos
         dbHelper = new DBHelper(this);
@@ -191,8 +190,6 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
         String mCurrentPhotoPath;
 
 
-
-
         @Override
         protected void onPreExecute() {
             guardadoNotificacionEnBD = false;
@@ -230,7 +227,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setLongitudRes1(longitud);
                 notificacionAux.setObservacionesRes1(observaciones);
                 notificacionAux.setNotificadorRes1(obtenerNombreNotificador());
-                notificacionAux.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator+obtenerCodigoNotificador() + ".png");
+                notificacionAux.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
                 notificacionAux.setSegundoIntento(!esPrimerResultado);
             } else {
 
@@ -241,7 +238,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setLongitudRes2(longitud);
                 notificacionAux.setObservacionesRes2(observaciones);
                 notificacionAux.setNotificadorRes2(obtenerNombreNotificador());
-                notificacionAux.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador()+File.separator+obtenerCodigoNotificador()+".png");
+                notificacionAux.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() +" .png");
                 notificacionAux.setSegundoIntento(esPrimerResultado);
             }
 

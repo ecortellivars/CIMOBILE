@@ -11,6 +11,7 @@
     <string name="detalle_logout">Va a salir y cerrar la sesión, ¿Desea continuar?</string>
     <string name="ok">OK</string>
     <string name="cancelar">Cancelar</string>
+    <string name="volver">Volver</string>
     <string name="notificador">Notificador</string>
     <string name="delegacion">Delegación</string>
     <string name="fecha">Fecha</string>
@@ -24,6 +25,8 @@
     <string name="detalle_primer_intento">Detalle primer intento</string>
     <string name="no_entregado">No entregado</string>
     <string name="entregado">Entregado</string>
+    <string name="todos">Todos</string>
+    <string name="entregado_firma">Entregado con Firma</string>
     <string name="entregado_01">01 Entregado</string>
     <string name="dir_incorrecta_02">02 Dir. incorrecta</string>
     <string name="ausente_03">03 Ausente</string>
@@ -42,6 +45,7 @@
     <string name="resultado1">RESULTADO 1</string>
     <string name="resultado2">RESULTADO 2</string>
     <string name="motivo_no_entrega">Motivo de no entrega</string>
+    <string name="resultados_sin_firma">Resultados SIN firma</string>
     <string name="numero_documento">Número documento</string>
     <string name="nombre_y_apellidos">Nombre y apellidos</string>
     <string name="firma_receptor">Firma del receptor</string>
@@ -120,6 +124,7 @@
     <string name="info_firma_notificador">Para facilitar el trabajo durante el trabajo de reparto, se precisa que firme por primera vez para dejar constancia de la persona que notifica.</string>
     <string name="dia_limite">Día límite</string>
     <string name="foto_acuse">Hacer Foto</string>
+    <string name="aviso_foto">Falta realizar la foto del acuse con los datos rellenados</string>
 
     <string-array name="filtro_busqueda_array">
         <item>Entregado</item>

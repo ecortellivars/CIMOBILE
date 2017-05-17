@@ -29,6 +29,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.CommonStatusCodes;
@@ -88,7 +89,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     int checkedItem;
     Notificacion notificacion;
     ImageButton btn_foto;
-
+    Boolean fotoHecha;
 
     // Variables para la localizacion GPS
     private GoogleApiClient mGoogleApiClient;
@@ -122,6 +123,8 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         this.mapearVista();
 
         connectGPS();
+
+        fotoHecha = Boolean.FALSE;
 
         // Obtenemos la instancia del helper de la base de datos
         dbHelper = new DBHelper(this);
@@ -166,40 +169,70 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         v.vibrate(20);
 
-
         switch (view.getId()) {
+            // Todos los resultados incluyendo el ENTREGADO SIN FIRMA
             case R.id.button_nueva_notificacion_noEntregado:
-                this.crearSelectorNoEntregado();
-                break;
+                // Revisamos que haya hecho la foto del acuse
+                if (fotoHecha == Boolean.FALSE){
+                    this.crearSelectorNoEntregado();
+                    break;
+                }
+                else {
+                    Toast toast = null;
+                    toast = Toast.makeText(this, "Deberes realizar la foto del acuse con los datos rellenados", Toast.LENGTH_LONG);
+                    toast.show();
+                    break;
+                }
+
 
             case R.id.imageButton_nueva_noti:
                 Intent intentNuevaNoti = new Intent(this, FotoAcuseActivity.class);
                 if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
-                        intentNuevaNoti.setFlags(intentNuevaNoti.FLAG_ACTIVITY_FORWARD_RESULT);
                         intentNuevaNoti.putExtra("referencia", notificacion.getReferencia());
-                        intentNuevaNoti.putExtra("idNotificacion", idNotificacion);
+                        intentNuevaNoti.putExtra("notificadorRes1", notificacion.getNotificadorRes1());
+                        intentNuevaNoti.putExtra("notificadorRes2", notificacion.getNotificadorRes2());
+                        intentNuevaNoti.putExtra("notificadorRes2", notificacion.getNotificadorRes2());
+                        intentNuevaNoti.putExtra("resultado1", notificacion.getResultado1());
+                        intentNuevaNoti.putExtra("resultado2", notificacion.getResultado2());
+                        intentNuevaNoti.putExtra("fechaHoraRes1", notificacion.getFechaHoraRes1());
+                        intentNuevaNoti.putExtra("fechaHoraRes2", notificacion.getFechaHoraRes2());
+                        intentNuevaNoti.putExtra("esPrimerResultado", (notificacion.getSegundoIntento() == null || !notificacion.getSegundoIntento()));
+
                         startActivity(intentNuevaNoti);
                     }
+                fotoHecha = Boolean.TRUE;
                 finish();
                 break;
 
+            //Solo ENTREGADO CON FIRMA
             case R.id.button_nueva_notificacion_entregado:
-                Intent intent = new Intent(NuevaNotificacionActivity.this, NotificacionEntregadaActivity.class);
+                // Revisamos que haya hecho la foto del acuse
+                if (fotoHecha == Boolean.FALSE) {
+                    Intent intent = new Intent(NuevaNotificacionActivity.this, NotificacionEntregadaActivity.class);
 
-                intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-                // Mandamos la informacion a la nueva pantallla
-                intent.putExtra("referenciaPostal", notificacion.getReferencia());
-                intent.putExtra("referenciaPostalSCB", notificacion.getReferenciaSCB());
-                intent.putExtra("idNotificacion", idNotificacion);
-                intent.putExtra("posicionAdapter", posicionAdapter);
-                intent.putExtra("latitud", tv_latitud.getText().toString());
-                intent.putExtra("longitud", tv_longitud.getText().toString());
-                intent.putExtra("observaciones", edt_observaciones.getText().toString());
-                intent.putExtra("esPrimerResultado", (notificacion.getSegundoIntento() == null || !notificacion.getSegundoIntento()));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+                    // Mandamos la informacion a la nueva pantallla
+                    intent.putExtra("referenciaPostal", notificacion.getReferencia());
+                    intent.putExtra("referenciaPostalSCB", notificacion.getReferenciaSCB());
+                    intent.putExtra("idNotificacion", idNotificacion);
+                    intent.putExtra("posicionAdapter", posicionAdapter);
+                    intent.putExtra("latitud", tv_latitud.getText().toString());
+                    intent.putExtra("longitud", tv_longitud.getText().toString());
+                    intent.putExtra("observaciones", edt_observaciones.getText().toString());
+                    intent.putExtra("esPrimerResultado", (notificacion.getSegundoIntento() == null || !notificacion.getSegundoIntento()));
 
-                startActivity(intent);
-                finish();
-                break;
+                    startActivity(intent);
+                    finish();
+                    break;
+
+
+                }
+                else {
+                    Toast toast = null;
+                    toast = Toast.makeText(this, "Deberes realizar la foto del acuse con los datos rellenados", Toast.LENGTH_LONG);
+                    toast.show();
+                    break;
+                }
         }
     }
 
@@ -348,7 +381,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     private void crearSelectorNoEntregado() {
 
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(NuevaNotificacionActivity.this);
-        mBuilder.setTitle(R.string.motivo_no_entrega);
+        mBuilder.setTitle(R.string.resultados_sin_firma);
         mBuilder.setSingleChoiceItems(listaResultadosNoEntrega, checkedItem, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int posicion) {

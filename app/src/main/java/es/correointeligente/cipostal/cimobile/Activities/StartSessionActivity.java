@@ -94,6 +94,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         // Version instalada
         txt_version_value= (TextView) findViewById(R.id.edt_startSession_version_value);
         String versionInstalada = null;
+
         try {
             // La version esta ubicada en el buid.gradle app
             versionInstalada = (getPackageManager().getPackageInfo(getPackageName(), 0).versionName);

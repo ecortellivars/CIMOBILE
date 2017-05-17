@@ -9,13 +9,18 @@ import android.database.sqlite.SQLiteOpenHelper;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import es.correointeligente.cipostal.cimobile.Model.Notificacion;
 import es.correointeligente.cipostal.cimobile.Model.Resultado;
 import es.correointeligente.cipostal.cimobile.Model.ResumenReparto;
 import es.correointeligente.cipostal.cimobile.R;
+
+import static android.R.attr.data;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -62,6 +67,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String KEY_NOTIFICACION_MARCADA = "marcada";
     private static final String KEY_NOTIFICACION_TIMESTAMP_MARCADA = "timestampMarcada";
     private static final String KEY_NOTIFICACION_SEGUNDO_INTENTO = "segundoIntento";
+    private static final String KEY_NOTIFICACION_FOTO_ACUSE = "fotoAcuse";
 
 
     /*********************************************************/
@@ -207,7 +213,7 @@ public class DBHelper extends SQLiteOpenHelper {
         List<Resultado> listaResultados = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String query = "SELECT * FROM " + TABLE_RESULTADO +" WHERE "+KEY_RESULTADO_NOTIFICA +" = 0";
+        String query = "SELECT * FROM " + TABLE_RESULTADO + " WHERE " + KEY_RESULTADO_NOTIFICA + " = 0";
         Cursor cursor = db.rawQuery(query, null);
 
         if (cursor != null) {
@@ -496,7 +502,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
 
         if(hayError) {
-            throw new CiMobileException(context.getString(R.string.error_guardar_notificaciones));
+            throw new CiMobileException(    context.getString(R.string.error_guardar_notificaciones));
         }
     }
 
@@ -640,42 +646,41 @@ public class DBHelper extends SQLiteOpenHelper {
         query += " WHERE 1 = 1 ";
 
         if (filtroNotificacion.getReferencia() != null && filtroNotificacion.getReferencia().trim().length() > 0) {
-            query += "AND (" + KEY_NOTIFICACION_REFERENCIA + " LIKE "+filtroNotificacion.getReferencia()+ ") ";
-            query += "OR (" + KEY_NOTIFICACION_NOMBRE + " LIKE "+filtroNotificacion.getReferencia()+ ") ";
+            query += "AND (" + KEY_NOTIFICACION_REFERENCIA + " LIKE " + filtroNotificacion.getReferencia() + ") ";
         }
         if (filtroNotificacion.getEntregado()) {
-            query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '"+Util.RESULTADO_ENTREGADO+"' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
-                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '"+Util.RESULTADO_ENTREGADO+"' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
+            query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_ENTREGADO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
+                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_ENTREGADO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
         }
         if (filtroNotificacion.getDirIncorrecta()) {
-            query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '"+Util.RESULTADO_DIR_INCORRECTA+"' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
-                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '"+Util.RESULTADO_DIR_INCORRECTA+"' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
+            query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_DIR_INCORRECTA + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
+                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_DIR_INCORRECTA + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
         }
         if (filtroNotificacion.getAusente()) {
-            query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '"+Util.RESULTADO_AUSENTE+"' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
-                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '"+Util.RESULTADO_AUSENTE+"' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
+            query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_AUSENTE+"' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
+                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_AUSENTE+"' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
         }
         if (filtroNotificacion.getDesconocido()) {
-            query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '"+Util.RESULTADO_DESCONOCIDO+"' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
-                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '"+Util.RESULTADO_DESCONOCIDO+"' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
+            query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_DESCONOCIDO+"' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
+                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_DESCONOCIDO+"' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
         }
         if (filtroNotificacion.getFallecido()) {
-            query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '"+Util.RESULTADO_FALLECIDO+"' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
-                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '"+Util.RESULTADO_FALLECIDO+"' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
+            query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_FALLECIDO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
+                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_FALLECIDO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
         }
         if (filtroNotificacion.getRehusado()) {
-            query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '"+Util.RESULTADO_REHUSADO+"' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
-                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '"+Util.RESULTADO_REHUSADO+"' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
+            query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_REHUSADO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
+                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_REHUSADO+"' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
         }
         if (filtroNotificacion.getNadieSeHaceCargo()) {
-            query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '"+Util.RESULTADO_NADIE_SE_HACE_CARGO+"' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
-                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '"+Util.RESULTADO_NADIE_SE_HACE_CARGO+"' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
+            query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_NADIE_SE_HACE_CARGO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
+                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_NADIE_SE_HACE_CARGO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
         }
         if (filtroNotificacion.getMarcadas()) {
-            query += "AND " + KEY_NOTIFICACION_MARCADA + " = "+1+" ";
-            query += "ORDER BY "+KEY_NOTIFICACION_TIMESTAMP_MARCADA+" ASC ";
+            query += "AND " + KEY_NOTIFICACION_MARCADA + " = " + 1 + " ";
+            query += "ORDER BY " + KEY_NOTIFICACION_TIMESTAMP_MARCADA + " ASC ";
         } else {
-            query += "ORDER BY "+KEY_NOTIFICACION_REFERENCIA+" ASC ";
+            query += "ORDER BY " + KEY_NOTIFICACION_REFERENCIA + " ASC ";
         }
 
         if(filtroNotificacion.getPagina() > 0) {
@@ -975,6 +980,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_NOTIFICADOR_RES_1, notificacion.getNotificadorRes1());
                 cv.put(KEY_NOTIFICACION_OBSERVACIONES_RES_1, notificacion.getObservacionesRes1());
                 cv.put(KEY_NOTIFICACION_FIRMA_NOTIFICADOR_RES_1, notificacion.getFirmaNotificadorRes1());
+                cv.put(KEY_NOTIFICACION_FOTO_ACUSE, notificacion.getFotoAcuse());
 
             } else {
                 cv.put(KEY_NOTIFICACION_RESULTADO_2, notificacion.getResultado2());
@@ -986,6 +992,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_NOTIFICADOR_RES_2, notificacion.getNotificadorRes2());
                 cv.put(KEY_NOTIFICACION_OBSERVACIONES_RES_2, notificacion.getObservacionesRes2());
                 cv.put(KEY_NOTIFICACION_FIRMA_NOTIFICADOR_RES_2, notificacion.getFirmaNotificadorRes2());
+                cv.put(KEY_NOTIFICACION_FOTO_ACUSE, notificacion.getFotoAcuse());
 
             }
 
@@ -1085,24 +1092,37 @@ public class DBHelper extends SQLiteOpenHelper {
     private void crearTablaNotificaciones(SQLiteDatabase sqLiteDatabase) {
 
         String qry = "CREATE TABLE " + TABLE_NOTIFICACION + "(" + KEY_NOTIFICACION_ID + " INT, "
-                + KEY_NOTIFICACION_REFERENCIA + " TEXT, " + KEY_NOTIFICACION_REFERENCIA_SCB + " TEXT, "
+                + KEY_NOTIFICACION_REFERENCIA + " TEXT, "
+                + KEY_NOTIFICACION_REFERENCIA_SCB + " TEXT, "
                 + KEY_NOTIFICACION_NOMBRE + " TEXT, "
-                + KEY_NOTIFICACION_DIRECCION + " TEXT, " + KEY_NOTIFICACION_POBLACION + " TEXT, "
-                + KEY_NOTIFICACION_CODIGO_POSTAL + " TEXT, " + KEY_NOTIFICACION_RESULTADO_1 + " TEXT, "
+                + KEY_NOTIFICACION_DIRECCION + " TEXT, "
+                + KEY_NOTIFICACION_POBLACION + " TEXT, "
+                + KEY_NOTIFICACION_CODIGO_POSTAL + " TEXT, "
+                + KEY_NOTIFICACION_RESULTADO_1 + " TEXT, "
                 + KEY_NOTIFICACION_DESCRIPCION_RESULTADO_1 + " TEXT, "
-                + KEY_NOTIFICACION_FECHA_HORA_RES_1 + " TEXT, " + KEY_NOTIFICACION_NOTIFICADOR_RES_1 + " TEXT, "
+                + KEY_NOTIFICACION_FECHA_HORA_RES_1 + " TEXT, "
+                + KEY_NOTIFICACION_NOTIFICADOR_RES_1 + " TEXT, "
                 + KEY_NOTIFICACION_OBSERVACIONES_RES_1 + " TEXT, "
-                + KEY_NOTIFICACION_FIRMA_NOTIFICADOR_RES_1 + " TEXT, " + KEY_NOTIFICACION_RESULTADO_2 + " TEXT, "
+                + KEY_NOTIFICACION_FIRMA_NOTIFICADOR_RES_1 + " TEXT, "
+                + KEY_NOTIFICACION_RESULTADO_2 + " TEXT, "
                 + KEY_NOTIFICACION_DESCRIPCION_RESULTADO_2 + " TEXT, "
-                + KEY_NOTIFICACION_FECHA_HORA_RES_2 + " TEXT, " + KEY_NOTIFICACION_NOTIFICADOR_RES_2 + " TEXT, "
-                + KEY_NOTIFICACION_FIRMA_NOTIFICADOR_RES_2 + " TEXT, " + KEY_NOTIFICACION_TIPO_DOC_RECEPTOR + " TEXT, "
-                + KEY_NOTIFICACION_NUM_DOC_RECEPTOR + " TEXT, " + KEY_NOTIFICACION_NOMBRE_RECEPTOR + " TEXT, "
-                + KEY_NOTIFICACION_FIRMA_RECEPTOR + " TEXT, " + KEY_NOTIFICACION_LONGITUD_RES_1 + " TEXT, "
-                + KEY_NOTIFICACION_LATITUD_RES_1 + " TEXT, " + KEY_NOTIFICACION_LONGITUD_RES_2 + " TEXT, "
-                + KEY_NOTIFICACION_LATITUD_RES_2 + " TEXT, " + KEY_NOTIFICACION_OBSERVACIONES_RES_2 + " TEXT, "
+                + KEY_NOTIFICACION_FECHA_HORA_RES_2 + " TEXT, "
+                + KEY_NOTIFICACION_NOTIFICADOR_RES_2 + " TEXT, "
+                + KEY_NOTIFICACION_FIRMA_NOTIFICADOR_RES_2 + " TEXT, "
+                + KEY_NOTIFICACION_TIPO_DOC_RECEPTOR + " TEXT, "
+                + KEY_NOTIFICACION_NUM_DOC_RECEPTOR + " TEXT, "
+                + KEY_NOTIFICACION_NOMBRE_RECEPTOR + " TEXT, "
+                + KEY_NOTIFICACION_FIRMA_RECEPTOR + " TEXT, "
+                + KEY_NOTIFICACION_LONGITUD_RES_1 + " TEXT, "
+                + KEY_NOTIFICACION_LATITUD_RES_1 + " TEXT, "
+                + KEY_NOTIFICACION_LONGITUD_RES_2 + " TEXT, "
+                + KEY_NOTIFICACION_LATITUD_RES_2 + " TEXT, "
+                + KEY_NOTIFICACION_OBSERVACIONES_RES_2 + " TEXT, "
                 + KEY_NOTIFICACION_MARCADA + " INTEGER, "
-                + KEY_NOTIFICACION_TIMESTAMP_MARCADA + " TEXT," + KEY_NOTIFICACION_SEGUNDO_INTENTO + " INTEGER, "
-                + KEY_NOTIFICACION_NOMBRE_FICHERO + " TEXT); ";
+                + KEY_NOTIFICACION_TIMESTAMP_MARCADA + " TEXT,"
+                + KEY_NOTIFICACION_SEGUNDO_INTENTO + " INTEGER, "
+                + KEY_NOTIFICACION_NOMBRE_FICHERO + " TEXT); "
+                + KEY_NOTIFICACION_FOTO_ACUSE + " TEXT, " ;
 
         sqLiteDatabase.execSQL(qry);
     }
@@ -1121,9 +1141,10 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param db
      */
     private void crearResultadosPorDefecto(SQLiteDatabase db) {
-
+        //Resultado = codigo, descripcion, esFinal, codigoSegundoIntento,  esResultadoOficina, notifica
         List<Resultado> listaResultados = new ArrayList<>();
         listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO, "Notificado", true, null, false, true));
+        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_SIN_FIRMA, "Notificado sin firma", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_DIR_INCORRECTA, "Dirección Incorrecta", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_AUSENTE, "Ausente", false, "32", false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_DESCONOCIDO, "Desconocido", true, null, false, false));
@@ -1148,5 +1169,7 @@ public class DBHelper extends SQLiteOpenHelper {
             db.insert(TABLE_RESULTADO, null, values);
         }
     }
+
+
 
 }
