@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,11 +32,9 @@ import es.correointeligente.cipostal.cimobile.Util.Util;
 public class FotoAcuseActivity extends BaseActivity implements View.OnClickListener {
 
     Toolbar mToolbar;
-    Button btn_guardarFoto, btn_hacerFoto;
+    Button  btn_hacerFoto;
     ImageView imagenVista;
     String referencia, notificadorRes1, notificadorRes2, resultado1, resultado2, fechaHoraRes1, fechaHoraRes2;
-    Integer idNotificacion;
-    static final int EXTRA_OUTPUT = 1;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     Boolean esPrimerResultado;
 
@@ -52,20 +51,16 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
 
         btn_hacerFoto = (Button) findViewById(R.id.button_foto_acuse_hacer_foto);
         btn_hacerFoto.setOnClickListener(this);
-
-        btn_guardarFoto = (Button) findViewById(R.id.btn_foto_acuse_guardar);
-        btn_guardarFoto.setOnClickListener(this);
         
         // Recupera los datos de la notificacion
         referencia = getIntent().getStringExtra("referencia");
-        notificadorRes1 = getIntent().getStringExtra("notificadorRes1");
+        notificadorRes1 = getIntent().getStringExtra("notificador");
         notificadorRes2 = getIntent().getStringExtra("notificadorRes2");
         resultado1 = getIntent().getStringExtra("resultado1");
         resultado2 = getIntent().getStringExtra("resultado2");
         fechaHoraRes1 = getIntent().getStringExtra("fechaHoraRes1");
         fechaHoraRes2 = getIntent().getStringExtra("fechaHoraRes2");
         esPrimerResultado = getIntent().getBooleanExtra("esPrimerResultado", Boolean.TRUE);
-
     }
 
     @Override
@@ -82,19 +77,17 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
 
                 // Revisamos que el dispositivo tiene camara
                 if  (checkCameraHardware(this) == Boolean.TRUE) {
-                    llamarIntentHacerFoto();
+                    try {
+                        llamarIntentHacerFoto();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast toast = null;
+                        toast = Toast.makeText(this, "Revisa los permisos de la camara del movil", Toast.LENGTH_LONG);
+                        toast.show();
+                        finish();
+                    }
                 }
                 break;
-
-            // Logica boton guardar foto
-            case R.id.btn_foto_acuse_guardar:
-
-                llamarIntentGuardarFoto();
-                // Se redirige a la pantalla de lista de notificaciones
-                Intent i = new Intent(getBaseContext(), ListaNotificacionesActivity.class);
-                startActivity(i);
-                finish();
-
         }
     }
 
@@ -106,14 +99,11 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
-    }
-
-    // Intent para guardar foto
-    private void llamarIntentGuardarFoto() {
-        // Abre la camara
-        Intent savePictureIntent = new Intent(MediaStore.EXTRA_OUTPUT);
-        // Ensure that there's a camera activity to handle the intent
-        startActivityForResult(savePictureIntent, EXTRA_OUTPUT);
+            else {
+                Toast toast = null;
+                toast = Toast.makeText(this, "Revisa los permisos de la camara del movil", Toast.LENGTH_LONG);
+                toast.show();
+        }
     }
 
     @Override
@@ -124,14 +114,16 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             imagenVista = (ImageView) findViewById(R.id.imagen_foto_acuse_ver_foto) ;
             imagenVista.setImageBitmap(imageBitmap);
-        }
-        if (requestCode == EXTRA_OUTPUT && resultCode == RESULT_OK) {
             if (esPrimerResultado){
-                convertBitmapToFile(imageBitmap,referencia + "_" + notificadorRes1 + "_" + resultado1 + "_" + fechaHoraRes1  + ".jpg");
+                convertBitmapToFile(imageBitmap,referencia + "_" + fechaHoraRes1  + "_" + fechaHoraRes1   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"")+ "_" +resultado1 + ".jpg");
             } else {
-                convertBitmapToFile(imageBitmap,referencia + "_" + notificadorRes2 + "_" + resultado2 + "_" + fechaHoraRes2  + ".jpg");
+                convertBitmapToFile(imageBitmap,referencia + "_" + fechaHoraRes2  + "_" + fechaHoraRes2   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" +resultado2 + ".jpg");
             }
-
+        }
+            else {
+                Toast toast = null;
+                toast = Toast.makeText(this, "Revisa los permisos de la camara del movil", Toast.LENGTH_LONG);
+                toast.show();
         }
     }
 
@@ -146,8 +138,8 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
-    private static void convertBitmapToFile(Bitmap bitmap, String name) {
-        File filesDir = new File("CIMobile/FOTOS_ACUSE");
+    public void convertBitmapToFile(Bitmap bitmap, String name) {
+        File filesDir = new File(Util.obtenerRutaFotoAcuse());
 
         File imageFile = new File(filesDir, name);
         File file = new File(Util.obtenerRutaFotoAcuse(), name);
@@ -160,9 +152,11 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
             os.close();
 
         } catch (Exception e) {
-            //TODO
+            e.printStackTrace();
+            Toast toast = null;
+            toast = Toast.makeText(FotoAcuseActivity.this, "Revisa los permisos de la camara del movil", Toast.LENGTH_LONG);
+            toast.show();
         }
-
     }
 
 }

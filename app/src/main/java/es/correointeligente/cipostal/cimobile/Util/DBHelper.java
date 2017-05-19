@@ -24,16 +24,16 @@ import static android.R.attr.data;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    //Database version
+    // Database version
     private static final int DATABASE_VERSION = 1;
     // Database name
     private static final String DATABASE_NAME = "notificacionesManager";
 
     private Context context;
 
-    /*********************************************************/
-    /************* TABLA NOTIFICACION ***********************/
-    /*********************************************************/
+    /******************************************************************************************/
+    /******************************** TABLA NOTIFICACION **************************************/
+    /******************************************************************************************/
     private static final String TABLE_NOTIFICACION = "notificacion";
     // Columnas tabla Notificacion
     private static final String KEY_NOTIFICACION_ID = "id";
@@ -70,9 +70,9 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String KEY_NOTIFICACION_FOTO_ACUSE = "fotoAcuse";
 
 
-    /*********************************************************/
-    /************* TABLA RESULTADO ***************************/
-    /*********************************************************/
+    /******************************************************************************************/
+    /********************************** TABLA RESULTADO ***************************************/
+    /******************************************************************************************/
     private static final String TABLE_RESULTADO = "resultado";
     // Columnas tabla Resultado
     private static final String KEY_RESULTADO_CODIGO = "codigo";
@@ -101,9 +101,9 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    /*********************************************************/
-    /************* QUERIES RESULTADOS ************************/
-    /*********************************************************/
+    /******************************************************************************************/
+    /******************************** QUERIES RESULTADOS **************************************/
+    /******************************************************************************************/
 
     /**
      * Guarda el tipo de resultado en la base de datos
@@ -242,9 +242,9 @@ public class DBHelper extends SQLiteOpenHelper {
         return listaResultados;
     }
 
-    /********************************************/
-    /************ QUERIES PERSONALIZADAS ********/
-    /********************************************/
+    /******************************************************************************************/
+    /******************************* QUERIES PERSONALIZADAS ***********************************/
+    /******************************************************************************************/
 
     /**
      * Valida si ya se ha incluido el fichero a cargar anteriormente
@@ -333,9 +333,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 } while (cursor.moveToNext());
             }
         }
-
         db.close();
-
         return listaNotificaciones;
     }
 
@@ -354,8 +352,8 @@ public class DBHelper extends SQLiteOpenHelper {
         resumenReparto.setTotNotificaciones(cursor.getCount());
 
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
-                "("+KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0 AND " + KEY_NOTIFICACION_RESULTADO_1 + " IS NOT NULL) OR "+
-                "("+KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1 AND " + KEY_NOTIFICACION_RESULTADO_2 + " IS NOT NULL)",
+                "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0 AND " + KEY_NOTIFICACION_RESULTADO_1 + " IS NOT NULL) OR " +
+                "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1 AND " + KEY_NOTIFICACION_RESULTADO_2 + " IS NOT NULL)",
                 null, null, null, null, null);
         resumenReparto.setTotNotifGestionadas(cursor.getCount());
 
@@ -417,9 +415,9 @@ public class DBHelper extends SQLiteOpenHelper {
         return resumenReparto;
     }
 
-    /********************************************/
-    /****** QUERIES NOTIFICACIONES **************/
-    /********************************************/
+    /******************************************************************************************/
+    /*************************** QUERIES NOTIFICACIONES ***************************************/
+    /******************************************************************************************/
     /**
      * Realiza el guardado inicial de cuando se estan cargando las notificacion del fichero SICER
      * @param listaNotificaciones
@@ -1121,17 +1119,20 @@ public class DBHelper extends SQLiteOpenHelper {
                 + KEY_NOTIFICACION_MARCADA + " INTEGER, "
                 + KEY_NOTIFICACION_TIMESTAMP_MARCADA + " TEXT,"
                 + KEY_NOTIFICACION_SEGUNDO_INTENTO + " INTEGER, "
-                + KEY_NOTIFICACION_NOMBRE_FICHERO + " TEXT); "
-                + KEY_NOTIFICACION_FOTO_ACUSE + " TEXT, " ;
+                + KEY_NOTIFICACION_FOTO_ACUSE + " TEXT, "
+                + KEY_NOTIFICACION_NOMBRE_FICHERO + " TEXT); ";
 
         sqLiteDatabase.execSQL(qry);
     }
 
     private void crearTablaResultados(SQLiteDatabase sqLiteDatabase) {
         String qry = "CREATE TABLE " + TABLE_RESULTADO + "("
-                + KEY_RESULTADO_CODIGO + " TEXT, " + KEY_RESULTADO_DESCRIPCION + " TEXT, "
-                + KEY_RESULTADO_FINAL + " INTEGER, "+KEY_RESULTADO_RESULTADO_OFICINA +" INTEGER, "
-                + KEY_RESULTADO_CODIGO_SEGUNDO_INTENTO + " TEXT, " + KEY_RESULTADO_NOTIFICA + " INTEGER);";
+                + KEY_RESULTADO_CODIGO + " TEXT, "
+                + KEY_RESULTADO_DESCRIPCION + " TEXT, "
+                + KEY_RESULTADO_FINAL + " INTEGER, "
+                + KEY_RESULTADO_RESULTADO_OFICINA +" INTEGER, "
+                + KEY_RESULTADO_CODIGO_SEGUNDO_INTENTO + " TEXT, "
+                + KEY_RESULTADO_NOTIFICA + " INTEGER);";
 
         sqLiteDatabase.execSQL(qry);
     }
@@ -1169,7 +1170,4 @@ public class DBHelper extends SQLiteOpenHelper {
             db.insert(TABLE_RESULTADO, null, values);
         }
     }
-
-
-
 }

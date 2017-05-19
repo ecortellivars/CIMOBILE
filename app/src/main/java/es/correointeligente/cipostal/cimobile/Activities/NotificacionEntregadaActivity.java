@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.CommonStatusCodes;
 
@@ -47,20 +48,19 @@ import es.correointeligente.cipostal.cimobile.Util.DBHelper;
 import es.correointeligente.cipostal.cimobile.Util.Lienzo;
 import es.correointeligente.cipostal.cimobile.Util.Util;
 
-public class NotificacionEntregadaActivity extends BaseActivity implements View.OnClickListener{
+public class NotificacionEntregadaActivity extends BaseActivity implements View.OnClickListener {
 
     Lienzo mLienzo;
     Toolbar mToolbar;
     DBHelper dbHelper;
-    String referenciaPostal, referenciaPostalSCB, longitud, latitud, observaciones;
+    String referenciaPostal, referenciaPostalSCB, longitud, latitud, observaciones, notificador;
     Integer idNotificacion, posicionAdapter;
     Boolean esPrimerResultado;
     EditText edt_numeroDocumentoReceptor, edt_nombreReceptor;
     Spinner spinner_tipoDocumentoReceptor;
     Boolean numeroDocumentoValido;
-    final  String[] listaTiposDocumento = new String[]{Util.TIPO_DOCUMENTO_NIF, Util.TIPO_DOCUMENTO_CIF, Util.TIPO_DOCUMENTO_NIE, Util.TIPO_DOCUMENTO_OTRO};
-
-
+    final String[] listaTiposDocumento = new String[]{Util.TIPO_DOCUMENTO_NIF, Util.TIPO_DOCUMENTO_CIF, Util.TIPO_DOCUMENTO_NIE, Util.TIPO_DOCUMENTO_OTRO};
+    Button btn_guardar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,12 +75,14 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
         // Recupera los datos de la notificacion
         referenciaPostal = getIntent().getStringExtra("referenciaPostal");
         referenciaPostalSCB = getIntent().getStringExtra("referenciaPostalSCB");
-        idNotificacion = getIntent().getIntExtra("idNotificacion",0);
-        posicionAdapter = getIntent().getIntExtra("posicionAdapter",0);
+        idNotificacion = getIntent().getIntExtra("idNotificacion", 0);
+        posicionAdapter = getIntent().getIntExtra("posicionAdapter", 0);
         longitud = getIntent().getStringExtra("longitud");
         latitud = getIntent().getStringExtra("latitud");
         observaciones = getIntent().getStringExtra("observaciones");
         esPrimerResultado = getIntent().getBooleanExtra("esPrimerResultado", Boolean.TRUE);
+        notificador = getIntent().getStringExtra("notificador");
+
 
         // Logica del DNI
         numeroDocumentoValido = true;
@@ -88,12 +90,12 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
         edt_numeroDocumentoReceptor.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if(!hasFocus) {
-                    numeroDocumentoValido = Util.validarNumeroDocumento(((EditText)view).getText().toString(), spinner_tipoDocumentoReceptor.getSelectedItem().toString());
-                    if(!numeroDocumentoValido) {
-                        ((EditText)view).setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape_error));
+                if (!hasFocus) {
+                    numeroDocumentoValido = Util.validarNumeroDocumento(((EditText) view).getText().toString(), spinner_tipoDocumentoReceptor.getSelectedItem().toString());
+                    if (!numeroDocumentoValido) {
+                        ((EditText) view).setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape_error));
                     } else {
-                        ((EditText)view).setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape));
+                        ((EditText) view).setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape));
                     }
                 }
             }
@@ -106,9 +108,9 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 // Escuchador del item seleccionado del spinner para validar numero de documento
-                if(edt_numeroDocumentoReceptor.getText().toString().length() > 0) {
-                    numeroDocumentoValido = Util.validarNumeroDocumento(edt_numeroDocumentoReceptor.getText().toString(), ((Spinner)adapterView).getSelectedItem().toString());
-                    if(!numeroDocumentoValido) {
+                if (edt_numeroDocumentoReceptor.getText().toString().length() > 0) {
+                    numeroDocumentoValido = Util.validarNumeroDocumento(edt_numeroDocumentoReceptor.getText().toString(), ((Spinner) adapterView).getSelectedItem().toString());
+                    if (!numeroDocumentoValido) {
                         edt_numeroDocumentoReceptor.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape_error));
                     } else {
                         edt_numeroDocumentoReceptor.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape));
@@ -121,6 +123,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
 
             }
         });
+
         // Se fuerza que el inputText se haga entero en mayusculas
         edt_numeroDocumentoReceptor.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         edt_nombreReceptor.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
@@ -129,8 +132,13 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
         mLienzo = (Lienzo) findViewById(R.id.lienzo_firma);
         mLienzo.setDrawingCacheEnabled(true);
 
+        btn_guardar = (Button) findViewById(R.id.button_notif_entregada_guardar);
+        btn_guardar.setOnClickListener(this);
+
         // Obtenemos la instancia del helper de la base de datos
         dbHelper = new DBHelper(this);
+
+
     }
 
     @Override
@@ -140,45 +148,50 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
+        if(view.getId() == R.id.button_notif_entregada_guardar) {
 
-            // Lógica boton guardar notificacion ENTREGADA
-            case R.id.button_notif_entregada_guardar:
-                if (numeroDocumentoValido) {
-                    // Primero se pone el fondo en su color original para validar posteriormente
-                    edt_nombreReceptor.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape));
-                    if (StringUtils.isNotBlank(edt_nombreReceptor.getText().toString())) {
+            // Si el Identificador Fiscal es correcto
+            if(numeroDocumentoValido) {
 
-                        // Guarda la imagen firmada en el sistema de archivos
-                        try {
-                            mLienzo.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape));
-                            Bitmap bitmap = mLienzo.getDrawingCache();
-                            File file = new File(Util.obtenerRutaFirmasReceptor(), referenciaPostal + "_" + StringUtils.defaultIfBlank(referenciaPostalSCB, "") + ".png");
+                // Primero se pone el fondo en su color original para validar posteriormente
+                edt_nombreReceptor.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape));
+                if(StringUtils.isNotBlank(edt_nombreReceptor.getText().toString())) {
 
-                            try (FileOutputStream ostream = new FileOutputStream(file);) {
+                    // Guarda la imagen firmada en el sistema de archivos
+                    try {
+                        mLienzo.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape));
+                        Bitmap bitmap = mLienzo.getDrawingCache();
+                        File file = new File(Util.obtenerRutaFirmasReceptor(), referenciaPostal+"_"+StringUtils.defaultIfBlank(referenciaPostalSCB,"") + ".png");
 
-                                bitmap.compress(Bitmap.CompressFormat.PNG, 10, ostream);
-                                ostream.close();
+                        try (FileOutputStream ostream = new FileOutputStream(file);) {
 
-                                // Lanza en background el guardado de la notificacion entregada
-                                GuardarNotificacionEntregadaTask guardarNotificacionEntregadaTask = new GuardarNotificacionEntregadaTask();
-                                guardarNotificacionEntregadaTask.execute(file.getPath(), edt_nombreReceptor.getText().toString(), edt_numeroDocumentoReceptor.getText().toString());
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 10, ostream);
+                            ostream.close();
 
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-
+                            // Lanza en background el guardado de la notificacion entregada
+                            GuardarNotificacionEntregadaTask guardarNotificacionEntregadaTask = new GuardarNotificacionEntregadaTask();
+                            guardarNotificacionEntregadaTask.execute(file.getPath(), edt_nombreReceptor.getText().toString(), edt_numeroDocumentoReceptor.getText().toString());
                         } catch (Exception e) {
                             e.printStackTrace();
+                            Toast toast = null;
+                            toast = Toast.makeText(this, "Error guardando firma del receptor", Toast.LENGTH_LONG);
+                            toast.show();
                         }
-                    } else {
-                        // Si no se ha introducido texto en el nombre receptor se pinta en rojo
-                        edt_nombreReceptor.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape_error));
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast toast = null;
+                        toast = Toast.makeText(this, "Error guardando firma del receptor", Toast.LENGTH_LONG);
+                        toast.show();
                     }
+                } else {
+                    // si no se ha introducido texto en el nombre receptor se pinta en rojo
+                    edt_nombreReceptor.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape_error));
                 }
-                break;
+            }
         }
     }
+
     /**
      * Clase privada que se encarga de guardar el resultado en la base de datos,
      * generar el xml y generar el fichero de sello de tiempo
@@ -186,14 +199,25 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
     private class GuardarNotificacionEntregadaTask extends AsyncTask<String, String, String> {
         ProgressDialog progressDialog;
         Boolean guardadoNotificacionEnBD;
-        static final int REQUEST_IMAGE_CAPTURE = 1;
-        String mCurrentPhotoPath;
 
 
         @Override
         protected void onPreExecute() {
             guardadoNotificacionEnBD = false;
             progressDialog = ProgressDialog.show(NotificacionEntregadaActivity.this, getString(R.string.guardar), getString(R.string.guardando_datos_en_bd_interna));
+
+            // Hacemos la foto
+            Intent intentNuevaNoti = new Intent(NotificacionEntregadaActivity.this, FotoAcuseActivity.class);
+            if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
+                intentNuevaNoti.putExtra("referencia", referenciaPostal);
+                intentNuevaNoti.putExtra("notificador", notificador);
+                intentNuevaNoti.putExtra("resultado1", Util.RESULTADO_ENTREGADO);
+                DateFormat df = new SimpleDateFormat("yyyyMMdd");
+                String fechaHoraString = df.format(Calendar.getInstance().getTime());
+                intentNuevaNoti.putExtra("fechaHoraRes1", fechaHoraString);
+                startActivity(intentNuevaNoti);
+            }
+
         }
 
         @Override
@@ -229,7 +253,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setNotificadorRes1(obtenerNombreNotificador());
                 notificacionAux.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
                 notificacionAux.setSegundoIntento(!esPrimerResultado);
-            } else {
+                } else {
 
                 notificacionAux.setDescResultado2(resultado.getDescripcion().toUpperCase());
                 notificacionAux.setResultado2(resultado.getCodigo());
@@ -240,9 +264,12 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setNotificadorRes2(obtenerNombreNotificador());
                 notificacionAux.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() +" .png");
                 notificacionAux.setSegundoIntento(esPrimerResultado);
+
             }
 
             guardadoNotificacionEnBD = dbHelper.guardaResultadoNotificacion(notificacionAux);
+
+
 
             if(!guardadoNotificacionEnBD) {
                 fallo = getString(R.string.error_guardar_en_bd);

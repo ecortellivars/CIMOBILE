@@ -1,6 +1,7 @@
 package es.correointeligente.cipostal.cimobile.Model;
 
 public class Notificador {
+    // Codigo Escaner
     private String codigo;
     private String nombre;
     private String delegacion;
@@ -9,6 +10,7 @@ public class Notificador {
     }
 
     public Notificador(String codigo, String nombre, String delegacion) {
+        // Codigo Escaner
         this.codigo = codigo;
         this.nombre = nombre;
         this.delegacion = delegacion;

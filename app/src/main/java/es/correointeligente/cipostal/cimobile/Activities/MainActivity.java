@@ -60,14 +60,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
         Intent i = null;
         switch (view.getId()) {
+
             case R.id.button_cargar_reparto:
                 i = new Intent(getBaseContext(), CargarRepartoActivity.class);
                 startActivity(i);
                 break;
+
             case R.id.button_resumen_reparto:
                 i = new Intent(getBaseContext(), ResumenRepartoActivity.class);
                 startActivity(i);
                 break;
+
             case R.id.button_nueva_notificacion:
                 if(!Util.existeFirmaNotificador(obtenerCodigoNotificador())) {
                     i = new Intent(getBaseContext(), FirmaNotificadorActivity.class);
@@ -76,9 +79,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 }
                 startActivity(i);
                 break;
+
             case R.id.button_cerrar_sesion:
                 this.cerrarSesion();
                 break;
+
             default:
                 break;
         }
