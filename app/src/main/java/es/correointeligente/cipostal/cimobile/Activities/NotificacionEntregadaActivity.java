@@ -161,9 +161,9 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                     try {
                         mLienzo.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape));
                         Bitmap bitmap = mLienzo.getDrawingCache();
-                        File file = new File(Util.obtenerRutaFirmasReceptor(), referenciaPostal+"_"+StringUtils.defaultIfBlank(referenciaPostalSCB,"") + ".png");
+                        File file = new File(Util.obtenerRutaFirmasReceptor(), referenciaPostal + "_" + StringUtils.defaultIfBlank(referenciaPostalSCB,"") + ".png");
 
-                        try (FileOutputStream ostream = new FileOutputStream(file);) {
+                        try (FileOutputStream ostream = new FileOutputStream(file)) {
 
                             bitmap.compress(Bitmap.CompressFormat.PNG, 10, ostream);
                             ostream.close();
@@ -174,14 +174,14 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                         } catch (Exception e) {
                             e.printStackTrace();
                             Toast toast = null;
-                            toast = Toast.makeText(this, "Error guardando firma del receptor", Toast.LENGTH_LONG);
+                            toast = Toast.makeText(this, "Error guardando firma del receptor. Revisa los permisos del movil", Toast.LENGTH_LONG);
                             toast.show();
                         }
 
                     } catch (Exception e) {
                         e.printStackTrace();
                         Toast toast = null;
-                        toast = Toast.makeText(this, "Error guardando firma del receptor", Toast.LENGTH_LONG);
+                        toast = Toast.makeText(this, "Error guardando firma del receptor. Revisa los permisos del movil", Toast.LENGTH_LONG);
                         toast.show();
                     }
                 } else {
@@ -253,7 +253,10 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setNotificadorRes1(obtenerNombreNotificador());
                 notificacionAux.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
                 notificacionAux.setSegundoIntento(!esPrimerResultado);
-                } else {
+                DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
+                String fechaHoraFoto1 = df2.format(Calendar.getInstance().getTime());
+                notificacionAux.setFotoAcuse(Util.obtenerRutaFotoAcuse() + File.separator  + referenciaPostal + "_" + fechaHoraFoto1  + "_" + fechaHoraFoto1   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + resultado.getCodigo() + ".jpg");
+            } else {
 
                 notificacionAux.setDescResultado2(resultado.getDescripcion().toUpperCase());
                 notificacionAux.setResultado2(resultado.getCodigo());
@@ -264,6 +267,9 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setNotificadorRes2(obtenerNombreNotificador());
                 notificacionAux.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() +" .png");
                 notificacionAux.setSegundoIntento(esPrimerResultado);
+                DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
+                String fechaHoraFoto2 = df2.format(Calendar.getInstance().getTime());
+                notificacionAux.setFotoAcuse(Util.obtenerRutaFotoAcuse()  + File.separator  + referenciaPostal + "_" + fechaHoraFoto2  + "_" + fechaHoraFoto2   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + resultado.getCodigo() + ".jpg");
 
             }
 

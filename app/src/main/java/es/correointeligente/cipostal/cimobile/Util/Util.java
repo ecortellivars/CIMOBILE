@@ -379,6 +379,7 @@ public class Util {
             String observacionesString = null;
             String notificadorString = null;
             String firmaNotificadorString = null;
+            String fotoAcuseString = null;
 
             if(StringUtils.isNotBlank(notificacion.getResultado2())) {
                 resultadoString = notificacion.getResultado2();
@@ -389,6 +390,7 @@ public class Util {
                 observacionesString = notificacion.getObservacionesRes2();
                 notificadorString = notificacion.getNotificadorRes2();
                 firmaNotificadorString = notificacion.getFirmaNotificadorRes2();
+                fotoAcuseString = notificacion.getFotoAcuse();
             } else {
                 resultadoString = notificacion.getResultado1();
                 resultadoDescString = notificacion.getDescResultado1();
@@ -398,6 +400,7 @@ public class Util {
                 observacionesString = notificacion.getObservacionesRes1();
                 notificadorString = notificacion.getNotificadorRes1();
                 firmaNotificadorString = notificacion.getFirmaNotificadorRes1();
+                fotoAcuseString = notificacion.getFotoAcuse();
             }
 
             horaString = dfHora.format(date);
@@ -481,6 +484,14 @@ public class Util {
                 Element firmaReceptor = doc.createElement("firmaReceptor");
                 firmaReceptor.appendChild(doc.createTextNode(encodedImage));
                 rootElement.appendChild(firmaReceptor);
+                fis.close();
+
+                fis = new FileInputStream(fotoAcuseString);
+                filedata = IOUtils.toByteArray(fis);
+                encodedImage = Base64.encodeToString(filedata, Base64.NO_WRAP);
+                Element fotoAcuse = doc.createElement("fotoAcuse");
+                fotoAcuse.appendChild(doc.createTextNode(encodedImage));
+                rootElement.appendChild(fotoAcuse);
                 fis.close();
             }
 

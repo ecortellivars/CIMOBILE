@@ -174,7 +174,8 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             // Todos los resultados incluyendo el ENTREGADO SIN FIRMA
             case R.id.button_nueva_notificacion_noEntregado:
                 // Revisamos que haya hecho la foto del acuse
-                    this.crearSelectorNoEntregado();
+                this.crearSelectorNoEntregado();
+                break;
 
 
 
@@ -362,19 +363,6 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                 String codResultado = listaResultadosNoNotifica.get(checkedItem).getCodigo();
                 String descResultado = listaResultadosNoNotifica.get(checkedItem).getDescripcion();
 
-                // Hacemos la foto
-                Intent intentNuevaNoti = new Intent(NuevaNotificacionActivity.this, FotoAcuseActivity.class);
-                if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
-                    intentNuevaNoti.putExtra("referencia", notificacion.getReferencia());
-                    intentNuevaNoti.putExtra("notificador", "noficador");
-                    intentNuevaNoti.putExtra("resultado1", notificacion.getResultado1());
-                    intentNuevaNoti.putExtra("resultado2", notificacion.getResultado2());
-                    intentNuevaNoti.putExtra("fechaHoraRes1", notificacion.getFechaHoraRes1());
-                    intentNuevaNoti.putExtra("fechaHoraRes2", notificacion.getFechaHoraRes2());
-                    intentNuevaNoti.putExtra("esPrimerResultado", (notificacion.getSegundoIntento() == null || !notificacion.getSegundoIntento()));
-
-                    startActivity(intentNuevaNoti);
-                }
 
                 // Si es Primer Intento
                 if (BooleanUtils.isFalse(notificacion.getSegundoIntento())) {
@@ -405,7 +393,6 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
 
                 GuardarResultadoNegativoTask guardarResultadoNegativoTask = new GuardarResultadoNegativoTask();
                 guardarResultadoNegativoTask.execute();
-
 
                 // Se cierra el cuadro de dialogo de los resultados postales negativos
                 dialogInterface.dismiss();
@@ -525,6 +512,20 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         protected void onPreExecute() {
             guardadoNotificacionEnBD = false;
             progressDialog = ProgressDialog.show(NuevaNotificacionActivity.this, getString(R.string.guardar), getString(R.string.guardando_datos_en_bd_interna));
+
+            // Hacemos la foto
+            Intent intentNuevaNoti = new Intent(NuevaNotificacionActivity.this, FotoAcuseActivity.class);
+            if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
+                intentNuevaNoti.putExtra("referencia", notificacion.getReferencia());
+                intentNuevaNoti.putExtra("notificador", sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,""));
+                intentNuevaNoti.putExtra("resultado1", Util.RESULTADO_ENTREGADO);
+                DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
+                String fechaHoraString2 = df2.format(Calendar.getInstance().getTime());
+                intentNuevaNoti.putExtra("fechaHoraRes1", fechaHoraString2);
+                startActivity(intentNuevaNoti);
+                notificacion.setFotoAcuse(Util.obtenerRutaFotoAcuse() + File.separator  + notificacion.getReferencia() + "_" + fechaHoraString2  + "_" + fechaHoraString2   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + Util.RESULTADO_ENTREGADO + ".jpg");
+            }
+
         }
 
         @Override

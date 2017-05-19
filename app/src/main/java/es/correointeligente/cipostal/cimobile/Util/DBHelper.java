@@ -546,7 +546,8 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_NOMBRE_FICHERO,
                         KEY_NOTIFICACION_MARCADA,
                         KEY_NOTIFICACION_TIMESTAMP_MARCADA,
-                        KEY_NOTIFICACION_SEGUNDO_INTENTO
+                        KEY_NOTIFICACION_SEGUNDO_INTENTO,
+                        KEY_NOTIFICACION_FOTO_ACUSE
                 },
                 KEY_NOTIFICACION_ID + " = ?", new String[]{idNotificacion.toString()},
                 null, null, null, null
@@ -615,7 +616,8 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_NOMBRE_FICHERO,
                         KEY_NOTIFICACION_MARCADA,
                         KEY_NOTIFICACION_TIMESTAMP_MARCADA,
-                        KEY_NOTIFICACION_SEGUNDO_INTENTO
+                        KEY_NOTIFICACION_SEGUNDO_INTENTO,
+                        KEY_NOTIFICACION_FOTO_ACUSE
                 },
                 whereClause, parametros,
                 null, null, null, null
@@ -743,7 +745,8 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_OBSERVACIONES_RES_2,
                         KEY_NOTIFICACION_NOMBRE_FICHERO,
                         KEY_NOTIFICACION_MARCADA,
-                        KEY_NOTIFICACION_TIMESTAMP_MARCADA
+                        KEY_NOTIFICACION_TIMESTAMP_MARCADA,
+                        KEY_NOTIFICACION_FOTO_ACUSE
                 }, null, null, null, null, KEY_NOTIFICACION_REFERENCIA + " ASC", null
         );
 
@@ -876,6 +879,10 @@ public class DBHelper extends SQLiteOpenHelper {
         columna = cursor.getColumnIndex(KEY_NOTIFICACION_FIRMA_RECEPTOR);
         if (columna != -1) {
             notificacion.setFirmaReceptor(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_FOTO_ACUSE);
+        if (columna != -1) {
+            notificacion.setFotoAcuse(cursor.getString(columna));
         }
         columna = cursor.getColumnIndex(KEY_NOTIFICACION_LONGITUD_RES_1);
         if (columna != -1) {

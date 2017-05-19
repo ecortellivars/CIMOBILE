@@ -116,6 +116,7 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
             imagenVista.setImageBitmap(imageBitmap);
             if (esPrimerResultado){
                 convertBitmapToFile(imageBitmap,referencia + "_" + fechaHoraRes1  + "_" + fechaHoraRes1   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"")+ "_" +resultado1 + ".jpg");
+
             } else {
                 convertBitmapToFile(imageBitmap,referencia + "_" + fechaHoraRes2  + "_" + fechaHoraRes2   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" +resultado2 + ".jpg");
             }
