@@ -58,8 +58,8 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
         notificadorRes2 = getIntent().getStringExtra("notificadorRes2");
         resultado1 = getIntent().getStringExtra("resultado1");
         resultado2 = getIntent().getStringExtra("resultado2");
-        fechaHoraRes1 = getIntent().getStringExtra("fechaHoraRes1");
-        fechaHoraRes2 = getIntent().getStringExtra("fechaHoraRes2");
+        fechaHoraRes1 = getIntent().getStringExtra("fechaHoraString1");
+        fechaHoraRes2 = getIntent().getStringExtra("fechaHoraString2");
         esPrimerResultado = getIntent().getBooleanExtra("esPrimerResultado", Boolean.TRUE);
     }
 
@@ -115,10 +115,10 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
             imagenVista = (ImageView) findViewById(R.id.imagen_foto_acuse_ver_foto) ;
             imagenVista.setImageBitmap(imageBitmap);
             if (esPrimerResultado){
-                convertBitmapToFile(imageBitmap,referencia + "_" + fechaHoraRes1  + "_" + fechaHoraRes1   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"")+ "_" +resultado1 + ".jpg");
+                convertBitmapToFile(imageBitmap,referencia + "_" + fechaHoraRes1  + "_" + fechaHoraRes1   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + resultado1 + ".jpg");
 
             } else {
-                convertBitmapToFile(imageBitmap,referencia + "_" + fechaHoraRes2  + "_" + fechaHoraRes2   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" +resultado2 + ".jpg");
+                convertBitmapToFile(imageBitmap,referencia + "_" + fechaHoraRes2  + "_" + fechaHoraRes2   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + resultado2 + ".jpg");
             }
         }
             else {

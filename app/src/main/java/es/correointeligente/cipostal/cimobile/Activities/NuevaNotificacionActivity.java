@@ -162,7 +162,6 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         btn_entregado.setOnClickListener(this);
         btn_noEntregado = (Button) findViewById(R.id.button_nueva_notificacion_entregado);
         btn_noEntregado.setOnClickListener(this);
-
     }
 
     @Override
@@ -173,11 +172,9 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         switch (view.getId()) {
             // Todos los resultados incluyendo el ENTREGADO SIN FIRMA
             case R.id.button_nueva_notificacion_noEntregado:
-                // Revisamos que haya hecho la foto del acuse
+                // Llamamos al Pop-Up de TODOS los resultados
                 this.crearSelectorNoEntregado();
                 break;
-
-
 
                 //Solo ENTREGADO CON FIRMA
             case R.id.button_nueva_notificacion_entregado:
@@ -375,7 +372,9 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     notificacion.setNotificadorRes1(obtenerNombreNotificador());
                     notificacion.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
                     // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.jpg
-                    notificacion.setFotoAcuse(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString + "_" +  fechaHoraString + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + codResultado + ".jpg");
+                    DateFormat df1 = new SimpleDateFormat("yyyyMMdd");
+                    String fechaHoraString1 = df1.format(notificacion.getFechaHoraRes1());
+                    notificacion.setFotoAcuse(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString1 + "_" +  fechaHoraString1 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + codResultado + ".jpg");
                 }
                 // Si es Segundo Intento
                 else {
@@ -388,7 +387,9 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     notificacion.setNotificadorRes2(obtenerNombreNotificador());
                     notificacion.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
                     // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.jpg
-                    notificacion.setFotoAcuse(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString + "_" +  fechaHoraString + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + codResultado + ".jpg");
+                    DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
+                    String fechaHoraString2 = df2.format(notificacion.getFechaHoraRes2());
+                    notificacion.setFotoAcuse(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString2 + "_" +  fechaHoraString2 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + codResultado + ".jpg");
                 }
 
                 GuardarResultadoNegativoTask guardarResultadoNegativoTask = new GuardarResultadoNegativoTask();
@@ -516,14 +517,20 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             // Hacemos la foto
             Intent intentNuevaNoti = new Intent(NuevaNotificacionActivity.this, FotoAcuseActivity.class);
             if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
+                // Cargo todos los datos para en el Intent
                 intentNuevaNoti.putExtra("referencia", notificacion.getReferencia());
                 intentNuevaNoti.putExtra("notificador", sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,""));
-                intentNuevaNoti.putExtra("resultado1", Util.RESULTADO_ENTREGADO);
+                intentNuevaNoti.putExtra("resultado1", notificacion.getResultado1());
+                intentNuevaNoti.putExtra("resultado2", notificacion.getResultado2());
+                DateFormat df1 = new SimpleDateFormat("yyyyMMdd");
+                String fechaHoraString1 = df1.format(notificacion.getFechaHoraRes1());
+                intentNuevaNoti.putExtra("fechaHoraString1", fechaHoraString1);
                 DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
-                String fechaHoraString2 = df2.format(Calendar.getInstance().getTime());
-                intentNuevaNoti.putExtra("fechaHoraRes1", fechaHoraString2);
+                String fechaHoraString2 = df2.format(notificacion.getFechaHoraRes2());
+                intentNuevaNoti.putExtra("fechaHoraString2", fechaHoraString2);
+
                 startActivity(intentNuevaNoti);
-                notificacion.setFotoAcuse(Util.obtenerRutaFotoAcuse() + File.separator  + notificacion.getReferencia() + "_" + fechaHoraString2  + "_" + fechaHoraString2   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + Util.RESULTADO_ENTREGADO + ".jpg");
+
             }
 
         }
@@ -531,13 +538,16 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         @Override
         protected String doInBackground(Void... voids) {
             String fallo = "";
+
             // Primero guarda el resultado de notificacion y recupera todos los datos para generar el fichero xml
             guardadoNotificacionEnBD = dbHelper.guardaResultadoNotificacion(notificacion);
             if (!guardadoNotificacionEnBD) {
                 fallo = getString(R.string.error_guardar_en_bd);
             } else {
                 notificacion = dbHelper.obtenerNotificacion(idNotificacion);
-
+                //DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
+                //String fechaHoraString2 = df2.format(Calendar.getInstance().getTime());
+                //notificacion.setFotoAcuse(Util.obtenerRutaFotoAcuse() + File.separator  + notificacion.getReferencia() + "_" + fechaHoraString2  + "_" + fechaHoraString2   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + Util.RESULTADO_ENTREGADO + ".jpg");
                 File ficheroXML = null;
                 try {
                     // Se genera el fichero XML
