@@ -89,7 +89,6 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     List<Resultado> listaResultadosNoNotifica;
     int checkedItem;
     Notificacion notificacion;
-    Boolean fotoHecha;
     String codigoNotificador;
 
     // Variables para la localizacion GPS
@@ -125,8 +124,6 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         this.mapearVista();
 
         connectGPS();
-
-        fotoHecha = Boolean.FALSE;
 
         // Obtenemos la instancia del helper de la base de datos
         dbHelper = new DBHelper(this);
@@ -176,7 +173,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                 this.crearSelectorNoEntregado();
                 break;
 
-                //Solo ENTREGADO CON FIRMA
+                // Solo ENTREGADO CON FIRMA
             case R.id.button_nueva_notificacion_entregado:
                 Intent intent = new Intent(NuevaNotificacionActivity.this, NotificacionEntregadaActivity.class);
 
@@ -344,6 +341,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
 
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(NuevaNotificacionActivity.this);
         mBuilder.setTitle(R.string.resultados_sin_firma);
+        // Guardamos el resultado elegido por el usuario
         mBuilder.setSingleChoiceItems(listaResultadosNoEntrega, checkedItem, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int posicion) {
@@ -355,13 +353,17 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         mBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                // Fecha para base de datos
                 DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                 String fechaHoraString = df.format(Calendar.getInstance().getTime());
                 String codResultado = listaResultadosNoNotifica.get(checkedItem).getCodigo();
                 String descResultado = listaResultadosNoNotifica.get(checkedItem).getDescripcion();
 
+                // Fecha para dar nombre a la imagen en base de datos y al fichero JPG
+                DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
+                String fechaHoraString2 = df2.format(Calendar.getInstance().getTime());
 
-                // Si es Primer Intento
+                // Preparamos la informacion si es Primer Intento
                 if (BooleanUtils.isFalse(notificacion.getSegundoIntento())) {
                     notificacion.setFechaHoraRes1(fechaHoraString);
                     notificacion.setResultado1(codResultado);
@@ -372,11 +374,9 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     notificacion.setNotificadorRes1(obtenerNombreNotificador());
                     notificacion.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
                     // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.jpg
-                    DateFormat df1 = new SimpleDateFormat("yyyyMMdd");
-                    String fechaHoraString1 = df1.format(notificacion.getFechaHoraRes1());
-                    notificacion.setFotoAcuse(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString1 + "_" +  fechaHoraString1 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + codResultado + ".jpg");
+                    notificacion.setFotoAcuse(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString2 + "_" +  fechaHoraString2 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + codResultado + ".jpg");
                 }
-                // Si es Segundo Intento
+                // Preparamos la informacion si es Primer Intento
                 else {
                     notificacion.setFechaHoraRes2(fechaHoraString);
                     notificacion.setResultado2(codResultado);
@@ -387,12 +387,11 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     notificacion.setNotificadorRes2(obtenerNombreNotificador());
                     notificacion.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
                     // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.jpg
-                    DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
-                    String fechaHoraString2 = df2.format(notificacion.getFechaHoraRes2());
                     notificacion.setFotoAcuse(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString2 + "_" +  fechaHoraString2 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + codResultado + ".jpg");
                 }
 
                 GuardarResultadoNegativoTask guardarResultadoNegativoTask = new GuardarResultadoNegativoTask();
+
                 guardarResultadoNegativoTask.execute();
 
                 // Se cierra el cuadro de dialogo de los resultados postales negativos
@@ -512,43 +511,35 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         @Override
         protected void onPreExecute() {
             guardadoNotificacionEnBD = false;
-            progressDialog = ProgressDialog.show(NuevaNotificacionActivity.this, getString(R.string.guardar), getString(R.string.guardando_datos_en_bd_interna));
-
-            // Hacemos la foto
-            Intent intentNuevaNoti = new Intent(NuevaNotificacionActivity.this, FotoAcuseActivity.class);
-            if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
-                // Cargo todos los datos para en el Intent
-                intentNuevaNoti.putExtra("referencia", notificacion.getReferencia());
-                intentNuevaNoti.putExtra("notificador", sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,""));
-                intentNuevaNoti.putExtra("resultado1", notificacion.getResultado1());
-                intentNuevaNoti.putExtra("resultado2", notificacion.getResultado2());
-                DateFormat df1 = new SimpleDateFormat("yyyyMMdd");
-                String fechaHoraString1 = df1.format(notificacion.getFechaHoraRes1());
-                intentNuevaNoti.putExtra("fechaHoraString1", fechaHoraString1);
-                DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
-                String fechaHoraString2 = df2.format(notificacion.getFechaHoraRes2());
-                intentNuevaNoti.putExtra("fechaHoraString2", fechaHoraString2);
-
-                startActivity(intentNuevaNoti);
-
-            }
+            //progressDialog = ProgressDialog.show(NuevaNotificacionActivity.this, getString(R.string.guardar), getString(R.string.guardando_datos_en_bd_interna));
 
         }
 
         @Override
         protected String doInBackground(Void... voids) {
-            String fallo = "";
 
+            String fallo = "";
             // Primero guarda el resultado de notificacion y recupera todos los datos para generar el fichero xml
             guardadoNotificacionEnBD = dbHelper.guardaResultadoNotificacion(notificacion);
             if (!guardadoNotificacionEnBD) {
                 fallo = getString(R.string.error_guardar_en_bd);
             } else {
+
+                // Hacemos la foto
+                Intent intentNuevaNoti = new Intent(NuevaNotificacionActivity.this, FotoAcuseActivity.class);
+                if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
+                    intentNuevaNoti.putExtra("referencia", notificacion.getReferencia());
+                    intentNuevaNoti.putExtra("notificador", sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,""));
+                    intentNuevaNoti.putExtra("resultado1", notificacion.getResultado1());
+                    intentNuevaNoti.putExtra("resultado2", notificacion.getResultado2());
+                    DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
+                    String fechaHoraString2 = df2.format(Calendar.getInstance().getTime());
+                    intentNuevaNoti.putExtra("fechaHoraRes1", fechaHoraString2);
+                    startActivity(intentNuevaNoti);
+                }
                 notificacion = dbHelper.obtenerNotificacion(idNotificacion);
-                //DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
-                //String fechaHoraString2 = df2.format(Calendar.getInstance().getTime());
-                //notificacion.setFotoAcuse(Util.obtenerRutaFotoAcuse() + File.separator  + notificacion.getReferencia() + "_" + fechaHoraString2  + "_" + fechaHoraString2   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + Util.RESULTADO_ENTREGADO + ".jpg");
                 File ficheroXML = null;
+
                 try {
                     // Se genera el fichero XML
                     publishProgress(getString(R.string.generado_xml));
@@ -577,24 +568,21 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     fallo = getString(R.string.error_lectura_fichero_xml);
                 }
             }
-
             return fallo;
         }
 
-        @Override
-        protected void onProgressUpdate(String... values) {
-            super.onProgressUpdate(values);
-            progressDialog.setMessage(values[0]);
-        }
+        //@Override
+        //protected void onProgressUpdate(String... values) {
+        //    super.onProgressUpdate(values);
+        //    progressDialog.setMessage(values[0]);
+       //}
 
         @Override
         protected void onPostExecute(String fallo) {
             // Se cierra el dialogo de espera
-            progressDialog.dismiss();
-
             // Se crea el dialogo de respuesta del guardado
             AlertDialog.Builder builder = new AlertDialog.Builder(NuevaNotificacionActivity.this);
-            builder.setTitle(R.string.guardado);
+            //builder.setTitle(R.string.guardado);
 
             if (fallo != null && !fallo.isEmpty()) {
                 // Fallo al guardar
@@ -622,26 +610,17 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                 }
 
                 builder.setMessage(fallo);
+                // Crear el dialogo con los parametros que se han definido y se muestra por pantalla
+                builder.show();
             } else {
                 // Guardado y generado correctamente
-                builder.setMessage(R.string.notificacion_grabada_correctamente);
-                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialogInterface, int which) {
-                        Intent intentResultado = new Intent();
-                        intentResultado.putExtra("posicionAdapter", posicionAdapter);
-                        intentResultado.putExtra("idNotificacion", idNotificacion);
-                        setResult(CommonStatusCodes.SUCCESS, intentResultado);
-                        dialogInterface.dismiss();
-                        finish();
-                    }
-                });
+                Intent i = new Intent(getBaseContext(), ListaNotificacionesActivity.class);
+                startActivity(i);
+                finish();
             }
-            // Crear el dialogo con los parametros que se han definido y se muestra por pantalla
-            builder.show();
+
         }
     }
-
-
 }
 
 

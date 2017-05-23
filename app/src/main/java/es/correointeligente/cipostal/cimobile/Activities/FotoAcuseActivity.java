@@ -36,13 +36,12 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
     ImageView imagenVista;
     String referencia, notificadorRes1, notificadorRes2, resultado1, resultado2, fechaHoraRes1, fechaHoraRes2;
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    Boolean esPrimerResultado;
+    Boolean esPrimerResultado, fotohecha;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(getLayoutResocurce() );
-
+        setContentView(R.layout.activity_foto_acuse);
         mToolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -51,16 +50,17 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
 
         btn_hacerFoto = (Button) findViewById(R.id.button_foto_acuse_hacer_foto);
         btn_hacerFoto.setOnClickListener(this);
-        
+
         // Recupera los datos de la notificacion
         referencia = getIntent().getStringExtra("referencia");
         notificadorRes1 = getIntent().getStringExtra("notificador");
         notificadorRes2 = getIntent().getStringExtra("notificadorRes2");
         resultado1 = getIntent().getStringExtra("resultado1");
         resultado2 = getIntent().getStringExtra("resultado2");
-        fechaHoraRes1 = getIntent().getStringExtra("fechaHoraString1");
-        fechaHoraRes2 = getIntent().getStringExtra("fechaHoraString2");
+        fechaHoraRes1 = getIntent().getStringExtra("fechaHoraRes1");
+        fechaHoraRes2 = getIntent().getStringExtra("fechaHoraRes1");
         esPrimerResultado = getIntent().getBooleanExtra("esPrimerResultado", Boolean.TRUE);
+        fotohecha = Boolean.FALSE;
     }
 
     @Override
@@ -79,6 +79,7 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
                 if  (checkCameraHardware(this) == Boolean.TRUE) {
                     try {
                         llamarIntentHacerFoto();
+
                     } catch (Exception e) {
                         e.printStackTrace();
                         Toast toast = null;
@@ -88,6 +89,7 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
                     }
                 }
                 break;
+
         }
     }
 
@@ -140,9 +142,7 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
     }
 
     public void convertBitmapToFile(Bitmap bitmap, String name) {
-        File filesDir = new File(Util.obtenerRutaFotoAcuse());
 
-        File imageFile = new File(filesDir, name);
         File file = new File(Util.obtenerRutaFotoAcuse(), name);
 
         OutputStream os;

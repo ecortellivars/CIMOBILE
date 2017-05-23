@@ -16,7 +16,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:weightSum="1">
 
         <Button
             android:id="@+id/button_foto_acuse_hacer_foto"
@@ -30,31 +31,17 @@
             android:textColor="@color/cardview_dark_background"
             android:textColorLink="@color/colorBackgroundAusente" />
 
-        <android.support.v4.widget.Space
-            android:id="@+id/space"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3.71" />
+
 
         <ImageView
             android:id="@+id/imagen_foto_acuse_ver_foto"
             android:layout_width="match_parent"
-            android:layout_height="275dp"
-            android:layout_weight="22.56"
+            android:layout_height="347dp"
             android:background="@drawable/edit_text_shape"
-            tools:ignore="ContentDescription" />
-
-        <android.support.v4.widget.Space
-            android:id="@+id/space3"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            tools:ignore="ContentDescription"
+            android:layout_weight="0.75" />
 
 
     </LinearLayout>
-
-    <include
-        android:id="@+id/tool_bar"
-        layout="@layout/tool_bar" />
 
 </LinearLayout>

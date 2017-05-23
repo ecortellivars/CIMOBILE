@@ -137,8 +137,6 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
 
         // Obtenemos la instancia del helper de la base de datos
         dbHelper = new DBHelper(this);
-
-
     }
 
     @Override
@@ -185,7 +183,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                         toast.show();
                     }
                 } else {
-                    // si no se ha introducido texto en el nombre receptor se pinta en rojo
+                    // Si no se ha introducido texto en el nombre receptor se pinta en rojo
                     edt_nombreReceptor.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape_error));
                 }
             }
@@ -206,17 +204,6 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
             guardadoNotificacionEnBD = false;
             progressDialog = ProgressDialog.show(NotificacionEntregadaActivity.this, getString(R.string.guardar), getString(R.string.guardando_datos_en_bd_interna));
 
-            // Hacemos la foto
-            Intent intentNuevaNoti = new Intent(NotificacionEntregadaActivity.this, FotoAcuseActivity.class);
-            if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
-                intentNuevaNoti.putExtra("referencia", referenciaPostal);
-                intentNuevaNoti.putExtra("notificador", notificador);
-                intentNuevaNoti.putExtra("resultado1", Util.RESULTADO_ENTREGADO);
-                DateFormat df = new SimpleDateFormat("yyyyMMdd");
-                String fechaHoraString = df.format(Calendar.getInstance().getTime());
-                intentNuevaNoti.putExtra("fechaHoraRes1", fechaHoraString);
-                startActivity(intentNuevaNoti);
-            }
 
         }
 
@@ -275,13 +262,23 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
 
             guardadoNotificacionEnBD = dbHelper.guardaResultadoNotificacion(notificacionAux);
 
-
-
             if(!guardadoNotificacionEnBD) {
                 fallo = getString(R.string.error_guardar_en_bd);
             } else {
                 notificacionAux = dbHelper.obtenerNotificacion(idNotificacion);
                 File ficheroXML = null;
+
+                // Hacemos la foto
+                Intent intentNuevaNoti = new Intent(NotificacionEntregadaActivity.this, FotoAcuseActivity.class);
+                if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
+                    intentNuevaNoti.putExtra("referencia", referenciaPostal);
+                    intentNuevaNoti.putExtra("notificador", notificador);
+                    intentNuevaNoti.putExtra("resultado1", Util.RESULTADO_ENTREGADO);
+                    DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
+                    String fechaHoraString2 = df2.format(Calendar.getInstance().getTime());
+                    intentNuevaNoti.putExtra("fechaHoraRes1", fechaHoraString2);
+                    startActivity(intentNuevaNoti);
+                }
                 try {
                     // Se genera el fichero XML
                     publishProgress(getString(R.string.generado_xml));
