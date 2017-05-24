@@ -375,6 +375,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     notificacion.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
                     // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.jpg
                     notificacion.setFotoAcuse(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString2 + "_" +  fechaHoraString2 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + codResultado + ".jpg");
+
                 }
                 // Preparamos la informacion si es Primer Intento
                 else {
@@ -511,35 +512,19 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         @Override
         protected void onPreExecute() {
             guardadoNotificacionEnBD = false;
-            //progressDialog = ProgressDialog.show(NuevaNotificacionActivity.this, getString(R.string.guardar), getString(R.string.guardando_datos_en_bd_interna));
-
+            progressDialog = ProgressDialog.show(NuevaNotificacionActivity.this, getString(R.string.guardar), getString(R.string.guardando_datos_en_bd_interna));
         }
 
         @Override
         protected String doInBackground(Void... voids) {
-
             String fallo = "";
             // Primero guarda el resultado de notificacion y recupera todos los datos para generar el fichero xml
             guardadoNotificacionEnBD = dbHelper.guardaResultadoNotificacion(notificacion);
-            if (!guardadoNotificacionEnBD) {
-                fallo = getString(R.string.error_guardar_en_bd);
+            if(!guardadoNotificacionEnBD) {
+                fallo = getString(R.string.error_guardar_en_bd)   ;
             } else {
-
-                // Hacemos la foto
-                Intent intentNuevaNoti = new Intent(NuevaNotificacionActivity.this, FotoAcuseActivity.class);
-                if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
-                    intentNuevaNoti.putExtra("referencia", notificacion.getReferencia());
-                    intentNuevaNoti.putExtra("notificador", sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,""));
-                    intentNuevaNoti.putExtra("resultado1", notificacion.getResultado1());
-                    intentNuevaNoti.putExtra("resultado2", notificacion.getResultado2());
-                    DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
-                    String fechaHoraString2 = df2.format(Calendar.getInstance().getTime());
-                    intentNuevaNoti.putExtra("fechaHoraRes1", fechaHoraString2);
-                    startActivity(intentNuevaNoti);
-                }
                 notificacion = dbHelper.obtenerNotificacion(idNotificacion);
                 File ficheroXML = null;
-
                 try {
                     // Se genera el fichero XML
                     publishProgress(getString(R.string.generado_xml));
@@ -547,7 +532,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
 
                     // Se realiza la llamada al servidor del sellado de tiempo y se genera el fichero de sello de tiempo
                     Boolean tsaActivo = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_ACTIVO, getBaseContext(), Boolean.class.getSimpleName());
-                    if (BooleanUtils.isTrue(tsaActivo)) {
+                    if(BooleanUtils.isTrue(tsaActivo)) {
                         publishProgress(getString(R.string.generado_sello_de_tiempo));
                         String tsaUrl = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_URL, getBaseContext(), String.class.getSimpleName());
                         String tsaUser = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_USER, getBaseContext(), String.class.getSimpleName());
@@ -568,28 +553,31 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     fallo = getString(R.string.error_lectura_fichero_xml);
                 }
             }
+
             return fallo;
         }
 
-        //@Override
-        //protected void onProgressUpdate(String... values) {
-        //    super.onProgressUpdate(values);
-        //    progressDialog.setMessage(values[0]);
-       //}
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            progressDialog.setMessage(values[0]);
+        }
 
         @Override
         protected void onPostExecute(String fallo) {
             // Se cierra el dialogo de espera
+            progressDialog.dismiss();
+
             // Se crea el dialogo de respuesta del guardado
             AlertDialog.Builder builder = new AlertDialog.Builder(NuevaNotificacionActivity.this);
-            //builder.setTitle(R.string.guardado);
-
-            if (fallo != null && !fallo.isEmpty()) {
-                // Fallo al guardar
-                if (guardadoNotificacionEnBD) {
+            builder.setTitle(R.string.guardado);
+            // Si hubo fallo en el XML y en el SELLO de TIEMPO
+            if(fallo != null && !fallo.isEmpty()) {
+                // Pero se guardo en base de datos
+                if(guardadoNotificacionEnBD) {
                     // Añadir texto indicando que como no se ha generado ni el sello de tiempo ni el xml, esa notificacion
                     // debera realizarla en papel
-                    fallo += ".\n" + getString(R.string.realizar_notif_en_papel);
+                    fallo += ".\n"+getString(R.string.realizar_notif_en_papel);
                     builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialogInterface, int which) {
                             Intent intentResultado = new Intent();
@@ -601,6 +589,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                         }
                     });
 
+                // NO se guardo en BASE de DATOS
                 } else {
                     builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialogInterface, int which) {
@@ -608,19 +597,40 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                         }
                     });
                 }
-
+                // Mostramos el mensaje de fallo y que realice la NA en papel.
                 builder.setMessage(fallo);
-                // Crear el dialogo con los parametros que se han definido y se muestra por pantalla
-                builder.show();
+
+            // Guardado y generado correctamente
             } else {
-                // Guardado y generado correctamente
-                Intent i = new Intent(getBaseContext(), ListaNotificacionesActivity.class);
-                startActivity(i);
-                finish();
+
+                builder.setMessage(R.string.notificacion_grabada_correctamente);
+                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        Intent intentResultado = new Intent();
+                        intentResultado.putExtra("posicionAdapter", posicionAdapter);
+                        intentResultado.putExtra("idNotificacion", idNotificacion);
+                        setResult(CommonStatusCodes.SUCCESS, intentResultado);
+                        dialogInterface.dismiss();
+                        finish();
+                        // Hacemos la foto
+                        Intent intentNuevaNoti = new Intent(NuevaNotificacionActivity.this, FotoAcuseActivity.class);
+                        if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
+                            intentNuevaNoti.putExtra("referencia", notificacion.getReferencia());
+                            intentNuevaNoti.putExtra("notificador", sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,""));
+                            intentNuevaNoti.putExtra("resultado1", notificacion.getResultado1());
+                            intentNuevaNoti.putExtra("resultado2", notificacion.getResultado2());
+                            DateFormat df3 = new SimpleDateFormat("yyyyMMdd");
+                            String fechaHoraString3 = df3.format(Calendar.getInstance().getTime());
+                            intentNuevaNoti.putExtra("fechaHoraRes1", fechaHoraString3);
+                            startActivity(intentNuevaNoti);
+                        }
+                    }
+                });
             }
 
+            // Crear el dialogo con los parametros que se han definido y se muestra por pantalla
+            builder.show();
         }
     }
+
 }
-
-

@@ -279,6 +279,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                     intentNuevaNoti.putExtra("fechaHoraRes1", fechaHoraString2);
                     startActivity(intentNuevaNoti);
                 }
+
                 try {
                     // Se genera el fichero XML
                     publishProgress(getString(R.string.generado_xml));
@@ -360,9 +361,11 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                         intentResultado.putExtra("idNotificacion", idNotificacion);
                         setResult(CommonStatusCodes.SUCCESS, intentResultado);
                         dialogInterface.dismiss();
+
                         finish();
                     }
                 });
+
             }
             // Crear el dialogo con los parametros que se han definido y se muestra por pantalla
             builder.show();

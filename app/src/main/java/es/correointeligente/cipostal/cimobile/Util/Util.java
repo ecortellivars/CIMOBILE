@@ -496,13 +496,13 @@ public class Util {
             rootElement.appendChild(firmaNotificador);
             fis.close();
 
-            fis = new FileInputStream(fotoAcuseString);
+            /**fis = new FileInputStream(fotoAcuseString);
             filedata = IOUtils.toByteArray(fis);
             encodedImage = Base64.encodeToString(filedata, Base64.NO_WRAP);
             Element fotoAcuse = doc.createElement("fotoAcuse");
             fotoAcuse.appendChild(doc.createTextNode(encodedImage));
             rootElement.appendChild(fotoAcuse);
-            fis.close();
+            fis.close();*/
 
             xmlFile = new File(obtenerRutaXML(), nombeFichero);
             if(!xmlFile.exists()) {
