@@ -78,7 +78,7 @@
     <string name="guardado">Guardado</string>
     <string name="realizar_notif_en_papel">Debido a que no se ha generado ni el sello de tiempo ni el fichero XML, realice la notificación en papel</string>
     <string name="notificacion_grabada_correctamente">La notificación se ha guardado correctamente</string>
-    <string name="cerrar_reparto_info">Va a cerrar el reparto, lo que conlleva la generacion del fichero con los datos de las notificaciones, el volcado del mismo en la carpeta FTP correspondiente y el borrado de los datos internos de la PDA. ¿Desea proseguir?</string>
+    <string name="cerrar_reparto_info">Va a cerrar el reparto, se generará el fichero con los datos de las notificaciones, el volcado en la carpeta FTP correspondiente y el borrado de los datos del dispositivo. ¿Desea Continuar?</string>
     <string name="error_conexion_ftp">Se ha producido un error en la conexión FTP</string>
     <string name="error_acceso_carpeta_ftp">No se ha podido acceder a la carpeta del FTP</string>
     <string name="error_subir_fichero_zip">Se ha producido un error al subir el fichero ZIP</string>
