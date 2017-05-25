@@ -134,6 +134,8 @@ public class DetalleNotificacionActivity extends BaseActivity {
             TextView tv_resultado1, tv_fecha1, tv_notificador1, tv_longitud1, tv_latitud1, tv_observaciones1, tv_cabeceraResultado1, tv_receptor;
             TextView tv_resultado2, tv_fecha2, tv_notificador2, tv_longitud2, tv_latitud2, tv_observaciones2, tv_cabeceraResultado2;
             ImageView img_firma_receptor;
+            ImageView img_foto_acuse;
+
 
             if(notificacion.getResultado2() != null) {
                 // Hay dos resultados
@@ -175,9 +177,12 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     tv_cabeceraResultado2 = (TextView) linearLayout2.findViewById(R.id.tv_result_entregado_cabecera_resultado);
                     tv_receptor = (TextView)linearLayout2.findViewById(R.id.tv_result_entregado_receptor);
                     img_firma_receptor = (ImageView) linearLayout2.findViewById(R.id.imageView_result_entregado_firma);
+                    img_foto_acuse = (ImageView) linearLayout2.findViewById(R.id.imageView_result_entregado_foto_acuse);
+
 
                     tv_receptor.setText(notificacion.getNumDocReceptor() + " " + notificacion.getNombreReceptor());
 
+                    // Obtenemos la firma del receptor
                     if(notificacion.getFirmaReceptor() != null && notificacion.getFirmaReceptor().trim().length() > 0) {
                         try {
 
@@ -189,6 +194,20 @@ public class DetalleNotificacionActivity extends BaseActivity {
                             e.printStackTrace();
                         }
                     }
+
+                    // Obtenemos la foto del acuse
+                    if(notificacion.getFotoAcuse() != null && notificacion.getFotoAcuse().trim().length() > 0) {
+                        try {
+
+                            InputStream is = new FileInputStream(notificacion.getFotoAcuse());
+                            Drawable drw_imagenFoto = Drawable.createFromStream(is, "imageView");
+                            img_foto_acuse.setImageDrawable(drw_imagenFoto);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
 
                 } else {
                     linearLayout2 = (LinearLayout) inflater.inflate(R.layout.datos_resultado_no_entregado, null, false);
@@ -233,6 +252,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     tv_receptor = (TextView)linearLayout.findViewById(R.id.tv_result_entregado_receptor);
                     tv_receptor.setText(notificacion.getNumDocReceptor() + " " + notificacion.getNombreReceptor());
                     img_firma_receptor = (ImageView) linearLayout.findViewById(R.id.imageView_result_entregado_firma);
+                    img_foto_acuse = (ImageView) linearLayout.findViewById(R.id.imageView_result_entregado_foto_acuse);
 
                     if(notificacion.getFirmaReceptor() != null && notificacion.getFirmaReceptor().trim().length() > 0) {
                         try {
@@ -245,6 +265,19 @@ public class DetalleNotificacionActivity extends BaseActivity {
                             e.printStackTrace();
                         }
                     }
+                    // Obtenemos la foto del acuse
+                    if(notificacion.getFotoAcuse() != null && notificacion.getFotoAcuse().trim().length() > 0) {
+                        try {
+
+                            InputStream is = new FileInputStream(notificacion.getFotoAcuse());
+                            Drawable drw_imagenFoto = Drawable.createFromStream(is, "imageView");
+                            img_foto_acuse.setImageDrawable(drw_imagenFoto);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
 
                 } else { // Alguno de los resultado que NO son "ENTREGADO"
                     linearLayout =  (LinearLayout) inflater.inflate(R.layout.datos_resultado_no_entregado, null, false);

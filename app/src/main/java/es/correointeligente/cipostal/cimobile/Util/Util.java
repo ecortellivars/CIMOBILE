@@ -536,7 +536,7 @@ public class Util {
     }
 
     /**
-     * Comprime en zip el reparto  del dia
+     * Comprime en zip el reparto del dia
      * @param codigoNotificador
      * @param delegacion
      * @return
@@ -589,7 +589,7 @@ public class Util {
             //Crea un array con todos los ficheros y directorios del path que se ha pasado
             String[] fileNames = file.list();
             if (fileNames != null) {
-                for (int i=0; i<fileNames.length; i++){
+                for (int i = 0; i < fileNames.length; i++){
                     anyadirFicherosRecursivamente(new File(file, fileNames[i]), zos);
                 }
             }

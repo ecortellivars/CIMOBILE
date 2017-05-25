@@ -2,10 +2,10 @@
     <string name="app_name">CIMobile</string>
     <string name="iniciar_sesion">Iniciar sesión</string>
     <string name="iniciando_sesion">Iniciando sesión</string>
-    <string name="titulo_logout">Cerrar sesión</string>
-    <string name="nueva_notificacion">Nueva notificación</string>
-    <string name="cargar_reparto">Cargar reparto</string>
-    <string name="resumen_reparto">Resumen reparto</string>
+    <string name="titulo_logout">CERRAR sesión (SIN Cerrar reparto)</string>
+    <string name="nueva_notificacion">NUEVA notificación</string>
+    <string name="cargar_reparto">CARGAR reparto diario</string>
+    <string name="resumen_reparto">RESUMEN y CIERRE del reparto</string>
     <string name="cargando_notificacion">Cargando notificación</string>
     <string name="cargando_resultados">Cargando resultados</string>
     <string name="detalle_logout">Va a salir y cerrar la sesión, ¿Desea continuar?</string>
@@ -49,6 +49,7 @@
     <string name="numero_documento">Número documento</string>
     <string name="nombre_y_apellidos">Nombre y apellidos</string>
     <string name="firma_receptor">Firma del receptor</string>
+    <string name="foto_acuse_detalle">Foto del acuse</string>
     <string name="guardar">Guardar</string>
     <string name="cargar_fichero_sicer">Cargar fichero SICER</string>
     <string name="esta_seguro_de_cargar_el_fichero_sicer">¿Está seguro de cargar el fichero SICER</string>

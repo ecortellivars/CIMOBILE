@@ -127,6 +127,18 @@
             <ImageView
                 android:id="@+id/imageView_result_entregado_firma"
                 android:layout_width="match_parent"
+                android:layout_height="147dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/foto_acuse_detalle"
+                android:textStyle="bold"
+                android:layout_marginTop="5dp"/>
+
+            <ImageView
+                android:id="@+id/imageView_result_entregado_foto_acuse"
+                android:layout_width="match_parent"
                 android:layout_height="275dp"/>
 
             <TextView

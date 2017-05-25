@@ -208,8 +208,8 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             File ficheroTXT = null;
 
             DateFormat dfDia = new SimpleDateFormat("ddMMyyyy");
-            String nombreFicheroCSV = obtenerDelegacion()+"_"+dfDia.format(Calendar.getInstance().getTime())+".csv";
-            String nombreFicheroTXT = Util.NOMBRE_FICHERO_SEGUNDO_INTENTO+"_"+obtenerCodigoNotificador()+"_"+dfDia.format(Calendar.getInstance().getTime())+".txt";
+            String nombreFicheroCSV = obtenerDelegacion() + "_" + dfDia.format(Calendar.getInstance().getTime()) + ".csv";
+            String nombreFicheroTXT = Util.NOMBRE_FICHERO_SEGUNDO_INTENTO + "_" + obtenerCodigoNotificador() + "_" + dfDia.format(Calendar.getInstance().getTime()) + ".txt";
             try {
                 // Se establece la conexion con el servidor FTP
                 ftpHelper = FTPHelper.getInstancia();

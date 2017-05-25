@@ -66,11 +66,11 @@
 
             <Button
                 android:id="@+id/button_cerrar_sesion"
-                android:layout_width="wrap_content"
+                android:layout_width="143dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="20dp"
-                android:background="@drawable/button_selector"
+                android:background="@drawable/button_entregado"
                 android:padding="10dp"
                 android:text="@string/titulo_logout"
                 android:textAllCaps="false"
