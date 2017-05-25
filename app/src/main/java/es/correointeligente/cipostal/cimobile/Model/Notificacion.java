@@ -33,7 +33,8 @@ public class Notificacion {
     private Boolean marcada;
     private String timestampMarcada;
     private Boolean segundoIntento;
-    private String fotoAcuse;
+    private String fotoAcuseRes1;
+    private String fotoAcuseRes2;
 
     // Variables de visualizacion
     private Integer backgroundColor;
@@ -55,7 +56,9 @@ public class Notificacion {
         this.marcada = marcada;
         this.segundoIntento = segundoIntento;
         this.backgroundColor = backgroundColor;
-        this.fotoAcuse = fotoAcuse;
+        this.fotoAcuseRes1 = fotoAcuseRes1;
+        this.fotoAcuseRes2 = fotoAcuseRes2;
+
     }
 
     public Integer getId() {
@@ -296,11 +299,20 @@ public class Notificacion {
         this.referenciaSCB = referenciaSCB;
     }
 
-    public String getFotoAcuse() {
-        return fotoAcuse;
+    public String getFotoAcuseRes1() {
+        return fotoAcuseRes1;
     }
 
-    public void setFotoAcuse(String fotoAcuse) {
-        this.fotoAcuse = fotoAcuse;
+    public void setFotoAcuseRes1(String fotoAcuse) {
+        this.fotoAcuseRes1 = fotoAcuse;
     }
+
+    public String getFotoAcuseRes2() {
+        return fotoAcuseRes2;
+    }
+
+    public void setFotoAcuseRes2(String fotoAcuse) {
+        this.fotoAcuseRes2 = fotoAcuse;
+    }
+
 }

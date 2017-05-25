@@ -75,6 +75,7 @@ public class FirmaNotificadorActivity extends BaseActivity implements View.OnCli
         }
     }
 
+    // Gestión de los Iconos de la barra de herramientas
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {

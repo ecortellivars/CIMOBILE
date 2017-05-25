@@ -67,7 +67,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String KEY_NOTIFICACION_MARCADA = "marcada";
     private static final String KEY_NOTIFICACION_TIMESTAMP_MARCADA = "timestampMarcada";
     private static final String KEY_NOTIFICACION_SEGUNDO_INTENTO = "segundoIntento";
-    private static final String KEY_NOTIFICACION_FOTO_ACUSE = "fotoAcuse";
+    private static final String KEY_NOTIFICACION_FOTO_ACUSE_RES_1 = "fotoAcuse1";
+    private static final String KEY_NOTIFICACION_FOTO_ACUSE_RES_2 = "fotoAcuse2";
 
 
     /******************************************************************************************/
@@ -316,10 +317,12 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_NOMBRE_FICHERO,
                         KEY_NOTIFICACION_MARCADA,
                         KEY_NOTIFICACION_TIMESTAMP_MARCADA,
-                        KEY_NOTIFICACION_SEGUNDO_INTENTO
+                        KEY_NOTIFICACION_SEGUNDO_INTENTO,
+                        KEY_NOTIFICACION_FOTO_ACUSE_RES_1,
+                        KEY_NOTIFICACION_FOTO_ACUSE_RES_2
                 },
-                "("+KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0 AND " + KEY_NOTIFICACION_RESULTADO_1 + " IS NOT NULL) OR "+
-                "("+KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1 AND " + KEY_NOTIFICACION_RESULTADO_2 + " IS NOT NULL)",
+                "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0 AND " + KEY_NOTIFICACION_RESULTADO_1 + " IS NOT NULL) OR "+
+                "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1 AND " + KEY_NOTIFICACION_RESULTADO_2 + " IS NOT NULL)",
                 null, null, null, null, null
         );
 
@@ -410,6 +413,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
                 new String[]{Util.RESULTADO_NADIE_SE_HACE_CARGO, "0", Util.RESULTADO_NADIE_SE_HACE_CARGO, "1"}, null, null, null, null);
         resumenReparto.setNumNadieSeHaceCargo(cursor.getCount());
+
 
 
         return resumenReparto;
@@ -547,7 +551,8 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_MARCADA,
                         KEY_NOTIFICACION_TIMESTAMP_MARCADA,
                         KEY_NOTIFICACION_SEGUNDO_INTENTO,
-                        KEY_NOTIFICACION_FOTO_ACUSE
+                        KEY_NOTIFICACION_FOTO_ACUSE_RES_1,
+                        KEY_NOTIFICACION_FOTO_ACUSE_RES_2
                 },
                 KEY_NOTIFICACION_ID + " = ?", new String[]{idNotificacion.toString()},
                 null, null, null, null
@@ -617,7 +622,8 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_MARCADA,
                         KEY_NOTIFICACION_TIMESTAMP_MARCADA,
                         KEY_NOTIFICACION_SEGUNDO_INTENTO,
-                        KEY_NOTIFICACION_FOTO_ACUSE
+                        KEY_NOTIFICACION_FOTO_ACUSE_RES_1,
+                        KEY_NOTIFICACION_FOTO_ACUSE_RES_2
                 },
                 whereClause, parametros,
                 null, null, null, null
@@ -746,7 +752,9 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_NOMBRE_FICHERO,
                         KEY_NOTIFICACION_MARCADA,
                         KEY_NOTIFICACION_TIMESTAMP_MARCADA,
-                        KEY_NOTIFICACION_FOTO_ACUSE
+                        KEY_NOTIFICACION_FOTO_ACUSE_RES_1,
+                        KEY_NOTIFICACION_FOTO_ACUSE_RES_2
+
                 }, null, null, null, null, KEY_NOTIFICACION_REFERENCIA + " ASC", null
         );
 
@@ -880,9 +888,13 @@ public class DBHelper extends SQLiteOpenHelper {
         if (columna != -1) {
             notificacion.setFirmaReceptor(cursor.getString(columna));
         }
-        columna = cursor.getColumnIndex(KEY_NOTIFICACION_FOTO_ACUSE);
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_FOTO_ACUSE_RES_1);
         if (columna != -1) {
-            notificacion.setFotoAcuse(cursor.getString(columna));
+            notificacion.setFotoAcuseRes1(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_FOTO_ACUSE_RES_2);
+        if (columna != -1) {
+            notificacion.setFotoAcuseRes2(cursor.getString(columna));
         }
         columna = cursor.getColumnIndex(KEY_NOTIFICACION_LONGITUD_RES_1);
         if (columna != -1) {
@@ -985,7 +997,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_NOTIFICADOR_RES_1, notificacion.getNotificadorRes1());
                 cv.put(KEY_NOTIFICACION_OBSERVACIONES_RES_1, notificacion.getObservacionesRes1());
                 cv.put(KEY_NOTIFICACION_FIRMA_NOTIFICADOR_RES_1, notificacion.getFirmaNotificadorRes1());
-                cv.put(KEY_NOTIFICACION_FOTO_ACUSE, notificacion.getFotoAcuse());
+                cv.put(KEY_NOTIFICACION_FOTO_ACUSE_RES_1, notificacion.getFotoAcuseRes1());
+                cv.put(KEY_NOTIFICACION_FOTO_ACUSE_RES_2, notificacion.getFotoAcuseRes2());
 
             } else {
                 cv.put(KEY_NOTIFICACION_RESULTADO_2, notificacion.getResultado2());
@@ -997,7 +1010,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_NOTIFICADOR_RES_2, notificacion.getNotificadorRes2());
                 cv.put(KEY_NOTIFICACION_OBSERVACIONES_RES_2, notificacion.getObservacionesRes2());
                 cv.put(KEY_NOTIFICACION_FIRMA_NOTIFICADOR_RES_2, notificacion.getFirmaNotificadorRes2());
-                cv.put(KEY_NOTIFICACION_FOTO_ACUSE, notificacion.getFotoAcuse());
+                cv.put(KEY_NOTIFICACION_FOTO_ACUSE_RES_1, notificacion.getFotoAcuseRes1());
+                cv.put(KEY_NOTIFICACION_FOTO_ACUSE_RES_2, notificacion.getFotoAcuseRes2());
 
             }
 
@@ -1126,7 +1140,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 + KEY_NOTIFICACION_MARCADA + " INTEGER, "
                 + KEY_NOTIFICACION_TIMESTAMP_MARCADA + " TEXT,"
                 + KEY_NOTIFICACION_SEGUNDO_INTENTO + " INTEGER, "
-                + KEY_NOTIFICACION_FOTO_ACUSE + " TEXT, "
+                + KEY_NOTIFICACION_FOTO_ACUSE_RES_1 + " TEXT, "
+                + KEY_NOTIFICACION_FOTO_ACUSE_RES_2 + " TEXT, "
                 + KEY_NOTIFICACION_NOMBRE_FICHERO + " TEXT); ";
 
         sqLiteDatabase.execSQL(qry);
@@ -1151,15 +1166,19 @@ public class DBHelper extends SQLiteOpenHelper {
     private void crearResultadosPorDefecto(SQLiteDatabase db) {
         //Resultado = codigo, descripcion, esFinal, codigoSegundoIntento,  esResultadoOficina, notifica
         List<Resultado> listaResultados = new ArrayList<>();
+        // Resultados FINALES
         listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO, "Notificado", true, null, false, true));
         listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_SIN_FIRMA, "Notificado sin firma", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_DIR_INCORRECTA, "Dirección Incorrecta", true, null, false, false));
-        listaResultados.add(new Resultado(Util.RESULTADO_AUSENTE, "Ausente", false, "32", false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_DESCONOCIDO, "Desconocido", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_FALLECIDO, "Fallecido", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_REHUSADO, "Rehusado", true, null, false, false));
-        listaResultados.add(new Resultado(Util.RESULTADO_NADIE_SE_HACE_CARGO, "Nadie se hace cargo", false, "33", false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_OFICINA, "Entregado oficina", true, null, true, true));
+
+        // Resultados NO FINALES
+        listaResultados.add(new Resultado(Util.RESULTADO_NADIE_SE_HACE_CARGO, "Nadie se hace cargo", false, "33", false, false));
+        listaResultados.add(new Resultado(Util.RESULTADO_AUSENTE, "Ausente", false, "32", false, false));
+
 
         for (Resultado resultado: listaResultados) {
             Integer esFinal = resultado.getEsFinal() ? 1 : 0;

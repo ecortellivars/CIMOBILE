@@ -390,7 +390,7 @@ public class Util {
                 observacionesString = notificacion.getObservacionesRes2();
                 notificadorString = notificacion.getNotificadorRes2();
                 firmaNotificadorString = notificacion.getFirmaNotificadorRes2();
-                fotoAcuseString = notificacion.getFotoAcuse();
+                fotoAcuseString = notificacion.getFotoAcuseRes2();
             } else {
                 resultadoString = notificacion.getResultado1();
                 resultadoDescString = notificacion.getDescResultado1();
@@ -400,7 +400,7 @@ public class Util {
                 observacionesString = notificacion.getObservacionesRes1();
                 notificadorString = notificacion.getNotificadorRes1();
                 firmaNotificadorString = notificacion.getFirmaNotificadorRes1();
-                fotoAcuseString = notificacion.getFotoAcuse();
+                fotoAcuseString = notificacion.getFotoAcuseRes1();
             }
 
             horaString = dfHora.format(date);

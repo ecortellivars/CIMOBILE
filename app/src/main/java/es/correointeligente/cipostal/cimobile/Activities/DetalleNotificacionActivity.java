@@ -80,6 +80,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
         return true;
     }
 
+    // Gestión de los Iconos de la barra de herramientas
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -153,8 +154,8 @@ public class DetalleNotificacionActivity extends BaseActivity {
                 tv_observaciones1 = (TextView) linearLayout1.findViewById(R.id.tv_result_no_entregado_observaciones);
                 tv_cabeceraResultado1 = (TextView) linearLayout1.findViewById(R.id.tv_result_no_entregado_cabecera_resultado);
 
-                // Se cargan los daatos de la notificacion en la vista
-                tv_resultado1.setText(notificacion.getResultado1()+" "+notificacion.getDescResultado1());
+                // Se cargan los datos de la notificacion en la vista
+                tv_resultado1.setText(notificacion.getResultado1() + " " + notificacion.getDescResultado1());
                 tv_fecha1.setText(notificacion.getFechaHoraRes1());
                 tv_notificador1.setText(notificacion.getNotificadorRes1());
                 tv_longitud1.setText(notificacion.getLongitudRes1());
@@ -164,7 +165,8 @@ public class DetalleNotificacionActivity extends BaseActivity {
 
                 layoutResultado1.addView(linearLayout1);
 
-                if(notificacion.getResultado2().equals(Util.RESULTADO_ENTREGADO) || notificacion.getResultado2().equals(Util.RESULTADO_ENTREGADO_OFICINA) ) { // Entregado
+                // Entregado
+                if(notificacion.getResultado2().equals(Util.RESULTADO_ENTREGADO) || notificacion.getResultado2().equals(Util.RESULTADO_ENTREGADO_OFICINA) ) {
 
                     linearLayout2 = (LinearLayout) inflater.inflate(R.layout.datos_resultado_entregado, null, false);
 
@@ -196,12 +198,15 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     }
 
                     // Obtenemos la foto del acuse
-                    if(notificacion.getFotoAcuse() != null && notificacion.getFotoAcuse().trim().length() > 0) {
+                    if(notificacion.getFotoAcuseRes2() != null && notificacion.getFotoAcuseRes2().trim().length() > 0) {
                         try {
 
-                            InputStream is = new FileInputStream(notificacion.getFotoAcuse());
-                            Drawable drw_imagenFoto = Drawable.createFromStream(is, "imageView");
-                            img_foto_acuse.setImageDrawable(drw_imagenFoto);
+                            InputStream is = new FileInputStream(notificacion.getFotoAcuseRes2());
+                            if (is != null){
+                                Drawable drw_imagenFoto = Drawable.createFromStream(is, "imageView");
+                                img_foto_acuse.setImageDrawable(drw_imagenFoto);
+                            }
+
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -219,10 +224,28 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     tv_latitud2 = (TextView) linearLayout2.findViewById(R.id.tv_result_no_entregado_latitud);
                     tv_observaciones2 = (TextView) linearLayout2.findViewById(R.id.tv_result_no_entregado_observaciones);
                     tv_cabeceraResultado2 = (TextView) linearLayout2.findViewById(R.id.tv_result_no_entregado_cabecera_resultado);
+                    img_foto_acuse = (ImageView) linearLayout2.findViewById(R.id.imageView_result_entregado_foto_acuse);
+
+                    // Obtenemos la foto del acuse
+                    if(notificacion.getFotoAcuseRes2() != null && notificacion.getFotoAcuseRes2().trim().length() > 0) {
+                        try {
+
+                            InputStream is = new FileInputStream(notificacion.getFotoAcuseRes2());
+                            if (is != null){
+                                Drawable drw_imagenFoto = Drawable.createFromStream(is, "imageView");
+                                img_foto_acuse.setImageDrawable(drw_imagenFoto);
+                            }
+
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
                 }
 
-                // Se cargan los daatos de la notificacion en la vista
-                tv_resultado2.setText(notificacion.getResultado1()+" "+notificacion.getDescResultado1());
+                // Se cargan los datos de la notificacion en la vista
+                tv_resultado2.setText(notificacion.getResultado1() + " " + notificacion.getDescResultado1());
                 tv_fecha2.setText(notificacion.getFechaHoraRes1());
                 tv_notificador2.setText(notificacion.getNotificadorRes1());
                 tv_longitud2.setText(notificacion.getLongitudRes1());
@@ -266,12 +289,14 @@ public class DetalleNotificacionActivity extends BaseActivity {
                         }
                     }
                     // Obtenemos la foto del acuse
-                    if(notificacion.getFotoAcuse() != null && notificacion.getFotoAcuse().trim().length() > 0) {
+                    if(notificacion.getFotoAcuseRes2() != null && notificacion.getFotoAcuseRes2().trim().length() > 0) {
                         try {
 
-                            InputStream is = new FileInputStream(notificacion.getFotoAcuse());
-                            Drawable drw_imagenFoto = Drawable.createFromStream(is, "imageView");
-                            img_foto_acuse.setImageDrawable(drw_imagenFoto);
+                            InputStream is = new FileInputStream(notificacion.getFotoAcuseRes2());
+                            if (is != null) {
+                                Drawable drw_imagenFoto = Drawable.createFromStream(is, "imageView");
+                                img_foto_acuse.setImageDrawable(drw_imagenFoto);
+                            }
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -280,7 +305,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
 
 
                 } else { // Alguno de los resultado que NO son "ENTREGADO"
-                    linearLayout =  (LinearLayout) inflater.inflate(R.layout.datos_resultado_no_entregado, null, false);
+                    linearLayout = (LinearLayout) inflater.inflate(R.layout.datos_resultado_no_entregado, null, false);
 
                     // Se mapean las vistas del resultado 1
                     tv_resultado1 = (TextView) linearLayout.findViewById(R.id.tv_result_no_entregado_resultado);
@@ -290,9 +315,24 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     tv_latitud1 = (TextView) linearLayout.findViewById(R.id.tv_result_no_entregado_latitud);
                     tv_observaciones1 = (TextView) linearLayout.findViewById(R.id.tv_result_no_entregado_observaciones);
                     tv_cabeceraResultado1 = (TextView) linearLayout.findViewById(R.id.tv_result_no_entregado_cabecera_resultado);
-                }
+                    img_foto_acuse = (ImageView) linearLayout.findViewById(R.id.imageView_result_entregado_foto_acuse);
 
-                // Se cargan los daatos de la notificacion en la vista
+                    // Obtenemos la foto del acuse
+                    if (notificacion.getFotoAcuseRes1() != null && notificacion.getFotoAcuseRes1().trim().length() > 0) {
+                        try {
+
+                            InputStream is = new FileInputStream(notificacion.getFotoAcuseRes1());
+                            if (is != null) {
+                                Drawable drw_imagenFoto = Drawable.createFromStream(is, "imageView");
+                                img_foto_acuse.setImageDrawable(drw_imagenFoto);
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                // Se cargan los datos de la notificacion en la vista
                 tv_resultado1.setText(notificacion.getResultado1()+" "+notificacion.getDescResultado1());
                 tv_fecha1.setText(notificacion.getFechaHoraRes1());
                 tv_notificador1.setText(notificacion.getNotificadorRes1());
@@ -411,3 +451,4 @@ public class DetalleNotificacionActivity extends BaseActivity {
         }
     }
 }
+

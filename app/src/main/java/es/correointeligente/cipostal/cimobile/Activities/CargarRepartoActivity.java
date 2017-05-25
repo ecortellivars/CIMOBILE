@@ -68,7 +68,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
         return R.layout.activity_cargar_reparto;
     }
 
-
+    // Gestión de los Iconos de la barra de herramientas
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -194,9 +194,9 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
             String fallo = null;
 
             if (nombreFicheroSeleccionado != null && ftpHelper.isConnected()) {
-                // Se comprueba si ya se ha cargado con anterioridad ese fichero, en ese caso no se puede cargar nuevamente
+                // Se comprueba si existe en la base de datos por lo que ya fue cargado anteriormente
                 Boolean existeFichero = dbHelper.existeFichero(nombreFicheroSeleccionado);
-
+                // Si no fue cargado con anterioridad
                 if (!existeFichero) {
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(ftpHelper.leerFichero(nombreFicheroSeleccionado)))) {
 
@@ -206,8 +206,8 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
 
                         Boolean esCargaPrimeraEntrega = Boolean.TRUE;
                         for (String linea = reader.readLine(); linea != null; linea = reader.readLine()) {
-
-                            if (linea.startsWith("P")) { // DETALLE (nosotros usaremos "P" para primera entrega
+                            // DETALLE (nosotros usaremos "P" para primera entrega
+                            if (linea.startsWith("P")) {
 
                                 Notificacion notificacion = new Notificacion();
                                 notificacion.setNombreFichero(nombreFicheroSeleccionado);
@@ -243,18 +243,18 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
 
                                 // Se recupera la referencia postal
                                 String referenciaPostal = linea.substring(1, 71).trim();
-                                String referenciaSCB = linea.substring(218, 288).trim();
+                                String referenciaSCB = linea.substring(188, 196).trim();
 
                                 // Lo primero se busca si existe en la base de datos interna, es decir, si se ha cargado
                                 Notificacion notificacion = dbHelper.obtenerNotificacion(referenciaPostal, referenciaSCB);
                                 if(notificacion != null) {
 
                                     notificacion.setResultado1(linea.substring(71, 73).trim());
-                                    notificacion.setDescResultado1(linea.substring(73, 103).trim());
-                                    notificacion.setFechaHoraRes1(linea.substring(103, 128).trim());
-                                    notificacion.setLongitudRes1(linea.substring(128, 148).trim());
-                                    notificacion.setLatitudRes1(linea.substring(148, 168).trim());
-                                    notificacion.setNotificadorRes1(linea.substring(168, 218).trim());
+                                    notificacion.setDescResultado1(linea.substring(73, 98).trim());
+                                    notificacion.setLongitudRes1(linea.substring(98, 118).trim());
+                                    notificacion.setLatitudRes1(linea.substring(118, 138).trim());
+                                    notificacion.setNotificadorRes1(linea.substring(138, 258).trim());
+                                    notificacion.setFechaHoraRes1(linea.substring(258, 277).trim());
                                     notificacion.setSegundoIntento(true);
 
                                     listaNotificaciones.add(notificacion);

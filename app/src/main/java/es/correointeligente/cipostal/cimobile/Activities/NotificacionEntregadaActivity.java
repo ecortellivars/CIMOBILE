@@ -14,6 +14,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -144,6 +145,22 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
         return R.layout.activity_notificacion_entregada;
     }
 
+    // Gestión de los Iconos de la barra de herramientas
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+
+            default:
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.button_notif_entregada_guardar) {
@@ -242,7 +259,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setSegundoIntento(!esPrimerResultado);
                 DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
                 String fechaHoraFoto1 = df2.format(Calendar.getInstance().getTime());
-                notificacionAux.setFotoAcuse(Util.obtenerRutaFotoAcuse() + File.separator  + referenciaPostal + "_" + fechaHoraFoto1  + "_" + fechaHoraFoto1   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + resultado.getCodigo() + ".jpg");
+                notificacionAux.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator  + referenciaPostal + "_" + fechaHoraFoto1  + "_" + fechaHoraFoto1   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + resultado.getCodigo() + ".jpg");
             } else {
 
                 notificacionAux.setDescResultado2(resultado.getDescripcion().toUpperCase());
@@ -256,7 +273,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setSegundoIntento(esPrimerResultado);
                 DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
                 String fechaHoraFoto2 = df2.format(Calendar.getInstance().getTime());
-                notificacionAux.setFotoAcuse(Util.obtenerRutaFotoAcuse()  + File.separator  + referenciaPostal + "_" + fechaHoraFoto2  + "_" + fechaHoraFoto2   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + resultado.getCodigo() + ".jpg");
+                notificacionAux.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse()  + File.separator  + referenciaPostal + "_" + fechaHoraFoto2  + "_" + fechaHoraFoto2   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + resultado.getCodigo() + ".jpg");
 
             }
 

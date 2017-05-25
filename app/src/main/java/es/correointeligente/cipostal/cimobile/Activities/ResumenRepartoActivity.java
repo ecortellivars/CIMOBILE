@@ -208,17 +208,21 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             File ficheroTXT = null;
 
             DateFormat dfDia = new SimpleDateFormat("ddMMyyyy");
+            // El CSV para los resultados: valencia_25052017.csv
             String nombreFicheroCSV = obtenerDelegacion() + "_" + dfDia.format(Calendar.getInstance().getTime()) + ".csv";
-            String nombreFicheroTXT = Util.NOMBRE_FICHERO_SEGUNDO_INTENTO + "_" + obtenerCodigoNotificador() + "_" + dfDia.format(Calendar.getInstance().getTime()) + ".txt";
+            // El TXT para segundos intentos: segundo_intento_A22_25052017.txt
+            String nombreFicheroTXT = Util.NOMBRE_FICHERO_SEGUNDO_INTENTO + "_" + obtenerCodigoNotificador() + "_" +dfDia.format(Calendar.getInstance().getTime())+".txt";
             try {
                 // Se establece la conexion con el servidor FTP
                 ftpHelper = FTPHelper.getInstancia();
 
                 if(ftpHelper != null && ftpHelper.connect(ResumenRepartoActivity.this)) {
 
-                    // Se comprueba si existe la carpeta del notificador, sino se crea
+                    // Se comprueba si existe la carpeta del notificador, sino se crea /ftpData/VALENCIA/SICER
                     String rutaCarpetaSICER = Util.obtenerRutaFtpSICER(getBaseContext(), obtenerDelegacion());
+                    // /ftpData/VALENCIA/SICER/A22
                     String pathVolcado = rutaCarpetaSICER + File.separator + obtenerCodigoNotificador();
+                    // /ftpData/VALENCIA/SICER
                     String pathVolcadoSegundoIntento = rutaCarpetaSICER;
                     if(ftpHelper.cargarCarpetaNotificador(pathVolcado)) {
 
@@ -226,7 +230,9 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                         List<Notificacion> listaNotificacionesGestionadas = dbHelper.obtenerNotificacionesGestionadas();
                         Calendar calendarAux = Calendar.getInstance();
 
+                        // valencia_25052017.csv
                         ficheroCSV = new File(Util.obtenerRutaAPP(), nombreFicheroCSV);
+                        // segundo_intento_A22_25052017.txt
                         ficheroTXT = new File(Util.obtenerRutaAPP(), nombreFicheroTXT);
 
                         try (FileWriter writerCSV = new FileWriter(ficheroCSV);
@@ -253,6 +259,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                     // Si es resultado de primer intento, dependiendo de si el resultado es final o no,
                                     // hay que ir añadiendolo al fichero de segundos intentos para el dia siguiente
                                     Resultado resultado = dbHelper.obtenerResultado(codResultado);
+                                    // Si es primera visita y NO ES FINAL lo guardamos en un TXT para la carga del dia siguiente
                                     if (BooleanUtils.isFalse(resultado.getEsFinal())) {
                                         String linea = "S" + StringUtils.rightPad(notificacion.getReferencia(), 70);
                                         linea += StringUtils.rightPad(resultado.getCodigo(), 2);
@@ -261,6 +268,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                         linea += StringUtils.rightPad(notificacion.getLatitudRes1(), 20);
                                         linea += StringUtils.rightPad(notificacion.getNotificadorRes1(), 50);
                                         linea += StringUtils.rightPad(notificacion.getReferenciaSCB(), 70);
+                                        linea += StringUtils.rightPad(notificacion.getFechaHoraRes1(), 19);
                                         linea += "\n";
                                         writerTXT.append(linea);
                                     }
@@ -296,7 +304,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                     ficheroTXT.delete();
                                 }
 
-                                // Generar ZIP con los xml, las firmas, los sellos de tiempo y el csv
+                                // Generar ZIP con los xml, las firmas, los sellos de tiempo, las fotos de los acuses y el csv
                                 publishProgress(getString(R.string.generando_fichero_zip));
                                 ficheroZIP = Util.comprimirZIP(obtenerCodigoNotificador(), obtenerDelegacion());
                                 publishProgress(getString(R.string.subiendo_fichero_zip));

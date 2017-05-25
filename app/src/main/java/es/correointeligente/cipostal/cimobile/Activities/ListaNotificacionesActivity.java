@@ -125,6 +125,7 @@ public class ListaNotificacionesActivity extends BaseActivity {
         dbHelper.actualizarNotificacionMarcada(notificacion);
     }
 
+    // Gestión de los Iconos de la barra de herramientas
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -165,7 +166,7 @@ public class ListaNotificacionesActivity extends BaseActivity {
         @Override
         protected void onPostExecute(List<Notificacion> listaNotificacionesConsulta) {
 
-            if(listaNotificacionesConsulta.size()>0) {
+            if(listaNotificacionesConsulta.size() > 0) {
                 int size = listaNotificaciones.size();
 
                 if (mRecyclerNotificaciones.getAdapter() == null) {
@@ -177,7 +178,8 @@ public class ListaNotificacionesActivity extends BaseActivity {
                     }
                     NotificacionesAdapter adapter = new NotificacionesAdapter(ListaNotificacionesActivity.this, listaNotificaciones);
                     mRecyclerNotificaciones.setAdapter(adapter);
-                } else {
+
+                 } else {
                     int tamanyoCalculado = size;
                     if(listaNotificaciones.get(size-1) instanceof NotificacionProgressbar) {
                         tamanyoCalculado = tamanyoCalculado - 1;

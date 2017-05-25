@@ -374,7 +374,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     notificacion.setNotificadorRes1(obtenerNombreNotificador());
                     notificacion.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
                     // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.jpg
-                    notificacion.setFotoAcuse(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString2 + "_" +  fechaHoraString2 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + codResultado + ".jpg");
+                    notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString2 + "_" +  fechaHoraString2 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + codResultado + ".jpg");
 
                 }
                 // Preparamos la informacion si es Primer Intento
@@ -388,7 +388,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     notificacion.setNotificadorRes2(obtenerNombreNotificador());
                     notificacion.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
                     // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.jpg
-                    notificacion.setFotoAcuse(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString2 + "_" +  fechaHoraString2 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + codResultado + ".jpg");
+                    notificacion.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString2 + "_" +  fechaHoraString2 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + codResultado + ".jpg");
                 }
 
                 GuardarResultadoNegativoTask guardarResultadoNegativoTask = new GuardarResultadoNegativoTask();

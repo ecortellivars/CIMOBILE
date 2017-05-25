@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -61,6 +62,21 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
         fechaHoraRes2 = getIntent().getStringExtra("fechaHoraRes1");
         esPrimerResultado = getIntent().getBooleanExtra("esPrimerResultado", Boolean.TRUE);
         fotohecha = Boolean.FALSE;
+    }
+
+    // Gestión de los Iconos de la barra de herramientas
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+
+            default:
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
