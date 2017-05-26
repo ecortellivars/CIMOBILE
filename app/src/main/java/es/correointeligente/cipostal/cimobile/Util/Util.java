@@ -80,7 +80,6 @@ public class Util {
 
     // CONSTANTES CODIGOS RESULTADOS
     public final static String RESULTADO_ENTREGADO           = "01";
-    public final static String RESULTADO_ENTREGADO_SIN_FIRMA = "01";
     public final static String RESULTADO_DIR_INCORRECTA      = "02";
     public final static String RESULTADO_AUSENTE             = "31";
     public final static String RESULTADO_DESCONOCIDO         = "04";
@@ -88,6 +87,8 @@ public class Util {
     public final static String RESULTADO_REHUSADO            = "06";
     public final static String RESULTADO_NADIE_SE_HACE_CARGO = "07";
     public final static String RESULTADO_ENTREGADO_OFICINA   = "08";
+    // Para uso exclusivo de control del trabajo del notificador
+    public final static String RESULTADO_ENTREGADO_SIN_FIRMA = "01";
 
     // CONSTANTES FICHEROS DE PREFERENCIAS
     public final static String FICHERO_PREFERENCIAS_SESION = "sesion";

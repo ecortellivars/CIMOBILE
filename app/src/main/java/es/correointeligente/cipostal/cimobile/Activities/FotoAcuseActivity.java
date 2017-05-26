@@ -35,7 +35,7 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
     Toolbar mToolbar;
     Button  btn_hacerFoto;
     ImageView imagenVista;
-    String referencia, notificadorRes1, notificadorRes2, resultado1, resultado2, fechaHoraRes1, fechaHoraRes2;
+    String referencia, resultado, fechaHoraRes;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     Boolean esPrimerResultado, fotohecha;
 
@@ -54,13 +54,9 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
 
         // Recupera los datos de la notificacion
         referencia = getIntent().getStringExtra("referencia");
-        notificadorRes1 = getIntent().getStringExtra("notificador");
-        notificadorRes2 = getIntent().getStringExtra("notificadorRes2");
-        resultado1 = getIntent().getStringExtra("resultado1");
-        resultado2 = getIntent().getStringExtra("resultado2");
-        fechaHoraRes1 = getIntent().getStringExtra("fechaHoraRes1");
-        fechaHoraRes2 = getIntent().getStringExtra("fechaHoraRes1");
-        esPrimerResultado = getIntent().getBooleanExtra("esPrimerResultado", Boolean.TRUE);
+        resultado = getIntent().getStringExtra("resultado");
+        fechaHoraRes = getIntent().getStringExtra("fechaHoraRes");
+
         fotohecha = Boolean.FALSE;
     }
 
@@ -132,12 +128,8 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             imagenVista = (ImageView) findViewById(R.id.imagen_foto_acuse_ver_foto) ;
             imagenVista.setImageBitmap(imageBitmap);
-            if (esPrimerResultado){
-                convertBitmapToFile(imageBitmap,referencia + "_" + fechaHoraRes1  + "_" + fechaHoraRes1   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + resultado1 + ".jpg");
+            convertBitmapToFile(imageBitmap,referencia + "_" + fechaHoraRes  + "_" + fechaHoraRes   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + resultado + ".jpg");
 
-            } else {
-                convertBitmapToFile(imageBitmap,referencia + "_" + fechaHoraRes2  + "_" + fechaHoraRes2   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + resultado2 + ".jpg");
-            }
         }
             else {
                 Toast toast = null;

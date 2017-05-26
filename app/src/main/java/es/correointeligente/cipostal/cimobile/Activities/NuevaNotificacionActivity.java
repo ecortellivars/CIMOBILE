@@ -428,7 +428,10 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         mGoogleApiClient.disconnect();
     }
 
-
+    /**
+     * Logica para el GPS
+     * @param bundle
+     */
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         mLocationRequest = createLocationRequest();
@@ -515,6 +518,11 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             progressDialog = ProgressDialog.show(NuevaNotificacionActivity.this, getString(R.string.guardar), getString(R.string.guardando_datos_en_bd_interna));
         }
 
+        /**
+         * Logica para la certificacion de la ACCV
+         * @param voids
+         * @return
+         */
         @Override
         protected String doInBackground(Void... voids) {
             String fallo = "";
@@ -612,18 +620,35 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                         setResult(CommonStatusCodes.SUCCESS, intentResultado);
                         dialogInterface.dismiss();
                         finish();
-                        // Hacemos la foto
-                        Intent intentNuevaNoti = new Intent(NuevaNotificacionActivity.this, FotoAcuseActivity.class);
-                        if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
-                            intentNuevaNoti.putExtra("referencia", notificacion.getReferencia());
-                            intentNuevaNoti.putExtra("notificador", sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,""));
-                            intentNuevaNoti.putExtra("resultado1", notificacion.getResultado1());
-                            intentNuevaNoti.putExtra("resultado2", notificacion.getResultado2());
-                            DateFormat df3 = new SimpleDateFormat("yyyyMMdd");
-                            String fechaHoraString3 = df3.format(Calendar.getInstance().getTime());
-                            intentNuevaNoti.putExtra("fechaHoraRes1", fechaHoraString3);
-                            startActivity(intentNuevaNoti);
+
+                        // Si es segundo intento obtengo los datos
+                        if (notificacion.getSegundoIntento()){
+                            // Hacemos la foto
+                            Intent intentNuevaNoti = new Intent(NuevaNotificacionActivity.this, FotoAcuseActivity.class);
+                            if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
+                                intentNuevaNoti.putExtra("referencia", notificacion.getReferencia());
+                                intentNuevaNoti.putExtra("resultado", notificacion.getResultado2());
+                                DateFormat df3 = new SimpleDateFormat("yyyyMMdd");
+                                String fechaHoraString3 = df3.format(Calendar.getInstance().getTime());
+                                intentNuevaNoti.putExtra("fechaHoraRes", fechaHoraString3);
+                                startActivity(intentNuevaNoti);
+                            }
                         }
+                        // Si es primer intento obtengo sus datos
+                        else{
+                            // Hacemos la foto
+                            Intent intentNuevaNoti = new Intent(NuevaNotificacionActivity.this, FotoAcuseActivity.class);
+                            if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
+                                intentNuevaNoti.putExtra("referencia", notificacion.getReferencia());
+                                intentNuevaNoti.putExtra("resultado", notificacion.getResultado1());
+                                DateFormat df3 = new SimpleDateFormat("yyyyMMdd");
+                                String fechaHoraString3 = df3.format(Calendar.getInstance().getTime());
+                                intentNuevaNoti.putExtra("fechaHoraRes", fechaHoraString3);
+                                startActivity(intentNuevaNoti);
+                            }
+
+                        }
+
                     }
                 });
             }

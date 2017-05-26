@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.CommonStatusCodes;
 
@@ -45,6 +46,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalle_notificacion);
+        // Cabeceras de las pantallas con los detalles de la notificacion
         layoutResultado1 = (ViewGroup) findViewById(R.id.linearLayout_detalleNotificacion_resultado1);
         layoutResultado2 = (ViewGroup) findViewById(R.id.linearLayout_detalleNotificacion_resultado2);
 
@@ -135,11 +137,14 @@ public class DetalleNotificacionActivity extends BaseActivity {
             TextView tv_resultado1, tv_fecha1, tv_notificador1, tv_longitud1, tv_latitud1, tv_observaciones1, tv_cabeceraResultado1, tv_receptor;
             TextView tv_resultado2, tv_fecha2, tv_notificador2, tv_longitud2, tv_latitud2, tv_observaciones2, tv_cabeceraResultado2;
             ImageView img_firma_receptor;
-            ImageView img_foto_acuse;
+            ImageView img_foto_acuse_res1;
+            ImageView img_foto_acuse_res2;
 
+            Toast toast = null;
 
+            // Hay dos resultados por lo que uso el layout de 2 resultados
             if(notificacion.getResultado2() != null) {
-                // Hay dos resultados
+
                 LayoutInflater inflater = LayoutInflater.from(getBaseContext());
                 LinearLayout linearLayout1 =  (LinearLayout) inflater.inflate(R.layout.datos_resultado_no_entregado, null, false);
                 LinearLayout linearLayout2 = null;
@@ -165,8 +170,10 @@ public class DetalleNotificacionActivity extends BaseActivity {
 
                 layoutResultado1.addView(linearLayout1);
 
-                // Entregado
-                if(notificacion.getResultado2().equals(Util.RESULTADO_ENTREGADO) || notificacion.getResultado2().equals(Util.RESULTADO_ENTREGADO_OFICINA) ) {
+                // Si el segundo intento es Entregado o Entregado en Oficina pero no ENTREGA SIN FIRMA cargo datos, firma y foto
+                if(notificacion.getResultado2().equals(Util.RESULTADO_ENTREGADO)
+                || notificacion.getResultado2().equals(Util.RESULTADO_ENTREGADO_OFICINA)
+                || !notificacion.getDescResultado2().equals(Util.RESULTADO_ENTREGADO_SIN_FIRMA)) {
 
                     linearLayout2 = (LinearLayout) inflater.inflate(R.layout.datos_resultado_entregado, null, false);
 
@@ -179,23 +186,26 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     tv_cabeceraResultado2 = (TextView) linearLayout2.findViewById(R.id.tv_result_entregado_cabecera_resultado);
                     tv_receptor = (TextView)linearLayout2.findViewById(R.id.tv_result_entregado_receptor);
                     img_firma_receptor = (ImageView) linearLayout2.findViewById(R.id.imageView_result_entregado_firma);
-                    img_foto_acuse = (ImageView) linearLayout2.findViewById(R.id.imageView_result_entregado_foto_acuse);
+                    img_foto_acuse_res2 = (ImageView) linearLayout2.findViewById(R.id.imageView_result_entregado_foto_acuse);
 
-
+                    // Como es ENTREGADO debe haber firma del receptor
                     tv_receptor.setText(notificacion.getNumDocReceptor() + " " + notificacion.getNombreReceptor());
 
-                    // Obtenemos la firma del receptor
-                    if(notificacion.getFirmaReceptor() != null && notificacion.getFirmaReceptor().trim().length() > 0) {
-                        try {
+                    // Buscamos la imagen de la firma
+                    if (notificacion.getFirmaReceptor() != null && notificacion.getFirmaReceptor().trim().length() > 0) {
+                            try {
 
-                            InputStream is = new FileInputStream(notificacion.getFirmaReceptor());
-                            Drawable drw_imagenFirma = Drawable.createFromStream(is, "imageView");
-                            img_firma_receptor.setImageDrawable(drw_imagenFirma);
+                                InputStream is = new FileInputStream(notificacion.getFirmaReceptor());
+                                Drawable drw_imagenFirma = Drawable.createFromStream(is, "imageView");
+                                img_firma_receptor.setImageDrawable(drw_imagenFirma);
 
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                toast = Toast.makeText(DetalleNotificacionActivity.this, "No existe la Firma del Receptor", Toast.LENGTH_LONG);
+                                toast.show();
+                            }
                         }
-                    }
+
 
                     // Obtenemos la foto del acuse
                     if(notificacion.getFotoAcuseRes2() != null && notificacion.getFotoAcuseRes2().trim().length() > 0) {
@@ -204,16 +214,17 @@ public class DetalleNotificacionActivity extends BaseActivity {
                             InputStream is = new FileInputStream(notificacion.getFotoAcuseRes2());
                             if (is != null){
                                 Drawable drw_imagenFoto = Drawable.createFromStream(is, "imageView");
-                                img_foto_acuse.setImageDrawable(drw_imagenFoto);
+                                img_foto_acuse_res2.setImageDrawable(drw_imagenFoto);
                             }
 
 
                         } catch (Exception e) {
                             e.printStackTrace();
+
                         }
                     }
 
-
+                // Si NO es ENTREGADO lo mismo pero sin firma
                 } else {
                     linearLayout2 = (LinearLayout) inflater.inflate(R.layout.datos_resultado_no_entregado, null, false);
 
@@ -224,7 +235,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     tv_latitud2 = (TextView) linearLayout2.findViewById(R.id.tv_result_no_entregado_latitud);
                     tv_observaciones2 = (TextView) linearLayout2.findViewById(R.id.tv_result_no_entregado_observaciones);
                     tv_cabeceraResultado2 = (TextView) linearLayout2.findViewById(R.id.tv_result_no_entregado_cabecera_resultado);
-                    img_foto_acuse = (ImageView) linearLayout2.findViewById(R.id.imageView_result_entregado_foto_acuse);
+                    img_foto_acuse_res2 = (ImageView) linearLayout2.findViewById(R.id.imageView_result_no_entregado_foto_acuse);
 
                     // Obtenemos la foto del acuse
                     if(notificacion.getFotoAcuseRes2() != null && notificacion.getFotoAcuseRes2().trim().length() > 0) {
@@ -233,7 +244,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                             InputStream is = new FileInputStream(notificacion.getFotoAcuseRes2());
                             if (is != null){
                                 Drawable drw_imagenFoto = Drawable.createFromStream(is, "imageView");
-                                img_foto_acuse.setImageDrawable(drw_imagenFoto);
+                                img_foto_acuse_res2.setImageDrawable(drw_imagenFoto);
                             }
 
 
@@ -245,23 +256,28 @@ public class DetalleNotificacionActivity extends BaseActivity {
                 }
 
                 // Se cargan los datos de la notificacion en la vista
-                tv_resultado2.setText(notificacion.getResultado1() + " " + notificacion.getDescResultado1());
-                tv_fecha2.setText(notificacion.getFechaHoraRes1());
-                tv_notificador2.setText(notificacion.getNotificadorRes1());
-                tv_longitud2.setText(notificacion.getLongitudRes1());
-                tv_latitud2.setText(notificacion.getLatitudRes1());
-                tv_observaciones2.setText(notificacion.getObservacionesRes1());
+                tv_resultado2.setText(notificacion.getResultado2() + " " + notificacion.getDescResultado2());
+                tv_fecha2.setText(notificacion.getFechaHoraRes2());
+                tv_notificador2.setText(notificacion.getNotificadorRes2());
+                tv_longitud2.setText(notificacion.getLongitudRes2());
+                tv_latitud2.setText(notificacion.getLatitudRes2());
+                tv_observaciones2.setText(notificacion.getObservacionesRes2());
                 tv_cabeceraResultado2.setText(R.string.resultado2);
 
                 layoutResultado2.addView(linearLayout2);
 
+            // Solo hay 1 resultado
+            // Si es la primera entrega y ya la hemos gestionado
             } else {
-                // Si es la primera entrega y ya la hemos gestionado
+
                 LayoutInflater inflater = LayoutInflater.from(getBaseContext());
                 LinearLayout linearLayout = null;
                 resultadoEliminable = 1;
 
-                if(notificacion.getResultado1().equals(Util.RESULTADO_ENTREGADO) || notificacion.getResultado1().equals(Util.RESULTADO_ENTREGADO_OFICINA)) { // resultado "ENTREGADO"
+                // Resultado "ENTREGADO" con Firma y en Oficina
+                if((notificacion.getResultado1().equals(Util.RESULTADO_ENTREGADO)
+                || notificacion.getResultado1().equals(Util.RESULTADO_ENTREGADO_OFICINA))
+                && !notificacion.getDescResultado1().equals(Util.RESULTADO_ENTREGADO_SIN_FIRMA)) {
                     linearLayout =  (LinearLayout) inflater.inflate(R.layout.datos_resultado_entregado, null, false);
 
                     // Se mapean las vistas del resultado 1
@@ -275,27 +291,31 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     tv_receptor = (TextView)linearLayout.findViewById(R.id.tv_result_entregado_receptor);
                     tv_receptor.setText(notificacion.getNumDocReceptor() + " " + notificacion.getNombreReceptor());
                     img_firma_receptor = (ImageView) linearLayout.findViewById(R.id.imageView_result_entregado_firma);
-                    img_foto_acuse = (ImageView) linearLayout.findViewById(R.id.imageView_result_entregado_foto_acuse);
+                    img_foto_acuse_res1 = (ImageView) linearLayout.findViewById(R.id.imageView_result_entregado_foto_acuse);
 
-                    if(notificacion.getFirmaReceptor() != null && notificacion.getFirmaReceptor().trim().length() > 0) {
-                        try {
+                    // Si NO es ENTREGADO SIN FIRMA buscamos la imagen de la firma
+                    if (notificacion.getFirmaReceptor() != null && notificacion.getFirmaReceptor().trim().length() > 0) {
+                            try {
 
-                            InputStream is = new FileInputStream(notificacion.getFirmaReceptor());
-                            Drawable drw_imagenFirma = Drawable.createFromStream(is, "imageView");
-                            img_firma_receptor.setImageDrawable(drw_imagenFirma);
+                                InputStream is = new FileInputStream(notificacion.getFirmaReceptor());
+                                Drawable drw_imagenFirma = Drawable.createFromStream(is, "imageView");
+                                img_firma_receptor.setImageDrawable(drw_imagenFirma);
 
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                toast = Toast.makeText(DetalleNotificacionActivity.this, "No existe la Firma del Receptor", Toast.LENGTH_LONG);
+                                toast.show();
+                            }
                         }
-                    }
-                    // Obtenemos la foto del acuse
-                    if(notificacion.getFotoAcuseRes2() != null && notificacion.getFotoAcuseRes2().trim().length() > 0) {
-                        try {
 
-                            InputStream is = new FileInputStream(notificacion.getFotoAcuseRes2());
+
+                    // Obtenemos la foto del acuse
+                    if(notificacion.getFotoAcuseRes1() != null && notificacion.getFotoAcuseRes1().trim().length() > 0) {
+                        try {
+                            InputStream is = new FileInputStream(notificacion.getFotoAcuseRes1());
                             if (is != null) {
                                 Drawable drw_imagenFoto = Drawable.createFromStream(is, "imageView");
-                                img_foto_acuse.setImageDrawable(drw_imagenFoto);
+                                img_foto_acuse_res1.setImageDrawable(drw_imagenFoto);
                             }
 
                         } catch (Exception e) {
@@ -303,8 +323,8 @@ public class DetalleNotificacionActivity extends BaseActivity {
                         }
                     }
 
-
-                } else { // Alguno de los resultado que NO son "ENTREGADO"
+                // Alguno de los resultado que NO son "ENTREGADO" sin Firma
+                } else {
                     linearLayout = (LinearLayout) inflater.inflate(R.layout.datos_resultado_no_entregado, null, false);
 
                     // Se mapean las vistas del resultado 1
@@ -315,16 +335,15 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     tv_latitud1 = (TextView) linearLayout.findViewById(R.id.tv_result_no_entregado_latitud);
                     tv_observaciones1 = (TextView) linearLayout.findViewById(R.id.tv_result_no_entregado_observaciones);
                     tv_cabeceraResultado1 = (TextView) linearLayout.findViewById(R.id.tv_result_no_entregado_cabecera_resultado);
-                    img_foto_acuse = (ImageView) linearLayout.findViewById(R.id.imageView_result_entregado_foto_acuse);
+                    img_foto_acuse_res1 = (ImageView) linearLayout.findViewById(R.id.imageView_result_no_entregado_foto_acuse);
 
                     // Obtenemos la foto del acuse
                     if (notificacion.getFotoAcuseRes1() != null && notificacion.getFotoAcuseRes1().trim().length() > 0) {
                         try {
-
                             InputStream is = new FileInputStream(notificacion.getFotoAcuseRes1());
                             if (is != null) {
                                 Drawable drw_imagenFoto = Drawable.createFromStream(is, "imageView");
-                                img_foto_acuse.setImageDrawable(drw_imagenFoto);
+                                img_foto_acuse_res1.setImageDrawable(drw_imagenFoto);
                             }
 
                         } catch (Exception e) {
@@ -332,8 +351,9 @@ public class DetalleNotificacionActivity extends BaseActivity {
                         }
                     }
                 }
+
                 // Se cargan los datos de la notificacion en la vista
-                tv_resultado1.setText(notificacion.getResultado1()+" "+notificacion.getDescResultado1());
+                tv_resultado1.setText(notificacion.getResultado1() + " " + notificacion.getDescResultado1());
                 tv_fecha1.setText(notificacion.getFechaHoraRes1());
                 tv_notificador1.setText(notificacion.getNotificadorRes1());
                 tv_longitud1.setText(notificacion.getLongitudRes1());
