@@ -42,7 +42,8 @@ public class ListaNotificacionesActivity extends BaseActivity {
     ImageButton mButtonScanBar;
     boolean[] checkedFiltros;
     boolean isLoading = true;
-    static final int THRESHOLD_PAGINA = 10; // valor fijo del numero de notificaciones que mostrará por pagina en el endlessScroll
+    // Valor fijo del numero de notificaciones que mostrará por pagina en el endlessScroll
+    static final int THRESHOLD_PAGINA = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

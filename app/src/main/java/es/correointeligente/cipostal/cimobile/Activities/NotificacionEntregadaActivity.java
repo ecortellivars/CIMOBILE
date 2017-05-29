@@ -54,7 +54,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
     Lienzo mLienzo;
     Toolbar mToolbar;
     DBHelper dbHelper;
-    String referenciaPostal, referenciaPostalSCB, longitud, latitud, observaciones, notificador;
+    String resultado1, referenciaPostal, referenciaPostalSCB, longitud, latitud, observaciones, notificador;
     Integer idNotificacion, posicionAdapter;
     Boolean esPrimerResultado;
     EditText edt_numeroDocumentoReceptor, edt_nombreReceptor;
@@ -83,6 +83,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
         observaciones = getIntent().getStringExtra("observaciones");
         esPrimerResultado = getIntent().getBooleanExtra("esPrimerResultado", Boolean.TRUE);
         notificador = getIntent().getStringExtra("notificador");
+        resultado1 = getIntent().getStringExtra("resultado1");
 
 
         // Logica del DNI
@@ -246,7 +247,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 resultado = dbHelper.obtenerResultado(Util.RESULTADO_ENTREGADO);
             }
 
-            if(esPrimerResultado) {
+            if(resultado1 == null) {
 
                 notificacionAux.setDescResultado1(resultado.getDescripcion().toUpperCase());
                 notificacionAux.setResultado1(resultado.getCodigo());
@@ -273,7 +274,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setSegundoIntento(esPrimerResultado);
                 DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
                 String fechaHoraFoto2 = df2.format(Calendar.getInstance().getTime());
-                notificacionAux.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse()  + File.separator  + referenciaPostal + "_" + fechaHoraFoto2  + "_" + fechaHoraFoto2   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + notificacionAux.getResultado1() + ".jpg");
+                notificacionAux.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse()  + File.separator  + referenciaPostal + "_" + fechaHoraFoto2  + "_" + fechaHoraFoto2   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + notificacionAux.getResultado2() + ".jpg");
 
             }
 

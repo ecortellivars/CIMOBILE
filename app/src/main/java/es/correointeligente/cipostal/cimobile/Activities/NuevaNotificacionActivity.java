@@ -188,6 +188,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                 intent.putExtra("longitud", tv_longitud.getText().toString());
                 intent.putExtra("observaciones", edt_observaciones.getText().toString());
                 intent.putExtra("notificador", codigoNotificador);
+                intent.putExtra("resultado1", notificacion.getResultado1());
 
                 startActivity(intent);
 
@@ -264,6 +265,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             ll_detallePrimerIntento.setVisibility(View.INVISIBLE);
             ll_botonera.setVisibility(View.VISIBLE);
 
+            // Si hay segundo intento lo muestro
             if (BooleanUtils.isTrue(notificacion.getSegundoIntento())) {
                 // Se muestra el layout de información referente al primer resultado
                 String horaApartirDe = null;

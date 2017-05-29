@@ -85,6 +85,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public DBHelper(Context context) {super(context, DATABASE_NAME, null, DATABASE_VERSION); this.context = context;}
 
+    // CREATEs
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         this.crearTablaNotificaciones(sqLiteDatabase);
