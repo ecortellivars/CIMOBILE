@@ -415,8 +415,15 @@ public class DBHelper extends SQLiteOpenHelper {
         // Ausente
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
                 "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) " +
-             "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
+                        "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
                 new String[]{Util.RESULTADO_AUSENTE, "0", Util.RESULTADO_AUSENTE, "1"}, null, null, null, null);
+        resumenReparto.setNumAusentes(cursor.getCount());
+
+        // Ausente cargado
+        cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
+                "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) " +
+                        "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
+                new String[]{Util.RESULTADO_AUSENTE, "1", Util.RESULTADO_AUSENTE, "0"}, null, null, null, null);
         resumenReparto.setNumAusentes(cursor.getCount());
 
         // Desconocido
@@ -446,6 +453,14 @@ public class DBHelper extends SQLiteOpenHelper {
              "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
                 new String[]{Util.RESULTADO_NADIE_SE_HACE_CARGO, "0", Util.RESULTADO_NADIE_SE_HACE_CARGO, "1"}, null, null, null, null);
         resumenReparto.setNumNadieSeHaceCargo(cursor.getCount());
+
+        // Nadie se hace cargo cargado
+        cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
+                "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) " +
+                        "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
+                new String[]{Util.RESULTADO_NADIE_SE_HACE_CARGO, "1", Util.RESULTADO_NADIE_SE_HACE_CARGO, "0"}, null, null, null, null);
+        resumenReparto.setNumNadieSeHaceCargo(cursor.getCount());
+
 
         return resumenReparto;
     }
