@@ -58,7 +58,7 @@ public class ListaNotificacionesActivity extends BaseActivity {
         // Se inicializa la lista de notificaciones
         listaNotificaciones = new ArrayList<>();
 
-        // Recupera la lista para el filtro de busqueda
+        // Recupera la lista para el Pop-Up del filtro de busqueda
         listaFiltroBusqueda = getResources().getStringArray(R.array.filtro_busqueda_array);
         checkedFiltros = new boolean[listaFiltroBusqueda.length];
 

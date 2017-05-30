@@ -419,7 +419,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 new String[]{Util.RESULTADO_AUSENTE, "0", Util.RESULTADO_AUSENTE, "1"}, null, null, null, null);
         resumenReparto.setNumAusentes(cursor.getCount());
 
-        // Ausente cargado
+        // Ausente teniendo en cuenta los cargados en segundoIntento.txt
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
                 "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) " +
                         "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
@@ -451,16 +451,16 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
                 "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) " +
              "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
-                new String[]{Util.RESULTADO_NADIE_SE_HACE_CARGO, "0", Util.RESULTADO_NADIE_SE_HACE_CARGO, "1"}, null, null, null, null);
+                new String[]{Util.RESULTADO_NADIE_SE_HACE_CARGO, "0",
+                             Util.RESULTADO_NADIE_SE_HACE_CARGO, "1"}, null, null, null, null);
         resumenReparto.setNumNadieSeHaceCargo(cursor.getCount());
 
-        // Nadie se hace cargo cargado
+        // Nadie se hace cargo cargado teniendo en cuenta los cargados en segundoIntento.txt
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
-                "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) " +
-                        "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
+                "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) " ,
+             //"OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
                 new String[]{Util.RESULTADO_NADIE_SE_HACE_CARGO, "1", Util.RESULTADO_NADIE_SE_HACE_CARGO, "0"}, null, null, null, null);
         resumenReparto.setNumNadieSeHaceCargo(cursor.getCount());
-
 
         return resumenReparto;
     }
@@ -709,6 +709,7 @@ public class DBHelper extends SQLiteOpenHelper {
             query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_DIR_INCORRECTA + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
                      "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_DIR_INCORRECTA + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
         }
+        // Teniendo en cuenta los cargados en segundoIntento.txt
         if (filtroNotificacion.getAusente()) {
             query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_AUSENTE + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
                      "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_AUSENTE + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) " +
@@ -727,6 +728,7 @@ public class DBHelper extends SQLiteOpenHelper {
             query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_REHUSADO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
                      "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_REHUSADO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
         }
+        // Teniendo en cuenta los cargados en segundoIntento.txt
         if (filtroNotificacion.getNadieSeHaceCargo()) {
             query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_NADIE_SE_HACE_CARGO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
                      "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_NADIE_SE_HACE_CARGO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) " +
