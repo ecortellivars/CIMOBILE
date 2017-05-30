@@ -32,7 +32,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private Context context;
 
     /******************************************************************************************/
-    /******************************** TABLA NOTIFICACION **************************************/
+    /****************************ESTRUCTURA TABLA NOTIFICACION ********************************/
     /******************************************************************************************/
     private static final String TABLE_NOTIFICACION = "notificacion";
     // Columnas tabla Notificacion
@@ -72,7 +72,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     /******************************************************************************************/
-    /********************************** TABLA RESULTADO ***************************************/
+    /*****************************ESTRUCTURA TABLA RESULTADO **********************************/
     /******************************************************************************************/
     private static final String TABLE_RESULTADO = "resultado";
     // Columnas tabla Resultado
@@ -366,56 +366,86 @@ public class DBHelper extends SQLiteOpenHelper {
 
         // Detalle de las notificaciones
 
+        // SELECT DISTINCT id
+        // FROM notificacion
+        // WHERE (resultado1 = ? AND segundoIntento = ?) OR (resultado2 = ? AND segundoIntento = ?)
+
+        // (boolean distinct,
+        // String table,
+        // String[] columns,
+        // String selection,
+        // String[] selectionArgs,
+        // String groupBy,
+        // String having,
+        // String orderBy,
+        // String limit)
+
         // Entregado
-        cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
-                "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) " +
-                        "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
-                new String[]{Util.RESULTADO_ENTREGADO, "0", Util.RESULTADO_ENTREGADO, "1"}, null, null, null, null);
+        cursor = db.query(
+                          // @param distinct true if you want each row to be unique, false otherwise.
+                          true,
+                          //  @param table The table name to compile the query against.
+                          TABLE_NOTIFICACION,
+                          //  @param columns A list of which columns to return. Passing null will
+                          //  return all columns, which is discouraged to prevent reading
+                          //  data from storage that isn't going to be used.
+                          new String[]{KEY_NOTIFICACION_ID},
+                          // @param selection A filter declaring which rows to return, formatted as an
+                          // SQL WHERE clause (excluding the WHERE itself). Passing null
+                          // will return all rows for the given table.
+                          "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) " +
+                          "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
+                          // @param selectionArgs You may include ?s in selection, which will be
+                          // replaced by the values from selectionArgs, in order that they
+                          // appear in the selection. The values will be bound as Strings.
+                          new String[]{Util.RESULTADO_ENTREGADO, "0", Util.RESULTADO_ENTREGADO, "1"},
+                          null,
+                          null,
+                          null,
+                          null);
         resumenReparto.setNumEntregados(cursor.getCount());
 
         // Dir. Incorrecta
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
                 "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) " +
-                        "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
+             "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
                 new String[]{Util.RESULTADO_DIR_INCORRECTA, "0", Util.RESULTADO_DIR_INCORRECTA, "1"}, null, null, null, null);
         resumenReparto.setNumDirIncorrectas(cursor.getCount());
 
         // Ausente
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
                 "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) " +
-                        "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
+             "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
                 new String[]{Util.RESULTADO_AUSENTE, "0", Util.RESULTADO_AUSENTE, "1"}, null, null, null, null);
         resumenReparto.setNumAusentes(cursor.getCount());
 
         // Desconocido
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
                 "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) " +
-                        "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
+             "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
                 new String[]{Util.RESULTADO_DESCONOCIDO, "0", Util.RESULTADO_DESCONOCIDO, "1"}, null, null, null, null);
         resumenReparto.setNumDesconocidos(cursor.getCount());
 
         // Fallecido
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
                 "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) " +
-                        "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
+             "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
                 new String[]{Util.RESULTADO_FALLECIDO, "0", Util.RESULTADO_FALLECIDO, "1"}, null, null, null, null);
         resumenReparto.setNumFallecidos(cursor.getCount());
 
         // Rehusado
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
                 "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) " +
-                        "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
+             "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
                 new String[]{Util.RESULTADO_REHUSADO, "0", Util.RESULTADO_REHUSADO, "1"}, null, null, null, null);
         resumenReparto.setNumRehusados(cursor.getCount());
 
         // Nadie se hace cargo
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
                 "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) " +
-                        "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
+             "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
                 new String[]{Util.RESULTADO_NADIE_SE_HACE_CARGO, "0", Util.RESULTADO_NADIE_SE_HACE_CARGO, "1"}, null, null, null, null);
         resumenReparto.setNumNadieSeHaceCargo(cursor.getCount());
-
-
 
         return resumenReparto;
     }
@@ -476,6 +506,7 @@ public class DBHelper extends SQLiteOpenHelper {
         Boolean hayError = false;
 
         SQLiteDatabase db = this.getWritableDatabase();
+
         try {
             db.beginTransaction();
 
@@ -664,12 +695,14 @@ public class DBHelper extends SQLiteOpenHelper {
                      "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_DIR_INCORRECTA + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
         }
         if (filtroNotificacion.getAusente()) {
-            query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_AUSENTE+"' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
-                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_AUSENTE+"' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
+            query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_AUSENTE + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
+                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_AUSENTE + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) " +
+                     "OR (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_AUSENTE + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) " +
+                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_AUSENTE + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) ";
         }
         if (filtroNotificacion.getDesconocido()) {
-            query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_DESCONOCIDO+"' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
-                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_DESCONOCIDO+"' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
+            query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_DESCONOCIDO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
+                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_DESCONOCIDO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
         }
         if (filtroNotificacion.getFallecido()) {
             query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_FALLECIDO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
@@ -677,19 +710,21 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         if (filtroNotificacion.getRehusado()) {
             query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_REHUSADO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
-                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_REHUSADO+"' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
+                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_REHUSADO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
         }
         if (filtroNotificacion.getNadieSeHaceCargo()) {
             query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_NADIE_SE_HACE_CARGO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
-                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_NADIE_SE_HACE_CARGO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
+                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_NADIE_SE_HACE_CARGO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) " +
+                     "OR (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_NADIE_SE_HACE_CARGO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) " +
+                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_NADIE_SE_HACE_CARGO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) ";
         }
         if (filtroNotificacion.getMarcadas()) {
             query += "AND " + KEY_NOTIFICACION_MARCADA + " = " + 1 + " ";
             query += "ORDER BY " + KEY_NOTIFICACION_TIMESTAMP_MARCADA + " ASC ";
         } else {
-            query += "ORDER BY " + KEY_NOTIFICACION_REFERENCIA + " ASC ";
+            query += "ORDER BY " + KEY_NOTIFICACION_DESCRIPCION_RESULTADO_1 + " DESC ";
         }
-
+        // SELECT DISTINCT * FROM notificacion WHERE 1 = 1 ORDER BY referencia ASC LIMIT 10
         if(filtroNotificacion.getPagina() > 0) {
             query += "LIMIT 10 OFFSET " + filtroNotificacion.getPagina() * 10 + " ";
         } else {

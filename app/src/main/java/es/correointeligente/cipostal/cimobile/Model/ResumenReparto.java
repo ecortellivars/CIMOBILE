@@ -36,41 +36,29 @@ public class ResumenReparto {
         return totNotificaciones;
     }
 
-    public void setTotNotificaciones(Integer totNotificaciones) {
-        this.totNotificaciones = totNotificaciones;
-    }
+    public void setTotNotificaciones(Integer totNotificaciones) { this.totNotificaciones = totNotificaciones; }
 
     public Integer getTotNotifGestionadas() {
         return totNotifGestionadas;
     }
 
-    public void setTotNotifGestionadas(Integer totNotifGestionadas) {
-        this.totNotifGestionadas = totNotifGestionadas;
-    }
+    public void setTotNotifGestionadas(Integer totNotifGestionadas) { this.totNotifGestionadas = totNotifGestionadas; }
 
     public Integer getTotNotifMarcadas() {
         return totNotifMarcadas;
     }
 
-    public void setTotNotifMarcadas(Integer totNotifMarcadas) {
-        this.totNotifMarcadas = totNotifMarcadas;
-    }
+    public void setTotNotifMarcadas(Integer totNotifMarcadas) { this.totNotifMarcadas = totNotifMarcadas; }
 
-    public Integer getNumEntregados() {
-        return numEntregados;
-    }
+    public Integer getNumEntregados() { return numEntregados; }
 
-    public void setNumEntregados(Integer numEntregados) {
-        this.numEntregados = numEntregados;
-    }
+    public void setNumEntregados(Integer numEntregados) { this.numEntregados = numEntregados; }
 
     public Integer getNumDirIncorrectas() {
         return numDirIncorrectas;
     }
 
-    public void setNumDirIncorrectas(Integer numDirIncorrectas) {
-        this.numDirIncorrectas = numDirIncorrectas;
-    }
+    public void setNumDirIncorrectas(Integer numDirIncorrectas) { this.numDirIncorrectas = numDirIncorrectas; }
 
     public Integer getNumAusentes() {
         return numAusentes;
@@ -84,9 +72,7 @@ public class ResumenReparto {
         return numDesconocidos;
     }
 
-    public void setNumDesconocidos(Integer numDesconocidos) {
-        this.numDesconocidos = numDesconocidos;
-    }
+    public void setNumDesconocidos(Integer numDesconocidos) { this.numDesconocidos = numDesconocidos; }
 
     public Integer getNumFallecidos() {
         return numFallecidos;
@@ -108,7 +94,5 @@ public class ResumenReparto {
         return numNadieSeHaceCargo;
     }
 
-    public void setNumNadieSeHaceCargo(Integer numNadieSeHaceCargo) {
-        this.numNadieSeHaceCargo = numNadieSeHaceCargo;
-    }
+    public void setNumNadieSeHaceCargo(Integer numNadieSeHaceCargo) { this.numNadieSeHaceCargo = numNadieSeHaceCargo; }
 }

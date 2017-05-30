@@ -243,7 +243,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
 
                                 // Se recupera la referencia postal
                                 String referenciaPostal = linea.substring(1, 71).trim();
-                                String referenciaSCB = linea.substring(188, 196).trim();
+                                String referenciaSCB = linea.substring(188, 258).trim();
 
                                 // Lo primero se busca si existe en la base de datos interna, es decir, si se ha cargado
                                 Notificacion notificacion = dbHelper.obtenerNotificacion(referenciaPostal, referenciaSCB);
@@ -255,13 +255,16 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                     notificacion.setLatitudRes1(linea.substring(118, 138).trim());
                                     notificacion.setNotificadorRes1(linea.substring(138, 258).trim());
                                     notificacion.setFechaHoraRes1(linea.substring(258, 277).trim());
+                                    // Hace falta una segunda visita
                                     notificacion.setSegundoIntento(true);
+                                    // Se mapea el backgroundcolor
+                                    notificacion.setBackgroundColor(R.color.colorBackgroundNoEntregado);
 
                                     listaNotificaciones.add(notificacion);
 
                                 } else {
                                     // Si no se ha encontrado, se debe sacar un mensaje con el error al notificador
-                                    fallo = getString(R.string.error_no_existe_notif_en_carga_previa)+"("+referenciaPostal+")";
+                                    fallo = getString(R.string.error_no_existe_notif_en_carga_previa) + "(" + referenciaPostal + ")";
                                 }
                             }
 

@@ -89,6 +89,8 @@ public class Util {
     public final static String RESULTADO_ENTREGADO_OFICINA   = "08";
     // Para uso exclusivo de control del trabajo del notificador
     public final static String RESULTADO_ENTREGADO_SIN_FIRMA = "01";
+    public final static String DESCRIPCION_ENTREGADO_SIN_FIRMA = "Notificado sin firma";
+    public final static String DESCRIPCION_ENTREGADO_CON_FIRMA = "Notificado";
 
     // CONSTANTES FICHEROS DE PREFERENCIAS
     public final static String FICHERO_PREFERENCIAS_SESION = "sesion";
@@ -310,7 +312,7 @@ public class Util {
         String ruta = "";
 
         ruta = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_BASE, context, String.class.getSimpleName());
-        ruta = ruta + File.separator+delegacion.toUpperCase() + Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, context, String.class.getSimpleName());
+        ruta = ruta + File.separator + delegacion.toUpperCase() + Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, context, String.class.getSimpleName());
 
         return ruta;
     }

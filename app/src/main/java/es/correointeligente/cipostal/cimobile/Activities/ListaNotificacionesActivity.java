@@ -153,7 +153,7 @@ public class ListaNotificacionesActivity extends BaseActivity {
         protected List<Notificacion> doInBackground(FiltroNotificacion... args) {
             FiltroNotificacion filtroNotificacion = args[0];
 
-            List<Notificacion> listaNotificaciones = new ArrayList<>();
+            List<Notificacion> listaNotificaciones;
             listaNotificaciones = dbHelper.obtenerNotificacionesPorFiltro(filtroNotificacion);
 
             return listaNotificaciones;
@@ -215,6 +215,7 @@ public class ListaNotificacionesActivity extends BaseActivity {
         checkedFiltros[6] = mFiltroNotificacion.getNadieSeHaceCargo();
         checkedFiltros[7] = mFiltroNotificacion.getMarcadas();
 
+
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(ListaNotificacionesActivity.this);
         mBuilder.setTitle(R.string.filtro_busqueda);
         mBuilder.setMultiChoiceItems(listaFiltroBusqueda, checkedFiltros, new DialogInterface.OnMultiChoiceClickListener() {
@@ -254,6 +255,7 @@ public class ListaNotificacionesActivity extends BaseActivity {
                         case 7:
                             mFiltroNotificacion.setMarcadas(checkedFiltros[position]);
                             break;
+
                     }
                 }
 

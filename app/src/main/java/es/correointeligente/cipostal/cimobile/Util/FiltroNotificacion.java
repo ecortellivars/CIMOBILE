@@ -48,9 +48,7 @@ public class FiltroNotificacion {
         this.entregado = entregado;
     }
 
-    public Boolean getDirIncorrecta() {
-        return dirIncorrecta;
-    }
+    public Boolean getDirIncorrecta() { return dirIncorrecta; }
 
     public void setDirIncorrecta(Boolean dirIncorrecta) {
         this.dirIncorrecta = dirIncorrecta;
@@ -92,9 +90,7 @@ public class FiltroNotificacion {
         return nadieSeHaceCargo;
     }
 
-    public void setNadieSeHaceCargo(Boolean nadieSeHaceCargo) {
-        this.nadieSeHaceCargo = nadieSeHaceCargo;
-    }
+    public void setNadieSeHaceCargo(Boolean nadieSeHaceCargo) { this.nadieSeHaceCargo = nadieSeHaceCargo; }
 
     public Boolean getMarcadas() {
         return marcadas;
