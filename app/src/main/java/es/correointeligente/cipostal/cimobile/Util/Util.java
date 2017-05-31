@@ -147,7 +147,7 @@ public class Util {
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_CARPETA, "/ULTIMAVERSION/CIMOBILE");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_FICHERO, "/version.txt");
 
-            // Preferencias FTP CIPOSTAL para pruebas
+            // Preferencias FTP CIPOSTAL (1and1) para pruebas
             /**e.putString(Util.CLAVE_PREFERENCIAS_FTP_IP, "home557660407.1and1-data.host");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, "22");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_USER, "u79475687");
@@ -176,9 +176,7 @@ public class Util {
             // Preferencias para el uso de la aplicación en oficina
             e.putBoolean(Util.CLAVE_PREFERENCIAS_APP_DE_OFICINA, false);
 
-
             e.commit();
-
         }
     }
 
@@ -472,6 +470,7 @@ public class Util {
             FileInputStream fis = null;
             byte[] filedata = null;
             String encodedImage = null;
+
             // Si el resultado es ENTREGADO CON FIRMA capturamos los datos del RECEPTOR de la carta
             if(notificacion.getNumDocReceptor() != null && !notificacion.getNumDocReceptor().trim().isEmpty()) {
                 Element numDocReceptor = doc.createElement("numDocReceptor");

@@ -110,8 +110,9 @@
     <string name="password">Contraseña</string>
     <string name="configuracion">Configuración</string>
     <string name="eliminado_todo_correctamente">Se ha eliminado todo correctamente</string>
-    <string name="error_no_existe_notif_en_carga_previa">No existe la notificación en el fichero cargado anteriormente</string>
+    <string name="error_no_existe_notif_en_carga_previa">No existe la notificación en el fichero SICER cargado</string>
     <string name="error_guardar_notificaciones">Error al guardar las notificaciones</string>
+    <string name="error_actualizar_notificaciones">Error al actualizar las notificaciones</string>
     <string name="usuario_no_valido">Usuario no válido</string>
     <string name="password_no_valido">Contraseña no válida</string>
     <string name="error_inicio_sesion">Se ha producido un error en el inicio de sesión</string>

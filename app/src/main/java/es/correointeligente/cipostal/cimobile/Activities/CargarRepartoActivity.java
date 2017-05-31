@@ -229,8 +229,8 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                         mapaNotificacion.put(notificacion.getReferencia(), notificacion.getReferenciaSCB());
                                     }
                                 }
-
-                            } else if(linea.startsWith("S")) { // Determina que es el formato del sicer de segundo intento
+                            // Determina que es el formato del sicer de segundo intento
+                            } else if(linea.startsWith("S")) {
 
                                 if(esCargaPrimeraEntrega) {
                                     // Si es la primera vez que entra aquí, se tiene que comprobar si se ha cargado antes el primer fichero
@@ -244,8 +244,8 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                 String referenciaPostal = linea.substring(1, 71).trim();
                                 String referenciaSCB = linea.substring(188, 258).trim();
 
-                                // Lo primero se busca si existe en la base de datos interna el primer inetnto
-                                // ya que estamos cargando segundos.
+                                // Lo primero se busca si existe en la base de datos interna la notificacion
+                                // cargada desde el SICER anterior
                                 Notificacion notificacion = dbHelper.obtenerNotificacion(referenciaPostal, referenciaSCB);
                                 if(notificacion != null) {
 
@@ -269,13 +269,18 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                             publishProgress(getString(R.string.cargando_fichero_sicer) + numLinea);
                             numLinea++;
                         }
+
                         // Se limpia el mapa
                         mapaNotificacion = null;
 
                         publishProgress(getString(R.string.guardando_datos_en_bd_interna));
+                        // SICER.txt
                         if(esCargaPrimeraEntrega) {
+                            // INSERT INTO
                             dbHelper.guardarNotificacionesInicial(listaNotificaciones);
+                        // seguntoIntento.txt
                         } else {
+                            // UPDATE
                             dbHelper.actualizarNotificacionesSegundoIntentoInicial(listaNotificaciones);
                         }
 
