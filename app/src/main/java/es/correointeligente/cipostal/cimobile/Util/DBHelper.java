@@ -362,6 +362,12 @@ public class DBHelper extends SQLiteOpenHelper {
                 null, null, null, null, null);
         resumenReparto.setTotNotifGestionadas(cursor.getCount());
 
+        cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
+                "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0 AND " + KEY_NOTIFICACION_RESULTADO_1 + " IS NOT NULL) AND " +
+                "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0 AND " + KEY_NOTIFICACION_RESULTADO_2 + " IS NULL)",
+                null, null, null, null, null);
+        resumenReparto.setTotNotifPendientesSegundo(cursor.getCount());
+
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID}, KEY_NOTIFICACION_MARCADA + " = ?", new String[]{"1"}, null, null, null, null);
         resumenReparto.setTotNotifMarcadas(cursor.getCount());
 

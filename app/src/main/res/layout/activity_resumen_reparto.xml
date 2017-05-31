@@ -86,6 +86,25 @@
                 android:layout_height="match_parent">
 
                 <TextView
+                    android:id="@+id/textView_resumen_total_notif_pendientes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/total_notificaciones_pendientes" />
+
+                <TextView
+                    android:id="@+id/textView_resumen_total_notif_pendientes_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
+                    android:textStyle="bold" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
                     android:id="@+id/textView_resumen_total_notif_marcadas"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

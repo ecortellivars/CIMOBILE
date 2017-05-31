@@ -40,7 +40,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
     Button mCerrarReparto;
     FTPHelper ftpHelper;
 
-    TextView tv_totFicheros, tv_totNotificaciones, tv_totNotifGestionadas, tv_totNotifMarcadas;
+    TextView tv_totFicheros, tv_totNotificaciones, tv_totNotifGestionadas, tv_totNotifPendientes, tv_totNotifMarcadas;
     TextView tv_entregado, tv_dirIncorrecta, tv_ausente, tv_ausente_pendiente, tv_desconocido, tv_fallecido, tv_rehusado,
             tv_noSeHaceCargo, tv_noSeHaceCargoPendiente;
 
@@ -90,6 +90,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
         tv_totFicheros = (TextView) findViewById(R.id.textView_resumen_total_ficheros_value);
         tv_totNotificaciones = (TextView) findViewById(R.id.textView_resumen_total_notificaciones_value);
         tv_totNotifGestionadas = (TextView) findViewById(R.id.textView_resumen_total_notif_gestionadas_value);
+        tv_totNotifPendientes = (TextView) findViewById(R.id.textView_resumen_total_notif_pendientes_value);
         tv_totNotifMarcadas = (TextView) findViewById(R.id.textView_resumen_total_notif_marcadas_value);
 
         tv_entregado = (TextView) findViewById(R.id.textView_resumen_entregado_value);
@@ -156,6 +157,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
 
             tv_totFicheros.setText(resumenReparto.getTotFicheros().toString());
             tv_totNotificaciones.setText(resumenReparto.getTotNotificaciones().toString());
+            tv_totNotifPendientes.setText(resumenReparto.getTotNotifPendientesSegundo().toString());
             tv_totNotifMarcadas.setText(resumenReparto.getTotNotifMarcadas().toString());
             tv_totNotifGestionadas.setText(resumenReparto.getTotNotifGestionadas().toString());
 
