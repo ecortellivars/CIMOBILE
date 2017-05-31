@@ -30,10 +30,12 @@
     <string name="entregado_01">01 Entregado</string>
     <string name="dir_incorrecta_02">02 Dir. incorrecta</string>
     <string name="ausente_03">03 Ausente</string>
+    <string name="ausente_pendiente_03">03 Ausente (Pendientes)</string>
     <string name="desconocido_04">04 Desconocido</string>
     <string name="fallecido_05">05 Fallecido</string>
     <string name="rehusado_06">06 Rehusado</string>
     <string name="nadie_se_hace_cargo_07">07 Nadie se hace cargo</string>
+    <string name="nadie_se_hace_cargo_pendiente_07">07 Nadie se hace cargo (Pendientes)</string>
     <string name="cerrar_reparto">Cerrar reparto</string>
     <string name="espere_info_reparto">Espere mientras se obtiene información del reparto</string>
     <string name="espere_info_notificacion">Espere mientras se obtiene información de la notificación</string>

@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -394,7 +395,7 @@ public class DBHelper extends SQLiteOpenHelper {
                           // SQL WHERE clause (excluding the WHERE itself). Passing null
                           // will return all rows for the given table.
                           "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) " +
-                          "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
+                       "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
                           // @param selectionArgs You may include ?s in selection, which will be
                           // replaced by the values from selectionArgs, in order that they
                           // appear in the selection. The values will be bound as Strings.
@@ -412,19 +413,25 @@ public class DBHelper extends SQLiteOpenHelper {
                 new String[]{Util.RESULTADO_DIR_INCORRECTA, "0", Util.RESULTADO_DIR_INCORRECTA, "1"}, null, null, null, null);
         resumenReparto.setNumDirIncorrectas(cursor.getCount());
 
-        // Ausente
-        cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
-                "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) " +
-                        "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
-                new String[]{Util.RESULTADO_AUSENTE, "0", Util.RESULTADO_AUSENTE, "1"}, null, null, null, null);
+        // Ausente FINAL
+        cursor = db.query(// DISTINCT
+                          true,
+                          // TABLA
+                          TABLE_NOTIFICACION,
+                          // COLUMNAS
+                          new String[]{KEY_NOTIFICACION_ID},
+                          // WHERE
+                             "(" + KEY_NOTIFICACION_RESULTADO_2 + " = ?" + ")" ,
+                          // VALORES DE LOS ? añadidos de forma que aparecen en el ARRAY
+                          new String[]{Util.RESULTADO_AUSENTE}, null, null, null, null);
         resumenReparto.setNumAusentes(cursor.getCount());
 
-        // Ausente teniendo en cuenta los cargados en segundoIntento.txt
+        // Ausente PENDIENTE
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
-                "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) " +
-                        "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
-                new String[]{Util.RESULTADO_AUSENTE, "1", Util.RESULTADO_AUSENTE, "0"}, null, null, null, null);
-        resumenReparto.setNumAusentes(cursor.getCount());
+                "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? " +
+             "AND " + KEY_NOTIFICACION_RESULTADO_2 + " ISNULL "  + ")" ,
+                new String[]{Util.RESULTADO_AUSENTE}, null, null, null, null);
+        resumenReparto.setNumAusentesPendientes(cursor.getCount());
 
         // Desconocido
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
@@ -447,20 +454,25 @@ public class DBHelper extends SQLiteOpenHelper {
                 new String[]{Util.RESULTADO_REHUSADO, "0", Util.RESULTADO_REHUSADO, "1"}, null, null, null, null);
         resumenReparto.setNumRehusados(cursor.getCount());
 
-        // Nadie se hace cargo
-        cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
-                "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) " +
-             "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
-                new String[]{Util.RESULTADO_NADIE_SE_HACE_CARGO, "0",
-                             Util.RESULTADO_NADIE_SE_HACE_CARGO, "1"}, null, null, null, null);
+        // No se hace cargo FINAL
+        cursor = db.query(// DISTINCT
+                true,
+                // TABLA
+                TABLE_NOTIFICACION,
+                // COLUMNAS
+                new String[]{KEY_NOTIFICACION_ID},
+                // WHERE
+                "(" + KEY_NOTIFICACION_RESULTADO_2 + " = ?" + ")" ,
+                // VALORES DE LOS ? añadidos de forma que aparecen en el ARRAY
+                new String[]{Util.RESULTADO_NADIE_SE_HACE_CARGO}, null, null, null, null);
         resumenReparto.setNumNadieSeHaceCargo(cursor.getCount());
 
-        // Nadie se hace cargo cargado teniendo en cuenta los cargados en segundoIntento.txt
+        // No se hace cargo PENDIENTE
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
-                "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) " ,
-             //"OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?)",
-                new String[]{Util.RESULTADO_NADIE_SE_HACE_CARGO, "1", Util.RESULTADO_NADIE_SE_HACE_CARGO, "0"}, null, null, null, null);
-        resumenReparto.setNumNadieSeHaceCargo(cursor.getCount());
+                "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? " +
+                        "AND " + KEY_NOTIFICACION_RESULTADO_2 + " ISNULL "  + ")" ,
+                new String[]{Util.RESULTADO_NADIE_SE_HACE_CARGO}, null, null, null, null);
+        resumenReparto.setNumNadieSeHaceCargoPendientes(cursor.getCount());
 
         return resumenReparto;
     }
@@ -536,7 +548,15 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_NOTIFICADOR_RES_1, notificacion.getNotificadorRes1());
                 cv.put(KEY_NOTIFICACION_SEGUNDO_INTENTO, 1);
 
-                db.update(TABLE_NOTIFICACION, cv, KEY_NOTIFICACION_ID + "= ?", new String[]{notificacion.getId().toString()});
+                db.update(
+                        // Tabla
+                        TABLE_NOTIFICACION,
+                        // Columnas
+                        cv,
+                        // Where
+                        KEY_NOTIFICACION_ID + "= ?",
+                        // Valores del Where
+                        new String[]{notificacion.getId().toString()});
             }
 
             db.setTransactionSuccessful();
@@ -630,7 +650,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String whereClause = KEY_NOTIFICACION_REFERENCIA + " = ?";
         parametros[0] = referencia;
         if(StringUtils.isNotBlank(referenciaSCB)) {
-            whereClause += " AND "+ KEY_NOTIFICACION_REFERENCIA_SCB + " = ?";
+            whereClause += " AND " + KEY_NOTIFICACION_REFERENCIA_SCB + " = ?";
             parametros[1] = referenciaSCB;
         }
 
@@ -703,37 +723,37 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         if (filtroNotificacion.getEntregado()) {
             query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_ENTREGADO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
-                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_ENTREGADO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
+                      "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_ENTREGADO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
         }
         if (filtroNotificacion.getDirIncorrecta()) {
             query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_DIR_INCORRECTA + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
-                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_DIR_INCORRECTA + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
+                      "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_DIR_INCORRECTA + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
         }
         // Teniendo en cuenta los cargados en segundoIntento.txt
         if (filtroNotificacion.getAusente()) {
             query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_AUSENTE + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
-                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_AUSENTE + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) " +
-                     "OR (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_AUSENTE + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) " +
-                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_AUSENTE + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) ";
+                      "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_AUSENTE + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) " +
+                      "OR (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_AUSENTE + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) " +
+                      "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_AUSENTE + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) ";
         }
         if (filtroNotificacion.getDesconocido()) {
             query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_DESCONOCIDO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
-                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_DESCONOCIDO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
+                      "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_DESCONOCIDO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
         }
         if (filtroNotificacion.getFallecido()) {
             query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_FALLECIDO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
-                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_FALLECIDO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
+                      "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_FALLECIDO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
         }
         if (filtroNotificacion.getRehusado()) {
             query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_REHUSADO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
-                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_REHUSADO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
+                      "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_REHUSADO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
         }
         // Teniendo en cuenta los cargados en segundoIntento.txt
         if (filtroNotificacion.getNadieSeHaceCargo()) {
             query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_NADIE_SE_HACE_CARGO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
-                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_NADIE_SE_HACE_CARGO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) " +
-                     "OR (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_NADIE_SE_HACE_CARGO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) " +
-                     "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_NADIE_SE_HACE_CARGO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) ";
+                      "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_NADIE_SE_HACE_CARGO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) " +
+                      "OR (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_NADIE_SE_HACE_CARGO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) " +
+                      "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_NADIE_SE_HACE_CARGO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) ";
         }
         if (filtroNotificacion.getMarcadas()) {
             query += "AND " + KEY_NOTIFICACION_MARCADA + " = " + 1 + " ";

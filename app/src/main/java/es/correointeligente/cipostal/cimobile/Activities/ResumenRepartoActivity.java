@@ -41,7 +41,8 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
     FTPHelper ftpHelper;
 
     TextView tv_totFicheros, tv_totNotificaciones, tv_totNotifGestionadas, tv_totNotifMarcadas;
-    TextView tv_entregado, tv_dirIncorrecta, tv_ausente, tv_desconocido, tv_fallecido, tv_rehusado, tv_noSeHaceCargo;
+    TextView tv_entregado, tv_dirIncorrecta, tv_ausente, tv_ausente_pendiente, tv_desconocido, tv_fallecido, tv_rehusado,
+            tv_noSeHaceCargo, tv_noSeHaceCargoPendiente;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,10 +95,12 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
         tv_entregado = (TextView) findViewById(R.id.textView_resumen_entregado_value);
         tv_dirIncorrecta = (TextView) findViewById(R.id.textView_resumen_dir_incorrecta_value);
         tv_ausente = (TextView) findViewById(R.id.textView_resumen_ausente_value);
+        tv_ausente_pendiente = (TextView) findViewById(R.id.textView_resumen_ausente_pendiente_value);
         tv_desconocido = (TextView) findViewById(R.id.textView_resumen_desconocido_value);
         tv_fallecido = (TextView) findViewById(R.id.textView_resumen_fallecido_value);
         tv_rehusado = (TextView) findViewById(R.id.textView_resumen_rehusado_value);
         tv_noSeHaceCargo = (TextView) findViewById(R.id.textView_resumen_nadie_cargo_value);
+        tv_noSeHaceCargoPendiente = (TextView) findViewById(R.id.textView_resumen_nadie_cargo_pendiente_value);
 
         mCerrarReparto = (Button) findViewById(R.id.button_resumen_cerrar_reparto);
         mCerrarReparto.setOnClickListener(this);
@@ -109,6 +112,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
         return true;
     }
 
+    // Logica de los iconos de la toolBar
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -141,6 +145,10 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             return resumen;
         }
 
+        /**
+         * Cargamos los valores a mostrar en el layout
+         * @param resumenReparto
+         */
         @Override
         protected void onPostExecute(ResumenReparto resumenReparto) {
 
@@ -154,10 +162,12 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             tv_entregado.setText(resumenReparto.getNumEntregados().toString());
             tv_dirIncorrecta.setText(resumenReparto.getNumDirIncorrectas().toString());
             tv_ausente.setText(resumenReparto.getNumAusentes().toString());
+            tv_ausente_pendiente.setText(resumenReparto.getNumAusentesPendientes().toString());
             tv_desconocido.setText(resumenReparto.getNumDesconocidos().toString());
             tv_fallecido.setText(resumenReparto.getNumFallecidos().toString());
             tv_rehusado.setText(resumenReparto.getNumRehusados().toString());
             tv_noSeHaceCargo.setText(resumenReparto.getNumNadieSeHaceCargo().toString());
+            tv_noSeHaceCargoPendiente.setText(resumenReparto.getNumNadieSeHaceCargoPendientes().toString());
         }
     }
 

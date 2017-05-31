@@ -182,7 +182,7 @@ public class ListaNotificacionesActivity extends BaseActivity {
 
                  } else {
                     int tamanyoCalculado = size;
-                    if(listaNotificaciones.get(size-1) instanceof NotificacionProgressbar) {
+                    if(listaNotificaciones.get(size - 1) instanceof NotificacionProgressbar) {
                         tamanyoCalculado = tamanyoCalculado - 1;
                         listaNotificaciones.remove(tamanyoCalculado);
                     }
@@ -261,7 +261,7 @@ public class ListaNotificacionesActivity extends BaseActivity {
 
                 // Se reinicializa la búsqueda limpiando el adaptador y llamando al hilo de obtener notificaciones
                 mRecyclerNotificaciones.setAdapter(null);
-                listaNotificaciones = new ArrayList<Notificacion>();
+                listaNotificaciones = new ArrayList<>();
                 mFiltroNotificacion.setPagina(0);
                 ObtenerNotificacionesTask obtenerNotificacionesTask = new ObtenerNotificacionesTask();
                 obtenerNotificacionesTask.execute(mFiltroNotificacion);
@@ -304,14 +304,14 @@ public class ListaNotificacionesActivity extends BaseActivity {
                    mRecyclerNotificaciones.setAdapter(null);
                    listaNotificaciones = new ArrayList<Notificacion>();
                    mFiltroNotificacion.setPagina(0);
-                   mFiltroNotificacion.setReferencia("'%"+charSequence+"%'");
+                   mFiltroNotificacion.setReferencia("'%" + charSequence + "%'");
 
                    ObtenerNotificacionesTask obtenerNotificacionesTask = new ObtenerNotificacionesTask();
                    obtenerNotificacionesTask.execute(mFiltroNotificacion);
 
                } else if(before > 2 && charSequence.length() <= 2) {
                    mRecyclerNotificaciones.setAdapter(null);
-                   listaNotificaciones = new ArrayList<Notificacion>();
+                   listaNotificaciones = new ArrayList<>();
                    mFiltroNotificacion.setPagina(0);
                    mFiltroNotificacion.setReferencia(null);
 
@@ -369,7 +369,6 @@ public class ListaNotificacionesActivity extends BaseActivity {
                         listaNotificaciones.set(posicionAdapter, notificacionAux);
                         mRecyclerNotificaciones.getAdapter().notifyItemChanged(posicionAdapter);
                     }
-
                 }
             }
         } else if(requestCode == Util.REQUEST_CODE_NOTIFICATION_DELETE_RESULT) {

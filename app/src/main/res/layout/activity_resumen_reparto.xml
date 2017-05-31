@@ -194,6 +194,25 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="@string/ausente_pendiente_03" />
+
+                    <TextView
+                        android:id="@+id/textView_resumen_ausente_pendiente_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="20dp"
+                        android:textStyle="bold" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="@string/desconocido_04" />
 
                     <TextView
@@ -248,13 +267,32 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/nadie_se_hace_cargo_07" />
+
+                <TextView
+                    android:id="@+id/textView_resumen_nadie_cargo_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
+                    android:textStyle="bold" />
+
+            </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/nadie_se_hace_cargo_07" />
+                        android:text="@string/nadie_se_hace_cargo_pendiente_07" />
 
                     <TextView
-                        android:id="@+id/textView_resumen_nadie_cargo_value"
+                        android:id="@+id/textView_resumen_nadie_cargo_pendiente_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"

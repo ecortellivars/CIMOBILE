@@ -176,7 +176,6 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
         }
     }
 
-
     /**
      * Clase privada que ejecuta en segundo plano la carga de los ficheros desde el servidor FTP
      * a la Base de datos interna del dispositivo móvil
@@ -245,7 +244,8 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                 String referenciaPostal = linea.substring(1, 71).trim();
                                 String referenciaSCB = linea.substring(188, 258).trim();
 
-                                // Lo primero se busca si existe en la base de datos interna, es decir, si se ha cargado
+                                // Lo primero se busca si existe en la base de datos interna el primer inetnto
+                                // ya que estamos cargando segundos.
                                 Notificacion notificacion = dbHelper.obtenerNotificacion(referenciaPostal, referenciaSCB);
                                 if(notificacion != null) {
 
@@ -257,8 +257,6 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                     notificacion.setFechaHoraRes1(linea.substring(258, 277).trim());
                                     // Hace falta una segunda visita
                                     notificacion.setSegundoIntento(true);
-                                    // Se mapea el backgroundcolor
-                                    notificacion.setBackgroundColor(R.color.colorBackgroundNoEntregado);
 
                                     listaNotificaciones.add(notificacion);
 

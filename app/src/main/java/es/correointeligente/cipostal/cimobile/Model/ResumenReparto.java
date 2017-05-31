@@ -1,16 +1,28 @@
 package es.correointeligente.cipostal.cimobile.Model;
 
 public class ResumenReparto {
-    private Integer totFicheros, totNotificaciones, totNotifGestionadas, totNotifMarcadas, numEntregados,
-                    numDirIncorrectas, numAusentes, numDesconocidos, numFallecidos, numRehusados, numNadieSeHaceCargo;
+    private Integer totFicheros;
+    private Integer totNotificaciones;
+    private Integer totNotifGestionadas;
+    private Integer totNotifMarcadas;
+    private Integer numEntregados;
+    private Integer numDirIncorrectas;
+    private Integer numAusentes;
+    private Integer numAusentesPendientes;
+    private Integer numDesconocidos;
+    private Integer numFallecidos;
+    private Integer numRehusados;
+    private Integer numNadieSeHaceCargo;
+    private Integer numNadieSeHaceCargoPendientes;
+
 
     public ResumenReparto() {
     }
 
     public ResumenReparto(int totFicheros, int totNotificaciones,
                           int totNotifGestionadas, int totNotifMarcadas, int numEntregados,
-                          int numDirIncorrectas, int numAusentes, int numDesconocidos,
-                          int numFallecidos, int numRehusados, int numNadieSeHaceCargo) {
+                          int numDirIncorrectas, int numAusentes, int numAusentesPendientes, int numDesconocidos,
+                          int numFallecidos, int numRehusados, int numNadieSeHaceCargo, int numNadieSeHaceCargoPendientes) {
         this.totFicheros = totFicheros;
         this.totNotificaciones = totNotificaciones;
         this.totNotifGestionadas = totNotifGestionadas;
@@ -18,10 +30,12 @@ public class ResumenReparto {
         this.numEntregados = numEntregados;
         this.numDirIncorrectas = numDirIncorrectas;
         this.numAusentes = numAusentes;
+        this.numAusentesPendientes = numAusentesPendientes;
         this.numDesconocidos = numDesconocidos;
         this.numFallecidos = numFallecidos;
         this.numRehusados = numRehusados;
         this.numNadieSeHaceCargo = numNadieSeHaceCargo;
+        this.numNadieSeHaceCargoPendientes = numNadieSeHaceCargoPendientes;
     }
 
     public Integer getTotFicheros() {
@@ -95,4 +109,13 @@ public class ResumenReparto {
     }
 
     public void setNumNadieSeHaceCargo(Integer numNadieSeHaceCargo) { this.numNadieSeHaceCargo = numNadieSeHaceCargo; }
+
+    public Integer getNumAusentesPendientes() { return numAusentesPendientes; }
+
+    public void setNumAusentesPendientes(Integer numAusentesPendientes) { this.numAusentesPendientes = numAusentesPendientes; }
+
+    public Integer getNumNadieSeHaceCargoPendientes() { return numNadieSeHaceCargoPendientes; }
+
+    public void setNumNadieSeHaceCargoPendientes(Integer numNadieSeHaceCargoPendientes) { this.numNadieSeHaceCargoPendientes = numNadieSeHaceCargoPendientes; }
+
 }
