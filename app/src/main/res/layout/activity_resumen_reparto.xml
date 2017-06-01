@@ -70,7 +70,7 @@
                     android:id="@+id/textView_resumen_total_notif_gestionadas"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/total_notificaciones_gestionadas" />
+                    android:text="@string/total_notificaciones_acabadas" />
 
                 <TextView
                     android:id="@+id/textView_resumen_total_notif_gestionadas_value"
@@ -86,13 +86,32 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/textView_resumen_total_notif_pendientes"
+                    android:id="@+id/textView_resumen_total_notif_pendientes_2_hoy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/total_notificaciones_pendientes" />
+                    android:text="@string/total_notificaciones_pendientes_2_hoy" />
 
                 <TextView
-                    android:id="@+id/textView_resumen_total_notif_pendientes_value"
+                    android:id="@+id/textView_resumen_total_notif_pendientes_2_hoy_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
+                    android:textStyle="bold" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView_resumen_total_notif_pendientes_2_otro_dia"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/total_notificaciones_pendientes_2_otro_dia" />
+
+                <TextView
+                    android:id="@+id/textView_resumen_total_notif_pendientes_2_otro_dia_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"

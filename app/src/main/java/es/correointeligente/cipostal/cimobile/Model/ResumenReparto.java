@@ -4,7 +4,11 @@ public class ResumenReparto {
     private Integer totFicheros;
     private Integer totNotificaciones;
     private Integer totNotifGestionadas;
-    private Integer totNotifPendientesSegundo;
+
+
+
+    private Integer totNotifPendientesSegundoHoy;
+    private Integer totNotifPendientesSegundoOtroDia;
     private Integer totNotifMarcadas;
     private Integer numEntregados;
     private Integer numDirIncorrectas;
@@ -21,13 +25,15 @@ public class ResumenReparto {
     }
 
     public ResumenReparto(int totFicheros, int totNotificaciones,
-                          int totNotifGestionadas, int totNotifMarcadas, int totNotifPendientesSegundo, int numEntregados,
+                          int totNotifGestionadas, int totNotifMarcadas, int totNotifPendientesSegundoHoy,
+                          int numEntregados, int totNotifPendientesSegundoOtroDia,
                           int numDirIncorrectas, int numAusentes, int numAusentesPendientes, int numDesconocidos,
                           int numFallecidos, int numRehusados, int numNadieSeHaceCargo, int numNadieSeHaceCargoPendientes) {
         this.totFicheros = totFicheros;
         this.totNotificaciones = totNotificaciones;
         this.totNotifGestionadas = totNotifGestionadas;
-        this.totNotifPendientesSegundo = totNotifPendientesSegundo;
+        this.totNotifPendientesSegundoHoy = totNotifPendientesSegundoHoy;
+        this.totNotifPendientesSegundoOtroDia = totNotifPendientesSegundoOtroDia;
         this.totNotifMarcadas = totNotifMarcadas;
         this.numEntregados = numEntregados;
         this.numDirIncorrectas = numDirIncorrectas;
@@ -120,7 +126,12 @@ public class ResumenReparto {
 
     public void setNumNadieSeHaceCargoPendientes(Integer numNadieSeHaceCargoPendientes) { this.numNadieSeHaceCargoPendientes = numNadieSeHaceCargoPendientes; }
 
-    public Integer getTotNotifPendientesSegundo() { return totNotifPendientesSegundo; }
+    public Integer getTotNotifPendientesSegundoHoy() { return totNotifPendientesSegundoHoy; }
 
-    public void setTotNotifPendientesSegundo(Integer totNotifPendientesSegundo) { this.totNotifPendientesSegundo = totNotifPendientesSegundo; }
+    public void setTotNotifPendientesSegundoHoy(Integer totNotifPendientesSegundoHoy) { this.totNotifPendientesSegundoHoy = totNotifPendientesSegundoHoy; }
+
+    public Integer getTotNotifPendientesSegundoOtroDia() { return totNotifPendientesSegundoOtroDia; }
+
+    public void setTotNotifPendientesSegundoOtroDia(Integer totNotifPendientesSegundoOtroDia) { this.totNotifPendientesSegundoOtroDia = totNotifPendientesSegundoOtroDia; }
+
 }

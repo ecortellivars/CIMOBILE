@@ -32,6 +32,7 @@ public class Notificacion {
     private String nombreFichero;
     private Boolean marcada;
     private String timestampMarcada;
+    // Nos indica que existe un primer intento pero requiere un segundo para CERRAR la notifacion
     private Boolean segundoIntento;
     private String fotoAcuseRes1;
     private String fotoAcuseRes2;

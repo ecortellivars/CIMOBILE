@@ -362,11 +362,19 @@ public class DBHelper extends SQLiteOpenHelper {
                 null, null, null, null, null);
         resumenReparto.setTotNotifGestionadas(cursor.getCount());
 
+        // Los segundos intentos que se pueden hacer hoy
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
-                "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0 AND " + KEY_NOTIFICACION_RESULTADO_1 + " IS NOT NULL) AND " +
-                "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0 AND " + KEY_NOTIFICACION_RESULTADO_2 + " IS NULL)" ,
+                "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1 AND " + KEY_NOTIFICACION_RESULTADO_1 + " IS NOT NULL) AND " +
+                "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1 AND " + KEY_NOTIFICACION_RESULTADO_2 + " IS NULL)" ,
                 null, null, null, null, null);
-        resumenReparto.setTotNotifPendientesSegundo(cursor.getCount());
+        resumenReparto.setTotNotifPendientesSegundoHoy(cursor.getCount());
+
+        // Los segundos intentos que NO se pueden hacer hoy
+        cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
+                "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0 AND " + KEY_NOTIFICACION_RESULTADO_2 + " IS NULL) AND " +
+                "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? OR " + KEY_NOTIFICACION_RESULTADO_1 + " = ?) " ,
+                new String[]{Util.RESULTADO_NADIE_SE_HACE_CARGO, Util.RESULTADO_AUSENTE}, null, null, null, null);
+        resumenReparto.setTotNotifPendientesSegundoOtroDia(cursor.getCount());
 
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID}, KEY_NOTIFICACION_MARCADA + " = ?", new String[]{"1"}, null, null, null, null);
         resumenReparto.setTotNotifMarcadas(cursor.getCount());
@@ -1020,29 +1028,33 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
         // Se mapea el backgroundcolor segun valores del resultado
+        // Inicialmente pongo el BLANCO
         Integer colorBackground = R.color.colorBackgroundSinGestionar;
         Resultado resultado = null;
-        //if(notificacion.getSegundoIntento()) {
-
-        if (notificacion.getResultado2() != null && notificacion.getResultado2().trim().length() > 0) {
+        // Si hemos cargado el primer intento y existe resultado del segundo
+        if(notificacion.getSegundoIntento()) {
+            if (notificacion.getResultado2() != null && notificacion.getResultado2().trim().length() > 0) {
                 resultado = this.obtenerResultado(notificacion.getResultado2());
+            } else if (notificacion.getResultado1() != null && notificacion.getResultado1().trim().length() > 0) {
+                colorBackground = R.color.colorGrisSuave;
             }
-        else {
-            if(notificacion.getResultado1() != null && notificacion.getResultado1().trim().length() > 0) {
-                resultado = this.obtenerResultado(notificacion.getResultado1());
+            // No hemos cargado el primero del fichero txt lo hemos hecho hoy
+            } else {
+                if(notificacion.getResultado1() != null && notificacion.getResultado1().trim().length() > 0) {
+                    resultado = this.obtenerResultado(notificacion.getResultado1());
+                }
             }
-        }
 
-        if (resultado != null) {
-            // Si ya es resultado FINAL ENTREGADO
+        if (resultado != null && colorBackground != R.color.colorGrisSuave) {
+            // Entregado
             if (resultado.getNotifica()) {
                 colorBackground = R.color.colorBackgroundEntregado;
-            // Si NO es resultado FINAL
-            } else if (!resultado.getEsFinal()) {
-                colorBackground = R.color.colorBackgroundAusente;
-            // Si ya es resultado FINAL pero no ENTREGADO
-            } else if (resultado.getEsFinal() && !resultado.getNotifica()) {
-                colorBackground = R.color.colorBackgroundNoEntregado;
+                // Pendiente de segunda visita
+                } else if (!resultado.getEsFinal()) {
+                    colorBackground = R.color.colorBackgroundAusente;
+                    // Acabado con otro resultado que no es ENTREGADO
+                    } else if (resultado.getEsFinal() && !resultado.getNotifica()) {
+                        colorBackground = R.color.colorBackgroundNoEntregado;
             }
         }
 

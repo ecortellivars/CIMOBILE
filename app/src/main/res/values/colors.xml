@@ -13,6 +13,6 @@
     <color name="colorBackgroundAusente">#ffcf70</color>
     <color name="colorBackgroundNoEntregado">#FFFFADAD</color>
     <color name="colorBackgroundSinGestionar">#FFFFFF</color>
-    <color name="colorBackgroundFotoAcuse">#FFFFCF70</color>    FFFFCF70
+    <color name="colorBackgroundFotoAcuse">#FFFFCF70</color>
     <color name="colorFotoAcuse">#FFFFCF70</color>
 </resources>

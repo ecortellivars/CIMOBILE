@@ -19,7 +19,9 @@
     <string name="total_remesas">Total remesas</string>
     <string name="total_notificaciones">Total notificaciones cargadas</string>
     <string name="total_notificaciones_gestionadas">Total notificaciones gestionadas</string>
-    <string name="total_notificaciones_pendientes">Total pendientes de 2ª visita </string>
+    <string name="total_notificaciones_acabadas">Total notificaciones acabadas</string>
+    <string name="total_notificaciones_pendientes_2_hoy">Total 2ª visita para hoy </string>
+    <string name="total_notificaciones_pendientes_2_otro_dia">Total 2ª visita para otro dia </string>
     <string name="total_notificaciones_marcadas">Total notificaciones marcadas</string>
     <string name="detalle_notificaciones">Resumen notificaciones gestionadas</string>
     <string name="detalle_notificacion">Detalle notificación</string>
