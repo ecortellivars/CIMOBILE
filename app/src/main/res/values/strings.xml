@@ -29,7 +29,7 @@
     <string name="no_entregado">No entregado</string>
     <string name="entregado">Entregado</string>
     <string name="todos">Todos</string>
-    <string name="entregado_sin_firma_01">01 Entregado sin Firma</string>
+    <string name="entregado_con_firma_01">01 Entregado con Firma</string>
     <string name="entregado_01">01 Entregado</string>
     <string name="dir_incorrecta_02">02 Dir. incorrecta</string>
     <string name="ausente_03">03 Ausente</string>

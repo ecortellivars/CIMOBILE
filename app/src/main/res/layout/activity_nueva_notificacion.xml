@@ -194,7 +194,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_weight="0.5"
                     android:background="@drawable/button_entregado"
-                    android:text="@string/entregado_sin_firma_01"
+                    android:text="@string/entregado_con_firma_01"
                     android:textAllCaps="false"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp" />
