@@ -379,7 +379,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString2 + "_" +  fechaHoraString2 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + codResultado + ".jpg");
 
                 }
-                // Preparamos la informacion si es Primer Intento
+                // Preparamos la informacion si es Segundo Intento
                 else {
                     notificacion.setFechaHoraRes2(fechaHoraString);
                     notificacion.setResultado2(codResultado);

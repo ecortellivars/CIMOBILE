@@ -158,6 +158,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                 // Se ha creado la conexión correctamente
                 mlistView_cargar_reparto_ficheros.setAdapter(itemsAdapter);
                 mlistView_cargar_reparto_ficheros.setOnItemClickListener(CargarRepartoActivity.this);
+                mlistView_cargar_reparto_ficheros.setCacheColorHint(1);
             } else {
                 fallo = fallo != null ? fallo : getString(R.string.fallo_conexion_servidor_ftp);
                 // Ha fallado la conexión FTP

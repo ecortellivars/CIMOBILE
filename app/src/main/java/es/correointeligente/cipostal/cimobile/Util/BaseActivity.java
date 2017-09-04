@@ -135,10 +135,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
         mTextViewFecha.setText(format.format(new Date()));
     }
-
+    // DNI
     public String obtenerNombreNotificador() { return sp.getString(Util.CLAVE_SESION_NOTIFICADOR, ""); }
     public String obtenerDelegacion() {
         return sp.getString(Util.CLAVE_SESION_DELEGACION, "");
     }
+    // DNI
     public String obtenerCodigoNotificador() { return sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, ""); }
 }

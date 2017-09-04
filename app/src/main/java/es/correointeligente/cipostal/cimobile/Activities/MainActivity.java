@@ -73,8 +73,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
             case R.id.button_nueva_notificacion:
                 if(!Util.existeFirmaNotificador(obtenerCodigoNotificador())) {
+                    // Si no hay firma del notificador mandamos que firme
                     i = new Intent(getBaseContext(), FirmaNotificadorActivity.class);
                 } else {
+                    // Si ya hay firma entonces mostramos la lista de notificaciones para empezar el reparto
                     i = new Intent(getBaseContext(), ListaNotificacionesActivity.class);
                 }
                 startActivity(i);
@@ -95,6 +97,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         return true;
     }
 
+    // Logica de la barra de herramientas
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

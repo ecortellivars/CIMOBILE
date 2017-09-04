@@ -401,6 +401,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                         String codigoEscaner = s.hasProperty("codigoEscaner")? s.getProperty("codigoEscaner").toString() : s.getProperty("nombreUsuario").toString();
                         notificador = new Notificador(codigoEscaner, s.getProperty("nombreUsuario").toString(),  s.getProperty("corporacion").toString());
                     } else {
+                        // Seleccion
                         switch (s.getProperty("error").toString()) {
                             case "UNV": fallo = getString(R.string.usuario_no_valido);
                                 break;

@@ -56,8 +56,10 @@ public class PreferenciasActivity extends BaseActivity {
         public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             PreferenceManager prefMgr = getPreferenceManager();
+
             // Obtenemos las preferencias con los datos incluidos
             prefMgr.setSharedPreferencesName(Util.FICHERO_PREFERENCIAS_APP);
+
             // El modo de operación del archivo puede ser:
                 // MODE_PRIVATE solo la aplicación puede acceder al archivo de preferencias.
                 // MODE_WORLD_READABLE otras aplicaciones pueden consultar el archivo de preferencias

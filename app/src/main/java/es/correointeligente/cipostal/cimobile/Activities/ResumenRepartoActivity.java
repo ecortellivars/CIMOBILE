@@ -296,7 +296,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                 calendarAux.setTime(dateAux);
                                 fechaResultadoString = df.format(calendarAux.getTime());
 
-                                writerCSV.append(obtenerDelegacion() + ";" + obtenerCodigoNotificador() + ";" + codResultado + ";" + notificacion.getReferencia() + ";" + fechaResultadoString + ";" + fechaResultadoString + "\n");
+                                writerCSV.append(obtenerDelegacion() + ";" + obtenerNombreNotificador() + ";" + codResultado + ";" + notificacion.getReferencia() + ";" + fechaResultadoString + ";" + fechaResultadoString + "\n");
                             }
 
                             writerCSV.flush();

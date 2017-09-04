@@ -84,6 +84,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String KEY_RESULTADO_CODIGO_SEGUNDO_INTENTO = "codigoSegundoIntento";
     private static final String KEY_RESULTADO_NOTIFICA = "notifica";
 
+    // Constructor
     public DBHelper(Context context) {super(context, DATABASE_NAME, null, DATABASE_VERSION); this.context = context;}
 
     // CREATEs
@@ -94,6 +95,7 @@ public class DBHelper extends SQLiteOpenHelper {
         this.crearResultadosPorDefecto(sqLiteDatabase);
     }
 
+    // UPDATE
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int versionAnterior, int versionNueva) {
         // Borrar las tabla antiguas si existe
@@ -108,7 +110,7 @@ public class DBHelper extends SQLiteOpenHelper {
     /******************************** QUERIES RESULTADOS **************************************/
     /******************************************************************************************/
 
-    /**
+    /**INSERT INTO
      * Guarda el tipo de resultado en la base de datos
      * @param resultado
      */
@@ -131,7 +133,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    /**
+    /** SELECT
      * Obtiene el resultado por su código
      * @param codigo
      * @return Resultado
@@ -171,7 +173,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return resultado;
     }
 
-    /**
+    /** SELECT
      * Obtiene todos los tipos de resultado de la base de datos interna
      * @return List<Resultado>
      */
@@ -208,7 +210,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return listaResultados;
     }
 
-    /**
+    /** SELECT
      * Obtiene aquellos tipos de resultado que no dan por entregada la notificación
      * @return
      */
