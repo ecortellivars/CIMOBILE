@@ -11,14 +11,29 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <TextView
-            android:id="@+id/tv_result_no_entregado_cabecera_resultado"
-            android:text="@string/resultado"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textAllCaps="true"/>
+            android:orientation="vertical"
+            android:padding="5dp">
 
+            <ImageButton
+                android:id="@+id/imageButton_listaNotificaciones_no_entregado_foto"
+                android:layout_width="53dp"
+                android:layout_height="48dp"
+                android:layout_gravity="right|center_vertical"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@android:drawable/ic_menu_camera" />
+
+            <TextView
+                android:id="@+id/tv_result_no_entregado_cabecera_resultado"
+                android:text="@string/resultado"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textAllCaps="true"/>
+        </LinearLayout>
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"

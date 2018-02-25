@@ -137,7 +137,7 @@ public class Util {
 
             SharedPreferences.Editor e = sp.edit();
             // Preferencias FTP Ibermatica
-            e.putString(Util.CLAVE_PREFERENCIAS_FTP_IP, "46.17.141.94");
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_IP, "84.127.234.28");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, "1984");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_USER, "valencia");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_PASSWORD, "9ca174324c");
@@ -782,5 +782,7 @@ public class Util {
 
         return valido;
     }
+
+
 
 }

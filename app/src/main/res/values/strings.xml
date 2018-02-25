@@ -2,7 +2,7 @@
     <string name="app_name">CIMobile</string>
     <string name="iniciar_sesion">Iniciar sesión</string>
     <string name="iniciando_sesion">Iniciando sesión</string>
-    <string name="titulo_logout">CERRAR sesión (SIN Cerrar reparto)</string>
+    <string name="titulo_logout">CERRAR SESSION (Sin Cerrar Reparto)</string>
     <string name="nueva_notificacion">NUEVA notificación</string>
     <string name="cargar_reparto">CARGAR reparto diario</string>
     <string name="resumen_reparto">RESUMEN y CIERRE del reparto</string>
@@ -39,7 +39,7 @@
     <string name="rehusado_06">06 Rehusado</string>
     <string name="nadie_se_hace_cargo_07">07 Nadie se hace cargo</string>
     <string name="nadie_se_hace_cargo_pendiente_07">07 Nadie se hace cargo (Pendientes)</string>
-    <string name="cerrar_reparto">Cerrar reparto</string>
+    <string name="cerrar_reparto">Cerrar Reparto</string>
     <string name="espere_info_reparto">Espere mientras se obtiene información del reparto</string>
     <string name="espere_info_notificacion">Espere mientras se obtiene información de la notificación</string>
     <string name="espere_info_resultados">Espere mientras se cargan los posibles resultados de notificación</string>
@@ -70,7 +70,7 @@
     <string name="longitud">Longitud</string>
     <string name="observaciones">Observaciones</string>
     <string name="hint_observaciones">Mis observaciones...</string>
-    <string name="referencia_postal">Referencia postal</string>
+    <string name="referencia_postal">Referencia Postal</string>
     <string name="referencia_scb">Referencia SCB</string>
     <string name="direccion">Dirección</string>
     <string name="receptor">Receptor</string>
@@ -84,9 +84,9 @@
     <string name="guardado">Guardado</string>
     <string name="realizar_notif_en_papel">Debido a que no se ha generado ni el sello de tiempo ni el fichero XML, realice la notificación en papel</string>
     <string name="notificacion_grabada_correctamente">La notificación se ha guardado correctamente</string>
-    <string name="cerrar_reparto_info">Va a cerrar el reparto, se generará el fichero con los datos de las notificaciones, el volcado en la carpeta FTP correspondiente y el borrado de los datos del dispositivo. ¿Desea Continuar?</string>
+    <string name="cerrar_reparto_info">Va a CERRAR el reparto, se generará el fichero con los RESULTADOS su subida al FTP y el BORRADO de los datos del dispositivo. ¿Desea Continuar?</string>
     <string name="error_conexion_ftp">Se ha producido un error en la conexión FTP</string>
-    <string name="error_acceso_carpeta_ftp">No se ha podido acceder a la carpeta del FTP</string>
+    <string name="error_acceso_carpeta_ftp">No se ha podido acceder al FTP</string>
     <string name="error_subir_fichero_zip">Se ha producido un error al subir el fichero ZIP</string>
     <string name="error_subir_fichero_CSV">Se ha producido un error al subir el fichero CSV</string>
     <string name="error_borrado_notificaciones">Se ha producido un error al borrar las notificaciones</string>
@@ -131,6 +131,7 @@
     <string name="info_firma_notificador">Para facilitar el trabajo durante el trabajo de reparto, se precisa que firme por primera vez para dejar constancia de la persona que notifica.</string>
     <string name="dia_limite">Día límite</string>
     <string name="foto_acuse">Hacer Foto</string>
+    <string name="foto_no_acuse">No Hacer Foto</string>
     <string name="foto_acuse_salir">SALIR</string>
     <string name="aviso_foto">Falta realizar la foto del acuse con los datos rellenados</string>
 

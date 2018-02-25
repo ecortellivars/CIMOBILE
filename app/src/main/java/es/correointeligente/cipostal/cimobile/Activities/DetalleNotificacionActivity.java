@@ -11,7 +11,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -42,6 +44,8 @@ public class DetalleNotificacionActivity extends BaseActivity {
     private ViewGroup layoutResultado1, layoutResultado2;
     int resultadoEliminable = 0;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +75,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
         CargarDetalleNotificacionTask cargarDetalleNotificacionTask = new CargarDetalleNotificacionTask();
         cargarDetalleNotificacionTask.execute();
     }
+
 
     @Override
     protected int getLayoutResocurce() {
@@ -388,6 +393,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     }
                 }
             }
+
 
             progressDialog.dismiss();
         }

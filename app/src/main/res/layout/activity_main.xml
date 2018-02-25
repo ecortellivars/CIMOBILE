@@ -29,35 +29,38 @@
             <Button
                 android:id="@+id/button_cargar_reparto"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="70dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="16dp"
                 android:background="@drawable/button_selector"
                 android:text="@string/cargar_reparto"
                 android:textAllCaps="false"
-                android:textColor="#FFFFFF" />
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
 
             <Button
                 android:id="@+id/button_resumen_reparto"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="70dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="16dp"
                 android:background="@drawable/button_selector"
                 android:text="@string/resumen_reparto"
                 android:textAllCaps="false"
-                android:textColor="#FFFFFF" />
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
 
             <Button
                 android:id="@+id/button_nueva_notificacion"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="70dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="16dp"
                 android:background="@drawable/button_selector"
                 android:text="@string/nueva_notificacion"
                 android:textAllCaps="false"
-                android:textColor="#FFFFFF" />
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
 
             <android.support.v4.widget.Space
                 android:layout_width="match_parent"
@@ -66,15 +69,17 @@
 
             <Button
                 android:id="@+id/button_cerrar_sesion"
-                android:layout_width="143dp"
-                android:layout_height="wrap_content"
+                android:layout_width="150dp"
+                android:layout_height="82dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="20dp"
-                android:background="@drawable/button_entregado"
+                android:background="@color/colorBackgroundEntregado"
                 android:padding="10dp"
                 android:text="@string/titulo_logout"
+                android:textAlignment="center"
                 android:textAllCaps="false"
-                android:textColor="#FFFFFF" />
+                android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                android:textSize="14sp" />
 
         </LinearLayout>
     </ScrollView>

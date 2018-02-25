@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.Toolbar;
@@ -34,10 +36,10 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
 
     Toolbar mToolbar;
     Button  btn_hacerFoto;
-    ImageView imagenVista;
     String referencia, resultado, fechaHoraRes;
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    Boolean esPrimerResultado, fotohecha;
+    private final String CARPETA_RAIZ = "CiMobile/";
+    private final String RUTA_IMAGEN = CARPETA_RAIZ + "FOTOS_ACUSE/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,12 +54,13 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
         btn_hacerFoto = (Button) findViewById(R.id.button_foto_acuse_hacer_foto);
         btn_hacerFoto.setOnClickListener(this);
 
+
         // Recupera los datos de la notificacion
         referencia = getIntent().getStringExtra("referencia");
         resultado = getIntent().getStringExtra("resultado");
         fechaHoraRes = getIntent().getStringExtra("fechaHoraRes");
 
-        fotohecha = Boolean.FALSE;
+
     }
 
     // Gestión de los Iconos de la barra de herramientas
@@ -91,6 +94,7 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
                 if  (checkCameraHardware(this) == Boolean.TRUE) {
                     try {
                         llamarIntentHacerFoto();
+                        finish();
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -99,42 +103,55 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
                         toast.show();
                         finish();
                     }
+                    break;
                 }
-                break;
-
         }
     }
 
     // Intent para hacer foto
     private void llamarIntentHacerFoto() {
+        String imageFileName = null;
+        File storageDir = null;
+        File fileDestino = null;
+        // Create an image file name
+        imageFileName = referencia + "_" + fechaHoraRes  + "_" + fechaHoraRes   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + resultado + ".jpg";
+        storageDir = new File(Environment.getExternalStorageDirectory(),RUTA_IMAGEN);
+
+        fileDestino = new File(storageDir, imageFileName);
+        Uri cameraImageUri = Uri.fromFile(fileDestino);
+
         // Abre la camara
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        // Enviamos la imagen
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,cameraImageUri);
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        // Lanzamos la actividad
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            }
-            else {
-                Toast toast = null;
-                toast = Toast.makeText(this, "Revisa los permisos de la camara del movil", Toast.LENGTH_LONG);
-                toast.show();
         }
+        else {
+            Toast toast = null;
+            toast = Toast.makeText(this, "Revisa los permisos de la camara del movil", Toast.LENGTH_LONG);
+            toast.show();
+        }
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Bundle extras = data.getExtras();
         Bitmap imageBitmap = (Bitmap) extras.get("data");
-
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            imagenVista = (ImageView) findViewById(R.id.imagen_foto_acuse_ver_foto) ;
-            imagenVista.setImageBitmap(imageBitmap);
-            convertBitmapToFile(imageBitmap,referencia + "_" + fechaHoraRes  + "_" + fechaHoraRes   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + resultado + ".jpg");
+        if (requestCode == 1) {
 
         }
-            else {
-                Toast toast = null;
-                toast = Toast.makeText(this, "Revisa los permisos de la camara del movil", Toast.LENGTH_LONG);
-                toast.show();
+
+        else {
+            Toast toast = null;
+            toast = Toast.makeText(this, "Revisa los permisos de la camara del movil", Toast.LENGTH_LONG);
+            toast.show();
         }
     }
 
@@ -148,27 +165,5 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
             return false;
         }
     }
-
-    public void convertBitmapToFile(Bitmap bitmap, String name) {
-
-        File file = new File(Util.obtenerRutaFotoAcuse(), name);
-
-        OutputStream os;
-        try {
-            os = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
-            os.flush();
-            os.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast toast = null;
-            toast = Toast.makeText(FotoAcuseActivity.this, "Revisa los permisos de la camara del movil", Toast.LENGTH_LONG);
-            toast.show();
-        }
-    }
-
 }
-
-
 
