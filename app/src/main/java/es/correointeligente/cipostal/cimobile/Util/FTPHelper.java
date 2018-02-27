@@ -217,7 +217,7 @@ public class FTPHelper {
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            fallo = "Error en la descarga del fichero. Revisa los permisos del móvil o tu conexion";
+            fallo = "Error en la descarga del fichero. Existe la carpeta CiMobile/UPDATE_APP? o Revisa los permisos del móvil o tu conexion.";
             return fallo;
 
         } catch (IOException e) {

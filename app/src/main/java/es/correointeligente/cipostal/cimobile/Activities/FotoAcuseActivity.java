@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -35,7 +36,7 @@ import es.correointeligente.cipostal.cimobile.Util.Util;
 public class FotoAcuseActivity extends BaseActivity implements View.OnClickListener {
 
     Toolbar mToolbar;
-    Button  btn_hacerFoto;
+    ImageButton btn_hacerFoto;
     String referencia, resultado, fechaHoraRes;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private final String CARPETA_RAIZ = "CiMobile/";
@@ -51,7 +52,7 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        btn_hacerFoto = (Button) findViewById(R.id.button_foto_acuse_hacer_foto);
+        btn_hacerFoto = (ImageButton) findViewById(R.id.button_foto_acuse_hacer_foto);
         btn_hacerFoto.setOnClickListener(this);
 
 

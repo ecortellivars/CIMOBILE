@@ -1,11 +1,18 @@
 package es.correointeligente.cipostal.cimobile.Activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StrictMode;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -14,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,12 +35,15 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 
 import es.correointeligente.cipostal.cimobile.Model.Notificacion;
 import es.correointeligente.cipostal.cimobile.R;
 import es.correointeligente.cipostal.cimobile.Util.BaseActivity;
 import es.correointeligente.cipostal.cimobile.Util.DBHelper;
 import es.correointeligente.cipostal.cimobile.Util.Util;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class DetalleNotificacionActivity extends BaseActivity {
 
@@ -43,9 +54,10 @@ public class DetalleNotificacionActivity extends BaseActivity {
     TextView tv_refPostal, tv_refSCB, tv_nombre, tv_direccion;
     private ViewGroup layoutResultado1, layoutResultado2;
     int resultadoEliminable = 0;
-
-
-
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    private final String CARPETA_RAIZ = "CiMobile/";
+    private final String RUTA_IMAGEN = CARPETA_RAIZ + "FOTOS_ACUSE/";
+  
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +103,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
     // Gestión de los Iconos de la barra de herramientas
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent i = null;
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
@@ -98,10 +111,25 @@ public class DetalleNotificacionActivity extends BaseActivity {
             case R.id.menu_borrar_notificaciones:
                 this.crearDialogoEliminarResultado();
                 break;
+            case R.id.imageButton_listaNotificaciones_foto:
+                // Revisamos que el dispositivo tiene camara
+                if  (checkCameraHardware(this) == Boolean.TRUE) {
+                    try {
+                        llamarIntentHacerFoto();
+                        finish();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast toast = null;
+                        toast = Toast.makeText(this, "Revisa los permisos de la camara del movil", Toast.LENGTH_LONG);
+                        toast.show();
+                        finish();
+                    }
+                    break;
+                }
             default:
                 break;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -140,12 +168,11 @@ public class DetalleNotificacionActivity extends BaseActivity {
             tv_nombre.setText(notificacion.getNombre().toString());
             tv_direccion.setText(notificacion.getDireccion().toString());
 
-            TextView tv_resultado1, tv_fecha1, tv_notificador1, tv_longitud1, tv_latitud1, tv_observaciones1, tv_cabeceraResultado1, tv_receptor;
+            TextView tv_resultado1, tv_fecha1, tv_notificador1, tv_longitud1, tv_latitud1, tv_observaciones1, tv_cabeceraResultado1, tv_receptor = null;
             TextView tv_resultado2, tv_fecha2, tv_notificador2, tv_longitud2, tv_latitud2, tv_observaciones2, tv_cabeceraResultado2;
             ImageView img_firma_receptor;
             ImageView img_foto_acuse_res1;
-            ImageView img_foto_acuse_res2;
-
+            ImageView img_foto_acuse_res2;            
             Toast toast = null;
 
             // Hay dos resultados por lo que relleno 2 layouts
@@ -157,7 +184,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                 LinearLayout linearLayout2 = null;
 
                 resultadoEliminable = 2;
-
+                // Primer Intento NO ENTREGADO
                 tv_resultado1 = (TextView) linearLayout1.findViewById(R.id.tv_result_no_entregado_resultado);
                 tv_fecha1 = (TextView) linearLayout1.findViewById(R.id.tv_result_no_entregado_fecha);
                 tv_notificador1 = (TextView) linearLayout1.findViewById(R.id.tv_result_no_entregado_notificador);
@@ -174,11 +201,11 @@ public class DetalleNotificacionActivity extends BaseActivity {
                 tv_latitud1.setText(notificacion.getLatitudRes1());
                 tv_observaciones1.setText(notificacion.getObservacionesRes1());
                 tv_cabeceraResultado1.setText(R.string.resultado1);
+
                 // Lo agrego al layout principal
                 layoutResultado1.addView(linearLayout1);
 
-                // Si el segundo intento es Entregado o Entregado en Oficina
-                // pero no ENTREGA SIN FIRMA cargo datos, firma y foto
+                // Segundo intento es Entregado o Entregado en Oficina con FIRMA
                 if(notificacion.getResultado2().equals(Util.RESULTADO_ENTREGADO)
                 || notificacion.getResultado2().equals(Util.RESULTADO_ENTREGADO_OFICINA)
                 && !notificacion.getDescResultado2().equals(Util.RESULTADO_ENTREGADO_SIN_FIRMA)) {
@@ -205,13 +232,17 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     tv_observaciones2.setText(notificacion.getObservacionesRes2());
                     tv_cabeceraResultado2.setText(R.string.resultado2);
 
-                    // Como es ENTREGADO debe haber firma del receptor
-                    tv_receptor.setText(notificacion.getNumDocReceptor() + " " + notificacion.getNombreReceptor());
+                    // Como es ENTREGADO reviso si FIRMO el receptor
+                    if (notificacion.getDescResultado2().equals(Util.RESULTADO_ENTREGADO_SIN_FIRMA)) {
+                        tv_receptor.setText("SIN FIRMA DEL RECEPTOR");
+                    }
+                    else  {
+                        tv_receptor.setText(notificacion.getNumDocReceptor() + " " + notificacion.getNombreReceptor());
+                    }
 
-                    // Buscamos la imagen de la firma
+                    // Buscamos la imagen de la firma si la hay
                     if (notificacion.getFirmaReceptor() != null && notificacion.getFirmaReceptor().trim().length() > 0) {
                             try {
-
                                 InputStream is = new FileInputStream(notificacion.getFirmaReceptor());
                                 Drawable drw_imagenFirma = Drawable.createFromStream(is, "imageView");
                                 img_firma_receptor.setImageDrawable(drw_imagenFirma);
@@ -240,7 +271,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                         layoutResultado2.addView(linearLayout2);
                     }
 
-                // Si NO es ENTREGADO lo mismo pero sin firma
+                // NO ENTREGADO lo mismo pero sin firma
                 } else {
                     // Instancio el otro layout para cargar los resultados del segundo intento NO ENTREGADO
                     linearLayout2 = (LinearLayout) inflater.inflate(R.layout.datos_resultado_no_entregado, null, false);
@@ -262,6 +293,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     tv_latitud2.setText(notificacion.getLatitudRes2());
                     tv_observaciones2.setText(notificacion.getObservacionesRes2());
                     tv_cabeceraResultado2.setText(R.string.resultado2);
+
 
                     // Obtenemos la foto del acuse
                     if (notificacion.getFotoAcuseRes2() != null && notificacion.getFotoAcuseRes2().trim().length() > 0) {
@@ -306,7 +338,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     tv_observaciones1 = (TextView) linearLayout.findViewById(R.id.tv_result_entregado_observaciones);
                     tv_cabeceraResultado1 = (TextView) linearLayout.findViewById(R.id.tv_result_entregado_cabecera_resultado);
                     tv_receptor = (TextView)linearLayout.findViewById(R.id.tv_result_entregado_receptor);
-                    tv_receptor.setText(notificacion.getNumDocReceptor() + " " + notificacion.getNombreReceptor());
+
                     img_firma_receptor = (ImageView) linearLayout.findViewById(R.id.imageView_result_entregado_firma);
                     img_foto_acuse_res1 = (ImageView) linearLayout.findViewById(R.id.imageView_result_entregado_foto_acuse);
 
@@ -321,8 +353,15 @@ public class DetalleNotificacionActivity extends BaseActivity {
 
                     layoutResultado1.addView(linearLayout);
 
+                    // Como es ENTREGADO reviso si FIRMO el receptor
+                    if (notificacion.getDescResultado1().equals(Util.DESCRIPCION_ENTREGADO_SIN_FIRMA)) {
+                        tv_receptor.setText("SIN FIRMA DEL RECEPTOR");
+                    }
+                    else  {
+                        tv_receptor.setText(notificacion.getNumDocReceptor() + " " + notificacion.getNombreReceptor());
+                    }
 
-                    // Buscamos la imagen de la firma
+                    // Buscamos la imagen de la firma si la hay
                     if (notificacion.getFirmaReceptor() != null && notificacion.getFirmaReceptor().trim().length() > 0) {
                             try {
 
@@ -336,7 +375,6 @@ public class DetalleNotificacionActivity extends BaseActivity {
                                 toast.show();
                             }
                         }
-
 
                     // Obtenemos la foto del acuse
                     if(notificacion.getFotoAcuseRes1() != null && notificacion.getFotoAcuseRes1().trim().length() > 0) {
@@ -352,7 +390,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                         }
                     }
 
-                // El UNICO resultado NO es "ENTREGADO" con Firma
+                // El UNICO resultado NO "ENTREGADO"
                 } else {
                     // Instancio el layout para cargar los resultados del NO ENTREGADO o ENTREGADO sin firma
                     linearLayout = (LinearLayout) inflater.inflate(R.layout.datos_resultado_no_entregado, null, false);
@@ -393,8 +431,6 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     }
                 }
             }
-
-
             progressDialog.dismiss();
         }
     }
@@ -461,8 +497,8 @@ public class DetalleNotificacionActivity extends BaseActivity {
 
             // Elimina el fichero xml
             try {
-                String nombeFichero = referencia+"_"+StringUtils.defaultIfBlank(referenciaSCB,"")+".xml";
-                file = new File(Util.obtenerRutaXML()+File.separator+nombeFichero);
+                String nombeFichero = referencia + "_" + StringUtils.defaultIfBlank(referenciaSCB,"") + ".xml";
+                file = new File(Util.obtenerRutaXML() + File.separator + nombeFichero);
                 if (file.exists()) {
                     file.delete();
                 }
@@ -472,8 +508,8 @@ public class DetalleNotificacionActivity extends BaseActivity {
 
             // Elimina el fichero xml
             try {
-                String nombeFichero = referencia+"_"+StringUtils.defaultIfBlank(referenciaSCB,"")+".ts";
-                file = new File(Util.obtenerRutaSelloDeTiempo()+File.separator+nombeFichero);
+                String nombeFichero = referencia + "_" + StringUtils.defaultIfBlank(referenciaSCB,"") + ".ts";
+                file = new File(Util.obtenerRutaSelloDeTiempo() + File.separator + nombeFichero);
                 if (file.exists()) {
                     file.delete();
                 }
@@ -499,6 +535,73 @@ public class DetalleNotificacionActivity extends BaseActivity {
             }
 
             progressDialog.dismiss();
+        }
+    }
+
+    // Intent para hacer foto
+    private void llamarIntentHacerFoto() {
+        String imageFileName = null;
+        File storageDir = null;
+        File fileDestino = null;
+        String fechaRes1String = null;
+        String fechaRes2String = null;
+        SimpleDateFormat formatoDeFecha = new SimpleDateFormat("yyyyMMdd");
+        // Create an image file name
+        if(notificacion.getResultado1() != null) {
+            fechaRes1String = notificacion.getFechaHoraRes1().substring(6,10) + notificacion.getFechaHoraRes1().substring(3,5) + notificacion.getFechaHoraRes1().substring(0,2);
+            imageFileName = notificacion.getReferencia() + "_" + fechaRes1String + "_" + fechaRes1String + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado1() + ".jpg";
+        }
+        if(notificacion.getResultado2() != null) {
+            fechaRes2String = notificacion.getFechaHoraRes2().substring(6,10) + notificacion.getFechaHoraRes2().substring(3,5) + notificacion.getFechaHoraRes2().substring(0,2);
+            imageFileName = notificacion.getReferencia() + "_" + fechaRes2String + "_" + fechaRes2String + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado2() + ".jpg";
+        }
+        storageDir = new File(Environment.getExternalStorageDirectory(),RUTA_IMAGEN);
+
+        fileDestino = new File(storageDir, imageFileName);
+        Uri cameraImageUri = Uri.fromFile(fileDestino);
+
+        // Abre la camara
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        // Enviamos la imagen
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,cameraImageUri);
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        // Lanzamos la actividad
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+        else {
+            Toast toast = null;
+            toast = Toast.makeText(this, "Revisa los permisos de la camara del movil", Toast.LENGTH_LONG);
+            toast.show();
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Bundle extras = data.getExtras();
+        Bitmap imageBitmap = (Bitmap) extras.get("data");
+        if (requestCode == 1) {
+        }
+
+        else {
+            Toast toast = null;
+            toast = Toast.makeText(this, "Revisa los permisos de la camara del movil", Toast.LENGTH_LONG);
+            toast.show();
+        }
+    }
+
+    /** Check if this device has a camera */
+    private boolean checkCameraHardware(Context context) {
+        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
+            // this device has a camera
+            return true;
+        } else {
+            // no camera on this device
+            return false;
         }
     }
 }
