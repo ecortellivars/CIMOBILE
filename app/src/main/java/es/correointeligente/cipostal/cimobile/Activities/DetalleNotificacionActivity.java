@@ -558,6 +558,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
         storageDir = new File(Environment.getExternalStorageDirectory(),RUTA_IMAGEN);
 
         fileDestino = new File(storageDir, imageFileName);
+
         Uri cameraImageUri = Uri.fromFile(fileDestino);
 
         // Abre la camara
