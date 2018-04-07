@@ -136,15 +136,15 @@ public class Util {
         if (!sp.contains(Util.CLAVE_PREFERENCIAS_FTP_IP)) {
 
             SharedPreferences.Editor e = sp.edit();
-            // Preferencias FTP Ibermatica
+            // Preferencias FTP
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_IP, "84.127.234.28");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, "1984");
-            e.putString(Util.CLAVE_PREFERENCIAS_FTP_USER, "valencia");
-            e.putString(Util.CLAVE_PREFERENCIAS_FTP_PASSWORD, "9ca174324c");
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_USER, "ultimaversion");
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_PASSWORD, "ultimaversion");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_TIMEOUT, "10000");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, "/SICER");
-            e.putString(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_BASE, "/ftpData");
-            e.putString(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_CARPETA, "/ULTIMAVERSION/CIMOBILE");
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_BASE, "/home");
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_CARPETA, "/ultimaversion/ultimaversion/ULTIMAVERSION/CIMOBILE");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_FICHERO, "/version.txt");
 
             // Preferencias FTP CIPOSTAL (1and1) para pruebas
@@ -233,7 +233,7 @@ public class Util {
      * @return String
      */
     public static String obtenerRutaFirmasReceptor() {
-        File file = new File(obtenerRutaAPP() + File.separator+EXTERNAL_DIRECTORY_FIRMAS_RECEPTOR);
+        File file = new File(obtenerRutaAPP() + File.separator + EXTERNAL_DIRECTORY_FIRMAS_RECEPTOR);
         if(!file.exists()) {
             file.mkdirs();
         }
@@ -309,8 +309,9 @@ public class Util {
     public static String obtenerRutaFtpSICER(Context context, String delegacion) {
         String ruta = "";
 
-        ruta = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_BASE, context, String.class.getSimpleName());
-        ruta = ruta + File.separator + delegacion.toUpperCase() + Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, context, String.class.getSimpleName());
+        //ruta = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_BASE, context, String.class.getSimpleName());
+        // /valencia/VALENCIA/SICER
+        ruta = File.separator + delegacion.toLowerCase() +  File.separator + delegacion.toUpperCase() + Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, context, String.class.getSimpleName());
 
         return ruta;
     }

@@ -127,7 +127,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
 
                // Inicializamos la clase Singleton para la gestion FTP
                ftpHelper = FTPHelper.getInstancia();
-               if(ftpHelper != null && ftpHelper.connect(CargarRepartoActivity.this)) {
+               if(ftpHelper != null && ftpHelper.connectSICER(CargarRepartoActivity.this,obtenerDelegacion())) {
 
                    if(ftpHelper.cargarCarpeta(Util.obtenerRutaFtpSICER(getBaseContext(), obtenerDelegacion()))) {
 
@@ -135,12 +135,12 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                        itemsAdapter = new FicheroAdapter(getBaseContext(), R.layout.item_fichero, listaFicheros);
 
                    } else {
-                       // error cambio de carpeta
+                       // Error cambio de carpeta
                        fallo = getString(R.string.error_acceso_carpeta_ftp);
                    }
 
                } else {
-                 // error de conexion
+                 // Error de conexion
                    fallo = getString(R.string.error_conexion_ftp);
                }
 

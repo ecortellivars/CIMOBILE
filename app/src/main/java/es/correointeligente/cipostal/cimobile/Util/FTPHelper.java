@@ -1,6 +1,7 @@
 package es.correointeligente.cipostal.cimobile.Util;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.widget.Toast;
 
 import com.jcraft.jsch.Channel;
@@ -32,13 +33,14 @@ import java.util.Vector;
 import es.correointeligente.cipostal.cimobile.Holders.FicheroViewHolder;
 import es.correointeligente.cipostal.cimobile.R;
 
-public class FTPHelper {
+public class FTPHelper  {
 
     private static FTPHelper INSTANCIA = null;
     private Context context;
     private Session session;
     private ChannelSftp channelSftp;
     private Boolean conectado;
+    public SharedPreferences sp;
 
     private FTPHelper() {
 
@@ -56,6 +58,11 @@ public class FTPHelper {
         return INSTANCIA;
     }
 
+    /**
+     * Parametros FTP para obtener ULTIMAVERSION
+     * @param context
+     * @return
+     */
     public Boolean connect(Context context) {
         try {
             this.context = context;
@@ -65,6 +72,50 @@ public class FTPHelper {
             String ipFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_IP, context, String.class.getSimpleName());
             Integer puertoFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, context, Integer.class.getSimpleName());
             String passFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_PASSWORD, context, String.class.getSimpleName());
+            Integer timeoutFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_TIMEOUT, context, Integer.class.getSimpleName());
+
+            // Carga los datos de conexion al FTP de CIPOSTAL
+            //String usuario = "u79475687";
+            //String ipFTP = "home557660407.1and1-data.host";
+            //Integer puertoFTP = 22;
+            //String passFTP = "abc123.";
+
+            // Preparamos la sesion para conectar con los valores obtenidos en las preferencia
+            session = jsch.getSession(usuario,ipFTP, puertoFTP);
+            session.setPassword(passFTP);
+            Properties prop = new Properties();
+            prop.put("StrictHostKeyChecking", "no");
+            session.setConfig(prop);
+
+            //Conectamos
+            session.connect(timeoutFTP);
+            conectado = Boolean.TRUE;
+
+        } catch (JSchException e) {
+            e.printStackTrace();
+        }
+
+        return conectado;
+    }
+
+    public String obtenerDelegacion() {
+        return sp.getString(Util.CLAVE_SESION_DELEGACION, "");
+    }
+    /**
+     * Parametros FTP para obtener SICER
+     * @param context
+     * @return
+     */
+    public Boolean connectSICER(Context context, String delegacion) {
+        try {
+            this.context = context;
+            JSch jsch = new JSch();
+            // Carga los datos de conexion al FTP desde las preferencias.xml que esta en la carpeta /res/xml
+
+            String usuario = delegacion.toLowerCase();
+            String ipFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_IP, context, String.class.getSimpleName());
+            Integer puertoFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, context, Integer.class.getSimpleName());
+            String passFTP = delegacion.toLowerCase();
             Integer timeoutFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_TIMEOUT, context, Integer.class.getSimpleName());
 
             // Carga los datos de conexion al FTP de CIPOSTAL
