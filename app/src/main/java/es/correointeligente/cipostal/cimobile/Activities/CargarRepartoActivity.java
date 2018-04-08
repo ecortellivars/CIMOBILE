@@ -125,9 +125,9 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
             String fallo = null;
             try {
 
-               // Inicializamos la clase Singleton para la gestion FTP
+               // Inicializamos la clase Singleton para la gestion FTP con el usuario por defecto que es delegacio/delegacion
                ftpHelper = FTPHelper.getInstancia();
-               if(ftpHelper != null && ftpHelper.connectSICER(CargarRepartoActivity.this,obtenerDelegacion())) {
+               if(ftpHelper != null && ftpHelper.connect(CargarRepartoActivity.this)) {
 
                    if(ftpHelper.cargarCarpeta(Util.obtenerRutaFtpSICER(getBaseContext(), obtenerDelegacion()))) {
 

@@ -126,21 +126,23 @@ public class Util {
     public final static String CLAVE_PREFERENCIAS_APP_DE_OFICINA = "usarAPPEnOficina";
 
 
+
     /**
      * Obtiene una configuración de la aplicación por defecto
      */
-    public static void cargarConfiguracionAplicacionPorDefecto(Context context) {
+    public static void cargarConfiguracionAplicacionPorDefecto(Context context, String delegacion) {
         // Preferencias por defecto
         SharedPreferences sp = context.getSharedPreferences(Util.FICHERO_PREFERENCIAS_APP, context.MODE_PRIVATE);
         // Si no contiene la preferencia de la ip del FTP, se cargan todas
         if (!sp.contains(Util.CLAVE_PREFERENCIAS_FTP_IP)) {
 
             SharedPreferences.Editor e = sp.edit();
+
             // Preferencias FTP
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_IP, "84.127.234.28");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, "1984");
-            e.putString(Util.CLAVE_PREFERENCIAS_FTP_USER, "ultimaversion");
-            e.putString(Util.CLAVE_PREFERENCIAS_FTP_PASSWORD, "ultimaversion");
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_USER, delegacion);
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_PASSWORD, delegacion);
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_TIMEOUT, "10000");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, "/SICER");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_BASE, "/home");
@@ -783,7 +785,4 @@ public class Util {
 
         return valido;
     }
-
-
-
 }

@@ -55,6 +55,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
     TextView txt_version_value;
     String fallo = null;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Instanciamos la actividad para poder darle logica
@@ -76,7 +77,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
 
         // Al ser el primer inicio de sesion continuamos por aqui
         // Antes de continuar se comprueba que hay configuracion por defecto donde estan todos los datos para poder trabajar
-        Util.cargarConfiguracionAplicacionPorDefecto(getBaseContext());
+        Util.cargarConfiguracionAplicacionPorDefecto(getBaseContext(),obtenerDelegacion());
 
         // Invocamos al boton de inicioSesion para darle su logica
         mButton_inciarSesion = (Button) findViewById(R.id.button_iniciar_sesion);
@@ -92,7 +93,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         edt_password.setTransformationMethod(new PasswordTransformationMethod());
 
         // Version instalada
-        txt_version_value= (TextView) findViewById(R.id.edt_startSession_version_value);
+        txt_version_value = (TextView) findViewById(R.id.edt_startSession_version_value);
         String versionInstalada = null;
 
         try {
@@ -109,6 +110,11 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
         // Cambiando las preferencias del FTP se podria conectar a un FTP Publico como el de 1and1
         FtpCheckUpdatesTask ftpCheckUpdatesTask = new FtpCheckUpdatesTask();
         ftpCheckUpdatesTask.execute();
+    }
+
+    // Obtenemos delegacion
+    public String obtenerDelegacion() {
+        return sp.getString(Util.CLAVE_SESION_DELEGACION, "");
     }
 
     /**
@@ -132,7 +138,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
             // Inicializamos la clase Singleton para la gestion FTP
             ftpHelper = FTPHelper.getInstancia();
             // Obtenemos class es.correointeligente.cipostal.cimobile.Util.FTPHelper
-            if (ftpHelper != null && ftpHelper.connect(StartSessionActivity.this)) {
+            if (ftpHelper != null && ftpHelper.connectULTIMAVERSION(StartSessionActivity.this)) {
                 // ftpData/ULTIMAVERSION/CIMOBILE
                 String carpetaUpdates = Util.obtenerRutaFtpActualizaciones(getBaseContext());
                 // Si existe la carpeta obtenemos el fichero version.txt

@@ -63,15 +63,15 @@ public class FTPHelper  {
      * @param context
      * @return
      */
-    public Boolean connect(Context context) {
+    public Boolean connectULTIMAVERSION(Context context) {
         try {
             this.context = context;
             JSch jsch = new JSch();
             // Carga los datos de conexion al FTP desde las preferencias.xml que esta en la carpeta /res/xml
-            String usuario = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_USER, context, String.class.getSimpleName());
+            String usuario = "ultimaversion";
             String ipFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_IP, context, String.class.getSimpleName());
             Integer puertoFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, context, Integer.class.getSimpleName());
-            String passFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_PASSWORD, context, String.class.getSimpleName());
+            String passFTP = "ultimaversion";
             Integer timeoutFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_TIMEOUT, context, Integer.class.getSimpleName());
 
             // Carga los datos de conexion al FTP de CIPOSTAL
@@ -98,24 +98,22 @@ public class FTPHelper  {
         return conectado;
     }
 
-    public String obtenerDelegacion() {
-        return sp.getString(Util.CLAVE_SESION_DELEGACION, "");
-    }
+
     /**
      * Parametros FTP para obtener SICER
      * @param context
      * @return
      */
-    public Boolean connectSICER(Context context, String delegacion) {
+    public Boolean connect(Context context) {
         try {
             this.context = context;
             JSch jsch = new JSch();
             // Carga los datos de conexion al FTP desde las preferencias.xml que esta en la carpeta /res/xml
 
-            String usuario = delegacion.toLowerCase();
+            String usuario = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_USER, context, String.class.getSimpleName());
             String ipFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_IP, context, String.class.getSimpleName());
             Integer puertoFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, context, Integer.class.getSimpleName());
-            String passFTP = delegacion.toLowerCase();
+            String passFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_PASSWORD, context, String.class.getSimpleName());
             Integer timeoutFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_TIMEOUT, context, Integer.class.getSimpleName());
 
             // Carga los datos de conexion al FTP de CIPOSTAL

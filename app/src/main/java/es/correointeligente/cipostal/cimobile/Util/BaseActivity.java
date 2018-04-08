@@ -137,9 +137,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
     // DNI
     public String obtenerNombreNotificador() { return sp.getString(Util.CLAVE_SESION_NOTIFICADOR, ""); }
+
+    // Obtenemos delegacion
     public String obtenerDelegacion() {
         return sp.getString(Util.CLAVE_SESION_DELEGACION, "");
     }
+
     // DNI
     public String obtenerCodigoNotificador() { return sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, ""); }
 }
