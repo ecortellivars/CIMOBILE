@@ -35,6 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import es.correointeligente.cipostal.cimobile.Model.Notificacion;
@@ -115,7 +116,42 @@ public class DetalleNotificacionActivity extends BaseActivity {
                 // Revisamos que el dispositivo tiene camara
                 if  (checkCameraHardware(this) == Boolean.TRUE) {
                     try {
-                        llamarIntentHacerFoto();
+                        // Si es segundo intento obtengo los datos para la foto
+                        if (notificacion.getSegundoIntento()){
+                            // Hacemos la foto
+                            Intent intentNuevaNoti = new Intent(DetalleNotificacionActivity.this, FotoAcuseActivity.class);
+                            if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
+                                intentNuevaNoti.putExtra("referencia", notificacion.getReferencia());
+                                intentNuevaNoti.putExtra("resultado", notificacion.getResultado2());
+                                DateFormat df3 = new SimpleDateFormat("yyyyMMdd");
+                                String fechaHoraString3 = df3.format(Calendar.getInstance().getTime());
+                                intentNuevaNoti.putExtra("fechaHoraRes", fechaHoraString3);
+                                startActivity(intentNuevaNoti);
+                                notificacion = dbHelper.obtenerNotificacion(idNotificacion);
+                                // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.jpg
+                                notificacion.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" +  fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + notificacion.getResultado2() + ".jpg");
+                                notificacion.setFotoAcuseRes1(null);
+                                Boolean guardadoNotificacionEnBD = dbHelper.guardaResultadoNotificacion(notificacion);
+                            }
+                        }
+                        // Si es primer intento obtengo sus datos para la foto
+                        else{
+                            // Hacemos la foto
+                            Intent intentNuevaNoti = new Intent(DetalleNotificacionActivity.this, FotoAcuseActivity.class);
+                            if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
+                                intentNuevaNoti.putExtra("referencia", notificacion.getReferencia());
+                                intentNuevaNoti.putExtra("resultado", notificacion.getResultado1());
+                                DateFormat df3 = new SimpleDateFormat("yyyyMMdd");
+                                String fechaHoraString3 = df3.format(Calendar.getInstance().getTime());
+                                intentNuevaNoti.putExtra("fechaHoraRes", fechaHoraString3);
+                                startActivity(intentNuevaNoti);
+                                notificacion = dbHelper.obtenerNotificacion(idNotificacion);
+                                // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.jpg
+                                notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" +  fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + notificacion.getResultado1() + ".jpg");
+                                notificacion.setFotoAcuseRes2(null);
+                                Boolean guardadoNotificacionEnBD = dbHelper.guardaResultadoNotificacion(notificacion);
+                            }
+                        }
                         finish();
 
                     } catch (Exception e) {

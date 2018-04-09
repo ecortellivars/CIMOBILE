@@ -222,8 +222,6 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
         protected void onPreExecute() {
             guardadoNotificacionEnBD = false;
             progressDialog = ProgressDialog.show(NotificacionEntregadaActivity.this, getString(R.string.guardar), getString(R.string.guardando_datos_en_bd_interna));
-
-
         }
 
         @Override
@@ -249,7 +247,6 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
             }
 
             if(resultado1 == null) {
-
                 notificacionAux.setDescResultado1(resultado.getDescripcion().toUpperCase());
                 notificacionAux.setResultado1(resultado.getCodigo());
                 notificacionAux.setFechaHoraRes1(fechaHoraString);
@@ -259,11 +256,10 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setNotificadorRes1(obtenerNombreNotificador());
                 notificacionAux.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
                 notificacionAux.setSegundoIntento(!esPrimerResultado);
-                DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
-                String fechaHoraFoto1 = df2.format(Calendar.getInstance().getTime());
-                notificacionAux.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator  + referenciaPostal + "_" + fechaHoraFoto1  + "_" + fechaHoraFoto1   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" +  notificacionAux.getResultado1() + ".jpg");
+                //DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
+                //String fechaHoraFoto1 = df2.format(Calendar.getInstance().getTime());
+                //notificacionAux.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator  + referenciaPostal + "_" + fechaHoraFoto1  + "_" + fechaHoraFoto1   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" +  notificacionAux.getResultado1() + ".jpg");
             } else {
-
                 notificacionAux.setDescResultado2(resultado.getDescripcion().toUpperCase());
                 notificacionAux.setResultado2(resultado.getCodigo());
                 notificacionAux.setFechaHoraRes2(fechaHoraString);
@@ -273,9 +269,9 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setNotificadorRes2(obtenerNombreNotificador());
                 notificacionAux.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() +" .png");
                 notificacionAux.setSegundoIntento(esPrimerResultado);
-                DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
-                String fechaHoraFoto2 = df2.format(Calendar.getInstance().getTime());
-                notificacionAux.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse()  + File.separator  + referenciaPostal + "_" + fechaHoraFoto2  + "_" + fechaHoraFoto2   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + notificacionAux.getResultado2() + ".jpg");
+                //DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
+                //String fechaHoraFoto2 = df2.format(Calendar.getInstance().getTime());
+                //notificacionAux.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse()  + File.separator  + referenciaPostal + "_" + fechaHoraFoto2  + "_" + fechaHoraFoto2   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + notificacionAux.getResultado2() + ".jpg");
 
             }
 
@@ -286,17 +282,6 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
             } else {
                 notificacionAux = dbHelper.obtenerNotificacion(idNotificacion);
                 File ficheroXML = null;
-
-                // Hacemos la foto
-                Intent intentNuevaNoti = new Intent(NotificacionEntregadaActivity.this, FotoAcuseActivity.class);
-                if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
-                    intentNuevaNoti.putExtra("referencia", referenciaPostal);
-                    intentNuevaNoti.putExtra("resultado", Util.RESULTADO_ENTREGADO);
-                    DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
-                    String fechaHoraString2 = df2.format(Calendar.getInstance().getTime());
-                    intentNuevaNoti.putExtra("fechaHoraRes", fechaHoraString2);
-                    startActivity(intentNuevaNoti);
-                }
 
                 try {
                     // Se genera el fichero XML

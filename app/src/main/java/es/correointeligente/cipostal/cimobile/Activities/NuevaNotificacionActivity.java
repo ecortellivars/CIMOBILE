@@ -376,7 +376,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     notificacion.setNotificadorRes1(obtenerNombreNotificador());
                     notificacion.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
                     // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.jpg
-                    notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString2 + "_" +  fechaHoraString2 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + codResultado + ".jpg");
+                    //notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString2 + "_" +  fechaHoraString2 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + codResultado + ".jpg");
 
                 }
                 // Preparamos la informacion si es Segundo Intento
@@ -390,7 +390,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     notificacion.setNotificadorRes2(obtenerNombreNotificador());
                     notificacion.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
                     // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.jpg
-                    notificacion.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString2 + "_" +  fechaHoraString2 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + codResultado + ".jpg");
+                    //notificacion.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString2 + "_" +  fechaHoraString2 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + codResultado + ".jpg");
                 }
 
                 GuardarResultadoNegativoTask guardarResultadoNegativoTask = new GuardarResultadoNegativoTask();
@@ -622,39 +622,9 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                         setResult(CommonStatusCodes.SUCCESS, intentResultado);
                         dialogInterface.dismiss();
                         finish();
-
-                        // Si es segundo intento obtengo los datos
-                        if (notificacion.getSegundoIntento()){
-                            // Hacemos la foto
-                            Intent intentNuevaNoti = new Intent(NuevaNotificacionActivity.this, FotoAcuseActivity.class);
-                            if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
-                                intentNuevaNoti.putExtra("referencia", notificacion.getReferencia());
-                                intentNuevaNoti.putExtra("resultado", notificacion.getResultado2());
-                                DateFormat df3 = new SimpleDateFormat("yyyyMMdd");
-                                String fechaHoraString3 = df3.format(Calendar.getInstance().getTime());
-                                intentNuevaNoti.putExtra("fechaHoraRes", fechaHoraString3);
-                                startActivity(intentNuevaNoti);
-                            }
-                        }
-                        // Si es primer intento obtengo sus datos
-                        else{
-                            // Hacemos la foto
-                            Intent intentNuevaNoti = new Intent(NuevaNotificacionActivity.this, FotoAcuseActivity.class);
-                            if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
-                                intentNuevaNoti.putExtra("referencia", notificacion.getReferencia());
-                                intentNuevaNoti.putExtra("resultado", notificacion.getResultado1());
-                                DateFormat df3 = new SimpleDateFormat("yyyyMMdd");
-                                String fechaHoraString3 = df3.format(Calendar.getInstance().getTime());
-                                intentNuevaNoti.putExtra("fechaHoraRes", fechaHoraString3);
-                                startActivity(intentNuevaNoti);
-                            }
-
-                        }
-
                     }
                 });
             }
-
             // Crear el dialogo con los parametros que se han definido y se muestra por pantalla
             builder.show();
         }

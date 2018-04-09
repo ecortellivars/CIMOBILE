@@ -12,8 +12,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -39,9 +41,12 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
     DBHelper dbHelper;
     Button mCerrarReparto;
     FTPHelper ftpHelper;
+    Integer totNotisGestionadas = 0;
+    Integer totFotosHechas = 0;
 
+    // Variables para instanciar los objetos del layaout y darles valor
     TextView tv_totFicheros, tv_totNotificaciones, tv_totNotifGestionadas, tv_totNotifPendientes_2_hoy,
-             tv_totNotifPendientes_2_otro_dia, tv_totNotifMarcadas;
+             tv_totNotifPendientes_2_otro_dia, tv_totNotifMarcadas, tv_totFotos;
     TextView tv_entregado, tv_dirIncorrecta, tv_ausente, tv_ausente_pendiente, tv_desconocido, tv_fallecido, tv_rehusado,
             tv_noSeHaceCargo, tv_noSeHaceCargoPendiente;
 
@@ -91,6 +96,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
         tv_totFicheros = (TextView) findViewById(R.id.textView_resumen_total_ficheros_value);
         tv_totNotificaciones = (TextView) findViewById(R.id.textView_resumen_total_notificaciones_value);
         tv_totNotifGestionadas = (TextView) findViewById(R.id.textView_resumen_total_notif_gestionadas_value);
+        tv_totFotos = (TextView) findViewById(R.id.textView_resumen_total_fotos_value);
         tv_totNotifPendientes_2_hoy = (TextView) findViewById(R.id.textView_resumen_total_notif_pendientes_2_hoy_value);
         tv_totNotifPendientes_2_otro_dia = (TextView) findViewById(R.id.textView_resumen_total_notif_pendientes_2_otro_dia_value);
         tv_totNotifMarcadas = (TextView) findViewById(R.id.textView_resumen_total_notif_marcadas_value);
@@ -144,7 +150,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
         @Override
         protected ResumenReparto doInBackground(Void... voids) {
             ResumenReparto resumen = dbHelper.obtenerResumenReparto();
-
+            totNotisGestionadas = resumen.getTotNotifGestionadas();
             return resumen;
         }
 
@@ -162,6 +168,21 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             tv_totNotifPendientes_2_hoy.setText(resumenReparto.getTotNotifPendientesSegundoHoy().toString());
             tv_totNotifPendientes_2_otro_dia.setText(resumenReparto.getTotNotifPendientesSegundoOtroDia().toString());
             tv_totNotifMarcadas.setText(resumenReparto.getTotNotifMarcadas().toString());
+            // Se recuperan las notificaciones que se han gestionado durante el reparto para contar la fotos
+            List<Notificacion> listaNotificacionesGestionadas = dbHelper.obtenerNotificacionesGestionadas();
+            Integer contadorFotos = 0;
+            if (!listaNotificacionesGestionadas.isEmpty()){
+                for (Notificacion noti : listaNotificacionesGestionadas){
+                    if (noti.getFotoAcuseRes2() != null) {
+                            contadorFotos = contadorFotos + 1;
+                    }
+                    if (noti.getFotoAcuseRes1() != null) {
+                        contadorFotos = contadorFotos + 1;
+                    }
+                }
+            }
+            totFotosHechas = contadorFotos;
+            tv_totFotos.setText(contadorFotos.toString());
             tv_totNotifGestionadas.setText(resumenReparto.getTotNotifGestionadas().toString());
 
             tv_entregado.setText(resumenReparto.getNumEntregados().toString());
@@ -180,14 +201,22 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
      * Método privado que pide confirmación para el cierre del reparto indicando todas las acciones a realizar
      */
     private void crearDialogoAvisoCierreReparto() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.cerrar_reparto);
         builder.setMessage(R.string.cerrar_reparto_info);
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 // Lanza la tarea en background de la carga del fichero SICER
-                CerrarRepartoTASK cerrarRepartoTASK = new CerrarRepartoTASK();
-                cerrarRepartoTASK.execute();
+                if (totNotisGestionadas == totFotosHechas) {
+                    CerrarRepartoTASK cerrarRepartoTASK = new CerrarRepartoTASK();
+                    cerrarRepartoTASK.execute();
+                }
+                else {
+                    Toast toast = null;
+                    toast = Toast.makeText(ResumenRepartoActivity.this, "Existen notificaciones sin foto por lo que no se puede cerrar el reparto", Toast.LENGTH_LONG);
+                    toast.show();
+                }
+
             }
         });
         builder.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
@@ -332,8 +361,8 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                             fallo = getString(R.string.error_apertura_ficheros_escritura);
                         }
                     } else {
-                        // error cambio de carpeta o crear carpeta
-                        fallo = getString(R.string.error_acceso_carpeta_ftp)+" '"+pathVolcado+"'";
+                        // Error cambio de carpeta o crear carpeta
+                        fallo = getString(R.string.error_acceso_carpeta_ftp) + " '" + pathVolcado + "'";
                     }
 
                 } else {

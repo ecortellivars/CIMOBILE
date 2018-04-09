@@ -10,6 +10,7 @@ public class ResumenReparto {
     private Integer totNotifPendientesSegundoHoy;
     private Integer totNotifPendientesSegundoOtroDia;
     private Integer totNotifMarcadas;
+    private Integer totFotos;
     private Integer numEntregados;
     private Integer numDirIncorrectas;
     private Integer numAusentes;
@@ -35,6 +36,7 @@ public class ResumenReparto {
         this.totNotifPendientesSegundoHoy = totNotifPendientesSegundoHoy;
         this.totNotifPendientesSegundoOtroDia = totNotifPendientesSegundoOtroDia;
         this.totNotifMarcadas = totNotifMarcadas;
+        this.totFotos = totFotos;
         this.numEntregados = numEntregados;
         this.numDirIncorrectas = numDirIncorrectas;
         this.numAusentes = numAusentes;
@@ -71,6 +73,12 @@ public class ResumenReparto {
     }
 
     public void setTotNotifMarcadas(Integer totNotifMarcadas) { this.totNotifMarcadas = totNotifMarcadas; }
+
+    public Integer getTotFotos() {
+        return totFotos;
+    }
+
+    public void setTotFotos(Integer totFotos) { this.totFotos = totFotos; }
 
     public Integer getNumEntregados() { return numEntregados; }
 
