@@ -132,6 +132,17 @@ public class DetalleNotificacionActivity extends BaseActivity {
                                 notificacion.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" +  fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + notificacion.getResultado2() + ".jpg");
                                 notificacion.setFotoAcuseRes1(null);
                                 Boolean guardadoNotificacionEnBD = dbHelper.guardaResultadoNotificacion(notificacion);
+                                if (guardadoNotificacionEnBD) {
+                                    Toast toast = null;
+                                    toast = Toast.makeText(this, "Resultado guardado Correctamente", Toast.LENGTH_LONG);
+                                    toast.show();
+                                }
+
+                                else {
+                                    Toast toast = null;
+                                    toast = Toast.makeText(this, "Resultado NO guardado", Toast.LENGTH_LONG);
+                                    toast.show();
+                                }
                             }
                         }
                         // Si es primer intento obtengo sus datos para la foto
@@ -150,6 +161,17 @@ public class DetalleNotificacionActivity extends BaseActivity {
                                 notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" +  fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + notificacion.getResultado1() + ".jpg");
                                 notificacion.setFotoAcuseRes2(null);
                                 Boolean guardadoNotificacionEnBD = dbHelper.guardaResultadoNotificacion(notificacion);
+                                if (guardadoNotificacionEnBD) {
+                                    Toast toast = null;
+                                    toast = Toast.makeText(this, "Resultado guardado Correctamente", Toast.LENGTH_LONG);
+                                    toast.show();
+                                }
+
+                                else {
+                                    Toast toast = null;
+                                    toast = Toast.makeText(this, "Resultado NO guardado", Toast.LENGTH_LONG);
+                                    toast.show();
+                                }
                             }
                         }
                         finish();
@@ -574,62 +596,6 @@ public class DetalleNotificacionActivity extends BaseActivity {
         }
     }
 
-    // Intent para hacer foto
-    private void llamarIntentHacerFoto() {
-        String imageFileName = null;
-        File storageDir = null;
-        File fileDestino = null;
-        String fechaRes1String = null;
-        String fechaRes2String = null;
-        SimpleDateFormat formatoDeFecha = new SimpleDateFormat("yyyyMMdd");
-        // Create an image file name
-        if(notificacion.getResultado1() != null) {
-            fechaRes1String = notificacion.getFechaHoraRes1().substring(6,10) + notificacion.getFechaHoraRes1().substring(3,5) + notificacion.getFechaHoraRes1().substring(0,2);
-            imageFileName = notificacion.getReferencia() + "_" + fechaRes1String + "_" + fechaRes1String + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado1() + ".jpg";
-        }
-        if(notificacion.getResultado2() != null) {
-            fechaRes2String = notificacion.getFechaHoraRes2().substring(6,10) + notificacion.getFechaHoraRes2().substring(3,5) + notificacion.getFechaHoraRes2().substring(0,2);
-            imageFileName = notificacion.getReferencia() + "_" + fechaRes2String + "_" + fechaRes2String + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado2() + ".jpg";
-        }
-        storageDir = new File(Environment.getExternalStorageDirectory(),RUTA_IMAGEN);
-
-        fileDestino = new File(storageDir, imageFileName);
-
-        Uri cameraImageUri = Uri.fromFile(fileDestino);
-
-        // Abre la camara
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        // Enviamos la imagen
-        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,cameraImageUri);
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-        StrictMode.setVmPolicy(builder.build());
-        // Lanzamos la actividad
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
-        else {
-            Toast toast = null;
-            toast = Toast.makeText(this, "Revisa los permisos de la camara del movil", Toast.LENGTH_LONG);
-            toast.show();
-        }
-
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Bundle extras = data.getExtras();
-        Bitmap imageBitmap = (Bitmap) extras.get("data");
-        if (requestCode == 1) {
-        }
-
-        else {
-            Toast toast = null;
-            toast = Toast.makeText(this, "Revisa los permisos de la camara del movil", Toast.LENGTH_LONG);
-            toast.show();
-        }
-    }
 
     /** Check if this device has a camera */
     private boolean checkCameraHardware(Context context) {

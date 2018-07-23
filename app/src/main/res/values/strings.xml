@@ -51,6 +51,7 @@
     <string name="resultado">Resultado</string>
     <string name="resultado1">RESULTADO 1</string>
     <string name="resultado2">RESULTADO 2</string>
+    <string name="flag_foto">Flag Foto</string>
     <string name="motivo_no_entrega">Motivo de no entrega</string>
     <string name="resultados_sin_firma">Resultados SIN firma</string>
     <string name="numero_documento">Número documento</string>

@@ -20,7 +20,7 @@
 
             <TextView
                 android:id="@+id/textView_cardView_referencia"
-                android:layout_width="wrap_content"
+                android:layout_width="277dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
@@ -65,12 +65,20 @@
             android:stretchColumns="1">
 
             <TableRow >
+
                 <TextView
                     android:id="@+id/textView_cardView_resutado_1"
-                    android:layout_width="match_parent"
+                    android:layout_width="103dp"
                     android:layout_height="wrap_content"
                     android:text="@string/resultado1"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textView_cardView_foto"
+                    android:layout_width="10dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/flag_foto"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/textView_cardView_resutado_2"
