@@ -139,10 +139,10 @@ public class Util {
             SharedPreferences.Editor e = sp.edit();
 
             // Preferencias FTP
-            e.putString(Util.CLAVE_PREFERENCIAS_FTP_IP, "84.127.234.28");
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_IP, "77.224.48.164");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, "1984");
-            e.putString(Util.CLAVE_PREFERENCIAS_FTP_USER, "ultimaversion");
-            e.putString(Util.CLAVE_PREFERENCIAS_FTP_PASSWORD, "ultimaversion");
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_USER, "andalucia");
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_PASSWORD, "andalucia");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_TIMEOUT, "10000");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, "/SICER");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_BASE, "/home");
