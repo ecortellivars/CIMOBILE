@@ -123,7 +123,7 @@
     <string name="password_no_valido">Contraseña no válida</string>
     <string name="error_inicio_sesion">Se ha producido un error en el inicio de sesión</string>
     <string name="actualizacion">Actualización</string>
-    <string name="detalle_actualizacion">Se ha encontrado un nueva versión. ¿Dese actualizar? Versión: </string>
+    <string name="detalle_actualizacion">Se ha encontrado un nueva versión. ¿Desea actualizar? Versión: </string>
     <string name="descargando_version">Descargando versión...</string>
     <string name="error_durante_actualizacion">Se ha producido un fallo durante la actualización</string>
     <string name="error_descarga_fichero">Se ha producido un fallo durante la descarga del fichero</string>

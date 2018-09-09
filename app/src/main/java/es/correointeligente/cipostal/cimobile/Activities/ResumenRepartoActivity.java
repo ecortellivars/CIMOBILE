@@ -252,6 +252,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             File ficheroTXT = null;
 
             DateFormat dfDia = new SimpleDateFormat("ddMMyyyy");
+            // Modificación 
             // El CSV para los resultados: valencia_A22_25052017.csv
             String nombreFicheroCSV = obtenerDelegacion() + "_" + obtenerCodigoNotificador() + "_" + dfDia.format(Calendar.getInstance().getTime()) + ".csv";
             // El TXT para segundos intentos: segundo_intento_A22_25052017.txt

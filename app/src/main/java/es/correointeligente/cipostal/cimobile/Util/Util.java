@@ -141,8 +141,8 @@ public class Util {
             // Preferencias FTP
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_IP, "77.224.48.164");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_PUERTO, "1984");
-            e.putString(Util.CLAVE_PREFERENCIAS_FTP_USER, "andalucia");
-            e.putString(Util.CLAVE_PREFERENCIAS_FTP_PASSWORD, "andalucia");
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_USER, "ultimaversion");
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_PASSWORD, "ultimaversion");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_TIMEOUT, "10000");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, "/SICER");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_BASE, "/home");
@@ -172,7 +172,8 @@ public class Util {
             e.putString(Util.CLAVE_PREFERENCIAS_WS_METHOD_URL, "http://correointeligente.es:9995/PostalService");
 
             // Preferencias Siguiente visita
-            e.putString(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_DIAS, "3");
+            // En realidad son 3 días pero cuando coincide en finde no deja hacerla
+            e.putString(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_DIAS, "5");
             e.putString(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_HORAS, "3");
 
             // Preferencias para el uso de la aplicación en oficina
