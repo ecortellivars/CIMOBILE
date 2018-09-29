@@ -69,7 +69,7 @@
 
             <Button
                 android:id="@+id/button_cerrar_sesion"
-                android:layout_width="150dp"
+                android:layout_width="345dp"
                 android:layout_height="82dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="20dp"

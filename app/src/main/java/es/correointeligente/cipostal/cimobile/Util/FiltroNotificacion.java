@@ -25,6 +25,8 @@ public class FiltroNotificacion {
         this.pagina = 0;
     }
 
+
+
     public FiltroNotificacion(Boolean entregado, Boolean dirIncorrecta, Boolean ausente, Boolean desconocido, Boolean fallecido,
                               Boolean rehusado, Boolean nadieSeHaceCargo, Boolean marcadas, String referencia,
                               Integer pagina) {

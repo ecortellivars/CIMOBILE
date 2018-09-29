@@ -370,8 +370,8 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     notificacion.setFechaHoraRes1(fechaHoraString);
                     notificacion.setResultado1(codResultado);
                     notificacion.setDescResultado1(descResultado);
-                    notificacion.setLatitudRes1(tv_latitud.getText().toString().trim().length() == 0 ? null : tv_latitud.getText().toString());
-                    notificacion.setLongitudRes1(tv_longitud.getText().toString().trim().length() == 0 ? null : tv_longitud.getText().toString());
+                    notificacion.setLatitudRes1(tv_latitud.getText().toString().trim().length() == 0 ? "-0.0000000" : tv_latitud.getText().toString());
+                    notificacion.setLongitudRes1(tv_longitud.getText().toString().trim().length() == 0 ? "00.0000000" : tv_longitud.getText().toString());
                     notificacion.setObservacionesRes1(edt_observaciones.getText().toString().trim().length() == 0 ? null : edt_observaciones.getText().toString());
                     notificacion.setNotificadorRes1(obtenerNombreNotificador());
                     notificacion.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
@@ -384,8 +384,8 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     notificacion.setFechaHoraRes2(fechaHoraString);
                     notificacion.setResultado2(codResultado);
                     notificacion.setDescResultado2(descResultado);
-                    notificacion.setLatitudRes2(tv_latitud.getText().toString().trim().length() == 0 ? null : tv_latitud.getText().toString());
-                    notificacion.setLongitudRes2(tv_longitud.getText().toString().trim().length() == 0 ? null : tv_longitud.getText().toString());
+                    notificacion.setLatitudRes2(tv_latitud.getText().toString().trim().length() == 0 ? "-0.0000000" : tv_latitud.getText().toString());
+                    notificacion.setLongitudRes2(tv_longitud.getText().toString().trim().length() == 0 ? "00.0000000" : tv_longitud.getText().toString());
                     notificacion.setObservacionesRes2(edt_observaciones.getText().toString().trim().length() == 0 ? null : edt_observaciones.getText().toString());
                     notificacion.setNotificadorRes2(obtenerNombreNotificador());
                     notificacion.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
@@ -456,6 +456,8 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
 //                             getAddressFromLocation(mLastLocation, getApplicationContext(), new NuevaNotificacionActivity.GeoCoderHandler());*
                             }
                         } else {
+                            tv_latitud.setText("-0.0000000");
+                            tv_longitud.setText("00.0000000");
                             // La aplicacion no tiene los permisos concedidos, por lo que se le solicita al usuario si lo permite
                             // ActivityCompat.requestPermissions(NuevaNotificacionActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
                         }
@@ -496,6 +498,12 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             tv_latitud.setText(Double.toString(mLastLocation.getLatitude()));
             tv_longitud.setText(Double.toString(mLastLocation.getLongitude()));
             //getAddressFromLocation(mLastLocation, getApplicationContext(), new NuevaNotificacionActivity.GeoCoderHandler());
+        }
+         else {
+            tv_latitud.setText("-0.0000000");
+            tv_longitud.setText("00.0000000");
+            // La aplicacion no tiene los permisos concedidos, por lo que se le solicita al usuario si lo permite
+            // ActivityCompat.requestPermissions(NuevaNotificacionActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
         }
     }
 

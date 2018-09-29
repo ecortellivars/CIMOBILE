@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'key0'
             keyPassword 'abc123.'
-            storeFile file('C:/Users/scipostal/.android/debug5.keystore.jks')
+            storeFile file('C:/Users/scipostal/.android/debug.keystore')
             storePassword 'abc123.'
         }
     }
@@ -16,7 +16,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 25
         versionCode 1
-        versionName "4.4"
+        versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.config
         vectorDrawables.useSupportLibrary = true
@@ -48,6 +48,8 @@ dependencies {
     })
     compile files('libs/jsch-0.1.54.jar')
     compile files('libs/ksoap2-android-assembly-3.6.2-jar-with-dependencies.jar')
+
+    //noinspection GradleCompatible
     compile 'com.android.support:appcompat-v7:25.1.1'
     compile 'com.android.support:design:25.1.1'
     compile 'commons-net:commons-net:3.5'
@@ -60,7 +62,6 @@ dependencies {
     compile 'me.dm7.barcodescanner:zbar:1.9'
     compile 'com.madgag.spongycastle:core:1.54.0.0'
     compile 'com.madgag.spongycastle:pkix:1.54.0.0'
-    compile 'com.android.support:preference-v7:25.1.1'
+    compile 'com.android.support:preference-v7:25.2.0'
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
 }

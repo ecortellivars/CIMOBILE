@@ -82,15 +82,17 @@ public class Util {
     public final static String RESULTADO_ENTREGADO           = "01";
     public final static String RESULTADO_DIR_INCORRECTA      = "02";
     public final static String RESULTADO_AUSENTE             = "31";
+    public final static String RESULTADO_AUSENTE_SEGUNDO     = "32";
     public final static String RESULTADO_DESCONOCIDO         = "04";
     public final static String RESULTADO_FALLECIDO           = "05";
     public final static String RESULTADO_REHUSADO            = "06";
     public final static String RESULTADO_NADIE_SE_HACE_CARGO = "07";
+    public final static String RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO = "33";
     public final static String RESULTADO_ENTREGADO_OFICINA   = "08";
     // Para uso exclusivo de control del trabajo del notificador
     public final static String RESULTADO_ENTREGADO_SIN_FIRMA = "01";
-    public final static String DESCRIPCION_ENTREGADO_SIN_FIRMA = "Notificado sin firma";
-    public final static String DESCRIPCION_ENTREGADO_CON_FIRMA = "Notificado";
+    public final static String DESCRIPCION_ENTREGADO_SIN_FIRMA = "Entregado sin firma";
+    public final static String DESCRIPCION_ENTREGADO_CON_FIRMA = "Entregado";
 
     // CONSTANTES FICHEROS DE PREFERENCIAS
     public final static String FICHERO_PREFERENCIAS_SESION = "sesion";
@@ -384,7 +386,7 @@ public class Util {
             String observacionesString = null;
             String notificadorString = null;
             String firmaNotificadorString = null;
-            String fotoAcuseString = null;
+            //String fotoAcuseString = null;
 
             if(StringUtils.isNotBlank(notificacion.getResultado2())) {
                 resultadoString = notificacion.getResultado2();
@@ -395,7 +397,7 @@ public class Util {
                 observacionesString = notificacion.getObservacionesRes2();
                 notificadorString = notificacion.getNotificadorRes2();
                 firmaNotificadorString = notificacion.getFirmaNotificadorRes2();
-                fotoAcuseString = notificacion.getFotoAcuseRes2();
+                //fotoAcuseString = notificacion.getFotoAcuseRes2();
             } else {
                 resultadoString = notificacion.getResultado1();
                 resultadoDescString = notificacion.getDescResultado1();
@@ -405,7 +407,7 @@ public class Util {
                 observacionesString = notificacion.getObservacionesRes1();
                 notificadorString = notificacion.getNotificadorRes1();
                 firmaNotificadorString = notificacion.getFirmaNotificadorRes1();
-                fotoAcuseString = notificacion.getFotoAcuseRes1();
+                //fotoAcuseString = notificacion.getFotoAcuseRes1();
             }
 
             horaString = dfHora.format(date);

@@ -201,33 +201,32 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
      * Método privado que pide confirmación para el cierre del reparto indicando todas las acciones a realizar
      */
     private void crearDialogoAvisoCierreReparto() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.cerrar_reparto);
-        builder.setMessage(R.string.cerrar_reparto_info);
-        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                // Lanza la tarea en background de la carga del fichero SICER
-                if (totNotisGestionadas == totFotosHechas) {
+        if (totNotisGestionadas != totFotosHechas) {
+            Toast toast = null;
+            toast = Toast.makeText(ResumenRepartoActivity.this, "Existen notificaciones sin foto por lo que no se puede cerrar el reparto", Toast.LENGTH_LONG);
+            toast.show();
+        }
+        else {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.cerrar_reparto);
+            builder.setMessage(R.string.cerrar_reparto_info);
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // Lanza la tarea en background de la carga del fichero SICER
                     CerrarRepartoTASK cerrarRepartoTASK = new CerrarRepartoTASK();
                     cerrarRepartoTASK.execute();
                 }
-                else {
-                    Toast toast = null;
-                    toast = Toast.makeText(ResumenRepartoActivity.this, "Existen notificaciones sin foto por lo que no se puede cerrar el reparto", Toast.LENGTH_LONG);
-                    toast.show();
+            });
+            builder.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialogInterface, int wich) {
+                    dialogInterface.cancel();
                 }
+            });
 
-            }
-        });
-        builder.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialogInterface, int wich) {
-                dialogInterface.cancel();
-            }
-        });
-
-        builder.show();
+            builder.show();
+        }
     }
 
     /**
@@ -298,6 +297,8 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                     Resultado resultado = dbHelper.obtenerResultado(notificacion.getResultado2());
                                     if (resultado.getEsFinal() != null && !resultado.getEsFinal()) {
                                         codResultado = resultado.getCodigoSegundoIntento();
+                                        notificacion.setResultado2(codResultado);
+                                        notificacion.setDescResultado2(resultado.getDescripcion());
                                     }
 
                                 } else {
@@ -306,6 +307,16 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                     Resultado resultado = dbHelper.obtenerResultado(codResultado);
                                     // Si es primera visita y NO ES FINAL lo guardamos en un TXT para la carga del dia siguiente
                                     if (BooleanUtils.isFalse(resultado.getEsFinal())) {
+                                        if (notificacion.getLongitudRes1().isEmpty()) {
+                                            if  (notificacion.getLongitudRes1().toString().length()==0){
+                                                notificacion.setLongitudRes1("-0.0000000");
+                                            }
+                                        }
+                                        if (notificacion.getLatitudRes1().isEmpty()) {
+                                            if  (notificacion.getLatitudRes1().toString().length()==0) {
+                                                notificacion.setLatitudRes1("00.0000000");
+                                            }
+                                        }
                                         String linea = "S" + StringUtils.rightPad(notificacion.getReferencia(), 70);
                                         linea += StringUtils.rightPad(resultado.getCodigo(), 2);
                                         linea += StringUtils.rightPad(resultado.getDescripcion().toUpperCase(), 25);

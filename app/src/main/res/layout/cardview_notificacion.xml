@@ -73,12 +73,6 @@
                     android:text="@string/resultado1"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/textView_cardView_foto"
-                    android:layout_width="10dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/flag_foto"
-                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/textView_cardView_resutado_2"

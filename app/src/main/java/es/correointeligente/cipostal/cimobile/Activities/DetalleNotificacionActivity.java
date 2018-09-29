@@ -46,6 +46,11 @@ import es.correointeligente.cipostal.cimobile.Util.Util;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import static es.correointeligente.cipostal.cimobile.Util.Util.RESULTADO_AUSENTE;
+import static es.correointeligente.cipostal.cimobile.Util.Util.RESULTADO_AUSENTE_SEGUNDO;
+import static es.correointeligente.cipostal.cimobile.Util.Util.RESULTADO_NADIE_SE_HACE_CARGO;
+import static es.correointeligente.cipostal.cimobile.Util.Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO;
+
 public class DetalleNotificacionActivity extends BaseActivity {
 
     Toolbar mToolbar;
@@ -129,6 +134,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                                 startActivity(intentNuevaNoti);
                                 notificacion = dbHelper.obtenerNotificacion(idNotificacion);
                                 // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.jpg
+                                // Create an image file name
                                 notificacion.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" +  fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + notificacion.getResultado2() + ".jpg");
                                 notificacion.setFotoAcuseRes1(null);
                                 Boolean guardadoNotificacionEnBD = dbHelper.guardaResultadoNotificacion(notificacion);
@@ -317,7 +323,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                         try {
 
                             InputStream is = new FileInputStream(notificacion.getFotoAcuseRes2());
-                            if (is != null){
+                            if (is != null) {
                                 Drawable drw_imagenFoto = Drawable.createFromStream(is, "imageView");
                                 img_foto_acuse_res2.setImageDrawable(drw_imagenFoto);
                             }
@@ -325,9 +331,9 @@ public class DetalleNotificacionActivity extends BaseActivity {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
-                        layoutResultado2.addView(linearLayout2);
                     }
+                        layoutResultado2.addView(linearLayout2);
+
 
                 // NO ENTREGADO lo mismo pero sin firma
                 } else {
@@ -372,7 +378,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     layoutResultado2.addView(linearLayout2);
                 }
 
-            // Solo hay 1 resultado
+            // Solo hay 1 resultado y ENTREGADO
             // Si es la primera entrega y ya la hemos gestionado
             } else {
 

@@ -37,7 +37,7 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
 
     Toolbar mToolbar;
     ImageButton btn_hacerFoto;
-    String referencia, resultado, fechaHoraRes;
+    String referencia, resultado, fechaHoraRes , segundo;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private final String CARPETA_RAIZ = "CiMobile/";
     private final String RUTA_IMAGEN = CARPETA_RAIZ + "FOTOS_ACUSE/";
@@ -55,13 +55,11 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
         btn_hacerFoto = (ImageButton) findViewById(R.id.button_foto_acuse_hacer_foto);
         btn_hacerFoto.setOnClickListener(this);
 
-
         // Recupera los datos de la notificacion
         referencia = getIntent().getStringExtra("referencia");
         resultado = getIntent().getStringExtra("resultado");
         fechaHoraRes = getIntent().getStringExtra("fechaHoraRes");
-
-
+        segundo = getIntent().getStringExtra("segundo");
     }
 
     // Gestión de los Iconos de la barra de herramientas
@@ -114,10 +112,8 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
         String imageFileName = null;
         File storageDir = null;
         File fileDestino = null;
-        // Create an image file name
         imageFileName = referencia + "_" + fechaHoraRes  + "_" + fechaHoraRes   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + resultado + ".jpg";
         storageDir = new File(Environment.getExternalStorageDirectory(),RUTA_IMAGEN);
-
         fileDestino = new File(storageDir, imageFileName);
         Uri cameraImageUri = Uri.fromFile(fileDestino);
 

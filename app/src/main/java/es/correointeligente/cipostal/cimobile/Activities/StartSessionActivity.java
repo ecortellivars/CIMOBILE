@@ -269,7 +269,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                 // Inicializamos la clase Singleton para la gestion FTP
                 ftpHelper = FTPHelper.getInstancia();
 
-                if (ftpHelper != null && ftpHelper.connect(StartSessionActivity.this)) {
+                if (ftpHelper != null && ftpHelper.connectULTIMAVERSION(StartSessionActivity.this)) {
                     String carpetaUpdates = Util.obtenerRutaFtpActualizaciones(getBaseContext());
                     if (ftpHelper.cargarCarpeta(carpetaUpdates)) {
                         String fichero = "CIMobile-release-" + versionMandada[0] + ".apk";
@@ -286,6 +286,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                             File file = new File(rutaFinalFicheroUpdate);
                             Intent i = new Intent(Intent.ACTION_VIEW, FileProvider.getUriForFile(getBaseContext(), "com.your.package.fileProvider", file));
                             i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                             // Se lanza la actividad de actualizacion (Lanza el gestor de instalaciones)
                             startActivity(i);
                             // Todo ha ido OK

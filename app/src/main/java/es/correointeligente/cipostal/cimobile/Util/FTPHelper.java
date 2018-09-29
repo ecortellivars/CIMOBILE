@@ -99,6 +99,10 @@ public class FTPHelper  {
     }
 
 
+    // Obtenemos delegacion
+    public String obtenerDelegacion() {
+        return sp.getString(Util.CLAVE_SESION_DELEGACION, "");
+    }
     /**
      * Parametros FTP para obtener SICER
      * @param context

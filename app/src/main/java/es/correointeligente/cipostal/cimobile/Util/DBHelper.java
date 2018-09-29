@@ -1271,10 +1271,14 @@ public class DBHelper extends SQLiteOpenHelper {
         listaResultados.add(new Resultado(Util.RESULTADO_FALLECIDO, "Fallecido", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_REHUSADO, "Rehusado", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_OFICINA, "Entregado oficina", true, null, true, true));
-
-        // Resultados NO FINALES
-        listaResultados.add(new Resultado(Util.RESULTADO_NADIE_SE_HACE_CARGO, "Nadie se hace cargo", false, "33", false, false));
+        // Resultado NO FINAL
         listaResultados.add(new Resultado(Util.RESULTADO_AUSENTE, "Ausente", false, "32", false, false));
+        // Resultado FINAL
+        listaResultados.add(new Resultado(Util.RESULTADO_AUSENTE_SEGUNDO, "Ausente (2ª Visita)", true, null, false, false));
+        // Resultado NO FINAL
+        listaResultados.add(new Resultado(Util.RESULTADO_NADIE_SE_HACE_CARGO, "Nadie se hace cargo", false, "33", false, false));
+        // Resultado FINAL
+        listaResultados.add(new Resultado(Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO, "Nadie se hace cargo (2ª Visita)", true, null, false, false));
 
 
         for (Resultado resultado: listaResultados) {
