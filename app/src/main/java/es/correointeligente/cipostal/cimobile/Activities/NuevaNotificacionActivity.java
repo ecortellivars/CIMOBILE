@@ -86,7 +86,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     Button btn_noEntregado, btn_entregado;
     LinearLayout ll_detallePrimerIntento, ll_botonera;
     String[] listaResultadosNoEntrega;
-    List<Resultado> listaResultadosNoNotifica;
+    List<Resultado> listaResultadosNoNotifica,listaResultados;
     int checkedItem;
     Notificacion notificacion;
     String codigoNotificador;
@@ -216,8 +216,13 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
 
         @Override
         protected List<Resultado> doInBackground(Void... voids) {
-            List<Resultado> listaResultados = dbHelper.obtenerResultadosNoNotifican();
+            Notificacion notificacion = dbHelper.obtenerNotificacion(idNotificacion);
+            if (notificacion.getResultado1() != null){
+                listaResultados = dbHelper.obtenerResultadosFinales();
+            } else {
+                listaResultados = dbHelper.obtenerResultadosNoNotifican();
 
+            }
             return listaResultados;
         }
 

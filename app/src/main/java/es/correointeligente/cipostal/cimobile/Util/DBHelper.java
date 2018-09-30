@@ -173,14 +173,58 @@ public class DBHelper extends SQLiteOpenHelper {
         return resultado;
     }
 
+    /**
+     * Crea los resultados por defecto de la aplicación
+     * @param db
+     */
+    private void crearResultadosPorDefecto(SQLiteDatabase db) {
+        //Resultado = codigo, descripcion, esFinal, codigoSegundoIntento,  esResultadoOficina, notifica
+        List<Resultado> listaResultados = new ArrayList<>();
+        // Resultados FINALES
+        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO, "Notificado", true, null, false, true));
+        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_SIN_FIRMA, "Notificado sin firma", true, null, false, false));
+        listaResultados.add(new Resultado(Util.RESULTADO_DIR_INCORRECTA, "Dirección Incorrecta", true, null, false, false));
+        listaResultados.add(new Resultado(Util.RESULTADO_DESCONOCIDO, "Desconocido", true, null, false, false));
+        listaResultados.add(new Resultado(Util.RESULTADO_FALLECIDO, "Fallecido", true, null, false, false));
+        listaResultados.add(new Resultado(Util.RESULTADO_REHUSADO, "Rehusado", true, null, false, false));
+        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_OFICINA, "Entregado oficina", true, null, true, true));
+        // Resultado NO FINAL
+        listaResultados.add(new Resultado(Util.RESULTADO_AUSENTE, "Ausente", false, "32", false, false));
+        // Resultado FINAL
+        listaResultados.add(new Resultado(Util.RESULTADO_AUSENTE_SEGUNDO, "Ausente (2ª Visita)", true, null, false, false));
+        // Resultado NO FINAL
+        listaResultados.add(new Resultado(Util.RESULTADO_NADIE_SE_HACE_CARGO, "Nadie se hace cargo", false, "33", false, false));
+        // Resultado FINAL
+        listaResultados.add(new Resultado(Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO, "Nadie se hace cargo (2ª Visita)", true, null, false, false));
+
+
+        for (Resultado resultado: listaResultados) {
+            Integer esFinal = resultado.getEsFinal() ? 1 : 0;
+            Integer esResultadoOficina = resultado.getEsResultadoOficina() ? 1 : 0;
+            Integer notifica = resultado.getNotifica() ? 1 : 0;
+
+            ContentValues values = new ContentValues();
+            values.put(KEY_RESULTADO_CODIGO, resultado.getCodigo());
+            values.put(KEY_RESULTADO_CODIGO_SEGUNDO_INTENTO, resultado.getCodigoSegundoIntento());
+            values.put(KEY_RESULTADO_DESCRIPCION, resultado.getDescripcion());
+            values.put(KEY_RESULTADO_FINAL, esFinal);
+            values.put(KEY_RESULTADO_RESULTADO_OFICINA, esResultadoOficina);
+            values.put(KEY_RESULTADO_NOTIFICA, notifica);
+
+            db.insert(TABLE_RESULTADO, null, values);
+        }
+    }
     /** SELECT
-     * Obtiene todos los tipos de resultado de la base de datos interna
+     * Obtiene los posibles 2º intentos
      * @return List<Resultado>
      */
-    public List<Resultado> obtenerResultados() {
+    public List<Resultado> obtenerResultadosFinales() {
         List<Resultado> listaResultados = new ArrayList<>();
 
-        String query = "SELECT * FROM " + TABLE_RESULTADO;
+        String query = "SELECT * FROM " + TABLE_RESULTADO +
+                " WHERE " + KEY_RESULTADO_FINAL + " = 1 " +
+                " AND " + KEY_RESULTADO_NOTIFICA + " = 0 ";
+
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
@@ -218,7 +262,8 @@ public class DBHelper extends SQLiteOpenHelper {
         List<Resultado> listaResultados = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String query = "SELECT * FROM " + TABLE_RESULTADO + " WHERE " + KEY_RESULTADO_NOTIFICA + " = 0";
+        String query = "SELECT * FROM " + TABLE_RESULTADO +
+                       " WHERE " + KEY_RESULTADO_DESCRIPCION + " IN ('Notificado sin firma','Dirección Incorrecta','Desconocido','Fallecido', 'Rehusado', 'Ausente', 'Nadie se hace cargo') ";
         Cursor cursor = db.rawQuery(query, null);
 
         if (cursor != null) {
@@ -378,7 +423,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 new String[]{Util.RESULTADO_NADIE_SE_HACE_CARGO, Util.RESULTADO_AUSENTE}, null, null, null, null);
         resumenReparto.setTotNotifPendientesSegundoOtroDia(cursor.getCount());
 
-        cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID}, KEY_NOTIFICACION_MARCADA + " = ?", new String[]{"1"}, null, null, null, null);
+        cursor = db.    query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID}, KEY_NOTIFICACION_MARCADA + " = ?", new String[]{"1"}, null, null, null, null);
         resumenReparto.setTotNotifMarcadas(cursor.getCount());
 
         // Detalle de las notificaciones
@@ -1256,45 +1301,5 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(qry);
     }
 
-    /**
-     * Crea los resultados por defecto de la aplicación
-     * @param db
-     */
-    private void crearResultadosPorDefecto(SQLiteDatabase db) {
-        //Resultado = codigo, descripcion, esFinal, codigoSegundoIntento,  esResultadoOficina, notifica
-        List<Resultado> listaResultados = new ArrayList<>();
-        // Resultados FINALES
-        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO, "Notificado", true, null, false, true));
-        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_SIN_FIRMA, "Notificado sin firma", true, null, false, false));
-        listaResultados.add(new Resultado(Util.RESULTADO_DIR_INCORRECTA, "Dirección Incorrecta", true, null, false, false));
-        listaResultados.add(new Resultado(Util.RESULTADO_DESCONOCIDO, "Desconocido", true, null, false, false));
-        listaResultados.add(new Resultado(Util.RESULTADO_FALLECIDO, "Fallecido", true, null, false, false));
-        listaResultados.add(new Resultado(Util.RESULTADO_REHUSADO, "Rehusado", true, null, false, false));
-        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_OFICINA, "Entregado oficina", true, null, true, true));
-        // Resultado NO FINAL
-        listaResultados.add(new Resultado(Util.RESULTADO_AUSENTE, "Ausente", false, "32", false, false));
-        // Resultado FINAL
-        listaResultados.add(new Resultado(Util.RESULTADO_AUSENTE_SEGUNDO, "Ausente (2ª Visita)", true, null, false, false));
-        // Resultado NO FINAL
-        listaResultados.add(new Resultado(Util.RESULTADO_NADIE_SE_HACE_CARGO, "Nadie se hace cargo", false, "33", false, false));
-        // Resultado FINAL
-        listaResultados.add(new Resultado(Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO, "Nadie se hace cargo (2ª Visita)", true, null, false, false));
 
-
-        for (Resultado resultado: listaResultados) {
-            Integer esFinal = resultado.getEsFinal() ? 1 : 0;
-            Integer esResultadoOficina = resultado.getEsResultadoOficina() ? 1 : 0;
-            Integer notifica = resultado.getNotifica() ? 1 : 0;
-
-            ContentValues values = new ContentValues();
-            values.put(KEY_RESULTADO_CODIGO, resultado.getCodigo());
-            values.put(KEY_RESULTADO_CODIGO_SEGUNDO_INTENTO, resultado.getCodigoSegundoIntento());
-            values.put(KEY_RESULTADO_DESCRIPCION, resultado.getDescripcion());
-            values.put(KEY_RESULTADO_FINAL, esFinal);
-            values.put(KEY_RESULTADO_RESULTADO_OFICINA, esResultadoOficina);
-            values.put(KEY_RESULTADO_NOTIFICA, notifica);
-
-            db.insert(TABLE_RESULTADO, null, values);
-        }
-    }
 }
