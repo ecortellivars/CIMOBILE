@@ -133,9 +133,9 @@ public class DetalleNotificacionActivity extends BaseActivity {
                                 intentNuevaNoti.putExtra("fechaHoraRes", fechaHoraString3);
                                 startActivity(intentNuevaNoti);
                                 notificacion = dbHelper.obtenerNotificacion(idNotificacion);
-                                // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.jpg
+                                // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.bmp
                                 // Create an image file name
-                                notificacion.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" +  fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + notificacion.getResultado2() + ".jpg");
+                                notificacion.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" +  fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + notificacion.getResultado2() + ".bmp");
                                 notificacion.setFotoAcuseRes1(null);
                                 Boolean guardadoNotificacionEnBD = dbHelper.guardaResultadoNotificacion(notificacion);
                                 if (guardadoNotificacionEnBD) {
@@ -163,8 +163,8 @@ public class DetalleNotificacionActivity extends BaseActivity {
                                 intentNuevaNoti.putExtra("fechaHoraRes", fechaHoraString3);
                                 startActivity(intentNuevaNoti);
                                 notificacion = dbHelper.obtenerNotificacion(idNotificacion);
-                                // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.jpg
-                                notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" +  fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + notificacion.getResultado1() + ".jpg");
+                                // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.bmp
+                                notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" +  fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + notificacion.getResultado1() + ".bmp");
                                 notificacion.setFotoAcuseRes2(null);
                                 Boolean guardadoNotificacionEnBD = dbHelper.guardaResultadoNotificacion(notificacion);
                                 if (guardadoNotificacionEnBD) {
