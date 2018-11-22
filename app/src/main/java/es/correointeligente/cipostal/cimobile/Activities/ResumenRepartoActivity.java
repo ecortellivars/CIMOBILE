@@ -42,11 +42,12 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
     Button mCerrarReparto;
     FTPHelper ftpHelper;
     Integer totNotisGestionadas = 0;
+    Integer totResultados = 0;
     Integer totFotosHechas = 0;
 
     // Variables para instanciar los objetos del layaout y darles valor
     TextView tv_totFicheros, tv_totNotificaciones, tv_totNotifGestionadas, tv_totNotifPendientes_2_hoy,
-             tv_totNotifPendientes_2_otro_dia, tv_totNotifMarcadas, tv_totFotos;
+             tv_totNotifPendientes_2_otro_dia, tv_totNotifMarcadas, tv_totFotos,  tv_totResultados;
     TextView tv_entregado, tv_dirIncorrecta, tv_ausente, tv_ausente_pendiente, tv_desconocido, tv_fallecido, tv_rehusado,
             tv_noSeHaceCargo, tv_noSeHaceCargoPendiente;
 
@@ -97,6 +98,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
         tv_totNotificaciones = (TextView) findViewById(R.id.textView_resumen_total_notificaciones_value);
         tv_totNotifGestionadas = (TextView) findViewById(R.id.textView_resumen_total_notif_gestionadas_value);
         tv_totFotos = (TextView) findViewById(R.id.textView_resumen_total_fotos_value);
+        tv_totResultados = (TextView) findViewById(R.id.textView_resumen_total_resultados_value);
         tv_totNotifPendientes_2_hoy = (TextView) findViewById(R.id.textView_resumen_total_notif_pendientes_2_hoy_value);
         tv_totNotifPendientes_2_otro_dia = (TextView) findViewById(R.id.textView_resumen_total_notif_pendientes_2_otro_dia_value);
         tv_totNotifMarcadas = (TextView) findViewById(R.id.textView_resumen_total_notif_marcadas_value);
@@ -151,6 +153,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
         protected ResumenReparto doInBackground(Void... voids) {
             ResumenReparto resumen = dbHelper.obtenerResumenReparto();
             totNotisGestionadas = resumen.getTotNotifGestionadas();
+            totResultados = resumen.getTotResultados();
             return resumen;
         }
 
@@ -177,12 +180,13 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                             contadorFotos = contadorFotos + 1;
                     }
                     if (noti.getFotoAcuseRes1() != null) {
-                        contadorFotos = contadorFotos + 1;
+                            contadorFotos = contadorFotos + 1;
                     }
                 }
             }
             totFotosHechas = contadorFotos;
             tv_totFotos.setText(contadorFotos.toString());
+            tv_totResultados.setText(resumenReparto.getTotResultados().toString());
             tv_totNotifGestionadas.setText(resumenReparto.getTotNotifGestionadas().toString());
 
             tv_entregado.setText(resumenReparto.getNumEntregados().toString());
@@ -281,8 +285,6 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
 
                         try (FileWriter writerCSV = new FileWriter(ficheroCSV);
                              FileWriter writerTXT = new FileWriter(ficheroTXT);) {
-
-
                             publishProgress(getString(R.string.generando_fichero_CSV));
                             for (Notificacion notificacion : listaNotificacionesGestionadas) {
 
@@ -529,5 +531,4 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             builder.show();
         }
     }
-
 }

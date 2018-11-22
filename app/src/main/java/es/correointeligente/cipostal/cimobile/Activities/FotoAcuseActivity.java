@@ -112,7 +112,7 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
         String imageFileName = null;
         File storageDir = null;
         File fileDestino = null;
-        imageFileName = referencia + "_" + fechaHoraRes  + "_" + fechaHoraRes   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + resultado + ".jpg";
+        imageFileName = referencia + "_" + fechaHoraRes  + "_" + fechaHoraRes   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + resultado + ".bmp";
         storageDir = new File(Environment.getExternalStorageDirectory(),RUTA_IMAGEN);
         fileDestino = new File(storageDir, imageFileName);
         Uri cameraImageUri = Uri.fromFile(fileDestino);

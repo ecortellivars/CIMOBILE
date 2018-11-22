@@ -31,7 +31,8 @@
                     android:id="@+id/textView_resumen_total_ficheros"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/total_ficheros" />
+                    android:text="@string/total_ficheros"
+                    android:textSize="10sp" />
 
                 <TextView
                     android:id="@+id/textView_resumen_total_ficheros_value"
@@ -39,6 +40,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginStart="20dp"
+                    android:textSize="10sp"
                     android:textStyle="bold" />
 
             </TableRow>
@@ -51,7 +53,8 @@
                     android:id="@+id/textView_resumen_total_notificaciones"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/total_notificaciones" />
+                    android:text="@string/total_notificaciones"
+                    android:textSize="10sp" />
 
                 <TextView
                     android:id="@+id/textView_resumen_total_notificaciones_value"
@@ -59,29 +62,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginStart="20dp"
+                    android:textSize="10sp"
                     android:textStyle="bold" />
             </TableRow>
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/textView_resumen_total_notif_gestionadas"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/total_notificaciones_acabadas" />
-
-                <TextView
-                    android:id="@+id/textView_resumen_total_notif_gestionadas_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginStart="20dp"
-                    android:textStyle="bold" />
-            </TableRow>
-
-            <TableRow
+           <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -89,7 +74,8 @@
                     android:id="@+id/textView_resumen_total_fotos"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/total_fotos" />
+                    android:text="@string/total_fotos"
+                    android:textSize="10sp" />
 
                 <TextView
                     android:id="@+id/textView_resumen_total_fotos_value"
@@ -97,6 +83,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginStart="20dp"
+                    android:textSize="10sp"
                     android:textStyle="bold" />
             </TableRow>
 
@@ -109,7 +96,8 @@
                     android:id="@+id/textView_resumen_total_notif_pendientes_2_hoy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/total_notificaciones_pendientes_2_hoy" />
+                    android:text="@string/total_notificaciones_pendientes_2_hoy"
+                    android:textSize="10sp" />
 
                 <TextView
                     android:id="@+id/textView_resumen_total_notif_pendientes_2_hoy_value"
@@ -117,6 +105,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginStart="20dp"
+                    android:textSize="10sp"
                     android:textStyle="bold" />
             </TableRow>
 
@@ -128,7 +117,8 @@
                     android:id="@+id/textView_resumen_total_notif_pendientes_2_otro_dia"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/total_notificaciones_pendientes_2_otro_dia" />
+                    android:text="@string/total_notificaciones_pendientes_2_otro_dia"
+                    android:textSize="10sp" />
 
                 <TextView
                     android:id="@+id/textView_resumen_total_notif_pendientes_2_otro_dia_value"
@@ -136,6 +126,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginStart="20dp"
+                    android:textSize="10sp"
                     android:textStyle="bold" />
             </TableRow>
 
@@ -147,7 +138,8 @@
                     android:id="@+id/textView_resumen_total_notif_marcadas"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/total_notificaciones_marcadas" />
+                    android:text="@string/total_notificaciones_marcadas"
+                    android:textSize="10sp" />
 
                 <TextView
                     android:id="@+id/textView_resumen_total_notif_marcadas_value"
@@ -155,11 +147,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginStart="20dp"
+                    android:textSize="10sp"
                     android:textStyle="bold" />
 
             </TableRow>
 
-        </TableLayout>
+                   </TableLayout>
 
     </LinearLayout>
 
@@ -172,15 +165,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/detalle_notificaciones"
-                android:textAllCaps="true"
-                android:textStyle="bold" />
 
             <TableLayout
                 android:layout_width="match_parent"
@@ -195,7 +181,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/entregado_01" />
+                        android:text="@string/entregadoConSinFirma"
+                        android:textSize="10sp" />
 
                     <TextView
                         android:id="@+id/textView_resumen_entregado_value"
@@ -203,6 +190,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
+                        android:textSize="10sp"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -214,7 +202,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/dir_incorrecta_02" />
+                        android:text="@string/dir_incorrecta_02"
+                        android:textSize="10sp" />
 
                     <TextView
                         android:id="@+id/textView_resumen_dir_incorrecta_value"
@@ -222,6 +211,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
+                        android:textSize="10sp"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -233,7 +223,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/ausente_03" />
+                        android:text="@string/ausente_32"
+                        android:textSize="10sp" />
 
                     <TextView
                         android:id="@+id/textView_resumen_ausente_value"
@@ -241,6 +232,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
+                        android:textSize="10sp"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -252,7 +244,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/ausente_pendiente_03" />
+                        android:text="@string/ausente_31"
+                        android:textSize="10sp" />
 
                     <TextView
                         android:id="@+id/textView_resumen_ausente_pendiente_value"
@@ -260,6 +253,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
+                        android:textSize="10sp"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -271,7 +265,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/desconocido_04" />
+                        android:text="@string/desconocido_04"
+                        android:textSize="10sp" />
 
                     <TextView
                         android:id="@+id/textView_resumen_desconocido_value"
@@ -279,6 +274,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
+                        android:textSize="10sp"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -290,7 +286,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/fallecido_05" />
+                        android:text="@string/fallecido_05"
+                        android:textSize="10sp" />
 
                     <TextView
                         android:id="@+id/textView_resumen_fallecido_value"
@@ -298,6 +295,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
+                        android:textSize="10sp"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -309,7 +307,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/rehusado_06" />
+                        android:text="@string/rehusado_06"
+                        android:textSize="10sp" />
 
                     <TextView
                         android:id="@+id/textView_resumen_rehusado_value"
@@ -317,6 +316,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
+                        android:textSize="10sp"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -325,20 +325,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/nadie_se_hace_cargo_07" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/nadie_se_hace_cargo_33"
+                        android:textSize="10sp" />
 
-                <TextView
-                    android:id="@+id/textView_resumen_nadie_cargo_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginStart="20dp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/textView_resumen_nadie_cargo_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="20dp"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
 
-            </TableRow>
+                </TableRow>
 
                 <TableRow
                     android:layout_width="match_parent"
@@ -347,7 +349,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/nadie_se_hace_cargo_pendiente_07" />
+                        android:text="@string/nadie_se_hace_cargo_07"
+                        android:textSize="10sp" />
 
                     <TextView
                         android:id="@+id/textView_resumen_nadie_cargo_pendiente_value"
@@ -355,17 +358,53 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
+                        android:textSize="10sp"
                         android:textStyle="bold" />
 
                 </TableRow>
 
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textView_resumen_total_resultados"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/total_resultados"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/textView_resumen_total_resultados_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="20dp"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textView_resumen_total_notif_gestionadas"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/total_notificaciones_acabadas"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/textView_resumen_total_notif_gestionadas_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="20dp"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+                </TableRow>
             </TableLayout>
-
-
-            <android.support.v4.widget.Space
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
 
             <Button
                 android:id="@+id/button_resumen_cerrar_reparto"
@@ -377,9 +416,6 @@
                 android:text="@string/cerrar_reparto"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF" />
-
         </LinearLayout>
-
     </ScrollView>
-
 </LinearLayout>

@@ -403,11 +403,19 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID}, null, null, null, null, null, null);
         resumenReparto.setTotNotificaciones(cursor.getCount());
 
+        // Gestionada
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
                 "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0 AND " + KEY_NOTIFICACION_RESULTADO_1 + " IS NOT NULL) OR " +
-                         "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1 AND " + KEY_NOTIFICACION_RESULTADO_2 + " IS NOT NULL)",
+                         "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1 AND " + KEY_NOTIFICACION_RESULTADO_2 + " IS NOT NULL)" ,
                 null, null, null, null, null);
         resumenReparto.setTotNotifGestionadas(cursor.getCount());
+
+        // Resultados
+        cursor = db.query(false, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
+                "(" + KEY_NOTIFICACION_RESULTADO_1 + " IS NOT NULL) OR " +
+                         "(" + KEY_NOTIFICACION_RESULTADO_2 + " IS NOT NULL)" ,
+                null, null, null, null, null);
+        resumenReparto.setTotResultados(cursor.getCount());
 
         // Los segundos intentos que se pueden hacer hoy
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
@@ -484,7 +492,7 @@ public class DBHelper extends SQLiteOpenHelper {
                           // WHERE
                              "(" + KEY_NOTIFICACION_RESULTADO_2 + " = ?" + ")" ,
                           // VALORES DE LOS ? añadidos de forma que aparecen en el ARRAY
-                          new String[]{Util.RESULTADO_AUSENTE}, null, null, null, null);
+                          new String[]{Util.RESULTADO_AUSENTE_SEGUNDO}, null, null, null, null);
         resumenReparto.setNumAusentes(cursor.getCount());
 
         // Ausente PENDIENTE
@@ -525,7 +533,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 // WHERE
                 "(" + KEY_NOTIFICACION_RESULTADO_2 + " = ?" + ")" ,
                 // VALORES DE LOS ? añadidos de forma que aparecen en el ARRAY
-                new String[]{Util.RESULTADO_NADIE_SE_HACE_CARGO}, null, null, null, null);
+                new String[]{Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO}, null, null, null, null);
         resumenReparto.setNumNadieSeHaceCargo(cursor.getCount());
 
         // No se hace cargo PENDIENTE
