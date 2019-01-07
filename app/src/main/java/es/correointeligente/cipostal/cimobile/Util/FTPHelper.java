@@ -210,6 +210,22 @@ public class FTPHelper  {
         return ok;
     }
 
+    public Boolean borrarFichero(File file, String Path) {
+        Boolean ok = Boolean.TRUE;
+        try {
+            Channel channel = session.openChannel("sftp");
+            channel.connect();
+            ChannelSftp channelSftp = (ChannelSftp) channel;
+            channelSftp.cd(Path);
+            InputStream stream = new ByteArrayInputStream( FileUtils.readFileToByteArray(file));
+            channelSftp.rm(file.getName());
+        } catch (Exception e) {
+            ok = Boolean.FALSE;
+        }
+
+        return ok;
+    }
+
     /**
      * Conectamos con el servidor FTp via WIFI y si existe un SICER nos lo bajamos
      * @return

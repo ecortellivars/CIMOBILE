@@ -112,7 +112,7 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
         String imageFileName = null;
         File storageDir = null;
         File fileDestino = null;
-        imageFileName = referencia + "_" + fechaHoraRes  + "_" + fechaHoraRes   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + resultado + ".bmp";
+        imageFileName = referencia + "_" + fechaHoraRes  + "_" + fechaHoraRes   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + resultado + ".webp";
         storageDir = new File(Environment.getExternalStorageDirectory(),RUTA_IMAGEN);
         fileDestino = new File(storageDir, imageFileName);
         Uri cameraImageUri = Uri.fromFile(fileDestino);
@@ -137,20 +137,6 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Bundle extras = data.getExtras();
-        Bitmap imageBitmap = (Bitmap) extras.get("data");
-        if (requestCode == 1) {
-
-        }
-
-        else {
-            Toast toast = null;
-            toast = Toast.makeText(this, "Revisa los permisos de la camara del movil", Toast.LENGTH_LONG);
-            toast.show();
-        }
-    }
 
     /** Check if this device has a camera */
     private boolean checkCameraHardware(Context context) {

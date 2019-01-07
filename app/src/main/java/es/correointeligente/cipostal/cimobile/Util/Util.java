@@ -603,7 +603,7 @@ public class Util {
             }
 
         } else { // Si es un fichero, se añade al ZIP
-            byte[] buf = new byte[1024];
+            byte[] buf = new byte[128];
             int len;
             ZipEntry zipEntry = new ZipEntry(file.toString());
             FileInputStream fin = new FileInputStream(file);

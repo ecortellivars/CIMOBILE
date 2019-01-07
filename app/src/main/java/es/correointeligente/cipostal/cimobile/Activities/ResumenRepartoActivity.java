@@ -338,7 +338,6 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                 DateFormat df = new SimpleDateFormat("yyyyMMdd");
                                 calendarAux.setTime(dateAux);
                                 fechaResultadoString = df.format(calendarAux.getTime());
-
                                 writerCSV.append(obtenerDelegacion() + ";" + obtenerCodigoNotificador() + ";" + codResultado + ";" + notificacion.getReferencia() + ";" + fechaResultadoString + ";" + fechaResultadoString + "\n");
                             }
 
@@ -348,29 +347,42 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                             // Una vez generado el fichero, se sube al servidor FTP
                             publishProgress(getString(R.string.subiendo_fichero_CSV));
                             if (!ftpHelper.subirFichero(ficheroCSV, pathVolcado)) {
+                                // Si fallo borro CSV y acabo
                                 fallo = getString(R.string.error_subir_fichero_CSV);
+                                // Borro movil
                                 ficheroCSV.delete();
-                            } else {
-
-                                if (ficheroTXT != null && ficheroTXT.length() > 0) {
-                                    publishProgress(getString(R.string.subiendo_fichero_segundo_intento));
-                                    if (!ftpHelper.subirFichero(ficheroTXT, pathVolcadoSegundoIntento)) {
-                                        fallo = getString(R.string.error_subiendo_fichero_segundo_intento);
-                                        ficheroTXT.delete();
-                                    }
-                                } else {
+                                // Borro ftp
+                                ftpHelper.borrarFichero(ficheroCSV, pathVolcado);
+                                // Si no fallo y hay TXT continuo con el TXT
+                                } else if (fallo == "" && ficheroTXT != null && !ftpHelper.subirFichero(ficheroTXT, pathVolcadoSegundoIntento)) {
+                                   publishProgress(getString(R.string.subiendo_fichero_segundo_intento));
+                                    // Si fallo borro ambos
+                                    fallo = getString(R.string.error_subiendo_fichero_segundo_intento);
+                                    // Borro movil
                                     ficheroTXT.delete();
+                                    ficheroCSV.delete();
+                                    // Borro ftp
+                                    ftpHelper.borrarFichero(ficheroTXT, pathVolcado);
+                                    ftpHelper.borrarFichero(ficheroCSV, pathVolcado);
+                                } else {
+                                    // Generar ZIP con los xml, las firmas, los sellos de tiempo, las fotos de los acuses y el csv
+                                    publishProgress(getString(R.string.generando_fichero_zip));
+                                    ficheroZIP = Util.comprimirZIP(obtenerCodigoNotificador(), obtenerDelegacion());
+                                    publishProgress(getString(R.string.subiendo_fichero_zip));
+                                    if (!ftpHelper.subirFichero(ficheroZIP, pathVolcado)) {
+                                        // Si fallo borro los 3
+                                        fallo = getString(R.string.error_subir_fichero_zip);
+                                        // Borro movil
+                                        ficheroZIP.delete();
+                                        ficheroTXT.delete();
+                                        ficheroCSV.delete();
+                                        // Borro ftp
+                                        ftpHelper.borrarFichero(ficheroTXT, pathVolcado);
+                                        ftpHelper.borrarFichero(ficheroCSV, pathVolcado);
+                                        ftpHelper.borrarFichero(ficheroZIP, pathVolcado);
+                                    }
                                 }
 
-                                // Generar ZIP con los xml, las firmas, los sellos de tiempo, las fotos de los acuses y el csv
-                                publishProgress(getString(R.string.generando_fichero_zip));
-                                ficheroZIP = Util.comprimirZIP(obtenerCodigoNotificador(), obtenerDelegacion());
-                                publishProgress(getString(R.string.subiendo_fichero_zip));
-                                if (!ftpHelper.subirFichero(ficheroZIP, pathVolcado)) {
-                                    fallo = getString(R.string.error_subir_fichero_zip);
-                                    ficheroZIP.delete();
-                                }
-                            }
                         } catch (IOException e) {
                             fallo = getString(R.string.error_apertura_ficheros_escritura);
                         }
