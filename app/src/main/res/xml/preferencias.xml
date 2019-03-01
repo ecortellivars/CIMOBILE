@@ -128,4 +128,12 @@
             android:defaultValue="false"/>
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="Aplicación PEE">
+        <CheckBoxPreference
+            android:key="usarAPPPEE"
+            android:title="Aplicación PEE"
+            android:summary="Determina si se va a usar PEE"
+            android:defaultValue="false"/>
+    </PreferenceCategory>
+
 </PreferenceScreen>

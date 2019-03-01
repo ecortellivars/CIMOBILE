@@ -22,6 +22,7 @@ import es.correointeligente.cipostal.cimobile.Model.ResumenReparto;
 import es.correointeligente.cipostal.cimobile.R;
 
 import static android.R.attr.data;
+import static es.correointeligente.cipostal.cimobile.Util.Util.RESULTADO_ENTREGADO_OFICINA;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -181,13 +182,15 @@ public class DBHelper extends SQLiteOpenHelper {
         //Resultado = codigo, descripcion, esFinal, codigoSegundoIntento,  esResultadoOficina, notifica
         List<Resultado> listaResultados = new ArrayList<>();
         // Resultados FINALES
-        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO, "Notificado", true, null, false, true));
+        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO, "Notificado", true, null, true, true));
         listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_SIN_FIRMA, "Notificado sin firma", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_DIR_INCORRECTA, "Dirección Incorrecta", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_DESCONOCIDO, "Desconocido", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_FALLECIDO, "Fallecido", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_REHUSADO, "Rehusado", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_OFICINA, "Entregado oficina", true, null, true, true));
+        listaResultados.add(new Resultado(Util.RESULTADO_NO_ENTREGADO_OFICINA, "NO Entregado oficina", true, null, true, false));
+
         // Resultado NO FINAL
         listaResultados.add(new Resultado(Util.RESULTADO_AUSENTE, "Ausente", false, "32", false, false));
         // Resultado FINAL
@@ -219,11 +222,13 @@ public class DBHelper extends SQLiteOpenHelper {
      * @return List<Resultado>
      */
     public List<Resultado> obtenerResultadosFinales() {
+
         List<Resultado> listaResultados = new ArrayList<>();
 
         String query = "SELECT * FROM " + TABLE_RESULTADO +
-                " WHERE " + KEY_RESULTADO_FINAL + " = 1 " +
-                " AND " + KEY_RESULTADO_NOTIFICA + " = 0 ";
+                      " WHERE " + KEY_RESULTADO_FINAL + " = 1 " +
+                      " AND " + KEY_RESULTADO_NOTIFICA + " = 0 " +
+                      " AND " + KEY_RESULTADO_RESULTADO_OFICINA + " = 0 ";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -231,7 +236,6 @@ public class DBHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
-
                     Resultado resultado = new Resultado();
                     resultado.setCodigo(cursor.getString(cursor.getColumnIndex(KEY_RESULTADO_CODIGO)));
                     resultado.setCodigoSegundoIntento(cursor.getString(cursor.getColumnIndex(KEY_RESULTADO_CODIGO_SEGUNDO_INTENTO)));
@@ -255,21 +259,22 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /** SELECT
-     * Obtiene aquellos tipos de resultado que no dan por entregada la notificación
+     * Obtiene aquellos tipos de resultado que NO finales
      * @return
      */
-    public List<Resultado> obtenerResultadosNoNotifican() {
+    public List<Resultado> obtenerResultadosNoFinales() {
         List<Resultado> listaResultados = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
         String query = "SELECT * FROM " + TABLE_RESULTADO +
-                       " WHERE " + KEY_RESULTADO_DESCRIPCION + " IN ('Notificado sin firma','Dirección Incorrecta','Desconocido','Fallecido', 'Rehusado', 'Ausente', 'Nadie se hace cargo') ";
+                       " WHERE " + KEY_RESULTADO_DESCRIPCION + " IN ('Notificado sin firma','Dirección Incorrecta','Desconocido','Fallecido', 'Rehusado', 'Ausente', 'Nadie se hace cargo') " +
+                       " ORDER BY " + KEY_RESULTADO_CODIGO;
+
         Cursor cursor = db.rawQuery(query, null);
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
-
                     Resultado resultado = new Resultado();
                     resultado.setCodigo(cursor.getString(cursor.getColumnIndex(KEY_RESULTADO_CODIGO)));
                     resultado.setCodigoSegundoIntento(cursor.getString(cursor.getColumnIndex(KEY_RESULTADO_CODIGO_SEGUNDO_INTENTO)));
@@ -291,6 +296,46 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return listaResultados;
     }
+
+    /** SELECT
+     * Obtiene los posibles 2º intentos
+     * @return List<Resultado>
+     */
+    public List<Resultado> obtenerResultadosEnOficina() {
+
+        List<Resultado> listaResultados = new ArrayList<>();
+
+        String query = "SELECT * FROM " + TABLE_RESULTADO +
+                      " WHERE " + KEY_RESULTADO_RESULTADO_OFICINA + " = 1 ";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    Resultado resultado = new Resultado();
+                    resultado.setCodigo(cursor.getString(cursor.getColumnIndex(KEY_RESULTADO_CODIGO)));
+                    resultado.setCodigoSegundoIntento(cursor.getString(cursor.getColumnIndex(KEY_RESULTADO_CODIGO_SEGUNDO_INTENTO)));
+                    resultado.setDescripcion(cursor.getString(cursor.getColumnIndex(KEY_RESULTADO_DESCRIPCION)));
+                    Integer intEsFinal = cursor.getInt(cursor.getColumnIndex(KEY_RESULTADO_FINAL));
+                    resultado.setEsFinal(intEsFinal == 1 ? true : false);
+                    Integer intEsResultadoOficina = cursor.getInt(cursor.getColumnIndex(KEY_RESULTADO_RESULTADO_OFICINA));
+                    resultado.setEsResultadoOficina(intEsResultadoOficina == 1 ? true : false);
+                    Integer intNotifica = cursor.getInt(cursor.getColumnIndex(KEY_RESULTADO_NOTIFICA));
+                    resultado.setNotifica(intNotifica == 1 ? true : false);
+
+                    listaResultados.add(resultado);
+
+                } while (cursor.moveToNext());
+            }
+        }
+
+        db.close();
+
+        return listaResultados;
+    }
+
 
     /******************************************************************************************/
     /******************************* QUERIES PERSONALIZADAS ***********************************/

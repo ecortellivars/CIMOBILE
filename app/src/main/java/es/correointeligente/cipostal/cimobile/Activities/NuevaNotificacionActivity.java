@@ -86,7 +86,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     Button btn_noEntregado, btn_entregado;
     LinearLayout ll_detallePrimerIntento, ll_botonera;
     String[] listaResultadosNoEntrega;
-    List<Resultado> listaResultadosNoNotifica,listaResultados;
+    List<Resultado> listaResultadosNoNotifica, listaResultados, listaResultadosNoNotificaEliminar;
     int checkedItem;
     Notificacion notificacion;
     String codigoNotificador;
@@ -216,26 +216,34 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
 
         @Override
         protected List<Resultado> doInBackground(Void... voids) {
+            Boolean esAplicacionOficina = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_DE_OFICINA, getBaseContext(), Boolean.class.getSimpleName());
             Notificacion notificacion = dbHelper.obtenerNotificacion(idNotificacion);
+            // Hay PRIMERA VISITA
             if (notificacion.getResultado1() != null){
-                listaResultados = dbHelper.obtenerResultadosFinales();
-            } else {
-                listaResultados = dbHelper.obtenerResultadosNoNotifican();
+                if (esAplicacionOficina && notificacion.getResultado2() != null) {
+                    listaResultados = dbHelper.obtenerResultadosEnOficina();
+                } else {
+                    listaResultados = dbHelper.obtenerResultadosFinales();
+                }
+
+                // NO hay PRIMERA VISITA
+                } else {
+                    listaResultados = dbHelper.obtenerResultadosNoFinales();
 
             }
             return listaResultados;
         }
 
         @Override
-        protected void onPostExecute(List<Resultado> listaResultados) {
+        protected void onPostExecute(List<Resultado> listaResultados) { // Dependiendo de si es una aplicación PEE revisara las fotos o no
+
             listaResultadosNoNotifica = listaResultados;
             listaResultadosNoEntrega = new String[listaResultadosNoNotifica.size()];
             int index = 0;
             for (Resultado resultado : listaResultadosNoNotifica) {
-                listaResultadosNoEntrega[index] = (String) resultado.getCodigo() + " " + resultado.getDescripcion().toUpperCase();
-                index++;
+                        listaResultadosNoEntrega[index] = (String) resultado.getCodigo() + " " + resultado.getDescripcion().toUpperCase();
+                        index++;
             }
-
             progressDialog.dismiss();
         }
     }
@@ -308,9 +316,9 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     df = new SimpleDateFormat("dd/MM/yyyy");
                     diaLimite = df.format(calendarDiaLimite.getTime());
 
-                    invalidarBotonera = !(calendarParaComparaHoras.after(calendarAntesDe) &&
-                            calendarParaComparaHoras.before(calendarApartirDe) &&
-                            calendarDiaLimite.after(Calendar.getInstance()));
+                    //invalidarBotonera = !(calendarParaComparaHoras.after(calendarAntesDe) &&
+                                          //calendarParaComparaHoras.before(calendarApartirDe) &&
+                                          //calendarDiaLimite.after(Calendar.getInstance()));
 
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -368,7 +376,6 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
 
                 // Fecha para dar nombre a la imagen en base de datos y al fichero JPG
                 DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
-                String fechaHoraString2 = df2.format(Calendar.getInstance().getTime());
 
                 // Preparamos la informacion si es Primer Intento
                 if (BooleanUtils.isFalse(notificacion.getSegundoIntento())) {
@@ -380,9 +387,6 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     notificacion.setObservacionesRes1(edt_observaciones.getText().toString().trim().length() == 0 ? null : edt_observaciones.getText().toString());
                     notificacion.setNotificadorRes1(obtenerNombreNotificador());
                     notificacion.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
-                    // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.jpg
-                    //notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString2 + "_" +  fechaHoraString2 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + codResultado + ".jpg");
-
                 }
                 // Preparamos la informacion si es Segundo Intento
                 else {
@@ -394,8 +398,6 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     notificacion.setObservacionesRes2(edt_observaciones.getText().toString().trim().length() == 0 ? null : edt_observaciones.getText().toString());
                     notificacion.setNotificadorRes2(obtenerNombreNotificador());
                     notificacion.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
-                    // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.jpg
-                    //notificacion.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString2 + "_" +  fechaHoraString2 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + codResultado + ".jpg");
                 }
 
                 GuardarResultadoNegativoTask guardarResultadoNegativoTask = new GuardarResultadoNegativoTask();

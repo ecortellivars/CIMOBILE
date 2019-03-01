@@ -70,8 +70,6 @@ public class Lienzo extends View {
         drawPaint.setStrokeJoin(Paint.Join.ROUND);
         drawPaint.setStrokeCap(Paint.Cap.ROUND);
         canvasPaint = new Paint(Paint.DITHER_FLAG);
-
-
     }
 
     //Tamaño asignado a la vista

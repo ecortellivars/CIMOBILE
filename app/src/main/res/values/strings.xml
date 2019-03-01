@@ -4,8 +4,8 @@
     <string name="iniciando_sesion">Iniciando sesión</string>
     <string name="titulo_logout">CERRAR SESSION (Sin Cerrar Reparto)</string>
     <string name="nueva_notificacion">NUEVA notificación</string>
-    <string name="cargar_reparto">CARGAR reparto diario</string>
-    <string name="resumen_reparto">RESUMEN y CIERRE del reparto</string>
+    <string name="cargar_reparto">CARGAR (Reparto/Lista)</string>
+    <string name="resumen_reparto">RESUMEN/CIERRE (Reparto/Lista)</string>
     <string name="cargando_notificacion">Cargando notificación</string>
     <string name="cargando_resultados">Cargando resultados</string>
     <string name="detalle_logout">Va a salir y cerrar la sesión, ¿Desea continuar?</string>
@@ -20,8 +20,8 @@
     <string name="total_notificaciones">Total notificaciones cargadas</string>
     <string name="total_notificaciones_gestionadas">Total notificaciones gestionadas</string>
     <string name="total_notificaciones_acabadas">Notificaciones hechas hoy</string>
-    <string name="total_resultados">Total resultados</string>
-    <string name="total_fotos">Total fotos guardadas</string>
+    <string name="total_resultados">Total resultados cargados</string>
+    <string name="total_fotos">Total fotos hechas hoy</string>
     <string name="total_notificaciones_pendientes_2_hoy">Total 2ª visita para hoy </string>
     <string name="total_notificaciones_pendientes_2_otro_dia">Total 2ª visita para otro dia </string>
     <string name="total_notificaciones_marcadas">Total notificaciones marcadas</string>
@@ -30,7 +30,7 @@
     <string name="detalle_primer_intento">Detalle primer intento</string>
     <string name="no_entregado">No entregado</string>
     <string name="entregado">Entregado</string>
-    <string name="entregadoConSinFirma">Entregado (Firmado o sin Firma)</string>
+    <string name="entregadoConSinFirma">01 Entregado (Con/Sin Firma)</string>
     <string name="todos">Todos</string>
     <string name="entregado_con_firma_01">01 Entregado con Firma</string>
     <string name="entregado_01">01 Entregado sin Firma</string>
@@ -42,7 +42,7 @@
     <string name="rehusado_06">06 Rehusado</string>
     <string name="nadie_se_hace_cargo_07">07 Nadie se hace cargo (1ª Visita)</string>
     <string name="nadie_se_hace_cargo_33">33 Nadie se hace cargo (2ª Visita)</string>
-    <string name="cerrar_reparto">Cerrar Reparto</string>
+    <string name="cerrar_reparto">CERRAR REPARTO</string>
     <string name="hacer_foto">Hacer Foto</string>
     <string name="espere_info_reparto">Espere mientras se obtiene información del reparto</string>
     <string name="espere_info_notificacion">Espere mientras se obtiene información de la notificación</string>

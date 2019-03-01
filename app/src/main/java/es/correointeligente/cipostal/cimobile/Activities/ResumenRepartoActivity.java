@@ -47,7 +47,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
 
     // Variables para instanciar los objetos del layaout y darles valor
     TextView tv_totFicheros, tv_totNotificaciones, tv_totNotifGestionadas, tv_totNotifPendientes_2_hoy,
-             tv_totNotifPendientes_2_otro_dia, tv_totNotifMarcadas, tv_totFotos,  tv_totResultados;
+             tv_totNotifPendientes_2_otro_dia, tv_totNotifMarcadas, tv_totFotos, tv_totFotos_txt,  tv_totResultados;
     TextView tv_entregado, tv_dirIncorrecta, tv_ausente, tv_ausente_pendiente, tv_desconocido, tv_fallecido, tv_rehusado,
             tv_noSeHaceCargo, tv_noSeHaceCargoPendiente;
 
@@ -97,7 +97,13 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
         tv_totFicheros = (TextView) findViewById(R.id.textView_resumen_total_ficheros_value);
         tv_totNotificaciones = (TextView) findViewById(R.id.textView_resumen_total_notificaciones_value);
         tv_totNotifGestionadas = (TextView) findViewById(R.id.textView_resumen_total_notif_gestionadas_value);
+        tv_totFotos_txt = (TextView) findViewById(R.id.textView_resumen_total_fotos);
         tv_totFotos = (TextView) findViewById(R.id.textView_resumen_total_fotos_value);
+        // Dependiendo de si es una aplicación PEE revisara las fotos o no
+        Boolean esAplicacionPEE = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_PEE, getBaseContext(), Boolean.class.getSimpleName());
+        if (esAplicacionPEE){
+            tv_totFotos.setEnabled(Boolean.FALSE);tv_totFotos_txt.setText("PEE (No precisa fotos)");
+        }
         tv_totResultados = (TextView) findViewById(R.id.textView_resumen_total_resultados_value);
         tv_totNotifPendientes_2_hoy = (TextView) findViewById(R.id.textView_resumen_total_notif_pendientes_2_hoy_value);
         tv_totNotifPendientes_2_otro_dia = (TextView) findViewById(R.id.textView_resumen_total_notif_pendientes_2_otro_dia_value);
@@ -171,6 +177,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             tv_totNotifPendientes_2_hoy.setText(resumenReparto.getTotNotifPendientesSegundoHoy().toString());
             tv_totNotifPendientes_2_otro_dia.setText(resumenReparto.getTotNotifPendientesSegundoOtroDia().toString());
             tv_totNotifMarcadas.setText(resumenReparto.getTotNotifMarcadas().toString());
+
             // Se recuperan las notificaciones que se han gestionado durante el reparto para contar la fotos
             List<Notificacion> listaNotificacionesGestionadas = dbHelper.obtenerNotificacionesGestionadas();
             Integer contadorFotos = 0;
@@ -205,7 +212,10 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
      * Método privado que pide confirmación para el cierre del reparto indicando todas las acciones a realizar
      */
     private void crearDialogoAvisoCierreReparto() {
-        if (totNotisGestionadas != totFotosHechas) {
+        // Dependiendo de si es una aplicación PEE revisara las fotos o no
+        Boolean esAplicacionPEE = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_PEE, getBaseContext(), Boolean.class.getSimpleName());
+
+        if (totNotisGestionadas != totFotosHechas && !esAplicacionPEE) {
             Toast toast = null;
             toast = Toast.makeText(ResumenRepartoActivity.this, "Existen notificaciones sin foto por lo que no se puede cerrar el reparto", Toast.LENGTH_LONG);
             toast.show();
@@ -297,31 +307,55 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                     codResultado = notificacion.getResultado2();
                                     fechaResultadoString = notificacion.getFechaHoraRes2();
                                     Resultado resultado = dbHelper.obtenerResultado(notificacion.getResultado2());
-                                    if (resultado.getEsFinal() != null && !resultado.getEsFinal()) {
+                                    if (resultado.getEsFinal()) {
                                         codResultado = resultado.getCodigoSegundoIntento();
                                         notificacion.setResultado2(codResultado);
                                         notificacion.setDescResultado2(resultado.getDescripcion());
-                                    }
+                                        if (notificacion.getLongitudRes1().isEmpty()
+                                         || notificacion.getLongitudRes1().toString().length() == 0
+                                         || notificacion.getLongitudRes1() == null) {
+                                                notificacion.setLongitudRes1("-0.0000000");
+                                            }
 
+                                        if (notificacion.getLatitudRes1().isEmpty()
+                                         || notificacion.getLatitudRes1().toString().length() == 0
+                                         || notificacion.getLatitudRes1() == null) {
+                                                notificacion.setLatitudRes1("00.0000000");
+                                            }
+
+                                        String linea = "S" + StringUtils.rightPad(notificacion.getReferencia(), 70);
+                                        linea += StringUtils.rightPad(resultado.getCodigo(), 2);
+                                        linea += StringUtils.rightPad(resultado.getDescripcion().toUpperCase().replace("(2ª VISITA)",""), 25);
+                                        linea += StringUtils.rightPad(notificacion.getLongitudRes1(), 20);
+                                        linea += StringUtils.rightPad(notificacion.getLatitudRes1(), 20);
+                                        linea += StringUtils.rightPad(notificacion.getNotificadorRes1(), 50);
+                                        linea += StringUtils.rightPad(notificacion.getReferenciaSCB(), 70);
+                                        linea += StringUtils.rightPad(notificacion.getFechaHoraRes1(), 19);
+                                        linea += "\n";
+                                        writerTXT.append(linea);
+                                    }
                                 } else {
                                     // Si es resultado de primer intento, dependiendo de si el resultado es final o no,
                                     // hay que ir añadiendolo al fichero de segundos intentos para el dia siguiente
                                     Resultado resultado = dbHelper.obtenerResultado(codResultado);
                                     // Si es primera visita y NO ES FINAL lo guardamos en un TXT para la carga del dia siguiente
-                                    if (BooleanUtils.isFalse(resultado.getEsFinal())) {
-                                        if (notificacion.getLongitudRes1().isEmpty()) {
-                                            if  (notificacion.getLongitudRes1().toString().length()==0){
-                                                notificacion.setLongitudRes1("-0.0000000");
-                                            }
+                                    // O es segunda visita pero gestiona lista
+                                    if (BooleanUtils.isFalse(resultado.getEsFinal()))
+                                    {
+                                        if (notificacion.getLongitudRes1().isEmpty()
+                                                || notificacion.getLongitudRes1().toString().length() == 0
+                                                || notificacion.getLongitudRes1() == null) {
+                                            notificacion.setLongitudRes1("-0.0000000");
                                         }
-                                        if (notificacion.getLatitudRes1().isEmpty()) {
-                                            if  (notificacion.getLatitudRes1().toString().length()==0) {
-                                                notificacion.setLatitudRes1("00.0000000");
-                                            }
+
+                                        if (notificacion.getLatitudRes1().isEmpty()
+                                                || notificacion.getLatitudRes1().toString().length() == 0
+                                                || notificacion.getLatitudRes1() == null) {
+                                            notificacion.setLatitudRes1("00.0000000");
                                         }
                                         String linea = "S" + StringUtils.rightPad(notificacion.getReferencia(), 70);
                                         linea += StringUtils.rightPad(resultado.getCodigo(), 2);
-                                        linea += StringUtils.rightPad(resultado.getDescripcion().toUpperCase(), 25);
+                                        linea += StringUtils.rightPad(resultado.getDescripcion().toUpperCase().replace("(2ª VISITA)",""), 25);
                                         linea += StringUtils.rightPad(notificacion.getLongitudRes1(), 20);
                                         linea += StringUtils.rightPad(notificacion.getLatitudRes1(), 20);
                                         linea += StringUtils.rightPad(notificacion.getNotificadorRes1(), 50);

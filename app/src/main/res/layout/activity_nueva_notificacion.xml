@@ -178,7 +178,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:layout_weight="0.5"
-                    android:background="@color/colorBoton"
+                    android:background="@color/colorBotonEntregadoPressed"
                     android:text="@string/todos"
                     android:textAllCaps="false"
                     android:textColor="#FFFFFF"
@@ -187,7 +187,7 @@
 
                 <Button
                     android:id="@+id/button_nueva_notificacion_entregado"
-                    android:layout_width="0dp"
+                    android:layout_width="110dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="5dp"
@@ -197,7 +197,7 @@
                     android:text="@string/entregado_con_firma_01"
                     android:textAllCaps="false"
                     android:textColor="#FFFFFF"
-                    android:textSize="18sp" />
+                    android:textSize="20sp" />
 
 
             </LinearLayout>

@@ -3,6 +3,7 @@ package es.correointeligente.cipostal.cimobile.Util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
+import android.provider.ContactsContract;
 import android.util.Base64;
 
 import org.apache.commons.io.FileUtils;
@@ -89,10 +90,11 @@ public class Util {
     public final static String RESULTADO_NADIE_SE_HACE_CARGO = "07";
     public final static String RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO = "33";
     public final static String RESULTADO_ENTREGADO_OFICINA   = "08";
+    public final static String RESULTADO_NO_ENTREGADO_OFICINA   = "09";
+
     // Para uso exclusivo de control del trabajo del notificador
     public final static String RESULTADO_ENTREGADO_SIN_FIRMA = "01";
-    public final static String DESCRIPCION_ENTREGADO_SIN_FIRMA = "Entregado sin firma";
-    public final static String DESCRIPCION_ENTREGADO_CON_FIRMA = "Entregado";
+    public final static String DESCRIPCION_ENTREGADO_SIN_FIRMA = "Notificado sin firma";
 
     // CONSTANTES FICHEROS DE PREFERENCIAS
     public final static String FICHERO_PREFERENCIAS_SESION = "sesion";
@@ -109,6 +111,7 @@ public class Util {
     public final static String CLAVE_PREFERENCIAS_FTP_PASSWORD = "ftpPassword";
     public final static String CLAVE_PREFERENCIAS_FTP_TIMEOUT = "ftpTimeOut";
     public final static String CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS = "ftpCarpetaSicers";
+    public final static String CLAVE_PREFERENCIAS_FTP_CARPETA_LISTA = "ftpCarpetaLista";
     public final static String CLAVE_PREFERENCIAS_FTP_CARPETA_BASE = "ftpCarpetaBase";
     public final static String CLAVE_PREFERENCIAS_FTP_UPDATES_CARPETA = "updatesCarpeta";
     public final static String CLAVE_PREFERENCIAS_FTP_UPDATES_FICHERO = "updatesFichero";
@@ -126,6 +129,7 @@ public class Util {
     public final static String CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_HORAS = "sigVisitaHoras";
 
     public final static String CLAVE_PREFERENCIAS_APP_DE_OFICINA = "usarAPPEnOficina";
+    public final static String CLAVE_PREFERENCIAS_APP_PEE = "usarAPPPEE";
 
 
 
@@ -147,6 +151,7 @@ public class Util {
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_PASSWORD, "ultimaversion");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_TIMEOUT, "10000");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_SICERS, "/SICER");
+            e.putString(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_LISTA, "/LISTA");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_BASE, "/home");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_CARPETA, "/ultimaversion/ultimaversion/ULTIMAVERSION/CIMOBILE");
             e.putString(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_FICHERO, "/version.txt");
@@ -180,6 +185,9 @@ public class Util {
 
             // Preferencias para el uso de la aplicación en oficina
             e.putBoolean(Util.CLAVE_PREFERENCIAS_APP_DE_OFICINA, false);
+
+            // Preferencias para el uso de la aplicación como PEE
+            e.putBoolean(Util.CLAVE_PREFERENCIAS_APP_PEE, false);
 
             e.commit();
         }
@@ -484,7 +492,7 @@ public class Util {
                 rootElement.appendChild(numDocReceptor);
 
                 Element nombreReceptor = doc.createElement("nombreReceptor");
-                nombreReceptor.appendChild(doc.createTextNode(notificacion.getNombreReceptor()));
+                nombreReceptor.appendChild(doc.createTextNode(String.valueOf(notificacion.getNombreReceptor())));
                 rootElement.appendChild(nombreReceptor);
 
                 fis = new FileInputStream(notificacion.getFirmaReceptor());

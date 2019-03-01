@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="colorBoton">#00b0ca</color>
+    <color name="colorPrimary">#c1c9f5</color>
+    <color name="colorPrimaryDark">#8394f2</color>
+    <color name="colorAccent">#ff4081</color>
+    <color name="colorBoton">#80adef</color>
     <color name="colorGrisSuave">#E6E6E6</color>
-    <color name="colorBotonEntregado">#a7f69c</color>
-    <color name="colorBotonEntregadoPressed">#77ce6d</color>
+    <color name="colorBotonEntregado">#88b0de</color>
+    <color name="colorBotonEntregadoPressed">#93ec88</color>
     <color name="colorBotonNoEntregado">#f66a6a</color>
-    <color name="colorBotonNoEntregadoPressed">#9C0000</color>
-    <color name="colorBackgroundEntregado">#4df64d</color>
+    <color name="colorBotonNoEntregadoPressed">#efb0b0</color>
+    <color name="colorBackgroundEntregado">#79f779</color>
     <color name="colorBackgroundAusente">#ffcf70</color>
-    <color name="colorBackgroundNoEntregado">#FFFFADAD</color>
+    <color name="colorBackgroundNoEntregado">#f25353</color>
     <color name="colorBackgroundSinGestionar">#FFFFFF</color>
     <color name="colorBackgroundFotoAcuse">#FFFFCF70</color>
     <color name="colorFotoAcuse">#FFFFCF70</color>

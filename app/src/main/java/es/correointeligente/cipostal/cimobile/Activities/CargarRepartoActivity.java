@@ -124,7 +124,6 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
         protected String doInBackground(Void... args) {
             String fallo = null;
             try {
-
                // Inicializamos la clase Singleton para la gestion FTP con el usuario por defecto que es delegacio/delegacion
                ftpHelper = FTPHelper.getInstancia();
                if(ftpHelper != null && ftpHelper.connect(CargarRepartoActivity.this)) {
@@ -248,7 +247,11 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                 // Lo primero se busca si existe en la base de datos interna la notificacion
                                 // cargada desde el SICER anterior
                                 Notificacion notificacion = dbHelper.obtenerNotificacion(referenciaPostal, referenciaSCB);
-                                if(notificacion != null) {
+                                // Cargo 31 y 07
+                                if(notificacion != null){
+                                    // Cargo 31 y 07
+                                    if (linea.substring(71, 73).trim() == Util.RESULTADO_AUSENTE
+                                     || linea.substring(71, 73).trim() == Util.RESULTADO_NADIE_SE_HACE_CARGO) {
 
                                     notificacion.setResultado1(linea.substring(71, 73).trim());
                                     notificacion.setDescResultado1(linea.substring(73, 98).trim());
@@ -260,6 +263,22 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                     notificacion.setSegundoIntento(true);
 
                                     listaNotificaciones.add(notificacion);
+                                    }
+                                    // Cargo 32 y 33
+                                    if (linea.substring(71, 73).trim() == Util.RESULTADO_AUSENTE_SEGUNDO
+                                     || linea.substring(71, 73).trim() == Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO) {
+
+                                        notificacion.setResultado1(linea.substring(71, 73).trim());
+                                        notificacion.setDescResultado1(linea.substring(73, 98).trim());
+                                        notificacion.setLongitudRes1(linea.substring(98, 118).trim());
+                                        notificacion.setLatitudRes1(linea.substring(118, 138).trim());
+                                        notificacion.setNotificadorRes1(linea.substring(138, 258).trim());
+                                        notificacion.setFechaHoraRes1(linea.substring(258, 277).trim());
+                                        // Hace falta una segunda visita
+                                        notificacion.setSegundoIntento(true);
+
+                                        listaNotificaciones.add(notificacion);
+                                    }
 
                                 } else {
                                     // Si no se ha encontrado, se debe sacar un mensaje con el error al notificador

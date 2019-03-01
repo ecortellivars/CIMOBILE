@@ -272,7 +272,6 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 //DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
                 //String fechaHoraFoto2 = df2.format(Calendar.getInstance().getTime());
                 //notificacionAux.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse()  + File.separator  + referenciaPostal + "_" + fechaHoraFoto2  + "_" + fechaHoraFoto2   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + notificacionAux.getResultado2() + ".jpg");
-
             }
 
             guardadoNotificacionEnBD = dbHelper.guardaResultadoNotificacion(notificacionAux);
