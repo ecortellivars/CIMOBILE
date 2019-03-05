@@ -280,7 +280,8 @@ public class DetalleNotificacionActivity extends BaseActivity {
                 layoutResultado1.addView(linearLayout1);
 
                 // Segundo intento es Entregado o Entregado en Oficina con FIRMA
-                if((notificacion.getResultado2().equals(Util.RESULTADO_ENTREGADO)|| notificacion.getResultado2().equals(Util.RESULTADO_ENTREGADO_OFICINA))
+                if((notificacion.getResultado2().equals(Util.RESULTADO_ENTREGADO)
+                 || notificacion.getResultado2().equals(Util.RESULTADO_ENTREGADO_OFICINA))
                && (!notificacion.getResultado2().equals(Util.RESULTADO_ENTREGADO_SIN_FIRMA))) {
                     // Instancio el otro layout para cargar los resultados del segundo intento ENTREGADO
                     linearLayout2 = (LinearLayout) inflater.inflate(R.layout.datos_resultado_entregado, null, false);
@@ -401,7 +402,8 @@ public class DetalleNotificacionActivity extends BaseActivity {
                 resultadoEliminable = 1;
 
                 // Resultado "ENTREGADO" con Firma y en Oficina
-                if((notificacion.getResultado1().equals(Util.RESULTADO_ENTREGADO) || notificacion.getResultado1().equals(Util.RESULTADO_ENTREGADO_OFICINA))
+                if((notificacion.getResultado1().equals(Util.RESULTADO_ENTREGADO)
+                 || notificacion.getResultado1().equals(Util.RESULTADO_ENTREGADO_OFICINA))
                 && !notificacion.getDescResultado1().equals(Util.RESULTADO_ENTREGADO_SIN_FIRMA)) {
                     // Instancio el layout para cargar los resultados de ENTREGADO
                     linearLayout =  (LinearLayout) inflater.inflate(R.layout.datos_resultado_entregado, null, false);

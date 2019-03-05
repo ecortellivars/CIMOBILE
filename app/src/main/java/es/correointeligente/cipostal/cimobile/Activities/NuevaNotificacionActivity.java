@@ -220,11 +220,16 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             Notificacion notificacion = dbHelper.obtenerNotificacion(idNotificacion);
             // Hay PRIMERA VISITA
             if (notificacion.getResultado1() != null){
-                if (esAplicacionOficina && notificacion.getResultado2() != null) {
-                    listaResultados = dbHelper.obtenerResultadosEnOficina();
-                } else {
-                    listaResultados = dbHelper.obtenerResultadosFinales();
-                }
+                    if (esAplicacionOficina
+                    && (notificacion.getResultado1().trim().equals(Util.RESULTADO_AUSENTE_SEGUNDO))
+                     || notificacion.getResultado1().trim().equals (Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO)) {
+                        listaResultados = dbHelper.obtenerResultadosEnOficina();
+                    }
+                    if (esAplicacionOficina
+                    && !notificacion.getResultado1().trim().equals(Util.RESULTADO_AUSENTE_SEGUNDO)
+                    && !notificacion.getResultado1().trim().equals (Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO))  {
+                        listaResultados = dbHelper.obtenerResultadosFinales();
+                    }
 
                 // NO hay PRIMERA VISITA
                 } else {
@@ -323,13 +328,14 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-
-                String consejoSegundoIntento = getString(R.string.dia_limite) + " " + diaLimite + "\n" + getString(R.string.informacion_segundo_intento_1) + " " + horaAntesDe + " " + getString(R.string.informacion_segundo_intento_2) + " " + horaApartirDe;
-                ll_detallePrimerIntento.setVisibility(View.VISIBLE);
-                ll_botonera.setVisibility(invalidarBotonera ? View.INVISIBLE : View.VISIBLE);
-                tv_resultadoDetallePrimerIntento.setText(notificacion.getResultado1() + " " + notificacion.getDescResultado1());
-                tv_fechaDetallePrimerIntento.setText(notificacion.getFechaHoraRes1());
-                tv_consejoSegundoIntento.setText(consejoSegundoIntento);
+                if (!notificacion.getResultado1().equals(Util.RESULTADO_AUSENTE_SEGUNDO) && !notificacion.getResultado1().equals(Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO) ) {
+                    String consejoSegundoIntento = getString(R.string.dia_limite) + " " + diaLimite + "\n" + getString(R.string.informacion_segundo_intento_1) + " " + horaAntesDe + " " + getString(R.string.informacion_segundo_intento_2) + " " + horaApartirDe;
+                    ll_detallePrimerIntento.setVisibility(View.VISIBLE);
+                    ll_botonera.setVisibility(invalidarBotonera ? View.INVISIBLE : View.VISIBLE);
+                    tv_resultadoDetallePrimerIntento.setText(notificacion.getResultado1() + " " + notificacion.getDescResultado1());
+                    tv_fechaDetallePrimerIntento.setText(notificacion.getFechaHoraRes1());
+                    tv_consejoSegundoIntento.setText(consejoSegundoIntento);
+                }
             }
 
             progressDialog.dismiss();

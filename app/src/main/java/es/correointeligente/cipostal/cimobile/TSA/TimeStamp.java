@@ -146,7 +146,7 @@ public class TimeStamp {
         try {
             MessageDigest md = MessageDigest.getInstance(hashAlgorithm, CRYPTOGRAPHIC_PROVIDER);
             DigestInputStream dis = new DigestInputStream(bais, md);
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[512];
             while (true) {
                 int n;
                 n = dis.read(buffer);

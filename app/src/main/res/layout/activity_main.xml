@@ -78,7 +78,8 @@
                 android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                tools:text="@string/titulo_logout" />
 
         </LinearLayout>
     </ScrollView>

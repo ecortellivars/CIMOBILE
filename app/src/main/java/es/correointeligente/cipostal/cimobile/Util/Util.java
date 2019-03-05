@@ -363,8 +363,14 @@ public class Util {
      * @throws Exception No se puede escribir
      */
     public static void guardarFicheroSelloTiempo(Notificacion notificacion, byte[] contenido) throws IOException {
+        String nombreFichero = "";
+
         // Los guardamos a disco.
-        String nombreFichero = notificacion.getReferencia() + "_" + StringUtils.defaultIfBlank(notificacion.getReferenciaSCB(),"") + ".ts";
+        if (notificacion.getReferencia() != null && !notificacion.getReferencia().isEmpty()) {
+            nombreFichero = notificacion.getReferencia() + ".ts";
+        } else {
+            nombreFichero = StringUtils.defaultIfBlank(notificacion.getReferenciaSCB(),"") + ".ts";
+        }
         FileUtils.writeByteArrayToFile(new File(obtenerRutaSelloDeTiempo(), nombreFichero), contenido);
     }
 
@@ -376,10 +382,14 @@ public class Util {
      */
     public static File NotificacionToXML(Notificacion notificacion, Context context) throws CiMobileException {
         File xmlFile = null;
+        String nombeFichero = "";
+
         try {
-
-            String nombeFichero = notificacion.getReferencia() + "_" + StringUtils.defaultIfBlank(notificacion.getReferenciaSCB(),"") + ".xml";
-
+            if (notificacion.getReferencia() != null && !notificacion.getReferencia().isEmpty()) {
+                nombeFichero = notificacion.getReferencia() + ".xml";
+            } else {
+                nombeFichero = StringUtils.defaultIfBlank(notificacion.getReferenciaSCB(),"") + ".xml";
+            }
             // Se Determina si viene del primer o del segundo resultado
             Date date = null;
             String horaString = null;

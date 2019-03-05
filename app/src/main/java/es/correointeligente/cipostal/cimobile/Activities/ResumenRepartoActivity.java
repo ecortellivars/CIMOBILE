@@ -49,7 +49,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
     TextView tv_totFicheros, tv_totNotificaciones, tv_totNotifGestionadas, tv_totNotifPendientes_2_hoy,
              tv_totNotifPendientes_2_otro_dia, tv_totNotifMarcadas, tv_totFotos, tv_totFotos_txt,  tv_totResultados;
     TextView tv_entregado, tv_dirIncorrecta, tv_ausente, tv_ausente_pendiente, tv_desconocido, tv_fallecido, tv_rehusado,
-            tv_noSeHaceCargo, tv_noSeHaceCargoPendiente;
+            tv_noSeHaceCargo, tv_noSeHaceCargoPendiente, tv_entregado_en_oficina, tv_no_entregado_en_oficina;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +110,8 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
         tv_totNotifMarcadas = (TextView) findViewById(R.id.textView_resumen_total_notif_marcadas_value);
 
         tv_entregado = (TextView) findViewById(R.id.textView_resumen_entregado_value);
+        tv_entregado_en_oficina = (TextView) findViewById(R.id.textView_resumen_entregado_en_oficina_value);
+        tv_no_entregado_en_oficina = (TextView) findViewById(R.id.textView_resumen_no_entregado_en_oficina_value);
         tv_dirIncorrecta = (TextView) findViewById(R.id.textView_resumen_dir_incorrecta_value);
         tv_ausente = (TextView) findViewById(R.id.textView_resumen_ausente_value);
         tv_ausente_pendiente = (TextView) findViewById(R.id.textView_resumen_ausente_pendiente_value);
@@ -197,6 +199,8 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             tv_totNotifGestionadas.setText(resumenReparto.getTotNotifGestionadas().toString());
 
             tv_entregado.setText(resumenReparto.getNumEntregados().toString());
+            tv_entregado_en_oficina.setText(resumenReparto.getNumEntregadosEnOficina().toString());
+            tv_no_entregado_en_oficina.setText(resumenReparto.getNumNoEntregadosEnOficna().toString());
             tv_dirIncorrecta.setText(resumenReparto.getNumDirIncorrectas().toString());
             tv_ausente.setText(resumenReparto.getNumAusentes().toString());
             tv_ausente_pendiente.setText(resumenReparto.getNumAusentesPendientes().toString());

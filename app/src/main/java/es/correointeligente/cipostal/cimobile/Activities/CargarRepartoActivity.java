@@ -124,24 +124,25 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
         protected String doInBackground(Void... args) {
             String fallo = null;
             try {
-               // Inicializamos la clase Singleton para la gestion FTP con el usuario por defecto que es delegacio/delegacion
-               ftpHelper = FTPHelper.getInstancia();
-               if(ftpHelper != null && ftpHelper.connect(CargarRepartoActivity.this)) {
 
-                   if(ftpHelper.cargarCarpeta(Util.obtenerRutaFtpSICER(getBaseContext(), obtenerDelegacion()))) {
+                // Inicializamos la clase Singleton para la gestion FTP con el usuario por defecto que es delegacio/delegacion
+                ftpHelper = FTPHelper.getInstancia();
+                if(ftpHelper != null && ftpHelper.connect(CargarRepartoActivity.this)) {
 
-                       List<FicheroViewHolder> listaFicheros = ftpHelper.obtenerFicherosDirectorio();
-                       itemsAdapter = new FicheroAdapter(getBaseContext(), R.layout.item_fichero, listaFicheros);
+                    if(ftpHelper.cargarCarpeta(Util.obtenerRutaFtpSICER(getBaseContext(), obtenerDelegacion()))) {
 
-                   } else {
-                       // Error cambio de carpeta
-                       fallo = getString(R.string.error_acceso_carpeta_ftp);
-                   }
+                        List<FicheroViewHolder> listaFicheros = ftpHelper.obtenerFicherosDirectorio();
+                        itemsAdapter = new FicheroAdapter(getBaseContext(), R.layout.item_fichero, listaFicheros);
 
-               } else {
-                 // Error de conexion
-                   fallo = getString(R.string.error_conexion_ftp);
-               }
+                    } else {
+                        // Error cambio de carpeta
+                        fallo = getString(R.string.error_acceso_carpeta_ftp);
+                    }
+
+                } else {
+                    // Error de conexion
+                    fallo = getString(R.string.error_conexion_ftp);
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -229,7 +230,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                         mapaNotificacion.put(notificacion.getReferencia(), notificacion.getReferenciaSCB());
                                     }
                                 }
-                            // Determina que es el formato del sicer de segundo intento
+                                // Determina que es el formato del sicer de segundo intento
                             } else if(linea.startsWith("S")) {
 
                                 if(esCargaPrimeraEntrega) {
@@ -247,11 +248,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                 // Lo primero se busca si existe en la base de datos interna la notificacion
                                 // cargada desde el SICER anterior
                                 Notificacion notificacion = dbHelper.obtenerNotificacion(referenciaPostal, referenciaSCB);
-                                // Cargo 31 y 07
-                                if(notificacion != null){
-                                    // Cargo 31 y 07
-                                    if (linea.substring(71, 73).trim() == Util.RESULTADO_AUSENTE
-                                     || linea.substring(71, 73).trim() == Util.RESULTADO_NADIE_SE_HACE_CARGO) {
+                                if(notificacion != null) {
 
                                     notificacion.setResultado1(linea.substring(71, 73).trim());
                                     notificacion.setDescResultado1(linea.substring(73, 98).trim());
@@ -259,26 +256,9 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                     notificacion.setLatitudRes1(linea.substring(118, 138).trim());
                                     notificacion.setNotificadorRes1(linea.substring(138, 258).trim());
                                     notificacion.setFechaHoraRes1(linea.substring(258, 277).trim());
-                                    // Hace falta una segunda visita
                                     notificacion.setSegundoIntento(true);
 
                                     listaNotificaciones.add(notificacion);
-                                    }
-                                    // Cargo 32 y 33
-                                    if (linea.substring(71, 73).trim() == Util.RESULTADO_AUSENTE_SEGUNDO
-                                     || linea.substring(71, 73).trim() == Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO) {
-
-                                        notificacion.setResultado1(linea.substring(71, 73).trim());
-                                        notificacion.setDescResultado1(linea.substring(73, 98).trim());
-                                        notificacion.setLongitudRes1(linea.substring(98, 118).trim());
-                                        notificacion.setLatitudRes1(linea.substring(118, 138).trim());
-                                        notificacion.setNotificadorRes1(linea.substring(138, 258).trim());
-                                        notificacion.setFechaHoraRes1(linea.substring(258, 277).trim());
-                                        // Hace falta una segunda visita
-                                        notificacion.setSegundoIntento(true);
-
-                                        listaNotificaciones.add(notificacion);
-                                    }
 
                                 } else {
                                     // Si no se ha encontrado, se debe sacar un mensaje con el error al notificador
@@ -298,7 +278,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                         if(esCargaPrimeraEntrega) {
                             // INSERT INTO
                             dbHelper.guardarNotificacionesInicial(listaNotificaciones);
-                        // seguntoIntento.txt
+                            // seguntoIntento.txt
                         } else {
                             // UPDATE
                             dbHelper.actualizarNotificacionesSegundoIntentoInicial(listaNotificaciones);

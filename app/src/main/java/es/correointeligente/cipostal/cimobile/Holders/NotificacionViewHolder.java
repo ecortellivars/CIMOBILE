@@ -104,7 +104,7 @@ public class NotificacionViewHolder extends RecyclerView.ViewHolder implements V
             Intent intent = null;
             Integer request = null;
             if((notificacion.getSegundoIntento() != null && notificacion.getSegundoIntento() && notificacion.getResultado2() == null) ||
-                    ((notificacion.getSegundoIntento() == null || !notificacion.getSegundoIntento())) && notificacion.getResultado1() == null) {
+              ((notificacion.getSegundoIntento() == null || !notificacion.getSegundoIntento())) && notificacion.getResultado1() == null) {
                 intent = new Intent(context, NuevaNotificacionActivity.class);
                 request = Util.REQUEST_CODE_NOTIFICATION_RESULT;
             } else {

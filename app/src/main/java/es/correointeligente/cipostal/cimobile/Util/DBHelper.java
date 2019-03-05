@@ -182,21 +182,21 @@ public class DBHelper extends SQLiteOpenHelper {
         //Resultado = codigo, descripcion, esFinal, codigoSegundoIntento,  esResultadoOficina, notifica
         List<Resultado> listaResultados = new ArrayList<>();
         // Resultados FINALES
-        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO, "Notificado", true, null, true, true));
-        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_SIN_FIRMA, "Notificado sin firma", true, null, false, false));
+        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO, "Notificado en Domicilio", true, null, false, true));
+        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_SIN_FIRMA, "Notificado en domicilio sin firma", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_DIR_INCORRECTA, "Dirección Incorrecta", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_DESCONOCIDO, "Desconocido", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_FALLECIDO, "Fallecido", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_REHUSADO, "Rehusado", true, null, false, false));
-        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_OFICINA, "Entregado oficina", true, null, true, true));
-        listaResultados.add(new Resultado(Util.RESULTADO_NO_ENTREGADO_OFICINA, "NO Entregado oficina", true, null, true, false));
+        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_OFICINA, "Entregado en oficina", true, null, true, true));
+        listaResultados.add(new Resultado(Util.RESULTADO_NO_ENTREGADO_OFICINA, "NO Entregado en oficina", true, null, true, false));
 
         // Resultado NO FINAL
-        listaResultados.add(new Resultado(Util.RESULTADO_AUSENTE, "Ausente", false, "32", false, false));
+        listaResultados.add(new Resultado(Util.RESULTADO_AUSENTE, "Ausente (1ª Visita)", false, "32", false, false));
         // Resultado FINAL
         listaResultados.add(new Resultado(Util.RESULTADO_AUSENTE_SEGUNDO, "Ausente (2ª Visita)", true, null, false, false));
         // Resultado NO FINAL
-        listaResultados.add(new Resultado(Util.RESULTADO_NADIE_SE_HACE_CARGO, "Nadie se hace cargo", false, "33", false, false));
+        listaResultados.add(new Resultado(Util.RESULTADO_NADIE_SE_HACE_CARGO, "Nadie se hace cargo (1ª Visita)", false, "33", false, false));
         // Resultado FINAL
         listaResultados.add(new Resultado(Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO, "Nadie se hace cargo (2ª Visita)", true, null, false, false));
 
@@ -267,7 +267,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String query = "SELECT * FROM " + TABLE_RESULTADO +
-                       " WHERE " + KEY_RESULTADO_DESCRIPCION + " IN ('Notificado sin firma','Dirección Incorrecta','Desconocido','Fallecido', 'Rehusado', 'Ausente', 'Nadie se hace cargo') " +
+                       " WHERE " + KEY_RESULTADO_DESCRIPCION + " IN ('Notificado en Domicilio','Dirección Incorrecta','Desconocido','Fallecido', 'Rehusado', 'Ausente (1ª Visita)', 'Nadie se hace cargo (1ª Visita)') " +
                        " ORDER BY " + KEY_RESULTADO_CODIGO;
 
         Cursor cursor = db.rawQuery(query, null);
@@ -464,8 +464,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
         // Los segundos intentos que se pueden hacer hoy
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
-                "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1 AND " + KEY_NOTIFICACION_RESULTADO_1 + " IS NOT NULL) AND " +
-                         "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1 AND " + KEY_NOTIFICACION_RESULTADO_2 + " IS NULL)" ,
+                "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1 AND " + KEY_NOTIFICACION_RESULTADO_1 + " = ?) OR " +
+                         "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1 AND " + KEY_NOTIFICACION_RESULTADO_1 + " = ? )" ,
+                new String[]{Util.RESULTADO_NADIE_SE_HACE_CARGO, Util.RESULTADO_AUSENTE},
                 null, null, null, null, null);
         resumenReparto.setTotNotifPendientesSegundoHoy(cursor.getCount());
 
@@ -519,6 +520,18 @@ public class DBHelper extends SQLiteOpenHelper {
                           null,
                           null);
         resumenReparto.setNumEntregados(cursor.getCount());
+
+        // Entregado en oficina
+        cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
+                "(" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) ",
+                new String[]{Util.RESULTADO_ENTREGADO_OFICINA, "1"},null,null,null,null);
+        resumenReparto.setNumEntregadosEnOficina(cursor.getCount());
+
+        // No Entregado en oficina
+        cursor = db.query(true,TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
+                "(" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) ",
+                new String[]{Util.RESULTADO_NO_ENTREGADO_OFICINA, "1"},null,null,null,null);
+        resumenReparto.setNumNoEntregadosEnOficna(cursor.getCount());
 
         // Dir. Incorrecta
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
@@ -662,6 +675,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_NOTIFICADOR_RES_1, notificacion.getNotificadorRes1());
                 cv.put(KEY_NOTIFICACION_SEGUNDO_INTENTO, 1);
 
+
                 db.update(
                         // Tabla
                         TABLE_NOTIFICACION,
@@ -688,6 +702,7 @@ public class DBHelper extends SQLiteOpenHelper {
             throw new CiMobileException(    context.getString(R.string.error_actualizar_notificaciones));
         }
     }
+
 
     /**
      * Obtiene una notificación en concreto a partir de su identificador de la BD
@@ -764,7 +779,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String whereClause = KEY_NOTIFICACION_REFERENCIA + " = ?";
         parametros[0] = referencia;
         if(StringUtils.isNotBlank(referenciaSCB)) {
-            whereClause += " AND " + KEY_NOTIFICACION_REFERENCIA_SCB + " = ?";
+            whereClause += " OR " + KEY_NOTIFICACION_REFERENCIA_SCB + " = ?";
             parametros[1] = referenciaSCB;
         }
 

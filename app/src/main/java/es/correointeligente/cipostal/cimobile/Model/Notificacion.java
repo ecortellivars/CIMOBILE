@@ -37,6 +37,25 @@ public class Notificacion {
     private String fotoAcuseRes1;
     private String fotoAcuseRes2;
 
+    public Boolean getHayPrimerResultado() {
+        return hayPrimerResultado;
+    }
+
+    public void setHayPrimerResultado(Boolean hayPrimerResultado) {
+        this.hayPrimerResultado = hayPrimerResultado;
+    }
+
+    public Boolean getHaySegundoResultado() {
+        return haySegundoResultado;
+    }
+
+    public void setHaySegundoResultado(Boolean haySegundoResultado) {
+        this.haySegundoResultado = haySegundoResultado;
+    }
+
+    private Boolean hayPrimerResultado;
+    private Boolean haySegundoResultado;
+
     // Variables de visualizacion
     private Integer backgroundColor;
 

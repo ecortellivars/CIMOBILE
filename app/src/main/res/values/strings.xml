@@ -42,6 +42,9 @@
     <string name="rehusado_06">06 Rehusado</string>
     <string name="nadie_se_hace_cargo_07">07 Nadie se hace cargo (1ª Visita)</string>
     <string name="nadie_se_hace_cargo_33">33 Nadie se hace cargo (2ª Visita)</string>
+    <string name="entregado_en_oficina_08">08 Entregado en oficina (Con/Sin Firma)</string>
+    <string name="no_entregado_en_oficina_09">09 No Entregado en oficina</string>
+
     <string name="cerrar_reparto">CERRAR REPARTO</string>
     <string name="hacer_foto">Hacer Foto</string>
     <string name="espere_info_reparto">Espere mientras se obtiene información del reparto</string>

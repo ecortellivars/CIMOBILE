@@ -19,6 +19,10 @@ public class ResumenReparto {
     private Integer numRehusados;
     private Integer numNadieSeHaceCargo;
     private Integer numNadieSeHaceCargoPendientes;
+    private Integer numEntregadosEnOficina;
+    private Integer numNoEntregadosEnOficna;
+
+
 
 
     public ResumenReparto() {
@@ -28,7 +32,8 @@ public class ResumenReparto {
                           int totNotifGestionadas, int totNotifMarcadas, int totNotifPendientesSegundoHoy,
                           int numEntregados, int totNotifPendientesSegundoOtroDia,
                           int numDirIncorrectas, int numAusentes, int numAusentesPendientes, int numDesconocidos,
-                          int numFallecidos, int numRehusados, int numNadieSeHaceCargo, int numNadieSeHaceCargoPendientes) {
+                          int numFallecidos, int numRehusados, int numNadieSeHaceCargo, int numNadieSeHaceCargoPendientes,
+                          int numEntregadosEnOficina, int numNoEntregadosEnOficina ) {
         this.totFicheros = totFicheros;
         this.totNotificaciones = totNotificaciones;
         this.totNotifGestionadas = totNotifGestionadas;
@@ -46,6 +51,8 @@ public class ResumenReparto {
         this.numRehusados = numRehusados;
         this.numNadieSeHaceCargo = numNadieSeHaceCargo;
         this.numNadieSeHaceCargoPendientes = numNadieSeHaceCargoPendientes;
+        this.numEntregadosEnOficina = numEntregadosEnOficina;
+        this.numNoEntregadosEnOficna = numNoEntregadosEnOficna;
     }
 
     public Integer getTotFicheros() {
@@ -145,4 +152,12 @@ public class ResumenReparto {
     public Integer getTotResultados() {return totResultados;}
 
     public void setTotResultados(Integer totResultados) {this.totResultados = totResultados;}
+
+    public Integer getNumEntregadosEnOficina() {return numEntregadosEnOficina;  }
+
+    public void setNumEntregadosEnOficina(Integer numEntregadosEnOficina) {this.numEntregadosEnOficina = numEntregadosEnOficina; }
+
+    public Integer getNumNoEntregadosEnOficna() {return numNoEntregadosEnOficna;}
+
+    public void setNumNoEntregadosEnOficna(Integer numNoEntregadosEnOficna) {this.numNoEntregadosEnOficna = numNoEntregadosEnOficna;}
 }
