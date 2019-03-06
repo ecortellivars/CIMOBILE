@@ -20,7 +20,7 @@
     <string name="total_notificaciones">Total notificaciones cargadas</string>
     <string name="total_notificaciones_gestionadas">Total notificaciones gestionadas</string>
     <string name="total_notificaciones_acabadas">Notificaciones hechas hoy</string>
-    <string name="total_resultados">Todos los resultados almacenados</string>
+    <string name="total_resultados">Resultados almacenados</string>
     <string name="total_fotos">Total fotos hechas hoy</string>
     <string name="total_notificaciones_pendientes_2_hoy">Total 2ª visita para hoy </string>
     <string name="total_notificaciones_pendientes_2_otro_dia">Total 2ª visita para otro dia </string>
@@ -45,7 +45,6 @@
     <string name="nadie_se_hace_cargo_33">33 Nadie se hace cargo (2ª Visita)</string>
     <string name="entregado_en_oficina_08">08 Entregado en oficina (Con/Sin Firma)</string>
     <string name="no_entregado_en_oficina_09">09 No Entregado en oficina</string>
-
     <string name="cerrar_reparto">CERRAR REPARTO</string>
     <string name="hacer_foto">Hacer Foto</string>
     <string name="espere_info_reparto">Espere mientras se obtiene información del reparto</string>

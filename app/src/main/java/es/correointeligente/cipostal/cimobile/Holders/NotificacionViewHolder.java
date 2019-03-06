@@ -66,8 +66,8 @@ public class NotificacionViewHolder extends RecyclerView.ViewHolder implements V
 
         this.notificacion = notificacion;
 
-        String textoResultado1 = StringUtils.defaultIfBlank(notificacion.getDescResultado1(), "");
-        String textoResultado2 = StringUtils.defaultIfBlank(notificacion.getDescResultado2(), "");
+        String textoResultado1 = StringUtils.defaultIfBlank(notificacion.getResultado1(), "") + " " + StringUtils.defaultIfBlank(notificacion.getDescResultado1(), "");
+        String textoResultado2 = StringUtils.defaultIfBlank(notificacion.getResultado2(), "") + " " + StringUtils.defaultIfBlank(notificacion.getDescResultado2(), "");
 
         referencia.setText(notificacion.getReferencia());
         referenciaSCB.setText(notificacion.getReferenciaSCB());
