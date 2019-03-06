@@ -480,6 +480,13 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor = db.    query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID}, KEY_NOTIFICACION_MARCADA + " = ?", new String[]{"1"}, null, null, null, null);
         resumenReparto.setTotNotifMarcadas(cursor.getCount());
 
+        // Lista
+        cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
+                "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? " + "OR " + KEY_NOTIFICACION_RESULTADO_1 + " = ? )",
+                new String[]{Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO,Util.RESULTADO_AUSENTE_SEGUNDO}, null, null, null, null);
+        resumenReparto.setTotNumLista(cursor.getCount());
+
+
         // Detalle de las notificaciones
 
         // SELECT DISTINCT id
@@ -600,6 +607,8 @@ public class DBHelper extends SQLiteOpenHelper {
                       "AND " + KEY_NOTIFICACION_RESULTADO_2 + " ISNULL "  + ")" ,
                 new String[]{Util.RESULTADO_NADIE_SE_HACE_CARGO}, null, null, null, null);
         resumenReparto.setNumNadieSeHaceCargoPendientes(cursor.getCount());
+
+
 
         return resumenReparto;
     }

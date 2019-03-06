@@ -44,12 +44,14 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
     Integer totNotisGestionadas = 0;
     Integer totResultados = 0;
     Integer totFotosHechas = 0;
+    Integer totNumLista = 0;
 
     // Variables para instanciar los objetos del layaout y darles valor
     TextView tv_totFicheros, tv_totNotificaciones, tv_totNotifGestionadas, tv_totNotifPendientes_2_hoy,
-             tv_totNotifPendientes_2_otro_dia, tv_totNotifMarcadas, tv_totFotos, tv_totFotos_txt,  tv_totResultados;
+             tv_totNotifPendientes_2_otro_dia, tv_totNotifMarcadas, tv_totFotos, tv_totFotos_txt,  tv_totResultados, tv_totNotiLista;
     TextView tv_entregado, tv_dirIncorrecta, tv_ausente, tv_ausente_pendiente, tv_desconocido, tv_fallecido, tv_rehusado,
-            tv_noSeHaceCargo, tv_noSeHaceCargoPendiente, tv_entregado_en_oficina, tv_no_entregado_en_oficina;
+            tv_noSeHaceCargo, tv_noSeHaceCargoPendiente, tv_entregado_en_oficina, tv_no_entregado_en_oficina,
+            tv_entregado_en_oficina_txt, tv_no_entregado_en_oficina_txt, tv_totNotiLista_txt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,19 +101,19 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
         tv_totNotifGestionadas = (TextView) findViewById(R.id.textView_resumen_total_notif_gestionadas_value);
         tv_totFotos_txt = (TextView) findViewById(R.id.textView_resumen_total_fotos);
         tv_totFotos = (TextView) findViewById(R.id.textView_resumen_total_fotos_value);
-        // Dependiendo de si es una aplicación PEE revisara las fotos o no
-        Boolean esAplicacionPEE = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_PEE, getBaseContext(), Boolean.class.getSimpleName());
-        if (esAplicacionPEE){
-            tv_totFotos.setEnabled(Boolean.FALSE);tv_totFotos_txt.setText("PEE (No precisa fotos)");
-        }
         tv_totResultados = (TextView) findViewById(R.id.textView_resumen_total_resultados_value);
         tv_totNotifPendientes_2_hoy = (TextView) findViewById(R.id.textView_resumen_total_notif_pendientes_2_hoy_value);
         tv_totNotifPendientes_2_otro_dia = (TextView) findViewById(R.id.textView_resumen_total_notif_pendientes_2_otro_dia_value);
         tv_totNotifMarcadas = (TextView) findViewById(R.id.textView_resumen_total_notif_marcadas_value);
+        tv_totNotiLista = (TextView) findViewById(R.id.textView_resumen_total_notif_lista_value);
+        tv_totNotiLista_txt = (TextView) findViewById(R.id.textView_resumen_total_lista_txt);
+
 
         tv_entregado = (TextView) findViewById(R.id.textView_resumen_entregado_value);
         tv_entregado_en_oficina = (TextView) findViewById(R.id.textView_resumen_entregado_en_oficina_value);
         tv_no_entregado_en_oficina = (TextView) findViewById(R.id.textView_resumen_no_entregado_en_oficina_value);
+        tv_entregado_en_oficina_txt = (TextView) findViewById(R.id.textView_resumen_entregado_en_oficina_text);
+        tv_no_entregado_en_oficina_txt = (TextView) findViewById(R.id.textView_resumen_no_entregado_en_oficina_text);
         tv_dirIncorrecta = (TextView) findViewById(R.id.textView_resumen_dir_incorrecta_value);
         tv_ausente = (TextView) findViewById(R.id.textView_resumen_ausente_value);
         tv_ausente_pendiente = (TextView) findViewById(R.id.textView_resumen_ausente_pendiente_value);
@@ -162,6 +164,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             ResumenReparto resumen = dbHelper.obtenerResumenReparto();
             totNotisGestionadas = resumen.getTotNotifGestionadas();
             totResultados = resumen.getTotResultados();
+            totNumLista = resumen.getTotNumLista();
             return resumen;
         }
 
@@ -179,6 +182,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             tv_totNotifPendientes_2_hoy.setText(resumenReparto.getTotNotifPendientesSegundoHoy().toString());
             tv_totNotifPendientes_2_otro_dia.setText(resumenReparto.getTotNotifPendientesSegundoOtroDia().toString());
             tv_totNotifMarcadas.setText(resumenReparto.getTotNotifMarcadas().toString());
+            tv_totNotiLista.setText(resumenReparto.getTotNumLista().toString());
 
             // Se recuperan las notificaciones que se han gestionado durante el reparto para contar la fotos
             List<Notificacion> listaNotificacionesGestionadas = dbHelper.obtenerNotificacionesGestionadas();
@@ -197,10 +201,27 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             tv_totFotos.setText(contadorFotos.toString());
             tv_totResultados.setText(resumenReparto.getTotResultados().toString());
             tv_totNotifGestionadas.setText(resumenReparto.getTotNotifGestionadas().toString());
-
             tv_entregado.setText(resumenReparto.getNumEntregados().toString());
             tv_entregado_en_oficina.setText(resumenReparto.getNumEntregadosEnOficina().toString());
             tv_no_entregado_en_oficina.setText(resumenReparto.getNumNoEntregadosEnOficna().toString());
+
+            Boolean esAplicacionDeOficina = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_DE_OFICINA, getBaseContext(), Boolean.class.getSimpleName());
+            Boolean esAplicacionPEE = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_PEE, getBaseContext(), Boolean.class.getSimpleName());
+            // No hay LISTA oculto
+            if (!esAplicacionDeOficina){
+                tv_entregado_en_oficina.setVisibility(View.INVISIBLE);
+                tv_no_entregado_en_oficina.setVisibility(View.INVISIBLE);
+                tv_entregado_en_oficina_txt.setVisibility(View.INVISIBLE);
+                tv_no_entregado_en_oficina_txt.setVisibility(View.INVISIBLE);
+                tv_totNotiLista.setVisibility(View.INVISIBLE);
+                tv_totNotiLista_txt.setVisibility(View.INVISIBLE);
+
+            }
+            // Hay PEE NO hay fotos
+            if (esAplicacionPEE){
+                tv_totFotos.setVisibility(View.INVISIBLE);
+                tv_totFotos_txt.setVisibility(View.INVISIBLE);
+            }
             tv_dirIncorrecta.setText(resumenReparto.getNumDirIncorrectas().toString());
             tv_ausente.setText(resumenReparto.getNumAusentes().toString());
             tv_ausente_pendiente.setText(resumenReparto.getNumAusentesPendientes().toString());

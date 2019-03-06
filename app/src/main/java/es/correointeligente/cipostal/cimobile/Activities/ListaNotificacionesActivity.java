@@ -300,7 +300,7 @@ public class ListaNotificacionesActivity extends BaseActivity {
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                if(charSequence.length() > 2) {
-                   // Se reinicializa la bússqueda limpiando el adaptador y llamando al hilo de obtener notificaciones
+                   // Se reinicializa la búsqueda limpiando el adaptador y llamando al hilo de obtener notificaciones
                    mRecyclerNotificaciones.setAdapter(null);
                    listaNotificaciones = new ArrayList<Notificacion>();
                    mFiltroNotificacion.setPagina(0);
@@ -318,12 +318,10 @@ public class ListaNotificacionesActivity extends BaseActivity {
                    ObtenerNotificacionesTask obtenerNotificacionesTask = new ObtenerNotificacionesTask();
                    obtenerNotificacionesTask.execute(mFiltroNotificacion);
                }
-
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-
             }
         });
     }
