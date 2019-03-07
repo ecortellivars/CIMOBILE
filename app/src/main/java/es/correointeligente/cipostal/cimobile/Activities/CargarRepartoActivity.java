@@ -254,7 +254,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                     notificacion.setDescResultado1(linea.substring(73, 98).trim());
                                     notificacion.setLongitudRes1(linea.substring(98, 118).trim());
                                     notificacion.setLatitudRes1(linea.substring(118, 138).trim());
-                                    notificacion.setNotificadorRes1(linea.substring(138, 258).trim());
+                                    notificacion.setNotificadorRes1(linea.substring(138, 188).trim());
                                     notificacion.setFechaHoraRes1(linea.substring(258, 277).trim());
                                     notificacion.setSegundoIntento(true);
 

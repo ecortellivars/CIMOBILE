@@ -2,7 +2,7 @@
     <string name="app_name">CIMobile</string>
     <string name="iniciar_sesion">Iniciar sesión</string>
     <string name="iniciando_sesion">Iniciando sesión</string>
-    <string name="titulo_logout">CERRAR SESSION (Sin Cerrar Reparto)</string>
+    <string name="titulo_logout">CERRAR SESION (Sin Cerrar Reparto)</string>
     <string name="nueva_notificacion">NUEVA notificación</string>
     <string name="cargar_reparto">CARGAR (Reparto/Lista)</string>
     <string name="resumen_reparto">RESUMEN/CIERRE (Reparto/Lista)</string>

@@ -64,23 +64,23 @@
             android:layout_marginTop="5dp"
             android:stretchColumns="1">
 
-            <TableRow >
+            <TableRow android:layout_height="35dp">
 
                 <TextView
                     android:id="@+id/textView_cardView_resutado_1"
-                    android:layout_width="103dp"
+                    android:layout_width="158dp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="left"
                     android:text="@string/resultado1"
                     android:textStyle="bold" />
 
-
                 <TextView
                     android:id="@+id/textView_cardView_resutado_2"
-                    android:layout_width="match_parent"
+                    android:layout_width="158dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/resultado1"
                     android:layout_gravity="right"
-                    android:textStyle="bold"/>
+                    android:text="@string/resultado2"
+                    android:textStyle="bold" />
             </TableRow>
         </TableLayout>
 

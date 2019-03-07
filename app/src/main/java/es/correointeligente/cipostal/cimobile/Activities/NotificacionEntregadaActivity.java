@@ -241,7 +241,11 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
             Boolean esAplicacionDeOficina = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_DE_OFICINA, getBaseContext(), Boolean.class.getSimpleName());
             Resultado resultado = null;
             if(esAplicacionDeOficina) {
-                resultado = dbHelper.obtenerResultado(Util.RESULTADO_ENTREGADO_OFICINA);
+                if (notificacionAux.getFirmaReceptor() != null && !notificacionAux.getFirmaReceptor().isEmpty()){
+                    resultado = dbHelper.obtenerResultado(Util.RESULTADO_ENTREGADO_OFICINA_CON_FIRMA);
+                } else {
+                    resultado = dbHelper.obtenerResultado(Util.RESULTADO_ENTREGADO_OFICINA_SIN_FIRMA);
+                }
             } else {
                 resultado = dbHelper.obtenerResultado(Util.RESULTADO_ENTREGADO);
             }

@@ -89,7 +89,9 @@ public class Util {
     public final static String RESULTADO_REHUSADO            = "06";
     public final static String RESULTADO_NADIE_SE_HACE_CARGO = "07";
     public final static String RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO = "33";
-    public final static String RESULTADO_ENTREGADO_OFICINA   = "08";
+    public final static String RESULTADO_ENTREGADO_OFICINA_SIN_FIRMA   = "08";
+    public final static String RESULTADO_ENTREGADO_OFICINA_CON_FIRMA   = "08";
+
     public final static String RESULTADO_NO_ENTREGADO_OFICINA   = "09";
 
     // Para uso exclusivo de control del trabajo del notificador

@@ -7,22 +7,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
 import es.correointeligente.cipostal.cimobile.Model.Notificacion;
 import es.correointeligente.cipostal.cimobile.Model.Resultado;
 import es.correointeligente.cipostal.cimobile.Model.ResumenReparto;
 import es.correointeligente.cipostal.cimobile.R;
 
-import static android.R.attr.data;
-import static es.correointeligente.cipostal.cimobile.Util.Util.RESULTADO_ENTREGADO_OFICINA;
+
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -188,7 +181,8 @@ public class DBHelper extends SQLiteOpenHelper {
         listaResultados.add(new Resultado(Util.RESULTADO_DESCONOCIDO, "Desconocido", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_FALLECIDO, "Fallecido", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_REHUSADO, "Rehusado", true, null, false, false));
-        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_OFICINA, "Entregado en oficina", true, null, true, true));
+        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_OFICINA_SIN_FIRMA, "Entregado en oficina sin Firma", true, null, true, true));
+        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_OFICINA_CON_FIRMA, "Entregado en oficina con Firma", true, null, true, true));
         listaResultados.add(new Resultado(Util.RESULTADO_NO_ENTREGADO_OFICINA, "NO Entregado en oficina", true, null, true, false));
 
         // Resultado NO FINAL
@@ -530,8 +524,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
         // Entregado en oficina
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
-                "(" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) ",
-                new String[]{Util.RESULTADO_ENTREGADO_OFICINA, "1"},null,null,null,null);
+                "(" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) " +
+             "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) ",
+        new String[]{Util.RESULTADO_ENTREGADO_OFICINA_CON_FIRMA, "1", Util.RESULTADO_ENTREGADO_OFICINA_SIN_FIRMA, "1"},null,null,null,null);
         resumenReparto.setNumEntregadosEnOficina(cursor.getCount());
 
         // No Entregado en oficina
