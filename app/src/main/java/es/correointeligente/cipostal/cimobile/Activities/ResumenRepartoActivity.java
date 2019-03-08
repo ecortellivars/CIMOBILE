@@ -333,7 +333,11 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                     fechaResultadoString = notificacion.getFechaHoraRes2();
                                     Resultado resultado = dbHelper.obtenerResultado(notificacion.getResultado2());
                                     if (resultado.getEsFinal()) {
-                                        codResultado = resultado.getCodigoSegundoIntento();
+                                        if (resultado.getEsResultadoOficina()) {
+                                            codResultado = notificacion.getResultado2();
+                                        }else {
+                                            codResultado = resultado.getCodigoSegundoIntento();
+                                        }
                                         notificacion.setResultado2(codResultado);
                                         notificacion.setDescResultado2(resultado.getDescripcion());
                                         if (notificacion.getLongitudRes1().isEmpty()
@@ -455,19 +459,24 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                     fallo = getString(R.string.error_conexion_ftp);
                 }
 
-                if(StringUtils.isBlank(fallo)) {
-                    // Si no ha habido ningún fallo se limpia la base de datos
-                    publishProgress(getString(R.string.limpiando_base_datos));
-                    if(!dbHelper.borrarNotificaciones()) {
-                        fallo = getString(R.string.error_borrado_notificaciones);
-                    } else {
-                        // Borra las carpetas
-                        publishProgress(getString(R.string.limpiando_directorio));
-                        if(!Util.borrarFicherosAplicacion()) {
-                            fallo = getString(R.string.error_fallo_borrar_ficheros_sensibles);
+                // Dependiendo de si es una aplicación PEE revisara si borra o no
+                Boolean esAplicacionPEE = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_PEE, getBaseContext(), Boolean.class.getSimpleName());
+
+                if (esAplicacionPEE){
+                    fallo = getString(R.string.error_borrado_notificaciones_PEE);
+                } else if (StringUtils.isBlank(fallo)) {
+                        // Si no ha habido ningún fallo y no es PEE se limpia la base de datos
+                        publishProgress(getString(R.string.limpiando_base_datos));
+                        if (!dbHelper.borrarNotificaciones()) {
+                            fallo = getString(R.string.error_borrado_notificaciones);
+                        } else {
+                            // Borra las carpetas
+                            publishProgress(getString(R.string.limpiando_directorio));
+                            if (!Util.borrarFicherosAplicacion()) {
+                                fallo = getString(R.string.error_fallo_borrar_ficheros_sensibles);
+                            }
                         }
                     }
-                }
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -555,16 +564,20 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
 
         @Override
         protected String doInBackground(Void... voids) {
+            // Dependiendo de si es una aplicación PEE revisara si borra o no
+            Boolean esAplicacionPEE = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_PEE, getBaseContext(), Boolean.class.getSimpleName());
             String fallo = null;
 
-            if(!dbHelper.borrarNotificaciones()) {
-                fallo = getString(R.string.error_borrado_notificaciones);
-            } else {
-                // Borra las carpetas
-                publishProgress(getString(R.string.limpiando_directorio));
-                if(!Util.borrarFicherosAplicacion()) {
-                    fallo = getString(R.string.error_fallo_borrar_ficheros_sensibles);
-                }
+            if (esAplicacionPEE){
+                fallo = getString(R.string.error_borrado_notificaciones_PEE);
+                } else  if(!dbHelper.borrarNotificaciones()) {
+                    fallo = getString(R.string.error_borrado_notificaciones);
+                    } else {
+                        // Borra las carpetas
+                        publishProgress(getString(R.string.limpiando_directorio));
+                        if(!Util.borrarFicherosAplicacion()) {
+                            fallo = getString(R.string.error_fallo_borrar_ficheros_sensibles);
+                        }
             }
 
             return fallo;

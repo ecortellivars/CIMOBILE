@@ -24,6 +24,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     Button mCerrarSesion;
     Button mResumenReparto;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
