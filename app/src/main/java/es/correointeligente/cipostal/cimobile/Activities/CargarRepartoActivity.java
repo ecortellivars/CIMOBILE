@@ -87,27 +87,41 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         // Este metodo recoge el item seleccionado de la lista mostrada por pantalla
+        // Obtenemos la instancia del helper de la base de datos
+        dbHelper = new DBHelper(this);
+        List<Notificacion> notificaciones = dbHelper.obtenerNotificacionesGestionadas();
+        if (notificaciones.size() > 0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.cargar_fichero_sicer);
+            builder.setMessage(R.string.no_cargar_el_fichero_sicer);
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+            builder.show();
+        } else {
+            final String nombreFicheroSeleccionado = ((FicheroViewHolder) adapterView.getItemAtPosition(position)).getNombreFichero();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.cargar_fichero_sicer);
+            builder.setMessage(R.string.esta_seguro_de_cargar_el_fichero_sicer+" "+ nombreFicheroSeleccionado + "?");
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // Lanza la tarea en background de la carga del fichero SICER
+                    CargarFicheroTask cargarFicheroTask = new CargarFicheroTask();
+                    cargarFicheroTask.execute(nombreFicheroSeleccionado);
+                }
+            });
+            builder.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
 
-        final String nombreFicheroSeleccionado = ((FicheroViewHolder) adapterView.getItemAtPosition(position)).getNombreFichero();
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.cargar_fichero_sicer);
-        builder.setMessage(R.string.esta_seguro_de_cargar_el_fichero_sicer+" "+ nombreFicheroSeleccionado + "?");
-        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                // Lanza la tarea en background de la carga del fichero SICER
-                CargarFicheroTask cargarFicheroTask = new CargarFicheroTask();
-                cargarFicheroTask.execute(nombreFicheroSeleccionado);
-            }
-        });
-        builder.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int wich) {
+                    dialogInterface.cancel();
+                }
+            });
 
-            @Override
-            public void onClick(DialogInterface dialogInterface, int wich) {
-                dialogInterface.cancel();
-            }
-        });
+            builder.show();
+        }
 
-        builder.show();
     }
 
     /**

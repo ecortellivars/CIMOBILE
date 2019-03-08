@@ -67,6 +67,7 @@
     <string name="guardar">Guardar</string>
     <string name="cargar_fichero_sicer">Cargar fichero SICER</string>
     <string name="esta_seguro_de_cargar_el_fichero_sicer">¿Está seguro de cargar el fichero SICER</string>
+    <string name="no_cargar_el_fichero_sicer">Antes de cargar un nuevo reparto debe BORRAR el actual cargado en el dispositivo</string>
     <string name="conexion_ftp">Conexión FTP</string>
     <string name="espere_conexion_servidor_ftp">Espere mientras se conecta al servidor FTP</string>
     <string name="fallo_conexion_servidor_ftp">No se ha podido conectar al servidor FTP</string>
@@ -101,7 +102,7 @@
     <string name="error_subir_fichero_zip">Se ha producido un error al subir el fichero ZIP</string>
     <string name="error_subir_fichero_CSV">Se ha producido un error al subir el fichero CSV</string>
     <string name="error_borrado_notificaciones">Se ha producido un error al borrar las notificaciones</string>
-    <string name="error_borrado_notificaciones_PEE">Estas como PEE debes hacer el borrado manual</string>
+    <string name="error_borrado_notificaciones_PEE">Gestión por PEE, debera hacer el borrado del reparto manual</string>
     <string name="error_carga_fichero">Se ha producido un error durante la carga del fichero</string>
     <string name="error_fallo_borrar_ficheros_sensibles">Se ha producido un error al borrar los ficheros XML, CSV, imagenes y sellos de tiempo</string>
     <string name="generando_fichero_CSV">Generando fichero CSV</string>
@@ -120,7 +121,7 @@
     <string name="espere_info_eliminar_resultado">Espere mientras se elimina el resultado</string>
     <string name="eliminar_notificaciones">Eliminar notificaciones</string>
     <string name="seguro_eliminar_resultado">¿Está seguro de eliminar el resultado?</string>
-    <string name="seguro_eliminar_notificaciones">¿Está seguro de eliminar las notificaciones? Si acepta, eliminará todos los resultados gestionados, junto a las imagenes de firma, sellos de tiempo y ficheros XML</string>
+    <string name="seguro_eliminar_notificaciones">¿Has CONFIRMADO que el REPARTO se cerro correctamente? Si acepta, eliminará todos los resultados, las imagenes de firma, sellos de tiempo y ficheros XML</string>
     <string name="usuario">Usuario</string>
     <string name="password">Contraseña</string>
     <string name="configuracion">Configuración</string>

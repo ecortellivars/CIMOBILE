@@ -232,7 +232,7 @@ public class TimeStamp {
         reqProperties.put("Content-Transfer-Encoding", "binary");
 
         TimeStampResponse response = connect(serverTimeStampURL, reqProperties, requestBytes);
-
+        String excepcion ="";
         // Validar la respuesta
         if (response.getTimeStampToken()== null) {
             if (response.getFailInfo() == null) {
