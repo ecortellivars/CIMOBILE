@@ -94,7 +94,7 @@
     <string name="guardado">Guardado</string>
     <string name="realizar_notif_en_papel">Debido a que no se ha generado ni el sello de tiempo ni el fichero XML, realice la notificación en papel</string>
     <string name="notificacion_grabada_correctamente">La notificación se ha guardado correctamente</string>
-    <string name="cerrar_reparto_info">Va a CERRAR el reparto, se generará el fichero con los RESULTADOS su subida al FTP y el BORRADO de los datos del dispositivo. ¿Desea Continuar?</string>
+    <string name="cerrar_reparto_info">Va a CERRAR el reparto, se generará el fichero con los RESULTADOS su subida al FTP y el BORRADO de los datos del dispositivo si no estas gestionando por PEE. ¿Desea Continuar?</string>
     <string name="borrar_reparto_info">Va a BORRAR el reparto, se eliminaran todos de los datos del dispositivo. ¿Desea Continuar?</string>
     <string name="cerrar_hacer_foto">Va a hacer la foto del acuse. ¿Desea Continuar?</string>
     <string name="error_conexion_ftp">Se ha producido un error en la conexión FTP</string>

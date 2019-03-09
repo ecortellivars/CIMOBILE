@@ -45,6 +45,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
     Integer totResultados = 0;
     Integer totFotosHechas = 0;
     Integer totNumLista = 0;
+    Boolean borradoManual = Boolean.FALSE;
 
     // Variables para instanciar los objetos del layaout y darles valor
     TextView tv_totFicheros, tv_totNotificaciones, tv_totNotifGestionadas, tv_totNotifPendientes_2_hoy,
@@ -142,6 +143,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                 break;
             case  R.id.menu_borrar_notificaciones:
                 this.crearDialogoEliminarNotificaciones();
+                borradoManual = Boolean.TRUE;
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -322,7 +324,18 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                              FileWriter writerTXT = new FileWriter(ficheroTXT);) {
                             publishProgress(getString(R.string.generando_fichero_CSV));
                             for (Notificacion notificacion : listaNotificacionesGestionadas) {
+                                String resultadoSinFirma =  notificacion.getDescResultado1();
+                                if (resultadoSinFirma != null){
+                                    resultadoSinFirma.replace("sin firma","");
+                                }
 
+                                notificacion.setDescResultado1(resultadoSinFirma);
+                                resultadoSinFirma =  notificacion.getDescResultado2();
+                                if (resultadoSinFirma != null){
+                                    resultadoSinFirma.replace("sin firma","");
+                                }
+
+                                notificacion.setDescResultado2(resultadoSinFirma);
                                 // Se recupera el codigo de resultado y la fecha segun es primer o segundo intento
                                 String codResultado = notificacion.getResultado1();
                                 String fechaResultadoString = notificacion.getFechaHoraRes1();
@@ -332,12 +345,12 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                     codResultado = notificacion.getResultado2();
                                     fechaResultadoString = notificacion.getFechaHoraRes2();
                                     Resultado resultado = dbHelper.obtenerResultado(notificacion.getResultado2());
-                                    if (resultado.getEsFinal()) {
+                                    if ((resultado.getEsFinal() != null && !resultado.getEsFinal())) {
                                         if (resultado.getEsResultadoOficina()) {
                                             codResultado = notificacion.getResultado2();
-                                        }else {
-                                            codResultado = resultado.getCodigoSegundoIntento();
                                         }
+                                        codResultado = resultado.getCodigoSegundoIntento();
+                                    }else {
                                         notificacion.setResultado2(codResultado);
                                         notificacion.setDescResultado2(resultado.getDescripcion());
                                         if (notificacion.getLongitudRes1().isEmpty()
@@ -384,7 +397,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                         }
                                         String linea = "S" + StringUtils.rightPad(notificacion.getReferencia(), 70);
                                         linea += StringUtils.rightPad(resultado.getCodigo(), 2);
-                                        linea += StringUtils.rightPad(resultado.getDescripcion().toUpperCase().replace("(2ª VISITA)",""), 25);
+                                        linea += StringUtils.rightPad(resultado.getDescripcion().toUpperCase().replace("(1ª VISITA)",""), 25);
                                         linea += StringUtils.rightPad(notificacion.getLongitudRes1(), 20);
                                         linea += StringUtils.rightPad(notificacion.getLatitudRes1(), 20);
                                         linea += StringUtils.rightPad(notificacion.getNotificadorRes1(), 50);
@@ -462,7 +475,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                 // Dependiendo de si es una aplicación PEE revisara si borra o no
                 Boolean esAplicacionPEE = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_PEE, getBaseContext(), Boolean.class.getSimpleName());
 
-                if (esAplicacionPEE){
+                if (esAplicacionPEE && !borradoManual){
                     fallo = getString(R.string.error_borrado_notificaciones_PEE);
                 } else if (StringUtils.isBlank(fallo)) {
                         // Si no ha habido ningún fallo y no es PEE se limpia la base de datos
@@ -568,7 +581,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             Boolean esAplicacionPEE = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_PEE, getBaseContext(), Boolean.class.getSimpleName());
             String fallo = null;
 
-            if (esAplicacionPEE){
+            if (esAplicacionPEE && !borradoManual){
                 fallo = getString(R.string.error_borrado_notificaciones_PEE);
                 } else  if(!dbHelper.borrarNotificaciones()) {
                     fallo = getString(R.string.error_borrado_notificaciones);
