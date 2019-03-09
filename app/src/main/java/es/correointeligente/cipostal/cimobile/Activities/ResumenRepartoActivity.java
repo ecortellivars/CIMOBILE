@@ -353,47 +353,25 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                     }else {
                                         notificacion.setResultado2(codResultado);
                                         notificacion.setDescResultado2(resultado.getDescripcion());
-                                        if (notificacion.getLongitudRes1().isEmpty()
-                                         || notificacion.getLongitudRes1().toString().length() == 0
-                                         || notificacion.getLongitudRes1() == null) {
-                                                notificacion.setLongitudRes1("-0.0000000");
-                                            }
-
-                                        if (notificacion.getLatitudRes1().isEmpty()
-                                         || notificacion.getLatitudRes1().toString().length() == 0
-                                         || notificacion.getLatitudRes1() == null) {
-                                                notificacion.setLatitudRes1("00.0000000");
-                                            }
-
-                                        String linea = "S" + StringUtils.rightPad(notificacion.getReferencia(), 70);
-                                        linea += StringUtils.rightPad(resultado.getCodigo(), 2);
-                                        linea += StringUtils.rightPad(resultado.getDescripcion().toUpperCase().replace("(2ª VISITA)",""), 25);
-                                        linea += StringUtils.rightPad(notificacion.getLongitudRes1(), 20);
-                                        linea += StringUtils.rightPad(notificacion.getLatitudRes1(), 20);
-                                        linea += StringUtils.rightPad(notificacion.getNotificadorRes1(), 50);
-                                        linea += StringUtils.rightPad(notificacion.getReferenciaSCB(), 70);
-                                        linea += StringUtils.rightPad(notificacion.getFechaHoraRes1(), 19);
-                                        linea += "\n";
-                                        writerTXT.append(linea);
                                     }
                                 } else {
                                     // Si es resultado de primer intento, dependiendo de si el resultado es final o no,
                                     // hay que ir añadiendolo al fichero de segundos intentos para el dia siguiente
                                     Resultado resultado = dbHelper.obtenerResultado(codResultado);
                                     // Si es primera visita y NO ES FINAL lo guardamos en un TXT para la carga del dia siguiente
-                                    // O es segunda visita pero gestiona lista
-                                    if (BooleanUtils.isFalse(resultado.getEsFinal()))
+                                    // O es segunda visita pero gestiona lista y no es 08 ni 09
+                                    if (BooleanUtils.isFalse(resultado.getEsFinal()) && BooleanUtils.isFalse(resultado.getEsResultadoOficina()))
                                     {
                                         if (notificacion.getLongitudRes1().isEmpty()
-                                                || notificacion.getLongitudRes1().toString().length() == 0
-                                                || notificacion.getLongitudRes1() == null) {
-                                            notificacion.setLongitudRes1("-0.0000000");
+                                         || notificacion.getLongitudRes1().toString().length() == 0
+                                         || notificacion.getLongitudRes1() == null) {
+                                                 notificacion.setLongitudRes1("-0.0000000");
                                         }
 
                                         if (notificacion.getLatitudRes1().isEmpty()
-                                                || notificacion.getLatitudRes1().toString().length() == 0
-                                                || notificacion.getLatitudRes1() == null) {
-                                            notificacion.setLatitudRes1("00.0000000");
+                                         || notificacion.getLatitudRes1().toString().length() == 0
+                                         || notificacion.getLatitudRes1() == null) {
+                                                 notificacion.setLatitudRes1("00.0000000");
                                         }
                                         String linea = "S" + StringUtils.rightPad(notificacion.getReferencia(), 70);
                                         linea += StringUtils.rightPad(resultado.getCodigo(), 2);

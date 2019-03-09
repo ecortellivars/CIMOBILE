@@ -225,7 +225,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                      || notificacion.getResultado1().trim().equals (Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO)) {
                         listaResultados = dbHelper.obtenerResultadosEnOficina();
                     }
-                    if (esAplicacionOficina
+                    if (!esAplicacionOficina
                     && !notificacion.getResultado1().trim().equals(Util.RESULTADO_AUSENTE_SEGUNDO)
                     && !notificacion.getResultado1().trim().equals (Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO))  {
                         listaResultados = dbHelper.obtenerResultadosFinales();
@@ -243,6 +243,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         protected void onPostExecute(List<Resultado> listaResultados) { // Dependiendo de si es una aplicación PEE revisara las fotos o no
 
             listaResultadosNoNotifica = listaResultados;
+            if (listaResultados != null && !listaResultados.isEmpty())
             listaResultadosNoEntrega = new String[listaResultadosNoNotifica.size()];
             int index = 0;
             for (Resultado resultado : listaResultadosNoNotifica) {
