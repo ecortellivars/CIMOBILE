@@ -252,8 +252,6 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                     resultado = dbHelper.obtenerResultado(Util.RESULTADO_ENTREGADO);
                 }
 
-
-
             if(resultado1 == null) {
                 notificacionAux.setDescResultado1(resultado.getDescripcion().toUpperCase());
                 notificacionAux.setResultado1(resultado.getCodigo());

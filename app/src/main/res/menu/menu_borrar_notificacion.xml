@@ -15,7 +15,13 @@
         android:id="@+id/menu_borrar_notificaciones"
         android:icon="@android:drawable/ic_menu_delete"
         android:title="@string/filtro"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_sello_tiempo"
+        android:icon="@drawable/ic_sync_black_24dp"
+        android:title="@string/generado_sello_de_tiempo"
+        android:visible="false"
+        app:showAsAction="always" />
 
 
 </menu>

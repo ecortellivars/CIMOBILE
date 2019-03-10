@@ -29,18 +29,24 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.api.CommonStatusCodes;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import es.correointeligente.cipostal.cimobile.Model.Notificacion;
 import es.correointeligente.cipostal.cimobile.R;
+import es.correointeligente.cipostal.cimobile.TSA.TimeStamp;
+import es.correointeligente.cipostal.cimobile.TSA.TimeStampRequestParameters;
 import es.correointeligente.cipostal.cimobile.Util.BaseActivity;
+import es.correointeligente.cipostal.cimobile.Util.CiMobileException;
 import es.correointeligente.cipostal.cimobile.Util.DBHelper;
 import es.correointeligente.cipostal.cimobile.Util.Util;
 import java.text.SimpleDateFormat;
@@ -116,6 +122,9 @@ public class DetalleNotificacionActivity extends BaseActivity {
                 break;
             case R.id.menu_borrar_notificaciones:
                 this.crearDialogoEliminarResultado();
+                break;
+            case R.id.menu_sello_tiempo:
+                this.crearSelloTiempo();
                 break;
             case R.id.imageButton_listaNotificaciones_foto:
                if (!esAplicacionPEE) {
@@ -525,6 +534,45 @@ public class DetalleNotificacionActivity extends BaseActivity {
             }
             progressDialog.dismiss();
         }
+    }
+
+    /**
+     * Método privado que pide confiramación para eliminar el resultado
+     */
+    private void crearSelloTiempo() {
+            String fallo = "";
+            notificacion = dbHelper.obtenerNotificacion(idNotificacion);
+            File ficheroXML = null;
+            try {
+                // Se genera el fichero XML
+                //publishProgress(getString(R.string.generado_xml));
+                ficheroXML = Util.NotificacionToXML(notificacion, getBaseContext());
+
+                // Se realiza la llamada al servidor del sellado de tiempo y se genera el fichero de sello de tiempo
+                Boolean tsaActivo = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_ACTIVO, getBaseContext(), Boolean.class.getSimpleName());
+                if(BooleanUtils.isTrue(tsaActivo)) {
+                    //publishProgress(getString(R.string.generado_sello_de_tiempo));
+                    String tsaUrl = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_URL, getBaseContext(), String.class.getSimpleName());
+                    String tsaUser = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_USER, getBaseContext(), String.class.getSimpleName());
+                    TimeStampRequestParameters timeStampRequestParameters = null;
+                    if (StringUtils.isNotBlank(tsaUser)) {
+                        String tsaPassword = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_PASSWORD, getBaseContext(), String.class.getSimpleName());
+                        timeStampRequestParameters = new TimeStampRequestParameters();
+                        timeStampRequestParameters.setUser(tsaUser);
+                        timeStampRequestParameters.setPassword(tsaPassword);
+                    }
+                    TimeStamp t = TimeStamp.stampDocument(FileUtils.readFileToByteArray(ficheroXML), new URL(tsaUrl), timeStampRequestParameters, null);
+                    Util.guardarFicheroSelloTiempo(notificacion, t.toDER());
+                }
+
+            } catch (CiMobileException e) {
+                fallo = e.getError();
+            } catch (IOException e) {
+                fallo = getString(R.string.error_lectura_fichero_xml);
+            }
+
+
+        //return fallo;
     }
 
     /**

@@ -146,7 +146,7 @@ public class TimeStamp {
         try {
             MessageDigest md = MessageDigest.getInstance(hashAlgorithm, CRYPTOGRAPHIC_PROVIDER);
             DigestInputStream dis = new DigestInputStream(bais, md);
-            byte[] buffer = new byte[512];
+            byte[] buffer = new byte[128];
             while (true) {
                 int n;
                 n = dis.read(buffer);
@@ -232,9 +232,9 @@ public class TimeStamp {
         reqProperties.put("Content-Transfer-Encoding", "binary");
 
         TimeStampResponse response = connect(serverTimeStampURL, reqProperties, requestBytes);
-        String excepcion ="";
+        String excepcion = "";
         // Validar la respuesta
-        if (response.getTimeStampToken()== null) {
+        if (response.getTimeStampToken() == null) {
             if (response.getFailInfo() == null) {
                 throw new CiMobileException("Por algún motivo desconocido la TSA no ha podido devolver un sello de tiempos");
             } else {

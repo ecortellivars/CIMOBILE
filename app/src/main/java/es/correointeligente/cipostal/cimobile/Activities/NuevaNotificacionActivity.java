@@ -102,6 +102,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     private static int TAKE_PICTURE = 1;
     private static int SELECT_PICTURE = 2;
     private String name = "";
+    private String fallo = "";
 
 
     @Override
@@ -221,8 +222,8 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             // Hay PRIMERA VISITA
             if (notificacion.getResultado1() != null){
                     if (esAplicacionOficina
-                    && (notificacion.getResultado1().trim().equals(Util.RESULTADO_AUSENTE_SEGUNDO))
-                     || notificacion.getResultado1().trim().equals (Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO)) {
+                    && (notificacion.getResultado1().trim().equals(Util.RESULTADO_AUSENTE_SEGUNDO)
+                     || notificacion.getResultado1().trim().equals (Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO))) {
                         listaResultados = dbHelper.obtenerResultadosEnOficina();
                     }
                     if (!esAplicacionOficina
@@ -245,17 +246,25 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         }
 
         @Override
-        protected void onPostExecute(List<Resultado> listaResultados) { // Dependiendo de si es una aplicación PEE revisara las fotos o no
+        protected void onPostExecute(List<Resultado> listaResultados)  { // Dependiendo de si es una aplicación PEE revisara las fotos o no
 
             listaResultadosNoNotifica = listaResultados;
-            if (listaResultados != null && !listaResultados.isEmpty())
-            listaResultadosNoEntrega = new String[listaResultadosNoNotifica.size()];
-            int index = 0;
-            for (Resultado resultado : listaResultadosNoNotifica) {
+            if (listaResultados != null && !listaResultados.isEmpty()) {
+                    listaResultadosNoEntrega = new String[listaResultadosNoNotifica.size()];
+                    int index = 0;
+                    for (Resultado resultado : listaResultadosNoNotifica) {
                         listaResultadosNoEntrega[index] = (String) resultado.getCodigo() + " " + resultado.getDescripcion().toUpperCase();
                         index++;
+                    }
+                    progressDialog.dismiss();
+                }
+            else {
+                btn_noEntregado.setVisibility(View.INVISIBLE);
+                btn_entregado.setVisibility(View.INVISIBLE);
+                fallo = getString(R.string.error_carga_resultados);
+                progressDialog.dismiss();
+
             }
-            progressDialog.dismiss();
         }
     }
 
@@ -274,7 +283,9 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
 
         @Override
         protected void onPreExecute() {
-            progressDialog = ProgressDialog.show(NuevaNotificacionActivity.this, getString(R.string.cargando_notificacion), getString(R.string.espere_info_notificacion));
+
+               progressDialog = ProgressDialog.show(NuevaNotificacionActivity.this, getString(R.string.cargando_notificacion), getString(R.string.espere_info_notificacion));
+
         }
 
         @Override
@@ -367,71 +378,90 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     private void crearSelectorNoEntregado() {
 
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(NuevaNotificacionActivity.this);
-        mBuilder.setTitle(R.string.resultados_sin_firma);
-        // Guardamos el resultado elegido por el usuario
-        mBuilder.setSingleChoiceItems(listaResultadosNoEntrega, checkedItem, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int posicion) {
-                checkedItem = posicion;
-            }
-        });
-
-        mBuilder.setCancelable(false);
-        mBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                // Fecha para base de datos
-                DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-                String fechaHoraString = df.format(Calendar.getInstance().getTime());
-                String codResultado = listaResultadosNoNotifica.get(checkedItem).getCodigo();
-                String descResultado = listaResultadosNoNotifica.get(checkedItem).getDescripcion();
-
-                // Fecha para dar nombre a la imagen en base de datos y al fichero JPG
-                DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
-
-                // Preparamos la informacion si es Primer Intento
-                if (BooleanUtils.isFalse(notificacion.getSegundoIntento())) {
-                    notificacion.setFechaHoraRes1(fechaHoraString);
-                    notificacion.setResultado1(codResultado);
-                    notificacion.setDescResultado1(descResultado);
-                    notificacion.setLatitudRes1(tv_latitud.getText().toString().trim().length() == 0 ? "-0.0000000" : tv_latitud.getText().toString());
-                    notificacion.setLongitudRes1(tv_longitud.getText().toString().trim().length() == 0 ? "00.0000000" : tv_longitud.getText().toString());
-                    notificacion.setObservacionesRes1(edt_observaciones.getText().toString().trim().length() == 0 ? null : edt_observaciones.getText().toString());
-                    notificacion.setNotificadorRes1(obtenerNombreNotificador());
-                    notificacion.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
+        if (fallo.equals("")) {
+            mBuilder.setTitle(R.string.resultados_sin_firma);
+            // Guardamos el resultado elegido por el usuario
+            mBuilder.setSingleChoiceItems(listaResultadosNoEntrega, checkedItem, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int posicion) {
+                    checkedItem = posicion;
                 }
-                // Preparamos la informacion si es Segundo Intento
-                else {
-                    notificacion.setFechaHoraRes2(fechaHoraString);
-                    notificacion.setResultado2(codResultado);
-                    notificacion.setDescResultado2(descResultado);
-                    notificacion.setLatitudRes2(tv_latitud.getText().toString().trim().length() == 0 ? "-0.0000000" : tv_latitud.getText().toString());
-                    notificacion.setLongitudRes2(tv_longitud.getText().toString().trim().length() == 0 ? "00.0000000" : tv_longitud.getText().toString());
-                    notificacion.setObservacionesRes2(edt_observaciones.getText().toString().trim().length() == 0 ? null : edt_observaciones.getText().toString());
-                    notificacion.setNotificadorRes2(obtenerNombreNotificador());
-                    notificacion.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
+            });
+
+            mBuilder.setCancelable(false);
+            mBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    // Fecha para base de datos
+                    DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                    String fechaHoraString = df.format(Calendar.getInstance().getTime());
+                    String codResultado = listaResultadosNoNotifica.get(checkedItem).getCodigo();
+                    String descResultado = listaResultadosNoNotifica.get(checkedItem).getDescripcion();
+
+                    // Fecha para dar nombre a la imagen en base de datos y al fichero JPG
+                    DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
+
+                    // Preparamos la informacion si es Primer Intento
+                    if (BooleanUtils.isFalse(notificacion.getSegundoIntento())) {
+                        notificacion.setFechaHoraRes1(fechaHoraString);
+                        notificacion.setResultado1(codResultado);
+                        notificacion.setDescResultado1(descResultado);
+                        notificacion.setLatitudRes1(tv_latitud.getText().toString().trim().length() == 0 ? "-0.0000000" : tv_latitud.getText().toString());
+                        notificacion.setLongitudRes1(tv_longitud.getText().toString().trim().length() == 0 ? "00.0000000" : tv_longitud.getText().toString());
+                        notificacion.setObservacionesRes1(edt_observaciones.getText().toString().trim().length() == 0 ? null : edt_observaciones.getText().toString());
+                        notificacion.setNotificadorRes1(obtenerNombreNotificador());
+                        notificacion.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
+                    }
+                    // Preparamos la informacion si es Segundo Intento
+                    else {
+                        notificacion.setFechaHoraRes2(fechaHoraString);
+                        notificacion.setResultado2(codResultado);
+                        notificacion.setDescResultado2(descResultado);
+                        notificacion.setLatitudRes2(tv_latitud.getText().toString().trim().length() == 0 ? "-0.0000000" : tv_latitud.getText().toString());
+                        notificacion.setLongitudRes2(tv_longitud.getText().toString().trim().length() == 0 ? "00.0000000" : tv_longitud.getText().toString());
+                        notificacion.setObservacionesRes2(edt_observaciones.getText().toString().trim().length() == 0 ? null : edt_observaciones.getText().toString());
+                        notificacion.setNotificadorRes2(obtenerNombreNotificador());
+                        notificacion.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
+                    }
+
+                    GuardarResultadoNegativoTask guardarResultadoNegativoTask = new GuardarResultadoNegativoTask();
+
+                    guardarResultadoNegativoTask.execute();
+
+                    // Se cierra el cuadro de dialogo de los resultados postales negativos
+                    dialogInterface.dismiss();
                 }
+            });
 
-                GuardarResultadoNegativoTask guardarResultadoNegativoTask = new GuardarResultadoNegativoTask();
+            mBuilder.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
 
-                guardarResultadoNegativoTask.execute();
+            // Se construye el dialogo y se muestra por pantalla
+            AlertDialog mDialog = mBuilder.create();
+            mDialog.show();
+        }else {
+            mBuilder.setTitle(R.string.sin_resultados_posibles);
+            mBuilder.setCancelable(false);
+            mBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
 
-                // Se cierra el cuadro de dialogo de los resultados postales negativos
-                dialogInterface.dismiss();
+                    // Se cierra el cuadro de dialogo de los resultados postales negativos
+                    dialogInterface.dismiss();
+                }
+            });
+
+            // Se construye el dialogo y se muestra por pantalla
+            AlertDialog mDialog = mBuilder.create();
+            mDialog.show();
             }
-        });
-
-        mBuilder.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-
-        // Se construye el dialogo y se muestra por pantalla
-        AlertDialog mDialog = mBuilder.create();
-        mDialog.show();
     }
+
+
 
     // Se inicializa el cliente Api de Google
     public void connectGPS() {

@@ -8,6 +8,7 @@
     <string name="cargar_reparto">CARGAR (Reparto/Lista)</string>
     <string name="resumen_reparto">RESUMEN/CIERRE (Reparto/Lista)</string>
     <string name="cargando_notificacion">Cargando notificación</string>
+    <string name="sin_resultados">Sin resultados</string>
     <string name="cargando_resultados">Cargando resultados</string>
     <string name="detalle_logout">Va a salir y cerrar la sesión, ¿Desea continuar?</string>
     <string name="ok">OK</string>
@@ -50,6 +51,7 @@
     <string name="hacer_foto">Hacer Foto</string>
     <string name="espere_info_reparto">Espere mientras se obtiene información del reparto</string>
     <string name="espere_info_notificacion">Espere mientras se obtiene información de la notificación</string>
+    <string name="notificacion_sin_resultaos">Esta notificacion no tiene resultados posibles</string>
     <string name="espere_info_resultados">Espere mientras se cargan los posibles resultados de notificación</string>
     <string name="espere_info_inicio_sesion">Espere mientras se obtiene la información del inicio de sesión</string>
     <string name="filtro">Filtro</string>
@@ -60,6 +62,7 @@
     <string name="flag_foto">Flag Foto</string>
     <string name="motivo_no_entrega">Motivo de no entrega</string>
     <string name="resultados_sin_firma">Resultados SIN firma</string>
+    <string name="sin_resultados_posibles">Notificacion sin resultados posibles</string>
     <string name="numero_documento">Número documento</string>
     <string name="nombre_y_apellidos">Nombre y apellidos</string>
     <string name="firma_receptor">Firma del receptor</string>
@@ -90,6 +93,7 @@
     <string name="generado_sello_de_tiempo">Generando el sello de tiempo del fichero XML</string>
     <string name="error_generar_XML">No se ha generado el fichero XML</string>
     <string name="error_lectura_fichero_xml">Se ha producido un fallo al leer el fichero XML para realizar el sellado de tiempo</string>
+    <string name="error_carga_resultados">No hay resultados para esta notificacion</string>
     <string name="error_guardar_en_bd">Se ha producido un error al guardar en la base de datos</string>
     <string name="guardado">Guardado</string>
     <string name="realizar_notif_en_papel">Debido a que no se ha generado ni el sello de tiempo ni el fichero XML, realice la notificación en papel</string>

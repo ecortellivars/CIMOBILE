@@ -124,7 +124,7 @@
         <CheckBoxPreference
             android:key="usarAPPEnOficina"
             android:title="Aplicación de oficina"
-            android:summary="Determina si se va a usar solo en oficina"
+            android:summary="Usar con tablet en la oficina para GESTIONAR LISTA"
             android:defaultValue="false"/>
     </PreferenceCategory>
 
@@ -132,7 +132,7 @@
         <CheckBoxPreference
             android:key="usarAPPPEE"
             android:title="Aplicación PEE"
-            android:summary="Determina si se va a usar PEE"
+            android:summary="Determina si se va a usar PEE (Prueba de Entrega Electronica)"
             android:defaultValue="false"/>
     </PreferenceCategory>
 
