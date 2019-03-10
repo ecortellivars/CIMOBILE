@@ -27,6 +27,7 @@ import com.google.android.gms.common.api.CommonStatusCodes;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -240,15 +241,18 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
             // Dependiendo de si es una aplicación de oficina o no, el resultado entregado tiene un código u otro
             Boolean esAplicacionDeOficina = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_DE_OFICINA, getBaseContext(), Boolean.class.getSimpleName());
             Resultado resultado = null;
-            if(esAplicacionDeOficina) {
-                if (notificacionAux.getFirmaReceptor() != null && !notificacionAux.getFirmaReceptor().isEmpty()){
-                    resultado = dbHelper.obtenerResultado(Util.RESULTADO_ENTREGADO_OFICINA_CON_FIRMA);
+            if (resultado1 != null && esAplicacionDeOficina) {
+                if (resultado1.equals(Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO)
+                 || resultado1.equals(Util.RESULTADO_AUSENTE_SEGUNDO)) {
+                    resultado = dbHelper.obtenerResultado(Util.RESULTADO_ENTREGADO_OFICINA);
                 } else {
-                    resultado = dbHelper.obtenerResultado(Util.RESULTADO_ENTREGADO_OFICINA_SIN_FIRMA);
+                    resultado = dbHelper.obtenerResultado(Util.RESULTADO_ENTREGADO);
                 }
-            } else {
-                resultado = dbHelper.obtenerResultado(Util.RESULTADO_ENTREGADO);
-            }
+            }else {
+                    resultado = dbHelper.obtenerResultado(Util.RESULTADO_ENTREGADO);
+                }
+
+
 
             if(resultado1 == null) {
                 notificacionAux.setDescResultado1(resultado.getDescripcion().toUpperCase());

@@ -176,13 +176,13 @@ public class DBHelper extends SQLiteOpenHelper {
         List<Resultado> listaResultados = new ArrayList<>();
         // Resultados FINALES
         listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO, "Notificado en Domicilio", true, null, false, true));
-        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_SIN_FIRMA, "Notificado en domicilio sin firma", true, null, false, false));
+        //listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_SIN_FIRMA, "Notificado en domicilio sin firma", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_DIR_INCORRECTA, "Dirección Incorrecta", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_DESCONOCIDO, "Desconocido", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_FALLECIDO, "Fallecido", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_REHUSADO, "Rehusado", true, null, false, false));
-        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_OFICINA_SIN_FIRMA, "Entregado en oficina sin Firma", true, null, true, true));
-        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_OFICINA_CON_FIRMA, "Entregado en oficina con Firma", true, null, true, true));
+        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_OFICINA, "Entregado en oficina", true, null, true, true));
+        //listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_OFICINA_CON_FIRMA, "Entregado en oficina con Firma", true, null, true, true));
         listaResultados.add(new Resultado(Util.RESULTADO_NO_ENTREGADO_OFICINA, "NO Entregado en oficina", true, null, true, false));
 
         // Resultado NO FINAL
@@ -221,7 +221,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         String query = "SELECT * FROM " + TABLE_RESULTADO +
                       " WHERE " + KEY_RESULTADO_FINAL + " = 1 " +
-                      " AND " + KEY_RESULTADO_NOTIFICA + " = 0 " +
+                      //" AND " + KEY_RESULTADO_NOTIFICA + " = 1 " +
                       " AND " + KEY_RESULTADO_RESULTADO_OFICINA + " = 0 ";
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -525,8 +525,8 @@ public class DBHelper extends SQLiteOpenHelper {
         // Entregado en oficina
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
                 "(" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) " +
-             "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) ",
-        new String[]{Util.RESULTADO_ENTREGADO_OFICINA_CON_FIRMA, "1", Util.RESULTADO_ENTREGADO_OFICINA_SIN_FIRMA, "1"},null,null,null,null);
+               "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = ? AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = ?) ",
+        new String[]{Util.RESULTADO_ENTREGADO_OFICINA, "1", Util.RESULTADO_ENTREGADO_OFICINA, "1"},null,null,null,null);
         resumenReparto.setNumEntregadosEnOficina(cursor.getCount());
 
         // No Entregado en oficina

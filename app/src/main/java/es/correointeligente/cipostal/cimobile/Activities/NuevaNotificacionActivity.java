@@ -230,6 +230,11 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     && !notificacion.getResultado1().trim().equals (Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO))  {
                         listaResultados = dbHelper.obtenerResultadosFinales();
                     }
+                    if (esAplicacionOficina
+                    && (notificacion.getResultado1().trim().equals(Util.RESULTADO_AUSENTE)
+                    || notificacion.getResultado1().trim().equals (Util.RESULTADO_NADIE_SE_HACE_CARGO)))  {
+                       listaResultados = dbHelper.obtenerResultadosFinales();
+                }
 
                 // NO hay PRIMERA VISITA
                 } else {
