@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ll_result_no_entregado"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -11,16 +11,14 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-
-
             <TextView
-                android:id="@+id/tv_result_no_entregado_cabecera_resultado"
-                android:text="@string/resultado"
+                android:id="@+id/tv_result_entregado_cabecera_resultado"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textAllCaps="true"/>
-
+                android:layout_gravity="left|center_vertical"
+                android:text="@string/resultado"
+                android:textAllCaps="true"
+                android:textStyle="bold" />
 
         <LinearLayout
             android:orientation="vertical"
@@ -33,10 +31,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/resultado"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
-                android:id="@+id/tv_result_no_entregado_resultado"
+                android:id="@+id/tv_result_entregado_resultado"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/resultado"/>
@@ -49,7 +47,7 @@
                 android:layout_marginTop="5dp"/>
 
             <TextView
-                android:id="@+id/tv_result_no_entregado_fecha"
+                android:id="@+id/tv_result_entregado_fecha"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/fecha"/>
@@ -62,7 +60,7 @@
                 android:layout_marginTop="5dp"/>
 
             <TextView
-                android:id="@+id/tv_result_no_entregado_notificador"
+                android:id="@+id/tv_result_entregado_notificador"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/notificador"/>
@@ -92,14 +90,16 @@
                 <TableRow>
 
                     <TextView
-                        android:id="@+id/tv_result_no_entregado_latitud"
+                        android:id="@+id/tv_result_entregado_latitud"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:text="@string/longitud"/>
 
                     <TextView
-                        android:id="@+id/tv_result_no_entregado_longitud"
+                        android:id="@+id/tv_result_entregado_longitud"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:text="@string/longitud"/>
 
                 </TableRow>
 
@@ -108,14 +108,28 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/foto_acuse_detalle"
+                android:text="@string/receptor"
+                android:textStyle="bold"
+                android:layout_marginTop="5dp"/>
+
+            <TextView
+                android:id="@+id/tv_result_entregado_receptor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/receptor"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/firma_receptor"
                 android:textStyle="bold"
                 android:layout_marginTop="5dp"/>
 
             <ImageView
-                android:id="@+id/imageView_result_no_entregado_foto_acuse"
+                android:id="@+id/imageView_result_entregado_firma"
                 android:layout_width="match_parent"
-                android:layout_height="275dp"/>
+                android:layout_height="128dp" />
+
 
             <TextView
                 android:layout_width="match_parent"
@@ -125,7 +139,7 @@
                 android:layout_marginTop="5dp"/>
 
             <TextView
-                android:id="@+id/tv_result_no_entregado_observaciones"
+                android:id="@+id/tv_result_entregado_observaciones"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="top|left"
@@ -139,8 +153,8 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:scrollHorizontally="false"/>
 
-            </LinearLayout>
-
         </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>
