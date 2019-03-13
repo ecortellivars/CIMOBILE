@@ -253,7 +253,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
 
             TextView tv_resultado1, tv_fecha1, tv_notificador1, tv_longitud1, tv_latitud1, tv_observaciones1, tv_cabeceraResultado1, tv_receptor = null;
             TextView tv_resultado2, tv_fecha2, tv_notificador2, tv_longitud2, tv_latitud2, tv_observaciones2, tv_cabeceraResultado2;
-            ImageView img_firma_receptor;
+            ImageView img_firma_receptor = null;
             ImageView img_foto_acuse_res1 = null;
             ImageView img_foto_acuse_res2 = null;            
             Toast toast = null;
@@ -288,120 +288,72 @@ public class DetalleNotificacionActivity extends BaseActivity {
                 // Lo agrego al layout principal
                 layoutResultado1.addView(linearLayout1);
 
-                // Segundo intento es Entregado o Entregado en Oficina con FIRMA
-                if((notificacion.getResultado2().equals(Util.RESULTADO_ENTREGADO)
-                 || notificacion.getResultado2().equals(Util.RESULTADO_ENTREGADO_OFICINA))
-               && (!notificacion.getResultado2().equals(Util.RESULTADO_ENTREGADO_SIN_FIRMA))) {
-                    // Instancio el otro layout para cargar los resultados del segundo intento ENTREGADO
-                    linearLayout2 = (LinearLayout) inflater.inflate(R.layout.datos_resultado_entregado, null, false);
 
-                    tv_resultado2 = (TextView) linearLayout2.findViewById(R.id.tv_result_entregado_resultado);
-                    tv_fecha2 = (TextView) linearLayout2.findViewById(R.id.tv_result_entregado_fecha);
-                    tv_notificador2 = (TextView) linearLayout2.findViewById(R.id.tv_result_entregado_notificador);
-                    tv_longitud2 = (TextView) linearLayout2.findViewById(R.id.tv_result_entregado_longitud);
-                    tv_latitud2 = (TextView) linearLayout2.findViewById(R.id.tv_result_entregado_latitud);
-                    tv_observaciones2 = (TextView) linearLayout2.findViewById(R.id.tv_result_entregado_observaciones);
-                    tv_cabeceraResultado2 = (TextView) linearLayout2.findViewById(R.id.tv_result_entregado_cabecera_resultado);
+                // Instancio el otro layout para cargar los resultados del segundo intento ENTREGADO
+                linearLayout2 = (LinearLayout) inflater.inflate(R.layout.datos_resultado_entregado, null, false);
+
+                tv_resultado2 = (TextView) linearLayout2.findViewById(R.id.tv_result_entregado_resultado);
+                tv_fecha2 = (TextView) linearLayout2.findViewById(R.id.tv_result_entregado_fecha);
+                tv_notificador2 = (TextView) linearLayout2.findViewById(R.id.tv_result_entregado_notificador);
+                tv_longitud2 = (TextView) linearLayout2.findViewById(R.id.tv_result_entregado_longitud);
+                tv_latitud2 = (TextView) linearLayout2.findViewById(R.id.tv_result_entregado_latitud);
+                tv_observaciones2 = (TextView) linearLayout2.findViewById(R.id.tv_result_entregado_observaciones);
+                tv_cabeceraResultado2 = (TextView) linearLayout2.findViewById(R.id.tv_result_entregado_cabecera_resultado);
+                if (notificacion.getFirmaNotificadorRes2() != null && !notificacion.getFirmaNotificadorRes2().isEmpty()){
                     img_firma_receptor = (ImageView) linearLayout2.findViewById(R.id.imageView_result_entregado_firma);
-
-
-                    if(!esAplicacionPEE) {
-                        img_foto_acuse_res2 = (ImageView) linearLayout2.findViewById(R.id.imageView_result_entregado_foto_acuse);
-                        img_foto_acuse_res2.setVisibility(View.VISIBLE);
-                        }
-
-                    // Se cargan los datos del segundo resultado en el layout2
-                    tv_resultado2.setText(notificacion.getResultado2() + " " + notificacion.getDescResultado2());
-                    tv_fecha2.setText(notificacion.getFechaHoraRes2());
-                    tv_notificador2.setText(notificacion.getNotificadorRes2());
-                    tv_longitud2.setText(notificacion.getLongitudRes2());
-                    tv_latitud2.setText(notificacion.getLatitudRes2());
-                    tv_observaciones2.setText(notificacion.getObservacionesRes2());
-                    tv_cabeceraResultado2.setText(R.string.resultado2);
-
-                    tv_receptor = (TextView)linearLayout2.findViewById(R.id.tv_result_entregado_receptor);
-                    // Como es ENTREGADO reviso si FIRMO el receptor
-                    if (notificacion.getDescResultado2().equals(Util.DESCRIPCION_ENTREGADO_SIN_FIRMA)) {
-                        tv_receptor.setText("SIN FIRMA DEL RECEPTOR");
-                    }
-                    else  {
-                        tv_receptor.setText(notificacion.getNumDocReceptor() + " " + notificacion.getNombreReceptor());
-                    }
-
-                    // Buscamos la imagen de la firma si la hay
-                    if (notificacion.getFirmaReceptor() != null && notificacion.getFirmaReceptor().trim().length() > 0) {
-                            try {
-                                InputStream is = new FileInputStream(notificacion.getFirmaReceptor());
-                                Drawable drw_imagenFirma = Drawable.createFromStream(is, "imageView");
-                                img_firma_receptor.setImageDrawable(drw_imagenFirma);
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                toast = Toast.makeText(DetalleNotificacionActivity.this, "No existe la Firma del Receptor", Toast.LENGTH_LONG);
-                                toast.show();
-                            }
-                        }
-                    
-                    // Obtenemos la foto del acuse
-                    if(!esAplicacionPEE && notificacion.getFotoAcuseRes2() != null && notificacion.getFotoAcuseRes2().trim().length() > 0) {
-                        try {
-                            InputStream is = new FileInputStream(notificacion.getFotoAcuseRes2());
-                            if (is != null) {
-                                Drawable drw_imagenFoto = Drawable.createFromStream(is, "imageView");
-                                img_foto_acuse_res2.setImageDrawable(drw_imagenFoto);
-                            }
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        }
-                    layoutResultado2.addView(linearLayout2);
-
-
-                // NO ENTREGADO lo mismo pero sin firma
-                } else {
-                    // Instancio el otro layout para cargar los resultados del segundo intento NO ENTREGADO
-                    linearLayout2 = (LinearLayout) inflater.inflate(R.layout.datos_resultado_no_entregado, null, false);
-
-                    tv_resultado2 = (TextView) linearLayout2.findViewById(R.id.tv_result_no_entregado_resultado);
-                    tv_fecha2 = (TextView) linearLayout2.findViewById(R.id.tv_result_no_entregado_fecha);
-                    tv_notificador2 = (TextView) linearLayout2.findViewById(R.id.tv_result_no_entregado_notificador);
-                    tv_longitud2 = (TextView) linearLayout2.findViewById(R.id.tv_result_no_entregado_longitud);
-                    tv_latitud2 = (TextView) linearLayout2.findViewById(R.id.tv_result_no_entregado_latitud);
-                    tv_observaciones2 = (TextView) linearLayout2.findViewById(R.id.tv_result_no_entregado_observaciones);
-                    tv_cabeceraResultado2 = (TextView) linearLayout2.findViewById(R.id.tv_result_no_entregado_cabecera_resultado);
-
-                    img_foto_acuse_res2 = (ImageView) linearLayout2.findViewById(R.id.imageView_result_no_entregado_foto_acuse);
-                    if(!esAplicacionPEE) {
-                        img_foto_acuse_res2.setVisibility(View.VISIBLE);
-                    }   else{
-                        img_foto_acuse_res2.setVisibility(View.INVISIBLE);
-                    }
-                    // Se cargan los datos del segundo resultado en el layout2
-                    tv_resultado2.setText(notificacion.getResultado2() + " " + notificacion.getDescResultado2());
-                    tv_fecha2.setText(notificacion.getFechaHoraRes2());
-                    tv_notificador2.setText(notificacion.getNotificadorRes2());
-                    tv_longitud2.setText(notificacion.getLongitudRes2());
-                    tv_latitud2.setText(notificacion.getLatitudRes2());
-                    tv_observaciones2.setText(notificacion.getObservacionesRes2());
-                    tv_cabeceraResultado2.setText(R.string.resultado2);
-
-                    // Obtenemos la foto del acuse
-                    if (!esAplicacionPEE && notificacion.getFotoAcuseRes2() != null && notificacion.getFotoAcuseRes2().trim().length() > 0) {
-                        try {
-                            InputStream is = new FileInputStream(notificacion.getFotoAcuseRes2());
-                            if (is != null) {
-                                Drawable drw_imagenFoto = Drawable.createFromStream(is, "imageView");
-                                img_foto_acuse_res2.setImageDrawable(drw_imagenFoto);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        } else{
-                        img_foto_acuse_res2.setVisibility(View.INVISIBLE);
-                        }
-                    layoutResultado2.addView(linearLayout2);
                 }
+                if(!esAplicacionPEE) {
+                    img_foto_acuse_res2 = (ImageView) linearLayout2.findViewById(R.id.imageView_result_entregado_foto_acuse);
+                    img_foto_acuse_res2.setVisibility(View.VISIBLE);
+                    }
+
+                // Se cargan los datos del segundo resultado en el layout2
+                tv_resultado2.setText(notificacion.getResultado2() + " " + notificacion.getDescResultado2());
+                tv_fecha2.setText(notificacion.getFechaHoraRes2());
+                tv_notificador2.setText(notificacion.getNotificadorRes2());
+                tv_longitud2.setText(notificacion.getLongitudRes2());
+                tv_latitud2.setText(notificacion.getLatitudRes2());
+                tv_observaciones2.setText(notificacion.getObservacionesRes2());
+                tv_cabeceraResultado2.setText(R.string.resultado2);
+
+                tv_receptor = (TextView)linearLayout2.findViewById(R.id.tv_result_entregado_receptor);
+                // Como es ENTREGADO reviso si FIRMO el receptor
+                if (notificacion.getDescResultado2().equals(Util.DESCRIPCION_ENTREGADO_SIN_FIRMA)) {
+                    tv_receptor.setText("SIN FIRMA DEL RECEPTOR");
+                }
+                else  {
+                    tv_receptor.setText(notificacion.getNumDocReceptor() + " " + notificacion.getNombreReceptor());
+                }
+
+                // Buscamos la imagen de la firma si la hay
+                if (notificacion.getFirmaReceptor() != null && notificacion.getFirmaReceptor().trim().length() > 0) {
+                        try {
+                            InputStream is = new FileInputStream(notificacion.getFirmaReceptor());
+                            Drawable drw_imagenFirma = Drawable.createFromStream(is, "imageView");
+                            img_firma_receptor.setImageDrawable(drw_imagenFirma);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            toast = Toast.makeText(DetalleNotificacionActivity.this, "No existe la Firma del Receptor", Toast.LENGTH_LONG);
+                            toast.show();
+                        }
+                    }
+
+                // Obtenemos la foto del acuse
+                if(!esAplicacionPEE && notificacion.getFotoAcuseRes2() != null && notificacion.getFotoAcuseRes2().trim().length() > 0) {
+                    try {
+                        InputStream is = new FileInputStream(notificacion.getFotoAcuseRes2());
+                        if (is != null) {
+                            Drawable drw_imagenFoto = Drawable.createFromStream(is, "imageView");
+                            img_foto_acuse_res2.setImageDrawable(drw_imagenFoto);
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    }
+                layoutResultado2.addView(linearLayout2);
+
 
             // Solo hay 1 resultado y ENTREGADO
             // Si es la primera entrega y ya la hemos gestionado
