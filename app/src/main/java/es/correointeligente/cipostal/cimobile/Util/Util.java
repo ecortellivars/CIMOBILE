@@ -384,14 +384,10 @@ public class Util {
      */
     public static File NotificacionToXML(Notificacion notificacion, Context context) throws CiMobileException {
         File xmlFile = null;
-        String nombeFichero = "";
-
         try {
-            if (notificacion.getReferencia() != null && !notificacion.getReferencia().isEmpty()) {
-                nombeFichero = notificacion.getReferencia() + ".xml";
-            } else {
-                nombeFichero = StringUtils.defaultIfBlank(notificacion.getReferenciaSCB(),"") + ".xml";
-            }
+
+            String nombeFichero = notificacion.getReferencia() + "_" + StringUtils.defaultIfBlank(notificacion.getReferenciaSCB(),"") + ".xml";
+
             // Se Determina si viene del primer o del segundo resultado
             Date date = null;
             String horaString = null;
@@ -401,12 +397,12 @@ public class Util {
             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             DateFormat dfHora = new SimpleDateFormat("HH:mm");
             DateFormat dfDia = new SimpleDateFormat("dd/MM/yyyy");
-            String latitudString = null;
-            String longitudString = null;
-            String observacionesString = null;
+            String latitudString = "";
+            String longitudString = "";
+            String observacionesString = "";
             String notificadorString = null;
             String firmaNotificadorString = null;
-            //String fotoAcuseString = null;
+            String fotoAcuseString = null;
 
             if(StringUtils.isNotBlank(notificacion.getResultado2())) {
                 resultadoString = notificacion.getResultado2();
@@ -417,7 +413,7 @@ public class Util {
                 observacionesString = notificacion.getObservacionesRes2();
                 notificadorString = notificacion.getNotificadorRes2();
                 firmaNotificadorString = notificacion.getFirmaNotificadorRes2();
-                //fotoAcuseString = notificacion.getFotoAcuseRes2();
+                fotoAcuseString = notificacion.getFotoAcuseRes2();
             } else {
                 resultadoString = notificacion.getResultado1();
                 resultadoDescString = notificacion.getDescResultado1();
@@ -427,7 +423,7 @@ public class Util {
                 observacionesString = notificacion.getObservacionesRes1();
                 notificadorString = notificacion.getNotificadorRes1();
                 firmaNotificadorString = notificacion.getFirmaNotificadorRes1();
-                //fotoAcuseString = notificacion.getFotoAcuseRes1();
+                fotoAcuseString = notificacion.getFotoAcuseRes1();
             }
 
             horaString = dfHora.format(date);
@@ -444,66 +440,49 @@ public class Util {
             doc.appendChild(rootElement);
 
             Element referencia = doc.createElement("referencia");
-            if (notificacion.getReferencia() == null && notificacion.getReferencia().isEmpty() ){
+            if (notificacion.getReferencia().equals("")){
                 notificacion.setReferencia("SIN REFERENCIA");
             }
             referencia.appendChild(doc.createTextNode(notificacion.getReferencia()));
             rootElement.appendChild(referencia);
 
             Element referenciaSCB = doc.createElement("referenciaSCB");
-            if (notificacion.getReferenciaSCB() == null || notificacion.getReferenciaSCB().isEmpty() ){
+            if (notificacion.getReferenciaSCB().equals("")){
                 notificacion.setReferenciaSCB("SIN REFERENCIA");
             }
             referenciaSCB.appendChild(doc.createTextNode(notificacion.getReferenciaSCB()));
             rootElement.appendChild(referenciaSCB);
 
             Element destinatario = doc.createElement("destinatario");
-            if (notificacion.getNombre() == null || notificacion.getNombre().isEmpty() ){
-                notificacion.setNombre("SIN DESTINATARIO");
-            }
             destinatario.appendChild(doc.createTextNode(notificacion.getNombre()));
             rootElement.appendChild(destinatario);
 
             Element dirDestinatario = doc.createElement("dirDestinatario");
-            if (notificacion.getDireccion() == null || notificacion.getDireccion().isEmpty() ){
-                notificacion.setDireccion("SIN DIRECCION");
-            }
             dirDestinatario.appendChild(doc.createTextNode(notificacion.getDireccion()));
             rootElement.appendChild(dirDestinatario);
 
             Element resultado = doc.createElement("resultado");
-            if (resultadoString == null || resultadoString.isEmpty()
-             || resultadoDescString == null || resultadoDescString.isEmpty()){
-                resultadoString ="SIN RESULTADO";
-                resultadoDescString ="SIN RESULTADO";
-
-            }
-            resultado.appendChild(doc.createTextNode(resultadoString + " " + resultadoDescString));
+            resultado.appendChild(doc.createTextNode(resultadoString+" "+resultadoDescString));
             rootElement.appendChild(resultado);
 
             Element fecha = doc.createElement("fecha");
-            if (fechaString == null || fechaString.isEmpty() ){
-                fechaString="SIN FECHA";
-            }
             fecha.appendChild(doc.createTextNode(fechaString));
             rootElement.appendChild(fecha);
 
             Element hora = doc.createElement("hora");
-            if (horaString == null || horaString.isEmpty() ){
-                horaString ="SIN HORA";
-            }
             hora.appendChild(doc.createTextNode(horaString));
             rootElement.appendChild(hora);
 
+
             Element latitud = doc.createElement("latitud");
-            if (latitudString == null || latitudString.isEmpty() ){
-                latitudString  ="SIN LATITUD";
+            if (latitudString == null){
+                latitudString  = "SIN LATITUD";
             }
             latitud.appendChild(doc.createTextNode(latitudString));
             rootElement.appendChild(latitud);
 
             Element longitud = doc.createElement("longitud");
-            if (longitudString == null || longitudString.isEmpty() ){
+            if (longitudString == null){
                 longitudString = "SIN LATITUD";
             }
             longitud.appendChild(doc.createTextNode(longitudString));
@@ -511,17 +490,13 @@ public class Util {
 
 
             Element observaciones = doc.createElement("observaciones");
-            if (observacionesString == null || observacionesString.isEmpty() ){
+            if (observacionesString == null  ){
                 observacionesString = "SIN OBSERVACIONES";
             }
             observaciones.appendChild(doc.createTextNode(observacionesString));
             rootElement.appendChild(observaciones);
 
-
             Element notificador = doc.createElement("notificador");
-            if (notificadorString == null || notificadorString.isEmpty() ){
-                notificadorString ="SIN NOTIFICADOR";
-            }
             notificador.appendChild(doc.createTextNode(notificadorString));
             rootElement.appendChild(notificador);
 
@@ -536,7 +511,7 @@ public class Util {
                 rootElement.appendChild(numDocReceptor);
 
                 Element nombreReceptor = doc.createElement("nombreReceptor");
-                nombreReceptor.appendChild(doc.createTextNode(String.valueOf(notificacion.getNombreReceptor())));
+                nombreReceptor.appendChild(doc.createTextNode(notificacion.getNombreReceptor()));
                 rootElement.appendChild(nombreReceptor);
 
                 fis = new FileInputStream(notificacion.getFirmaReceptor());
@@ -557,12 +532,12 @@ public class Util {
             fis.close();
 
             /**fis = new FileInputStream(fotoAcuseString);
-            filedata = IOUtils.toByteArray(fis);
-            encodedImage = Base64.encodeToString(filedata, Base64.NO_WRAP);
-            Element fotoAcuse = doc.createElement("fotoAcuse");
-            fotoAcuse.appendChild(doc.createTextNode(encodedImage));
-            rootElement.appendChild(fotoAcuse);
-            fis.close();*/
+             filedata = IOUtils.toByteArray(fis);
+             encodedImage = Base64.encodeToString(filedata, Base64.NO_WRAP);
+             Element fotoAcuse = doc.createElement("fotoAcuse");
+             fotoAcuse.appendChild(doc.createTextNode(encodedImage));
+             rootElement.appendChild(fotoAcuse);
+             fis.close();*/
 
             xmlFile = new File(obtenerRutaXML(), nombeFichero);
             if(!xmlFile.exists()) {
@@ -594,7 +569,6 @@ public class Util {
 
         return xmlFile;
     }
-
     /**
      * Comprime en zip el reparto del dia
      * @param codigoNotificador
