@@ -444,52 +444,84 @@ public class Util {
             doc.appendChild(rootElement);
 
             Element referencia = doc.createElement("referencia");
+            if (notificacion.getReferencia() == null && notificacion.getReferencia().isEmpty() ){
+                notificacion.setReferencia("SIN REFERENCIA");
+            }
             referencia.appendChild(doc.createTextNode(notificacion.getReferencia()));
             rootElement.appendChild(referencia);
 
             Element referenciaSCB = doc.createElement("referenciaSCB");
+            if (notificacion.getReferenciaSCB() == null || notificacion.getReferenciaSCB().isEmpty() ){
+                notificacion.setReferenciaSCB("SIN REFERENCIA");
+            }
             referenciaSCB.appendChild(doc.createTextNode(notificacion.getReferenciaSCB()));
             rootElement.appendChild(referenciaSCB);
 
             Element destinatario = doc.createElement("destinatario");
+            if (notificacion.getNombre() == null || notificacion.getNombre().isEmpty() ){
+                notificacion.setNombre("SIN DESTINATARIO");
+            }
             destinatario.appendChild(doc.createTextNode(notificacion.getNombre()));
             rootElement.appendChild(destinatario);
 
             Element dirDestinatario = doc.createElement("dirDestinatario");
+            if (notificacion.getDireccion() == null || notificacion.getDireccion().isEmpty() ){
+                notificacion.setDireccion("SIN DIRECCION");
+            }
             dirDestinatario.appendChild(doc.createTextNode(notificacion.getDireccion()));
             rootElement.appendChild(dirDestinatario);
 
             Element resultado = doc.createElement("resultado");
-            resultado.appendChild(doc.createTextNode(resultadoString+" "+resultadoDescString));
+            if (resultadoString == null || resultadoString.isEmpty()
+             || resultadoDescString == null || resultadoDescString.isEmpty()){
+                resultadoString ="SIN RESULTADO";
+                resultadoDescString ="SIN RESULTADO";
+
+            }
+            resultado.appendChild(doc.createTextNode(resultadoString + " " + resultadoDescString));
             rootElement.appendChild(resultado);
 
             Element fecha = doc.createElement("fecha");
+            if (fechaString == null || fechaString.isEmpty() ){
+                fechaString="SIN FECHA";
+            }
             fecha.appendChild(doc.createTextNode(fechaString));
             rootElement.appendChild(fecha);
 
             Element hora = doc.createElement("hora");
+            if (horaString == null || horaString.isEmpty() ){
+                horaString ="SIN HORA";
+            }
             hora.appendChild(doc.createTextNode(horaString));
             rootElement.appendChild(hora);
 
-            if(StringUtils.isNotBlank(latitudString)) {
-                Element latitud = doc.createElement("latitud");
-                latitud.appendChild(doc.createTextNode(latitudString));
-                rootElement.appendChild(latitud);
+            Element latitud = doc.createElement("latitud");
+            if (latitudString == null || latitudString.isEmpty() ){
+                latitudString  ="SIN LATITUD";
             }
+            latitud.appendChild(doc.createTextNode(latitudString));
+            rootElement.appendChild(latitud);
 
-            if(StringUtils.isNotBlank(longitudString)) {
-                Element longitud = doc.createElement("longitud");
-                longitud.appendChild(doc.createTextNode(longitudString));
-                rootElement.appendChild(longitud);
+            Element longitud = doc.createElement("longitud");
+            if (longitudString == null || longitudString.isEmpty() ){
+                longitudString = "SIN LATITUD";
             }
+            longitud.appendChild(doc.createTextNode(longitudString));
+            rootElement.appendChild(longitud);
 
-            if(StringUtils.isNotBlank(observacionesString)) {
-                Element observaciones = doc.createElement("observaciones");
-                observaciones.appendChild(doc.createTextNode(observacionesString));
-                rootElement.appendChild(observaciones);
+
+            Element observaciones = doc.createElement("observaciones");
+            if (observacionesString == null || observacionesString.isEmpty() ){
+                observacionesString = "SIN OBSERVACIONES";
             }
+            observaciones.appendChild(doc.createTextNode(observacionesString));
+            rootElement.appendChild(observaciones);
+
 
             Element notificador = doc.createElement("notificador");
+            if (notificadorString == null || notificadorString.isEmpty() ){
+                notificadorString ="SIN NOTIFICADOR";
+            }
             notificador.appendChild(doc.createTextNode(notificadorString));
             rootElement.appendChild(notificador);
 

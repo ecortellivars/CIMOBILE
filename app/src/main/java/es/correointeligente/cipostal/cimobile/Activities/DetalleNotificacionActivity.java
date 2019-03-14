@@ -127,7 +127,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                 this.crearSelloTiempo();
                 break;
             case R.id.imageButton_listaNotificaciones_foto:
-               if (!esAplicacionPEE) {
+                if (!esAplicacionPEE) {
                     // Revisamos que el dispositivo tiene camara
                     if (checkCameraHardware(this) == Boolean.TRUE) {
                         try {
@@ -181,10 +181,10 @@ public class DetalleNotificacionActivity extends BaseActivity {
                                     if (!esAplicacionPEE) {
                                         notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado1() + ".webp");
                                         notificacion.setFotoAcuseRes2(null);
-                                        }else {
+                                    }else {
                                         notificacion.setFotoAcuseRes2(null);
                                         notificacion.setFotoAcuseRes1(null);
-                                        }
+                                    }
 
                                     Boolean guardadoNotificacionEnBD = dbHelper.guardaResultadoNotificacion(notificacion);
                                     if (guardadoNotificacionEnBD) {
@@ -255,7 +255,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
             TextView tv_resultado2, tv_fecha2, tv_notificador2, tv_longitud2, tv_latitud2, tv_observaciones2, tv_cabeceraResultado2;
             ImageView img_firma_receptor = null;
             ImageView img_foto_acuse_res1 = null;
-            ImageView img_foto_acuse_res2 = null;            
+            ImageView img_foto_acuse_res2 = null;
             Toast toast = null;
 
             // Hay dos resultados por lo que relleno 2 layouts
@@ -358,15 +358,15 @@ public class DetalleNotificacionActivity extends BaseActivity {
 
             // Solo hay 1 resultado y ENTREGADO
             // Si es la primera entrega y ya la hemos gestionado
-            if(notificacion.getResultado2() != null) {
+            if(notificacion.getResultado2() == null) {
                 LayoutInflater inflater2 = LayoutInflater.from(getBaseContext());
                 LinearLayout linearLayout = null;
                 resultadoEliminable = 1;
 
                 // Resultado "ENTREGADO" con Firma y en Oficina
                 if((notificacion.getResultado1().equals(Util.RESULTADO_ENTREGADO)
-                 || notificacion.getResultado1().equals(Util.RESULTADO_ENTREGADO_OFICINA))
-                && !notificacion.getDescResultado1().equals(Util.RESULTADO_ENTREGADO_SIN_FIRMA)) {
+                        || notificacion.getResultado1().equals(Util.RESULTADO_ENTREGADO_OFICINA))
+                        && !notificacion.getDescResultado1().equals(Util.RESULTADO_ENTREGADO_SIN_FIRMA)) {
                     // Instancio el layout para cargar los resultados de ENTREGADO
                     linearLayout =  (LinearLayout) inflater2.inflate(R.layout.datos_resultado_entregado, null, false);
 
@@ -407,18 +407,18 @@ public class DetalleNotificacionActivity extends BaseActivity {
 
                     // Buscamos la imagen de la firma si la hay
                     if (notificacion.getFirmaReceptor() != null && notificacion.getFirmaReceptor().trim().length() > 0) {
-                            try {
+                        try {
 
-                                InputStream is = new FileInputStream(notificacion.getFirmaReceptor());
-                                Drawable drw_imagenFirma = Drawable.createFromStream(is, "imageView");
-                                img_firma_receptor.setImageDrawable(drw_imagenFirma);
+                            InputStream is = new FileInputStream(notificacion.getFirmaReceptor());
+                            Drawable drw_imagenFirma = Drawable.createFromStream(is, "imageView");
+                            img_firma_receptor.setImageDrawable(drw_imagenFirma);
 
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                toast = Toast.makeText(DetalleNotificacionActivity.this, "No existe la Firma del Receptor", Toast.LENGTH_LONG);
-                                toast.show();
-                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            toast = Toast.makeText(DetalleNotificacionActivity.this, "No existe la Firma del Receptor", Toast.LENGTH_LONG);
+                            toast.show();
                         }
+                    }
 
                     // Obtenemos la foto del acuse
                     if(!esAplicacionPEE && notificacion.getFotoAcuseRes1() != null && notificacion.getFotoAcuseRes1().trim().length() > 0) {
@@ -436,7 +436,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                         img_foto_acuse_res1.setVisibility(View.INVISIBLE);
                     }
 
-                // El UNICO resultado NO "ENTREGADO"
+                    // El UNICO resultado NO "ENTREGADO"
                 } else {
                     // Instancio el layout para cargar los resultados del NO ENTREGADO o ENTREGADO sin firma
                     linearLayout = (LinearLayout) inflater2.inflate(R.layout.datos_resultado_no_entregado, null, false);
@@ -493,36 +493,36 @@ public class DetalleNotificacionActivity extends BaseActivity {
      * Método privado que pide confiramación para eliminar el resultado
      */
     private void crearSelloTiempo() {
-            String fallo = "";
-            notificacion = dbHelper.obtenerNotificacion(idNotificacion);
-            File ficheroXML = null;
-            try {
-                // Se genera el fichero XML
-                //publishProgress(getString(R.string.generado_xml));
-                ficheroXML = Util.NotificacionToXML(notificacion, getBaseContext());
+        String fallo = "";
+        notificacion = dbHelper.obtenerNotificacion(idNotificacion);
+        File ficheroXML = null;
+        try {
+            // Se genera el fichero XML
+            //publishProgress(getString(R.string.generado_xml));
+            ficheroXML = Util.NotificacionToXML(notificacion, getBaseContext());
 
-                // Se realiza la llamada al servidor del sellado de tiempo y se genera el fichero de sello de tiempo
-                Boolean tsaActivo = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_ACTIVO, getBaseContext(), Boolean.class.getSimpleName());
-                if(BooleanUtils.isTrue(tsaActivo)) {
-                    //publishProgress(getString(R.string.generado_sello_de_tiempo));
-                    String tsaUrl = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_URL, getBaseContext(), String.class.getSimpleName());
-                    String tsaUser = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_USER, getBaseContext(), String.class.getSimpleName());
-                    TimeStampRequestParameters timeStampRequestParameters = null;
-                    if (StringUtils.isNotBlank(tsaUser)) {
-                        String tsaPassword = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_PASSWORD, getBaseContext(), String.class.getSimpleName());
-                        timeStampRequestParameters = new TimeStampRequestParameters();
-                        timeStampRequestParameters.setUser(tsaUser);
-                        timeStampRequestParameters.setPassword(tsaPassword);
-                    }
-                    TimeStamp t = TimeStamp.stampDocument(FileUtils.readFileToByteArray(ficheroXML), new URL(tsaUrl), timeStampRequestParameters, null);
-                    Util.guardarFicheroSelloTiempo(notificacion, t.toDER());
+            // Se realiza la llamada al servidor del sellado de tiempo y se genera el fichero de sello de tiempo
+            Boolean tsaActivo = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_ACTIVO, getBaseContext(), Boolean.class.getSimpleName());
+            if(BooleanUtils.isTrue(tsaActivo)) {
+                //publishProgress(getString(R.string.generado_sello_de_tiempo));
+                String tsaUrl = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_URL, getBaseContext(), String.class.getSimpleName());
+                String tsaUser = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_USER, getBaseContext(), String.class.getSimpleName());
+                TimeStampRequestParameters timeStampRequestParameters = null;
+                if (StringUtils.isNotBlank(tsaUser)) {
+                    String tsaPassword = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_PASSWORD, getBaseContext(), String.class.getSimpleName());
+                    timeStampRequestParameters = new TimeStampRequestParameters();
+                    timeStampRequestParameters.setUser(tsaUser);
+                    timeStampRequestParameters.setPassword(tsaPassword);
                 }
-
-            } catch (CiMobileException e) {
-                fallo = e.getError();
-            } catch (IOException e) {
-                fallo = getString(R.string.error_lectura_fichero_xml);
+                TimeStamp t = TimeStamp.stampDocument(FileUtils.readFileToByteArray(ficheroXML), new URL(tsaUrl), timeStampRequestParameters, null);
+                Util.guardarFicheroSelloTiempo(notificacion, t.toDER());
             }
+
+        } catch (CiMobileException e) {
+            fallo = e.getError();
+        } catch (IOException e) {
+            fallo = getString(R.string.error_lectura_fichero_xml);
+        }
 
 
         //return fallo;
