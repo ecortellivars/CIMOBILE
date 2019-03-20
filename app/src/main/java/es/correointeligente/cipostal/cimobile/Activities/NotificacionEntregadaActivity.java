@@ -179,8 +179,8 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                     try {
                         mLienzo.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape));
                         Bitmap bitmap = mLienzo.getDrawingCache();
-                        File file = new File(Util.obtenerRutaFirmasReceptor(), referenciaPostal + "_" + StringUtils.defaultIfBlank(referenciaPostalSCB,"") + ".png");
-
+                        //File file = new File(Util.obtenerRutaFirmasReceptor(), referenciaPostal + "_" + StringUtils.defaultIfBlank(referenciaPostalSCB,"") + ".png");
+                        File file = new File(Util.obtenerRutaFirmasReceptor(), referenciaPostal + ".png");
                         try (FileOutputStream ostream = new FileOutputStream(file)) {
 
                             bitmap.compress(Bitmap.CompressFormat.PNG, 10, ostream);
