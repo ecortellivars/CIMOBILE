@@ -260,7 +260,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setLongitudRes1(longitud);
                 notificacionAux.setObservacionesRes1(observaciones);
                 notificacionAux.setNotificadorRes1(obtenerNombreNotificador());
-                notificacionAux.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
+                notificacionAux.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador().trim() + ".png");
                 notificacionAux.setSegundoIntento(!esPrimerResultado);
                 //DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
                 //String fechaHoraFoto1 = df2.format(Calendar.getInstance().getTime());
@@ -273,7 +273,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setLongitudRes2(longitud);
                 notificacionAux.setObservacionesRes2(observaciones);
                 notificacionAux.setNotificadorRes2(obtenerNombreNotificador());
-                notificacionAux.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() +" .png");
+                notificacionAux.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador().trim() +".png");
                 notificacionAux.setSegundoIntento(esPrimerResultado);
                 //DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
                 //String fechaHoraFoto2 = df2.format(Calendar.getInstance().getTime());

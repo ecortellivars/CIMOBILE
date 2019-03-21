@@ -386,7 +386,7 @@ public class Util {
         File xmlFile = null;
         try {
 
-            String nombeFichero = notificacion.getReferencia() + "_" + StringUtils.defaultIfBlank(notificacion.getReferenciaSCB(),"") + ".xml";
+            String nombeFichero = notificacion.getReferencia() + ".xml";
 
             // Se Determina si viene del primer o del segundo resultado
             Date date = null;
@@ -402,7 +402,6 @@ public class Util {
             String observacionesString = "";
             String notificadorString = null;
             String firmaNotificadorString = null;
-            String fotoAcuseString = null;
 
             if(StringUtils.isNotBlank(notificacion.getResultado2())) {
                 resultadoString = notificacion.getResultado2();
@@ -413,7 +412,7 @@ public class Util {
                 observacionesString = notificacion.getObservacionesRes2();
                 notificadorString = notificacion.getNotificadorRes2();
                 firmaNotificadorString = notificacion.getFirmaNotificadorRes2();
-                fotoAcuseString = notificacion.getFotoAcuseRes2();
+
             } else {
                 resultadoString = notificacion.getResultado1();
                 resultadoDescString = notificacion.getDescResultado1();
@@ -423,8 +422,7 @@ public class Util {
                 observacionesString = notificacion.getObservacionesRes1();
                 notificadorString = notificacion.getNotificadorRes1();
                 firmaNotificadorString = notificacion.getFirmaNotificadorRes1();
-                fotoAcuseString = notificacion.getFotoAcuseRes1();
-            }
+             }
 
             horaString = dfHora.format(date);
             fechaString = dfDia.format(date);

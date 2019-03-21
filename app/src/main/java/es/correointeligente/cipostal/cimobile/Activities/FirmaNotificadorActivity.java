@@ -57,7 +57,7 @@ public class FirmaNotificadorActivity extends BaseActivity implements View.OnCli
             // Se guarda la imagen firmada por el notificador
             mLienzo.setBackground(ContextCompat.getDrawable(FirmaNotificadorActivity.this, R.drawable.edit_text_shape));
             Bitmap bitmap = mLienzo.getDrawingCache();
-            File file = new File(Util.obtenerRutaFirmaNotificador(), obtenerCodigoNotificador() + ".png");
+            File file = new File(Util.obtenerRutaFirmaNotificador(), obtenerCodigoNotificador().trim() + ".png");
 
             try (FileOutputStream ostream = new FileOutputStream(file);) {
 

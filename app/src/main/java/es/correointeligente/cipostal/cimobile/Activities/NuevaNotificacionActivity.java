@@ -421,7 +421,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                         notificacion.setLongitudRes2(tv_longitud.getText().toString().trim().length() == 0 ? "00.0000000" : tv_longitud.getText().toString());
                         notificacion.setObservacionesRes2(edt_observaciones.getText().toString().trim().length() == 0 ? null : edt_observaciones.getText().toString());
                         notificacion.setNotificadorRes2(obtenerNombreNotificador());
-                        notificacion.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
+                        notificacion.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador().trim() + ".png");
                     }
 
                     GuardarResultadoNegativoTask guardarResultadoNegativoTask = new GuardarResultadoNegativoTask();
