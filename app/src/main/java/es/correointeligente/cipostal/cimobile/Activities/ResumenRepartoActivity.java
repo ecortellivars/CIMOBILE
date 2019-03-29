@@ -191,10 +191,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             Integer contadorFotos = 0;
             if (!listaNotificacionesGestionadas.isEmpty()){
                 for (Notificacion noti : listaNotificacionesGestionadas){
-                    if (noti.getFotoAcuseRes2() != null) {
-                            contadorFotos = contadorFotos + 1;
-                    }
-                    if (noti.getFotoAcuseRes1() != null) {
+                    if (noti.getFotoAcuseRes2() != null && !noti.getFotoAcuseRes2().isEmpty()) {
                             contadorFotos = contadorFotos + 1;
                     }
                 }
@@ -323,41 +320,78 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                         try (FileWriter writerCSV = new FileWriter(ficheroCSV);
                              FileWriter writerTXT = new FileWriter(ficheroTXT);) {
                             publishProgress(getString(R.string.generando_fichero_CSV));
+                            // Quitamos el string "sin firma" o "(2ª VISITA)"
                             for (Notificacion notificacion : listaNotificacionesGestionadas) {
-                                String resultadoSinFirma =  notificacion.getDescResultado1();
-                                if (resultadoSinFirma != null){
-                                    resultadoSinFirma.replace("sin firma","");
+                                String resultadoSinFirma1 =  notificacion.getDescResultado1();
+                                if (resultadoSinFirma1 != null){
+                                    notificacion.setDescResultado1(resultadoSinFirma1.replace("sin firma",""));
+                                    notificacion.setDescResultado1(resultadoSinFirma1.replace("(1ª VISITA)",""));
+                                    notificacion.setDescResultado1(resultadoSinFirma1.replace("(1ª Visita)",""));
+                                }
+                                String resultadoSinFirma2 =  notificacion.getDescResultado1();
+                                if (resultadoSinFirma2 != null){
+                                    notificacion.setDescResultado2(resultadoSinFirma2.replace("sin firma",""));
+                                    notificacion.setDescResultado2(resultadoSinFirma2.replace("(2ª VISITA)",""));
+                                    notificacion.setDescResultado2(resultadoSinFirma2.replace("(2ª Visita)",""));
                                 }
 
-                                notificacion.setDescResultado1(resultadoSinFirma);
-                                resultadoSinFirma =  notificacion.getDescResultado2();
-                                if (resultadoSinFirma != null){
-                                    resultadoSinFirma.replace("sin firma","");
-                                }
-
-                                notificacion.setDescResultado2(resultadoSinFirma);
-                                // Se recupera el codigo de resultado y la fecha segun es primer o segundo intento
-                                String codResultado = notificacion.getResultado1();
-                                String fechaResultadoString = notificacion.getFechaHoraRes1();
-                                if (notificacion.getSegundoIntento() != null && notificacion.getSegundoIntento()) {
+                                // Se recupera el codigo de resultado y la fecha segun es primer intento
+                                String codResultado1 = notificacion.getResultado1();
+                                String fechaResultadoString1 = notificacion.getFechaHoraRes1();
+                                // Se recupera el codigo de resultado y la fecha segun es segundo intento
+                                String codResultado2 = notificacion.getResultado2();
+                                String fechaResultadoString2 = notificacion.getFechaHoraRes2();
+                                // Si es segundo intento para lista o cierra lista
+                                if (codResultado2 != null && !codResultado2.isEmpty()) {
                                     // En caso de ser un resultado de segundo intento hay que codificar correctamente
                                     // su codigo dependiendo del resultado
-                                    codResultado = notificacion.getResultado2();
-                                    fechaResultadoString = notificacion.getFechaHoraRes2();
                                     Resultado resultado = dbHelper.obtenerResultado(notificacion.getResultado2());
                                     if ((resultado.getEsFinal() != null && !resultado.getEsFinal())) {
+                                        codResultado2 = resultado.getCodigoSegundoIntento();
                                         if (resultado.getEsResultadoOficina()) {
-                                            codResultado = notificacion.getResultado2();
+                                            codResultado2 = notificacion.getResultado2();
                                         }
-                                        codResultado = resultado.getCodigoSegundoIntento();
                                     }else {
-                                        notificacion.setResultado2(codResultado);
+                                        notificacion.setResultado2(codResultado2);
                                         notificacion.setDescResultado2(resultado.getDescripcion());
+                                    }
+
+                                    // Se formatea la fecha resultado y se inserta en el csv
+                                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                                    Date dateAux = formatter.parse(fechaResultadoString1);
+                                    DateFormat df = new SimpleDateFormat("yyyyMMdd");
+                                    calendarAux.setTime(dateAux);
+                                    fechaResultadoString2 = df.format(calendarAux.getTime());
+                                    writerCSV.append(obtenerDelegacion() + ";" + obtenerCodigoNotificador() + ";" + codResultado2 + ";" + notificacion.getReferencia() + ";" + fechaResultadoString2 + ";" + fechaResultadoString2 + "\n");
+
+                                    if (codResultado2.equals(Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO)
+                                     || codResultado2.equals(Util.RESULTADO_AUSENTE_SEGUNDO)){
+                                        if (notificacion.getLongitudRes1().isEmpty()
+                                                || notificacion.getLongitudRes1().toString().length() == 0
+                                                || notificacion.getLongitudRes1() == null) {
+                                            notificacion.setLongitudRes1("-0.0000000");
+                                        }
+
+                                        if (notificacion.getLatitudRes1().isEmpty()
+                                                || notificacion.getLatitudRes1().toString().length() == 0
+                                                || notificacion.getLatitudRes1() == null) {
+                                            notificacion.setLatitudRes1("00.0000000");
+                                        }
+                                        String linea = "S" + StringUtils.rightPad(notificacion.getReferencia(), 70);
+                                        linea += StringUtils.rightPad(resultado.getCodigo(), 2);
+                                        linea += StringUtils.rightPad(resultado.getDescripcion().toUpperCase().replace("(2ª VISITA)",""), 25);
+                                        linea += StringUtils.rightPad(notificacion.getLongitudRes1(), 20);
+                                        linea += StringUtils.rightPad(notificacion.getLatitudRes1(), 20);
+                                        linea += StringUtils.rightPad(notificacion.getNotificadorRes1(), 50);
+                                        linea += StringUtils.rightPad(notificacion.getReferenciaSCB(), 70);
+                                        linea += StringUtils.rightPad(notificacion.getFechaHoraRes1(), 19);
+                                        linea += "\n";
+                                        writerTXT.append(linea);
                                     }
                                 } else {
                                     // Si es resultado de primer intento, dependiendo de si el resultado es final o no,
                                     // hay que ir añadiendolo al fichero de segundos intentos para el dia siguiente
-                                    Resultado resultado = dbHelper.obtenerResultado(codResultado);
+                                    Resultado resultado = dbHelper.obtenerResultado(codResultado1);
                                     // Si es primera visita y NO ES FINAL lo guardamos en un TXT para la carga del dia siguiente
                                     // O es segunda visita pero gestiona lista y no es 08 ni 09
                                     if (BooleanUtils.isFalse(resultado.getEsFinal()) && BooleanUtils.isFalse(resultado.getEsResultadoOficina()))
@@ -384,16 +418,17 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                         linea += "\n";
                                         writerTXT.append(linea);
                                     }
+                                    // Se formatea la fecha resultado
+                                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                                    Date dateAux = formatter.parse(fechaResultadoString1);
+                                    DateFormat df = new SimpleDateFormat("yyyyMMdd");
+                                    calendarAux.setTime(dateAux);
+                                    fechaResultadoString1 = df.format(calendarAux.getTime());
+                                    writerCSV.append(obtenerDelegacion() + ";" + obtenerCodigoNotificador() + ";" + codResultado1 + ";" + notificacion.getReferencia() + ";" + fechaResultadoString1 + ";" + fechaResultadoString1 + "\n");
+
                                 }
 
-                                // Se formatea la fecha resultado
-                                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-                                Date dateAux = formatter.parse(fechaResultadoString);
-                                DateFormat df = new SimpleDateFormat("yyyyMMdd");
-                                calendarAux.setTime(dateAux);
-                                fechaResultadoString = df.format(calendarAux.getTime());
-                                writerCSV.append(obtenerDelegacion() + ";" + obtenerCodigoNotificador() + ";" + codResultado + ";" + notificacion.getReferencia() + ";" + fechaResultadoString + ";" + fechaResultadoString + "\n");
-                            }
+                               }
 
                             writerCSV.flush();
                             writerTXT.flush();

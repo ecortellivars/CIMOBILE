@@ -218,6 +218,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         @Override
         protected List<Resultado> doInBackground(Void... voids) {
             Boolean esAplicacionOficina = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_DE_OFICINA, getBaseContext(), Boolean.class.getSimpleName());
+            Boolean esAplicacionPEE = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_PEE, getBaseContext(), Boolean.class.getSimpleName());
             Notificacion notificacion = dbHelper.obtenerNotificacion(idNotificacion);
             // Hay PRIMERA VISITA
             if (notificacion.getResultado1() != null){
@@ -226,27 +227,36 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                      || notificacion.getResultado1().trim().equals (Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO))) {
                         listaResultados = dbHelper.obtenerResultadosEnOficina();
                     }
+
+                    if (esAplicacionOficina
+                    && !notificacion.getResultado1().trim().equals(Util.RESULTADO_AUSENTE_SEGUNDO)
+                    && !notificacion.getResultado1().trim().equals (Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO)) {
+                        listaResultados = null;
+                    }
+
                     if (!esAplicacionOficina
                     && !notificacion.getResultado1().trim().equals(Util.RESULTADO_AUSENTE_SEGUNDO)
                     && !notificacion.getResultado1().trim().equals (Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO))  {
                         listaResultados = dbHelper.obtenerResultadosFinales();
                     }
-                    if (esAplicacionOficina
-                    && (notificacion.getResultado1().trim().equals(Util.RESULTADO_AUSENTE)
-                    || notificacion.getResultado1().trim().equals (Util.RESULTADO_NADIE_SE_HACE_CARGO)))  {
-                       listaResultados = dbHelper.obtenerResultadosFinales();
-                }
+
 
                 // NO hay PRIMERA VISITA
                 } else {
-                    listaResultados = dbHelper.obtenerResultadosNoFinales();
+                    if (esAplicacionOficina){
+                        listaResultados = null;
+                    } else if (esAplicacionPEE) {
+                                 listaResultados =  dbHelper.obtenerResultadosNoFinalesPEE();
+                            } else {
+                                listaResultados = dbHelper.obtenerResultadosNoFinales();
+                            }
 
-            }
+                }
             return listaResultados;
         }
 
         @Override
-        protected void onPostExecute(List<Resultado> listaResultados)  { // Dependiendo de si es una aplicación PEE revisara las fotos o no
+        protected void onPostExecute(List<Resultado> listaResultados)  {
 
             listaResultadosNoNotifica = listaResultados;
             if (listaResultados != null && !listaResultados.isEmpty()) {

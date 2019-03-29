@@ -181,7 +181,7 @@ public class DBHelper extends SQLiteOpenHelper {
         listaResultados.add(new Resultado(Util.RESULTADO_DESCONOCIDO, "Desconocido", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_FALLECIDO, "Fallecido", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_REHUSADO, "Rehusado", true, null, false, false));
-        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_OFICINA, "Entregado en oficina", true, null, true, true));
+        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_OFICINA, "Entregado en oficina", true, null, false, true));
         //listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_OFICINA_CON_FIRMA, "Entregado en oficina con Firma", true, null, true, true));
         listaResultados.add(new Resultado(Util.RESULTADO_NO_ENTREGADO_OFICINA, "NO Entregado en oficina", true, null, true, false));
 
@@ -292,17 +292,57 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /** SELECT
+     * Obtiene aquellos tipos de resultado que NO finales
+     * @return
+     */
+    public List<Resultado> obtenerResultadosNoFinalesPEE() {
+        List<Resultado> listaResultados = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT * FROM " + TABLE_RESULTADO +
+                " WHERE " + KEY_RESULTADO_DESCRIPCION + " IN ('Dirección Incorrecta','Desconocido','Fallecido', 'Rehusado', 'Ausente (1ª Visita)', 'Nadie se hace cargo (1ª Visita)') " +
+                " ORDER BY " + KEY_RESULTADO_CODIGO;
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    Resultado resultado = new Resultado();
+                    resultado.setCodigo(cursor.getString(cursor.getColumnIndex(KEY_RESULTADO_CODIGO)));
+                    resultado.setCodigoSegundoIntento(cursor.getString(cursor.getColumnIndex(KEY_RESULTADO_CODIGO_SEGUNDO_INTENTO)));
+                    resultado.setDescripcion(cursor.getString(cursor.getColumnIndex(KEY_RESULTADO_DESCRIPCION)));
+                    Integer intEsFinal = cursor.getInt(cursor.getColumnIndex(KEY_RESULTADO_FINAL));
+                    resultado.setEsFinal(intEsFinal == 1 ? true : false);
+                    Integer intEsResultadoOficina = cursor.getInt(cursor.getColumnIndex(KEY_RESULTADO_RESULTADO_OFICINA));
+                    resultado.setEsResultadoOficina(intEsResultadoOficina == 1 ? true : false);
+                    Integer intNotifica = cursor.getInt(cursor.getColumnIndex(KEY_RESULTADO_NOTIFICA));
+                    resultado.setNotifica(intNotifica == 1 ? true : false);
+
+                    listaResultados.add(resultado);
+
+                } while (cursor.moveToNext());
+            }
+        }
+
+        db.close();
+
+        return listaResultados;
+    }
+
+    /** SELECT
      * Obtiene los posibles 2º intentos
      * @return List<Resultado>
      */
     public List<Resultado> obtenerResultadosEnOficina() {
 
         List<Resultado> listaResultados = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
 
         String query = "SELECT * FROM " + TABLE_RESULTADO +
-                      " WHERE " + KEY_RESULTADO_RESULTADO_OFICINA + " = 1 ";
+                " WHERE " + KEY_RESULTADO_DESCRIPCION + " IN ('NO Entregado en oficina') " +
+                " ORDER BY " + KEY_RESULTADO_CODIGO;
 
-        SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
         if (cursor != null) {
@@ -410,7 +450,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_FOTO_ACUSE_RES_2
                 },
                 "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0 AND " + KEY_NOTIFICACION_RESULTADO_1 + " IS NOT NULL) OR "+
-                         "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1 AND " + KEY_NOTIFICACION_RESULTADO_2 + " IS NOT NULL)",
+                "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1 AND " + KEY_NOTIFICACION_RESULTADO_2 + " IS NOT NULL)",
                 null, null, null, null, null
         );
 

@@ -261,7 +261,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
 
                                 // Lo primero se busca si existe en la base de datos interna la notificacion
                                 // cargada desde el SICER anterior
-                                Notificacion notificacion = dbHelper.obtenerNotificacion(referenciaPostal, referenciaSCB);
+                                Notificacion notificacion = dbHelper.obtenerNotificacion(referenciaPostal, "");
                                 if(notificacion != null) {
 
                                     notificacion.setResultado1(linea.substring(71, 73).trim());
