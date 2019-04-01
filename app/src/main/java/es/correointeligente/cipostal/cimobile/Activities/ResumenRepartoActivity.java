@@ -192,7 +192,10 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             if (!listaNotificacionesGestionadas.isEmpty()){
                 for (Notificacion noti : listaNotificacionesGestionadas){
                     if (noti.getFotoAcuseRes2() != null && !noti.getFotoAcuseRes2().isEmpty()) {
-                            contadorFotos = contadorFotos + 1;
+                        contadorFotos = contadorFotos + 1;
+                    }
+                    if (noti.getFotoAcuseRes1() != null && !noti.getFotoAcuseRes1().isEmpty()) {
+                        contadorFotos = contadorFotos + 1;
                     }
                 }
             }
