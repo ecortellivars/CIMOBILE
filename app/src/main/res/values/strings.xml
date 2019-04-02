@@ -28,6 +28,7 @@
     <string name="total_notificaciones_pendientes_2_otro_dia">Total 2ª visita para otro dia </string>
     <string name="total_notificaciones_marcadas">Total notificaciones marcadas</string>
     <string name="total_lista">Total notificaciones en LISTA</string>
+    <string name="total_lista_cert">Total certificados en LISTA</string>
     <string name="detalle_notificaciones">Resumen gestionadas</string>
     <string name="detalle_notificacion">Detalle notificación</string>
     <string name="detalle_primer_intento">Detalle primer intento</string>

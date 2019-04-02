@@ -363,10 +363,12 @@ public class DetalleNotificacionActivity extends BaseActivity {
                 LinearLayout linearLayout = null;
                 resultadoEliminable = 1;
 
-                // Resultado "ENTREGADO" con Firma y en Oficina
+                // Resultado "ENTREGADO" con Firma y en Oficina o CERTIFICADA
                 if((notificacion.getResultado1().equals(Util.RESULTADO_ENTREGADO)
-                        || notificacion.getResultado1().equals(Util.RESULTADO_ENTREGADO_OFICINA))
-                        && !notificacion.getDescResultado1().equals(Util.RESULTADO_ENTREGADO_SIN_FIRMA)) {
+                || (notificacion.getSegundoIntento() == false && notificacion.getResultado1().equals(Util.RESULTADO_AUSENTE))
+                || (notificacion.getSegundoIntento() == false && notificacion.getResultado1().equals(Util.RESULTADO_NADIE_SE_HACE_CARGO))
+                 || notificacion.getResultado1().equals(Util.RESULTADO_ENTREGADO_OFICINA))
+                && !notificacion.getDescResultado1().equals(Util.RESULTADO_ENTREGADO_SIN_FIRMA)) {
                     // Instancio el layout para cargar los resultados de ENTREGADO
                     linearLayout =  (LinearLayout) inflater2.inflate(R.layout.datos_resultado_entregado, null, false);
 

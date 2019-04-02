@@ -45,14 +45,16 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
     Integer totResultados = 0;
     Integer totFotosHechas = 0;
     Integer totNumLista = 0;
+    Integer totNumListaCert = 0;
+
     Boolean borradoManual = Boolean.FALSE;
 
     // Variables para instanciar los objetos del layaout y darles valor
     TextView tv_totFicheros, tv_totNotificaciones, tv_totNotifGestionadas, tv_totNotifPendientes_2_hoy,
-             tv_totNotifPendientes_2_otro_dia, tv_totNotifMarcadas, tv_totFotos, tv_totFotos_txt,  tv_totResultados, tv_totNotiLista;
+             tv_totNotifPendientes_2_otro_dia, tv_totNotifMarcadas, tv_totFotos, tv_totFotos_txt,  tv_totResultados, tv_totNotiLista,tv_totCertLista;
     TextView tv_entregado, tv_dirIncorrecta, tv_ausente, tv_ausente_pendiente, tv_desconocido, tv_fallecido, tv_rehusado,
             tv_noSeHaceCargo, tv_noSeHaceCargoPendiente, tv_entregado_en_oficina, tv_no_entregado_en_oficina,
-            tv_entregado_en_oficina_txt, tv_no_entregado_en_oficina_txt, tv_totNotiLista_txt;
+            tv_entregado_en_oficina_txt, tv_no_entregado_en_oficina_txt, tv_totNotiLista_txt, tv_totCertLista_txt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +110,8 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
         tv_totNotifMarcadas = (TextView) findViewById(R.id.textView_resumen_total_notif_marcadas_value);
         tv_totNotiLista = (TextView) findViewById(R.id.textView_resumen_total_notif_lista_value);
         tv_totNotiLista_txt = (TextView) findViewById(R.id.textView_resumen_total_lista_txt);
+        tv_totCertLista = (TextView) findViewById(R.id.textView_resumen_total_cert_lista_value);
+        tv_totCertLista_txt = (TextView) findViewById(R.id.textView_resumen_total_lista_cert_txt);
 
 
         tv_entregado = (TextView) findViewById(R.id.textView_resumen_entregado_value);
@@ -164,6 +168,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
         @Override
         protected ResumenReparto doInBackground(Void... voids) {
             ResumenReparto resumen = dbHelper.obtenerResumenReparto();
+            totNumListaCert = resumen.getTotNumListaCert();
             totNotisGestionadas = resumen.getTotNotifGestionadas();
             totResultados = resumen.getTotResultados();
             totNumLista = resumen.getTotNumLista();
@@ -185,6 +190,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             tv_totNotifPendientes_2_otro_dia.setText(resumenReparto.getTotNotifPendientesSegundoOtroDia().toString());
             tv_totNotifMarcadas.setText(resumenReparto.getTotNotifMarcadas().toString());
             tv_totNotiLista.setText(resumenReparto.getTotNumLista().toString());
+            tv_totCertLista.setText(resumenReparto.getTotNumListaCert().toString());
 
             // Se recuperan las notificaciones que se han gestionado durante el reparto para contar la fotos
             List<Notificacion> listaNotificacionesGestionadas = dbHelper.obtenerNotificacionesGestionadas();
@@ -217,6 +223,8 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                 tv_no_entregado_en_oficina_txt.setVisibility(View.INVISIBLE);
                 tv_totNotiLista.setVisibility(View.INVISIBLE);
                 tv_totNotiLista_txt.setVisibility(View.INVISIBLE);
+                tv_totCertLista.setVisibility(View.INVISIBLE);
+                tv_totCertLista_txt.setVisibility(View.INVISIBLE);
 
             }
             // Hay PEE NO hay fotos

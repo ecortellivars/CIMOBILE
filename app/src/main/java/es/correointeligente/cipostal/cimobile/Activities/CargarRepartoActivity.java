@@ -206,6 +206,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
         protected String doInBackground(String... args) {
             String nombreFicheroSeleccionado = args[0];
             String fallo = null;
+            String esCertificado = "";
 
             if (nombreFicheroSeleccionado != null && ftpHelper.isConnected()) {
                 // Se comprueba si existe en la base de datos por lo que ya fue cargado anteriormente
@@ -220,7 +221,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
 
                         Boolean esCargaPrimeraEntrega = Boolean.TRUE;
                         for (String linea = reader.readLine(); linea != null; linea = reader.readLine()) {
-                            // DETALLE (nosotros usaremos "P" para primera entrega
+                            // DETALLE (nosotros usaremos "P" para primera entrega)
                             if (linea.startsWith("P")) {
 
                                 Notificacion notificacion = new Notificacion();
@@ -270,7 +271,15 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                     notificacion.setLatitudRes1(linea.substring(118, 138).trim());
                                     notificacion.setNotificadorRes1(linea.substring(138, 188).trim());
                                     notificacion.setFechaHoraRes1(linea.substring(258, 277).trim());
-                                    notificacion.setSegundoIntento(true);
+
+                                    // Es CERTIFICADO no requiere 2ª VISITA
+                                    if (linea.endsWith("L")){
+                                        notificacion.setSegundoIntento(false);
+                                    }
+                                    // NO es CERTIFICADO requiere 2ª VISITA
+                                    if (linea.endsWith("R")){
+                                        notificacion.setSegundoIntento(true);
+                                    }
 
                                     listaNotificaciones.add(notificacion);
 
