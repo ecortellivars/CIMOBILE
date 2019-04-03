@@ -222,30 +222,17 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             Notificacion notificacion = dbHelper.obtenerNotificacion(idNotificacion);
             // Hay PRIMERA VISITA
             if (notificacion.getResultado1() != null){
-                    if (esAplicacionOficina
-                    && (notificacion.getResultado1().trim().equals(Util.RESULTADO_AUSENTE_SEGUNDO)
-                     || notificacion.getResultado1().trim().equals (Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO))) {
+                    if (esAplicacionOficina && notificacion.getEsLista()) {
                         listaResultados = dbHelper.obtenerResultadosEnOficina();
                     }
-                    // Certificados
-                    if (esAplicacionOficina
-                            && ((notificacion.getResultado1().trim().equals(Util.RESULTADO_AUSENTE)
-                              && notificacion.getSegundoIntento().equals(false))
-                             || (notificacion.getResultado1().trim().equals (Util.RESULTADO_NADIE_SE_HACE_CARGO)
-                              && notificacion.getSegundoIntento().equals(false)))) {
-                                 listaResultados = dbHelper.obtenerResultadosEnOficina();
-                        } else if (esAplicacionOficina
-                            && !notificacion.getResultado1().trim().equals(Util.RESULTADO_AUSENTE_SEGUNDO)
-                            && !notificacion.getResultado1().trim().equals (Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO)) {
-                                listaResultados = null;
-                            }
 
-                    if (!esAplicacionOficina
-                    && !notificacion.getResultado1().trim().equals(Util.RESULTADO_AUSENTE_SEGUNDO)
-                    && !notificacion.getResultado1().trim().equals (Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO))  {
-                        listaResultados = dbHelper.obtenerResultadosFinales();
+                    if (esAplicacionOficina && !notificacion.getEsLista()) {
+                                listaResultados = null;
                     }
 
+                    if (!esAplicacionOficina && !notificacion.getEsLista()) {
+                        listaResultados = dbHelper.obtenerResultadosFinales();
+                    }
 
                 // NO hay PRIMERA VISITA
                 } else {
@@ -419,10 +406,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
 
                     // Preparamos la informacion si es Primer Intento
                     if (BooleanUtils.isFalse(notificacion.getSegundoIntento())
-                     && !notificacion.getResultado1().equals(Util.RESULTADO_AUSENTE)
-                     && !notificacion.getResultado1().equals(Util.RESULTADO_NADIE_SE_HACE_CARGO)
-                     && !notificacion.getResultado1().equals(Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO)
-                     && !notificacion.getResultado1().equals(Util.RESULTADO_AUSENTE_SEGUNDO)) {
+                     && BooleanUtils.isFalse(notificacion.getEsLista())) {
                         notificacion.setFechaHoraRes1(fechaHoraString);
                         notificacion.setResultado1(codResultado);
                         notificacion.setDescResultado1(descResultado);

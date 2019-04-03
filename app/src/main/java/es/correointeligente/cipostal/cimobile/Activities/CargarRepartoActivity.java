@@ -233,6 +233,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                 notificacion.setPoblacion(linea.substring(461, 561).trim());
                                 notificacion.setReferenciaSCB(linea.substring(561, 631).trim());
                                 notificacion.setSegundoIntento(false);
+                                notificacion.setEsLista(false);
 
                                 if(!mapaNotificacion.containsKey(notificacion.getReferencia())) {
                                     listaNotificaciones.add(notificacion);
@@ -275,10 +276,12 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                     // Es CERTIFICADO no requiere 2ª VISITA
                                     if (linea.endsWith("L")){
                                         notificacion.setSegundoIntento(false);
+                                        notificacion.setEsLista(true);
                                     }
                                     // NO es CERTIFICADO requiere 2ª VISITA
                                     if (linea.endsWith("R")){
                                         notificacion.setSegundoIntento(true);
+                                        notificacion.setEsLista(false);
                                     }
 
                                     listaNotificaciones.add(notificacion);

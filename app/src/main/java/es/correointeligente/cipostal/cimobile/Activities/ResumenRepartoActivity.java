@@ -42,7 +42,8 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
     Button mCerrarReparto;
     FTPHelper ftpHelper;
     Integer totNotisGestionadas = 0;
-    Integer totResultados = 0;
+    Integer totResultados_reparto = 0;
+    Integer totResultados_lista = 0;
     Integer totFotosHechas = 0;
     Integer totNumLista = 0;
     Integer totNumListaCert = 0;
@@ -51,10 +52,12 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
 
     // Variables para instanciar los objetos del layaout y darles valor
     TextView tv_totFicheros, tv_totNotificaciones, tv_totNotifGestionadas, tv_totNotifPendientes_2_hoy,
-             tv_totNotifPendientes_2_otro_dia, tv_totNotifMarcadas, tv_totFotos, tv_totFotos_txt,  tv_totResultados, tv_totNotiLista,tv_totCertLista;
+             tv_totNotifPendientes_2_otro_dia, tv_totNotifMarcadas, tv_totFotos, tv_totFotos_txt,  tv_totResultados_reparto,
+             tv_totResultados_lista, tv_totNotiLista, tv_totCertLista;
     TextView tv_entregado, tv_dirIncorrecta, tv_ausente, tv_ausente_pendiente, tv_desconocido, tv_fallecido, tv_rehusado,
-            tv_noSeHaceCargo, tv_noSeHaceCargoPendiente, tv_entregado_en_oficina, tv_no_entregado_en_oficina,
-            tv_entregado_en_oficina_txt, tv_no_entregado_en_oficina_txt, tv_totNotiLista_txt, tv_totCertLista_txt;
+             tv_noSeHaceCargo, tv_noSeHaceCargoPendiente, tv_entregado_en_oficina, tv_no_entregado_en_oficina,
+             tv_entregado_en_oficina_txt, tv_no_entregado_en_oficina_txt, tv_totNotiLista_txt, tv_totCertLista_txt,
+             tv_totResultados_lista_txt,  tv_totResultados_reparto_txt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +107,10 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
         tv_totNotifGestionadas = (TextView) findViewById(R.id.textView_resumen_total_notif_gestionadas_value);
         tv_totFotos_txt = (TextView) findViewById(R.id.textView_resumen_total_fotos);
         tv_totFotos = (TextView) findViewById(R.id.textView_resumen_total_fotos_value);
-        tv_totResultados = (TextView) findViewById(R.id.textView_resumen_total_resultados_value);
+        tv_totResultados_reparto = (TextView) findViewById(R.id.textView_resumen_total_resultados_reparto_value);
+        tv_totResultados_reparto_txt = (TextView) findViewById(R.id.textView_resumen_total_resultados_reparto);
+        tv_totResultados_lista = (TextView) findViewById(R.id.textView_resumen_total_resultados_lista_value);
+        tv_totResultados_lista_txt = (TextView) findViewById(R.id.textView_resumen_total_resultados_lista);
         tv_totNotifPendientes_2_hoy = (TextView) findViewById(R.id.textView_resumen_total_notif_pendientes_2_hoy_value);
         tv_totNotifPendientes_2_otro_dia = (TextView) findViewById(R.id.textView_resumen_total_notif_pendientes_2_otro_dia_value);
         tv_totNotifMarcadas = (TextView) findViewById(R.id.textView_resumen_total_notif_marcadas_value);
@@ -170,7 +176,8 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             ResumenReparto resumen = dbHelper.obtenerResumenReparto();
             totNumListaCert = resumen.getTotNumListaCert();
             totNotisGestionadas = resumen.getTotNotifGestionadas();
-            totResultados = resumen.getTotResultados();
+            totResultados_reparto = resumen.getTotResultadosReparto();
+            totResultados_lista = resumen.getTotResultadosLista();
             totNumLista = resumen.getTotNumLista();
             return resumen;
         }
@@ -207,7 +214,8 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             }
             totFotosHechas = contadorFotos;
             tv_totFotos.setText(contadorFotos.toString());
-            tv_totResultados.setText(resumenReparto.getTotResultados().toString());
+            tv_totResultados_reparto.setText(resumenReparto.getTotResultadosReparto().toString());
+            tv_totResultados_lista.setText(resumenReparto.getTotResultadosLista().toString());
             tv_totNotifGestionadas.setText(resumenReparto.getTotNotifGestionadas().toString());
             tv_entregado.setText(resumenReparto.getNumEntregados().toString());
             tv_entregado_en_oficina.setText(resumenReparto.getNumEntregadosEnOficina().toString());
@@ -225,7 +233,11 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                 tv_totNotiLista_txt.setVisibility(View.INVISIBLE);
                 tv_totCertLista.setVisibility(View.INVISIBLE);
                 tv_totCertLista_txt.setVisibility(View.INVISIBLE);
-
+                tv_totResultados_lista.setVisibility(View.INVISIBLE);
+                tv_totResultados_lista_txt.setVisibility(View.INVISIBLE);
+            } else {
+                tv_totResultados_reparto.setVisibility(View.INVISIBLE);
+                tv_totResultados_reparto_txt.setVisibility(View.INVISIBLE);
             }
             // Hay PEE NO hay fotos
             if (esAplicacionPEE){

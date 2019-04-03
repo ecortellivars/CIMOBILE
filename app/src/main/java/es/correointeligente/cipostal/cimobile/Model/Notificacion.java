@@ -34,25 +34,9 @@ public class Notificacion {
     private String timestampMarcada;
     // Nos indica que existe un primer intento pero requiere un segundo para CERRAR la notifacion
     private Boolean segundoIntento;
+    private Boolean esLista;
     private String fotoAcuseRes1;
     private String fotoAcuseRes2;
-
-    public Boolean getHayPrimerResultado() {
-        return hayPrimerResultado;
-    }
-
-    public void setHayPrimerResultado(Boolean hayPrimerResultado) {
-        this.hayPrimerResultado = hayPrimerResultado;
-    }
-
-    public Boolean getHaySegundoResultado() {
-        return haySegundoResultado;
-    }
-
-    public void setHaySegundoResultado(Boolean haySegundoResultado) {
-        this.haySegundoResultado = haySegundoResultado;
-    }
-
     private Boolean hayPrimerResultado;
     private Boolean haySegundoResultado;
 
@@ -64,7 +48,7 @@ public class Notificacion {
 
     public Notificacion(Integer id, String referencia, String nombre, String direccion, String poblacion,
                         String codigoPostal, String nombreFichero, Boolean marcada, Boolean segundoIntento,
-                        Integer backgroundColor, String referenciaSCB, String fotoAcuse) {
+                        Integer backgroundColor, String referenciaSCB, String fotoAcuse, Boolean esLista) {
         this.id = id;
         this.referencia = referencia;
         this.referenciaSCB = referenciaSCB;
@@ -75,11 +59,27 @@ public class Notificacion {
         this.nombreFichero = nombreFichero;
         this.marcada = marcada;
         this.segundoIntento = segundoIntento;
+        this.esLista = esLista;
         this.backgroundColor = backgroundColor;
         this.fotoAcuseRes1 = fotoAcuseRes1;
         this.fotoAcuseRes2 = fotoAcuseRes2;
-
     }
+
+    public Boolean getHayPrimerResultado() {
+        return hayPrimerResultado;
+    }
+
+    public void setHayPrimerResultado(Boolean hayPrimerResultado) {this.hayPrimerResultado = hayPrimerResultado;}
+
+    public Boolean getHaySegundoResultado() {
+        return haySegundoResultado;
+    }
+
+    public void setHaySegundoResultado(Boolean haySegundoResultado) {this.haySegundoResultado = haySegundoResultado;}
+
+    public Boolean getEsLista() {return esLista;}
+
+    public void setEsLista(Boolean esLista) {this.esLista = esLista;}
 
     public Integer getId() {
         return id;

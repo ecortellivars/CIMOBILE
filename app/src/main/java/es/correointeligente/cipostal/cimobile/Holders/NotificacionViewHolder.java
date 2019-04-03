@@ -103,9 +103,7 @@ public class NotificacionViewHolder extends RecyclerView.ViewHolder implements V
             // Dependiendo si es una notificacion a gestionar o una notificacion ya gestionada se llama a una pantalla u otra
             Intent intent = null;
             Integer request = null;
-            if((notificacion.getSegundoIntento() != null && notificacion.getSegundoIntento() && notificacion.getResultado2() == null) ||
-               (notificacion.getSegundoIntento() != null && !notificacion.getSegundoIntento() && notificacion.getResultado2() == null) ||
-              ((notificacion.getSegundoIntento() == null || !notificacion.getSegundoIntento())) && notificacion.getResultado1() == null) {
+            if(notificacion.getEsLista() && notificacion.getSegundoIntento() && notificacion.getResultado1() ==  null){
                 intent = new Intent(context, NuevaNotificacionActivity.class);
                 request = Util.REQUEST_CODE_NOTIFICATION_RESULT;
             } else {

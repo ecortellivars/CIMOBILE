@@ -318,10 +318,12 @@ public class DetalleNotificacionActivity extends BaseActivity {
 
                 tv_receptor = (TextView) linearLayout2.findViewById(R.id.tv_result_entregado_receptor);
                 // Como es ENTREGADO reviso si FIRMO el receptor
-                if (notificacion.getDescResultado2().equals(Util.DESCRIPCION_ENTREGADO_SIN_FIRMA)) {
-                    tv_receptor.setText("SIN FIRMA DEL RECEPTOR");
-                } else {
-                    tv_receptor.setText(notificacion.getNumDocReceptor() + " " + notificacion.getNombreReceptor());
+                if (notificacion.getResultado2().equals(Util.RESULTADO_ENTREGADO)
+                 || notificacion.getResultado2().equals(Util.RESULTADO_ENTREGADO_OFICINA))
+                         {tv_receptor.setText(notificacion.getNumDocReceptor() + " " + notificacion.getNombreReceptor());
+                }
+                else  {
+                    tv_receptor.setText("NO REQUIERE FIRMA");
                 }
 
                 // Buscamos la imagen de la firma si la hay
@@ -400,11 +402,12 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     layoutResultado1.addView(linearLayout);
 
                     // Como es ENTREGADO reviso si FIRMO el receptor
-                    if (notificacion.getDescResultado1().equals(Util.DESCRIPCION_ENTREGADO_SIN_FIRMA)) {
-                        tv_receptor.setText("SIN FIRMA DEL RECEPTOR");
+                    if (notificacion.getResultado1().equals(Util.RESULTADO_ENTREGADO)
+                     || notificacion.getResultado1().equals(Util.RESULTADO_ENTREGADO_OFICINA))
+                            {tv_receptor.setText(notificacion.getNumDocReceptor() + " " + notificacion.getNombreReceptor());
                     }
                     else  {
-                        tv_receptor.setText(notificacion.getNumDocReceptor() + " " + notificacion.getNombreReceptor());
+                        tv_receptor.setText("NO REQUIERE FIRMA");
                     }
 
                     // Buscamos la imagen de la firma si la hay

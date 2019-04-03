@@ -10,7 +10,8 @@ public class ResumenReparto {
     private Integer totNumLista;
     private Integer totNumListaCert;
     private Integer totFotos;
-    private Integer totResultados;
+    private Integer totResultadosReparto;
+    private Integer totResultadosLista;
 
     private Integer numEntregados;
     private Integer numDirIncorrectas;
@@ -28,7 +29,7 @@ public class ResumenReparto {
     public ResumenReparto() {
     }
 
-    public ResumenReparto(int totFicheros, int totNotificaciones, int totFotos, int totResultados,
+    public ResumenReparto(int totFicheros, int totNotificaciones, int totFotos, int totResultadosReparto, int totResultadosLista,
                           int totNotifGestionadas, int totNotifMarcadas, int totNotifPendientesSegundoHoy,
                           int numEntregados, int totNotifPendientesSegundoOtroDia,
                           int numDirIncorrectas, int numAusentes, int numAusentesPendientes, int numDesconocidos,
@@ -43,7 +44,8 @@ public class ResumenReparto {
         this.totFotos = totFotos;
         this.totNumLista = totNumLista;
         this.totNumLista = totNumListaCert;
-        this.totResultados = totResultados;
+        this.totResultadosReparto = totResultadosReparto;
+        this.totResultadosLista = totResultadosLista;
         this.numEntregados = numEntregados;
         this.numDirIncorrectas = numDirIncorrectas;
         this.numAusentes = numAusentes;
@@ -152,10 +154,6 @@ public class ResumenReparto {
 
     public void setTotNotifPendientesSegundoOtroDia(Integer totNotifPendientesSegundoOtroDia) { this.totNotifPendientesSegundoOtroDia = totNotifPendientesSegundoOtroDia; }
 
-    public Integer getTotResultados() {return totResultados;}
-
-    public void setTotResultados(Integer totResultados) {this.totResultados = totResultados;}
-
     public Integer getNumEntregadosEnOficina() {return numEntregadosEnOficina;  }
 
     public void setNumEntregadosEnOficina(Integer numEntregadosEnOficina) {this.numEntregadosEnOficina = numEntregadosEnOficina; }
@@ -171,5 +169,13 @@ public class ResumenReparto {
     public Integer getTotNumListaCert() {return totNumListaCert;}
 
     public void setTotNumListaCert(Integer totNumListaCert) {this.totNumListaCert = totNumListaCert;}
+
+    public Integer getTotResultadosReparto() {return totResultadosReparto;}
+
+    public void setTotResultadosReparto(Integer totResultadosReparto) {this.totResultadosReparto = totResultadosReparto;}
+
+    public Integer getTotResultadosLista() {return totResultadosLista;}
+
+    public void setTotResultadosLista(Integer totResultadosLista) {this.totResultadosLista = totResultadosLista;}
 
 }
