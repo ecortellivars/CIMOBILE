@@ -35,6 +35,7 @@ public class Notificacion {
     // Nos indica que existe un primer intento pero requiere un segundo para CERRAR la notifacion
     private Boolean segundoIntento;
     private Boolean esLista;
+    private Boolean esCertificado;
     private String fotoAcuseRes1;
     private String fotoAcuseRes2;
     private Boolean hayPrimerResultado;
@@ -48,7 +49,7 @@ public class Notificacion {
 
     public Notificacion(Integer id, String referencia, String nombre, String direccion, String poblacion,
                         String codigoPostal, String nombreFichero, Boolean marcada, Boolean segundoIntento,
-                        Integer backgroundColor, String referenciaSCB, String fotoAcuse, Boolean esLista) {
+                        Boolean esCertificado, Integer backgroundColor, String referenciaSCB, String fotoAcuse, Boolean esLista) {
         this.id = id;
         this.referencia = referencia;
         this.referenciaSCB = referenciaSCB;
@@ -63,6 +64,7 @@ public class Notificacion {
         this.backgroundColor = backgroundColor;
         this.fotoAcuseRes1 = fotoAcuseRes1;
         this.fotoAcuseRes2 = fotoAcuseRes2;
+        this.esCertificado = esCertificado;
     }
 
     public Boolean getHayPrimerResultado() {
@@ -334,5 +336,10 @@ public class Notificacion {
     public void setFotoAcuseRes2(String fotoAcuse) {
         this.fotoAcuseRes2 = fotoAcuse;
     }
+
+    public Boolean getEsCertificado() {return esCertificado;}
+
+    public void setEsCertificado(Boolean esCertificado) {this.esCertificado = esCertificado;}
+
 
 }

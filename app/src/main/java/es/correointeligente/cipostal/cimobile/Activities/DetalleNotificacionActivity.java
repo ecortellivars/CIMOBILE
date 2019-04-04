@@ -152,8 +152,9 @@ public class DetalleNotificacionActivity extends BaseActivity {
                                         notificacion.setFotoAcuseRes2(null);
                                         notificacion.setFotoAcuseRes1(null);
                                     }
-                                    Boolean guardadoNotificacionEnBD = dbHelper.guardaResultadoNotificacion(notificacion);
-                                    if (guardadoNotificacionEnBD) {
+                                    Integer intentoGuardado = null;
+                                    intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
+                                    if (intentoGuardado != null) {
                                         Toast toast = null;
                                         toast = Toast.makeText(this, "Resultado guardado Correctamente", Toast.LENGTH_LONG);
                                         toast.show();
@@ -185,9 +186,9 @@ public class DetalleNotificacionActivity extends BaseActivity {
                                         notificacion.setFotoAcuseRes2(null);
                                         notificacion.setFotoAcuseRes1(null);
                                     }
-
-                                    Boolean guardadoNotificacionEnBD = dbHelper.guardaResultadoNotificacion(notificacion);
-                                    if (guardadoNotificacionEnBD) {
+                                    Integer intentoGuardado = null;
+                                    intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
+                                    if (intentoGuardado != null) {
                                         Toast toast = null;
                                         toast = Toast.makeText(this, "Resultado guardado Correctamente", Toast.LENGTH_LONG);
                                         toast.show();

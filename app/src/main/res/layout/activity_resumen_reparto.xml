@@ -130,47 +130,6 @@
                     android:textStyle="bold" />
 
             </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/textView_resumen_total_lista_txt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/total_lista"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/textView_resumen_total_notif_lista_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginStart="20dp"
-                    android:textSize="10sp"
-                    android:textStyle="bold" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <TextView
-                    android:id="@+id/textView_resumen_total_lista_cert_txt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/total_lista_cert"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/textView_resumen_total_cert_lista_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginStart="20dp"
-                    android:textSize="10sp"
-                    android:textStyle="bold" />
-            </TableRow>
         </TableLayout>
     </LinearLayout>
 
@@ -485,8 +444,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/total_resultados_reparto"
-                        android:textSize="10sp"
-                        android:textStyle="bold" />
+                        android:textSize="11sp"
+                        android:textStyle="bold|italic" />
 
                     <TextView
                         android:id="@+id/textView_resumen_total_resultados_reparto_value"
@@ -494,7 +453,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
-                        android:textSize="10sp"
+                        android:textSize="11sp"
                         android:textStyle="bold" />
                 </TableRow>
 
@@ -503,24 +462,44 @@
                     android:layout_height="match_parent">
 
                     <TextView
-                        android:id="@+id/textView_resumen_total_resultados_lista"
+                        android:id="@+id/textView_resumen_total_lista_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/total_resultados_lista"
-                        android:textSize="10sp"
-                        android:textStyle="bold" />
+                        android:text="@string/total_lista"
+                        android:textSize="11sp"
+                        android:textStyle="bold|italic" />
 
                     <TextView
-                        android:id="@+id/textView_resumen_total_resultados_lista_value"
+                        android:id="@+id/textView_resumen_total_notif_lista_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
-                        android:textSize="10sp"
+                        android:textSize="11sp"
                         android:textStyle="bold" />
                 </TableRow>
 
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
+                    <TextView
+                        android:id="@+id/textView_resumen_total_lista_cert_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/total_lista_cert"
+                        android:textSize="11sp"
+                        android:textStyle="bold|italic" />
+
+                    <TextView
+                        android:id="@+id/textView_resumen_total_cert_lista_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="20dp"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </TableRow>
             </TableLayout>
 
             <Button

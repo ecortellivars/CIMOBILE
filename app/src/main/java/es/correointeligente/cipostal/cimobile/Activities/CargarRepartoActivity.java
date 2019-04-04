@@ -234,6 +234,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                 notificacion.setReferenciaSCB(linea.substring(561, 631).trim());
                                 notificacion.setSegundoIntento(false);
                                 notificacion.setEsLista(false);
+                                notificacion.setEsCertificado(false);
 
                                 if(!mapaNotificacion.containsKey(notificacion.getReferencia())) {
                                     listaNotificaciones.add(notificacion);
@@ -273,15 +274,26 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                     notificacion.setNotificadorRes1(linea.substring(138, 188).trim());
                                     notificacion.setFechaHoraRes1(linea.substring(258, 277).trim());
 
-                                    // Es CERTIFICADO no requiere 2ª VISITA
+                                    // Es LISTA
                                     if (linea.endsWith("L")){
                                         notificacion.setSegundoIntento(false);
                                         notificacion.setEsLista(true);
+                                        // Segundo intento y a LISTA
+                                        if (notificacion.getResultado1().equals(Util.RESULTADO_AUSENTE_SEGUNDO)
+                                         || notificacion.getResultado1().equals(Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO)){
+                                            notificacion.setEsCertificado(false);
+                                        }
+                                        // Un intento y a LISTA
+                                        if (notificacion.getResultado1().equals(Util.RESULTADO_AUSENTE)
+                                         || notificacion.getResultado1().equals(Util.RESULTADO_NADIE_SE_HACE_CARGO)){
+                                            notificacion.setEsCertificado(true);
+                                        }
                                     }
-                                    // NO es CERTIFICADO requiere 2ª VISITA
+                                    // NO es LISTA
                                     if (linea.endsWith("R")){
                                         notificacion.setSegundoIntento(true);
                                         notificacion.setEsLista(false);
+                                        notificacion.setEsCertificado(false);
                                     }
 
                                     listaNotificaciones.add(notificacion);

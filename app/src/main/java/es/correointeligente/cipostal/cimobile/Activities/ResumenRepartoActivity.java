@@ -43,9 +43,8 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
     FTPHelper ftpHelper;
     Integer totNotisGestionadas = 0;
     Integer totResultados_reparto = 0;
-    Integer totResultados_lista = 0;
     Integer totFotosHechas = 0;
-    Integer totNumLista = 0;
+    Integer totNumListaNA = 0;
     Integer totNumListaCert = 0;
 
     Boolean borradoManual = Boolean.FALSE;
@@ -53,11 +52,11 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
     // Variables para instanciar los objetos del layaout y darles valor
     TextView tv_totFicheros, tv_totNotificaciones, tv_totNotifGestionadas, tv_totNotifPendientes_2_hoy,
              tv_totNotifPendientes_2_otro_dia, tv_totNotifMarcadas, tv_totFotos, tv_totFotos_txt,  tv_totResultados_reparto,
-             tv_totResultados_lista, tv_totNotiLista, tv_totCertLista;
+             tv_totNotiLista, tv_totCertLista;
     TextView tv_entregado, tv_dirIncorrecta, tv_ausente, tv_ausente_pendiente, tv_desconocido, tv_fallecido, tv_rehusado,
              tv_noSeHaceCargo, tv_noSeHaceCargoPendiente, tv_entregado_en_oficina, tv_no_entregado_en_oficina,
              tv_entregado_en_oficina_txt, tv_no_entregado_en_oficina_txt, tv_totNotiLista_txt, tv_totCertLista_txt,
-             tv_totResultados_lista_txt,  tv_totResultados_reparto_txt;
+             tv_totResultados_reparto_txt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,8 +108,6 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
         tv_totFotos = (TextView) findViewById(R.id.textView_resumen_total_fotos_value);
         tv_totResultados_reparto = (TextView) findViewById(R.id.textView_resumen_total_resultados_reparto_value);
         tv_totResultados_reparto_txt = (TextView) findViewById(R.id.textView_resumen_total_resultados_reparto);
-        tv_totResultados_lista = (TextView) findViewById(R.id.textView_resumen_total_resultados_lista_value);
-        tv_totResultados_lista_txt = (TextView) findViewById(R.id.textView_resumen_total_resultados_lista);
         tv_totNotifPendientes_2_hoy = (TextView) findViewById(R.id.textView_resumen_total_notif_pendientes_2_hoy_value);
         tv_totNotifPendientes_2_otro_dia = (TextView) findViewById(R.id.textView_resumen_total_notif_pendientes_2_otro_dia_value);
         tv_totNotifMarcadas = (TextView) findViewById(R.id.textView_resumen_total_notif_marcadas_value);
@@ -174,11 +171,10 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
         @Override
         protected ResumenReparto doInBackground(Void... voids) {
             ResumenReparto resumen = dbHelper.obtenerResumenReparto();
-            totNumListaCert = resumen.getTotNumListaCert();
             totNotisGestionadas = resumen.getTotNotifGestionadas();
             totResultados_reparto = resumen.getTotResultadosReparto();
-            totResultados_lista = resumen.getTotResultadosLista();
-            totNumLista = resumen.getTotNumLista();
+            totNumListaNA = resumen.getTotNumListaNA();
+            totNumListaCert = resumen.getTotNumListaCert();
             return resumen;
         }
 
@@ -196,8 +192,8 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             tv_totNotifPendientes_2_hoy.setText(resumenReparto.getTotNotifPendientesSegundoHoy().toString());
             tv_totNotifPendientes_2_otro_dia.setText(resumenReparto.getTotNotifPendientesSegundoOtroDia().toString());
             tv_totNotifMarcadas.setText(resumenReparto.getTotNotifMarcadas().toString());
-            tv_totNotiLista.setText(resumenReparto.getTotNumLista().toString());
             tv_totCertLista.setText(resumenReparto.getTotNumListaCert().toString());
+            tv_totNotiLista.setText(resumenReparto.getTotNumListaNA().toString());
 
             // Se recuperan las notificaciones que se han gestionado durante el reparto para contar la fotos
             List<Notificacion> listaNotificacionesGestionadas = dbHelper.obtenerNotificacionesGestionadas();
@@ -215,7 +211,6 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             totFotosHechas = contadorFotos;
             tv_totFotos.setText(contadorFotos.toString());
             tv_totResultados_reparto.setText(resumenReparto.getTotResultadosReparto().toString());
-            tv_totResultados_lista.setText(resumenReparto.getTotResultadosLista().toString());
             tv_totNotifGestionadas.setText(resumenReparto.getTotNotifGestionadas().toString());
             tv_entregado.setText(resumenReparto.getNumEntregados().toString());
             tv_entregado_en_oficina.setText(resumenReparto.getNumEntregadosEnOficina().toString());
@@ -233,8 +228,6 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                 tv_totNotiLista_txt.setVisibility(View.INVISIBLE);
                 tv_totCertLista.setVisibility(View.INVISIBLE);
                 tv_totCertLista_txt.setVisibility(View.INVISIBLE);
-                tv_totResultados_lista.setVisibility(View.INVISIBLE);
-                tv_totResultados_lista_txt.setVisibility(View.INVISIBLE);
             } else {
                 tv_totResultados_reparto.setVisibility(View.INVISIBLE);
                 tv_totResultados_reparto_txt.setVisibility(View.INVISIBLE);
@@ -315,8 +308,6 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             // Modificación 
             // El CSV para los resultados: valencia_A22_25052017.csv
             String nombreFicheroCSV = obtenerDelegacion() + "_" + obtenerCodigoNotificador() + "_" + dfDia.format(Calendar.getInstance().getTime()) + ".csv";
-            // El TXT para segundos intentos: segundo_intento_A22_25052017.txt
-            String nombreFicheroTXT = Util.NOMBRE_FICHERO_SEGUNDO_INTENTO + "_" + obtenerCodigoNotificador() + "_" +dfDia.format(Calendar.getInstance().getTime())+".txt";
             try {
                 // Se establece la conexion con el servidor FTP
                 ftpHelper = FTPHelper.getInstancia();
@@ -337,11 +328,8 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
 
                         // valencia_25052017.csv
                         ficheroCSV = new File(Util.obtenerRutaAPP(), nombreFicheroCSV);
-                        // segundo_intento_A22_25052017.txt
-                        ficheroTXT = new File(Util.obtenerRutaAPP(), nombreFicheroTXT);
 
-                        try (FileWriter writerCSV = new FileWriter(ficheroCSV);
-                             FileWriter writerTXT = new FileWriter(ficheroTXT);) {
+                        try (FileWriter writerCSV = new FileWriter(ficheroCSV);) {
                             publishProgress(getString(R.string.generando_fichero_CSV));
                             // Quitamos el string "sin firma" o "(2ª VISITA)"
                             for (Notificacion notificacion : listaNotificacionesGestionadas) {
@@ -381,7 +369,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
 
                                     // Se formatea la fecha resultado y se inserta en el csv
                                     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-                                    Date dateAux = formatter.parse(fechaResultadoString1);
+                                    Date dateAux = formatter.parse(fechaResultadoString2);
                                     DateFormat df = new SimpleDateFormat("yyyyMMdd");
                                     calendarAux.setTime(dateAux);
                                     fechaResultadoString2 = df.format(calendarAux.getTime());
@@ -390,26 +378,16 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                     if (codResultado2.equals(Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO)
                                      || codResultado2.equals(Util.RESULTADO_AUSENTE_SEGUNDO)){
                                         if (notificacion.getLongitudRes1().isEmpty()
-                                                || notificacion.getLongitudRes1().toString().length() == 0
-                                                || notificacion.getLongitudRes1() == null) {
-                                            notificacion.setLongitudRes1("-0.0000000");
+                                         || notificacion.getLongitudRes1().toString().length() == 0
+                                         || notificacion.getLongitudRes1() == null) {
+                                              notificacion.setLongitudRes1("-0.0000000");
                                         }
 
                                         if (notificacion.getLatitudRes1().isEmpty()
-                                                || notificacion.getLatitudRes1().toString().length() == 0
-                                                || notificacion.getLatitudRes1() == null) {
+                                         || notificacion.getLatitudRes1().toString().length() == 0
+                                         || notificacion.getLatitudRes1() == null) {
                                             notificacion.setLatitudRes1("00.0000000");
                                         }
-                                        String linea = "S" + StringUtils.rightPad(notificacion.getReferencia(), 70);
-                                        linea += StringUtils.rightPad(resultado.getCodigo(), 2);
-                                        linea += StringUtils.rightPad(resultado.getDescripcion().toUpperCase().replace("(2ª VISITA)",""), 25);
-                                        linea += StringUtils.rightPad(notificacion.getLongitudRes1(), 20);
-                                        linea += StringUtils.rightPad(notificacion.getLatitudRes1(), 20);
-                                        linea += StringUtils.rightPad(notificacion.getNotificadorRes1(), 50);
-                                        linea += StringUtils.rightPad(notificacion.getReferenciaSCB(), 70);
-                                        linea += StringUtils.rightPad(notificacion.getFechaHoraRes1(), 19);
-                                        linea += "\n";
-                                        writerTXT.append(linea);
                                     }
                                 } else {
                                     // Si es resultado de primer intento, dependiendo de si el resultado es final o no,
@@ -430,16 +408,6 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                          || notificacion.getLatitudRes1() == null) {
                                                  notificacion.setLatitudRes1("00.0000000");
                                         }
-                                        String linea = "S" + StringUtils.rightPad(notificacion.getReferencia(), 70);
-                                        linea += StringUtils.rightPad(resultado.getCodigo(), 2);
-                                        linea += StringUtils.rightPad(resultado.getDescripcion().toUpperCase().replace("(1ª VISITA)",""), 25);
-                                        linea += StringUtils.rightPad(notificacion.getLongitudRes1(), 20);
-                                        linea += StringUtils.rightPad(notificacion.getLatitudRes1(), 20);
-                                        linea += StringUtils.rightPad(notificacion.getNotificadorRes1(), 50);
-                                        linea += StringUtils.rightPad(notificacion.getReferenciaSCB(), 70);
-                                        linea += StringUtils.rightPad(notificacion.getFechaHoraRes1(), 19);
-                                        linea += "\n";
-                                        writerTXT.append(linea);
                                     }
                                     // Se formatea la fecha resultado
                                     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -448,13 +416,10 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                     calendarAux.setTime(dateAux);
                                     fechaResultadoString1 = df.format(calendarAux.getTime());
                                     writerCSV.append(obtenerDelegacion() + ";" + obtenerCodigoNotificador() + ";" + codResultado1 + ";" + notificacion.getReferencia() + ";" + fechaResultadoString1 + ";" + fechaResultadoString1 + "\n");
-
                                 }
-
                                }
 
                             writerCSV.flush();
-                            writerTXT.flush();
 
                             // Una vez generado el fichero, se sube al servidor FTP
                             publishProgress(getString(R.string.subiendo_fichero_CSV));
@@ -466,15 +431,13 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                 // Borro ftp
                                 ftpHelper.borrarFichero(ficheroCSV, pathVolcado);
                                 // Si no fallo y hay TXT continuo con el TXT
-                                } else if (fallo == "" && ficheroTXT != null && !ftpHelper.subirFichero(ficheroTXT, pathVolcadoSegundoIntento)) {
+                                } else if (fallo == "" && ftpHelper.subirFichero(ficheroTXT, pathVolcadoSegundoIntento)) {
                                    publishProgress(getString(R.string.subiendo_fichero_segundo_intento));
                                     // Si fallo borro ambos
                                     fallo = getString(R.string.error_subiendo_fichero_segundo_intento);
                                     // Borro movil
-                                    ficheroTXT.delete();
                                     ficheroCSV.delete();
                                     // Borro ftp
-                                    ftpHelper.borrarFichero(ficheroTXT, pathVolcado);
                                     ftpHelper.borrarFichero(ficheroCSV, pathVolcado);
                                 } else {
                                     // Generar ZIP con los xml, las firmas, los sellos de tiempo, las fotos de los acuses y el csv
@@ -486,10 +449,8 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                         fallo = getString(R.string.error_subir_fichero_zip);
                                         // Borro movil
                                         ficheroZIP.delete();
-                                        ficheroTXT.delete();
                                         ficheroCSV.delete();
                                         // Borro ftp
-                                        ftpHelper.borrarFichero(ficheroTXT, pathVolcado);
                                         ftpHelper.borrarFichero(ficheroCSV, pathVolcado);
                                         ftpHelper.borrarFichero(ficheroZIP, pathVolcado);
                                     }

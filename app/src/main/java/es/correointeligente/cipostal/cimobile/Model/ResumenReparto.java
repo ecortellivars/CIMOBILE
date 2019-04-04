@@ -7,11 +7,10 @@ public class ResumenReparto {
     private Integer totNotifPendientesSegundoHoy;
     private Integer totNotifPendientesSegundoOtroDia;
     private Integer totNotifMarcadas;
-    private Integer totNumLista;
+    private Integer totNumListaNA;
     private Integer totNumListaCert;
     private Integer totFotos;
     private Integer totResultadosReparto;
-    private Integer totResultadosLista;
 
     private Integer numEntregados;
     private Integer numDirIncorrectas;
@@ -29,12 +28,12 @@ public class ResumenReparto {
     public ResumenReparto() {
     }
 
-    public ResumenReparto(int totFicheros, int totNotificaciones, int totFotos, int totResultadosReparto, int totResultadosLista,
+    public ResumenReparto(int totFicheros, int totNotificaciones, int totFotos, int totResultadosReparto,
                           int totNotifGestionadas, int totNotifMarcadas, int totNotifPendientesSegundoHoy,
                           int numEntregados, int totNotifPendientesSegundoOtroDia,
                           int numDirIncorrectas, int numAusentes, int numAusentesPendientes, int numDesconocidos,
                           int numFallecidos, int numRehusados, int numNadieSeHaceCargo, int numNadieSeHaceCargoPendientes,
-                          int numEntregadosEnOficina, int numNoEntregadosEnOficina, int totNumListaCert ) {
+                          int numEntregadosEnOficina, int numNoEntregadosEnOficina, int totNumListaCert, int totNumListaNA ) {
         this.totFicheros = totFicheros;
         this.totNotificaciones = totNotificaciones;
         this.totNotifGestionadas = totNotifGestionadas;
@@ -42,10 +41,9 @@ public class ResumenReparto {
         this.totNotifPendientesSegundoOtroDia = totNotifPendientesSegundoOtroDia;
         this.totNotifMarcadas = totNotifMarcadas;
         this.totFotos = totFotos;
-        this.totNumLista = totNumLista;
-        this.totNumLista = totNumListaCert;
+        this.totNumListaNA = totNumListaNA;
+        this.totNumListaCert = totNumListaCert;
         this.totResultadosReparto = totResultadosReparto;
-        this.totResultadosLista = totResultadosLista;
         this.numEntregados = numEntregados;
         this.numDirIncorrectas = numDirIncorrectas;
         this.numAusentes = numAusentes;
@@ -162,10 +160,6 @@ public class ResumenReparto {
 
     public void setNumNoEntregadosEnOficna(Integer numNoEntregadosEnOficna) {this.numNoEntregadosEnOficna = numNoEntregadosEnOficna;}
 
-    public Integer getTotNumLista() {return totNumLista;}
-
-    public void setTotNumLista(Integer totNumLista) {this.totNumLista = totNumLista;}
-
     public Integer getTotNumListaCert() {return totNumListaCert;}
 
     public void setTotNumListaCert(Integer totNumListaCert) {this.totNumListaCert = totNumListaCert;}
@@ -174,8 +168,8 @@ public class ResumenReparto {
 
     public void setTotResultadosReparto(Integer totResultadosReparto) {this.totResultadosReparto = totResultadosReparto;}
 
-    public Integer getTotResultadosLista() {return totResultadosLista;}
+    public Integer getTotNumListaNA() {return totNumListaNA;}
 
-    public void setTotResultadosLista(Integer totResultadosLista) {this.totResultadosLista = totResultadosLista;}
+    public void setTotNumListaNA(Integer totNumListaNA) {this.totNumListaNA = totNumListaNA;}
 
 }

@@ -98,7 +98,7 @@ public class FotoAcuseActivity extends BaseActivity implements View.OnClickListe
                     } catch (Exception e) {
                         e.printStackTrace();
                         Toast toast = null;
-                        toast = Toast.makeText(this, "Revisa los permisos de la camara del movil", Toast.LENGTH_LONG);
+                        toast = Toast.makeText(this, "NO SE PUDO HACER LA FOTO. REVISE LOS PERMISOS DE LA APLICACION", Toast.LENGTH_LONG);
                         toast.show();
                         finish();
                     }

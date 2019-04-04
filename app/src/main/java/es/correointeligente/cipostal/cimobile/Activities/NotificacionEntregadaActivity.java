@@ -63,6 +63,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
     Boolean numeroDocumentoValido;
     final String[] listaTiposDocumento = new String[]{Util.TIPO_DOCUMENTO_NIF, Util.TIPO_DOCUMENTO_CIF, Util.TIPO_DOCUMENTO_NIE, Util.TIPO_DOCUMENTO_OTRO};
     Button btn_guardar;
+    Integer intentoGuardado = null;
 
 
     @Override
@@ -280,9 +281,9 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 //notificacionAux.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse()  + File.separator  + referenciaPostal + "_" + fechaHoraFoto2  + "_" + fechaHoraFoto2   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + notificacionAux.getResultado2() + ".jpg");
             }
 
-            guardadoNotificacionEnBD = dbHelper.guardaResultadoNotificacion(notificacionAux);
+            intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacionAux);
 
-            if(!guardadoNotificacionEnBD) {
+            if(intentoGuardado == null) {
                 fallo = getString(R.string.error_guardar_en_bd);
             } else {
                 notificacionAux = dbHelper.obtenerNotificacion(idNotificacion);
@@ -331,11 +332,11 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
             progressDialog.dismiss();
             // Se crea el dialogo de respuesta del guardado
             AlertDialog.Builder builder = new AlertDialog.Builder(NotificacionEntregadaActivity.this);
-            builder.setTitle(R.string.guardado);
 
             if(fallo != null && !fallo.isEmpty()) {
                 // Fallo al guardar
-                if(guardadoNotificacionEnBD) {
+                if(intentoGuardado != null) {
+                    builder.setTitle(R.string.no_guardado);
                     // Añadir texto indicando que como no se ha generado ni el sello de tiempo ni el xml, esa notificacion
                     // debera realizarla en papel
                     fallo += getString(R.string.realizar_notif_en_papel);
@@ -351,6 +352,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                     });
 
                 } else {
+                    builder.setTitle(R.string.guardado);
                     builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialogInterface, int which) {
                             dialogInterface.dismiss();
@@ -361,6 +363,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 builder.setMessage(fallo);
             } else {
                 // Guardado y generado correctamente
+                builder.setTitle(R.string.guardado);
                 builder.setMessage(R.string.notificacion_grabada_correctamente);
                 builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int which) {

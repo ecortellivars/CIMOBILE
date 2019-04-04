@@ -90,6 +90,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     int checkedItem;
     Notificacion notificacion;
     String codigoNotificador;
+    Integer intentoGuardado = null;
 
     // Variables para la localizacion GPS
     private GoogleApiClient mGoogleApiClient;
@@ -590,8 +591,8 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         protected String doInBackground(Void... voids) {
             String fallo = "";
             // Primero guarda el resultado de notificacion y recupera todos los datos para generar el fichero xml
-            guardadoNotificacionEnBD = dbHelper.guardaResultadoNotificacion(notificacion);
-            if(!guardadoNotificacionEnBD) {
+            intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
+            if(intentoGuardado == null) {
                 fallo = getString(R.string.error_guardar_en_bd)   ;
             } else {
                 notificacion = dbHelper.obtenerNotificacion(idNotificacion);
@@ -641,13 +642,20 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
 
             // Se crea el dialogo de respuesta del guardado
             AlertDialog.Builder builder = new AlertDialog.Builder(NuevaNotificacionActivity.this);
-            builder.setTitle(R.string.guardado);
             // Si hubo fallo en el XML y en el SELLO de TIEMPO
             if(fallo != null && !fallo.isEmpty()) {
                 // Pero se guardo en base de datos
-                if(guardadoNotificacionEnBD) {
+                if(intentoGuardado != null)  {
+                    if (intentoGuardado == 1){
+                        dbHelper.eliminarResultadoNotificacion(notificacion.getId(),1);
+                    }
+                    if (intentoGuardado == 2){
+                        dbHelper.eliminarResultadoNotificacion(notificacion.getId(),2);
+                    }
+
                     // Añadir texto indicando que como no se ha generado ni el sello de tiempo ni el xml, esa notificacion
                     // debera realizarla en papel
+                    builder.setTitle(R.string.no_guardado);
                     fallo += ".\n"+getString(R.string.realizar_notif_en_papel);
                     builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialogInterface, int which) {
@@ -662,6 +670,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
 
                 // NO se guardo en BASE de DATOS
                 } else {
+                    builder.setTitle(R.string.guardado);
                     builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialogInterface, int which) {
                             dialogInterface.dismiss();

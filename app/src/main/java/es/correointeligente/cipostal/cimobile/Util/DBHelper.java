@@ -63,6 +63,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String KEY_NOTIFICACION_TIMESTAMP_MARCADA = "timestampMarcada";
     private static final String KEY_NOTIFICACION_SEGUNDO_INTENTO = "segundoIntento";
     private static final String KEY_NOTIFICACION_ES_LISTA = "esLista";
+    private static final String KEY_NOTIFICACION_ES_CERTIFICADO = "esCertificado";
     private static final String KEY_NOTIFICACION_FOTO_ACUSE_RES_1 = "fotoAcuse1";
     private static final String KEY_NOTIFICACION_FOTO_ACUSE_RES_2 = "fotoAcuse2";
 
@@ -341,8 +342,8 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String query = "SELECT * FROM " + TABLE_RESULTADO +
-                " WHERE " + KEY_RESULTADO_DESCRIPCION + " IN ('NO Entregado en oficina') " +
-                " ORDER BY " + KEY_RESULTADO_CODIGO;
+                               " WHERE " + KEY_RESULTADO_DESCRIPCION + " IN ('NO Entregado en oficina') " +
+                               " ORDER BY " + KEY_RESULTADO_CODIGO;
 
         Cursor cursor = db.rawQuery(query, null);
 
@@ -448,6 +449,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_TIMESTAMP_MARCADA,
                         KEY_NOTIFICACION_SEGUNDO_INTENTO,
                         KEY_NOTIFICACION_ES_LISTA,
+                        KEY_NOTIFICACION_ES_CERTIFICADO,
                         KEY_NOTIFICACION_FOTO_ACUSE_RES_1,
                         KEY_NOTIFICACION_FOTO_ACUSE_RES_2
                 },
@@ -503,21 +505,20 @@ public class DBHelper extends SQLiteOpenHelper {
         resumenReparto.setTotNotifPendientesSegundoOtroDia(cursor.getCount());
 
         // Marcadas
-        cursor = db.    query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID}, KEY_NOTIFICACION_MARCADA + " = ?", new String[]{"1"}, null, null, null, null);
+        cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID}, KEY_NOTIFICACION_MARCADA + " = ?", new String[]{"1"}, null, null, null, null);
         resumenReparto.setTotNotifMarcadas(cursor.getCount());
 
         // Lista NA
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
-                "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? " + "OR " + KEY_NOTIFICACION_RESULTADO_1 + " = ? ) AND " +
+                "(" + KEY_NOTIFICACION_ES_CERTIFICADO + " = 0) AND" +
                          "(" + KEY_NOTIFICACION_ES_LISTA + " = 1)",
-                new String[]{Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO,Util.RESULTADO_AUSENTE_SEGUNDO}, null, null, null, null);
-        resumenReparto.setTotNumLista(cursor.getCount());
+               null , null, null, null, null);
+        resumenReparto.setTotNumListaNA(cursor.getCount());
 
         // Lista CERTIFICADA
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
-                "(" + KEY_NOTIFICACION_RESULTADO_1 + " = ? " + "OR " + KEY_NOTIFICACION_RESULTADO_1 + " = ? ) AND " +
+                "(" + KEY_NOTIFICACION_ES_CERTIFICADO + " = 1) AND " +
                          "(" + KEY_NOTIFICACION_ES_LISTA + " = 1)" ,
-                new String[]{Util.RESULTADO_NADIE_SE_HACE_CARGO,Util.RESULTADO_AUSENTE},
                 null, null, null, null, null);
         resumenReparto.setTotNumListaCert(cursor.getCount());
 
@@ -528,14 +529,6 @@ public class DBHelper extends SQLiteOpenHelper {
                      "AND (" + KEY_NOTIFICACION_ES_LISTA + " = 0)" ,
                 null, null, null, null, null);
         resumenReparto.setTotResultadosReparto(cursor.getCount());
-
-        // Resultados LISTA
-        cursor = db.query(false, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
-                "(" + KEY_NOTIFICACION_RESULTADO_1 + " IS NOT NULL OR "
-                             + KEY_NOTIFICACION_RESULTADO_2 + " IS NOT NULL)" +
-                     "AND (" + KEY_NOTIFICACION_ES_LISTA + " = 1)" ,
-                null, null, null, null, null);
-        resumenReparto.setTotResultadosLista(cursor.getCount());
 
         // Gestionada
         cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
@@ -707,6 +700,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 values.put(KEY_NOTIFICACION_MARCADA, notificacion.getMarcada());
                 values.put(KEY_NOTIFICACION_SEGUNDO_INTENTO, notificacion.getSegundoIntento());
                 values.put(KEY_NOTIFICACION_ES_LISTA, notificacion.getEsLista());
+                values.put(KEY_NOTIFICACION_ES_CERTIFICADO, notificacion.getEsCertificado());
                 db.insert(TABLE_NOTIFICACION, null, values);
 
                 id ++;
@@ -751,6 +745,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_NOTIFICADOR_RES_1, notificacion.getNotificadorRes1());
                 cv.put(KEY_NOTIFICACION_SEGUNDO_INTENTO,notificacion.getSegundoIntento());
                 cv.put(KEY_NOTIFICACION_ES_LISTA,notificacion.getEsLista());
+                cv.put(KEY_NOTIFICACION_ES_CERTIFICADO,notificacion.getEsCertificado());
 
                 db.update(
                         // Tabla
@@ -824,6 +819,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_TIMESTAMP_MARCADA,
                         KEY_NOTIFICACION_SEGUNDO_INTENTO,
                         KEY_NOTIFICACION_ES_LISTA,
+                        KEY_NOTIFICACION_ES_CERTIFICADO,
                         KEY_NOTIFICACION_FOTO_ACUSE_RES_1,
                         KEY_NOTIFICACION_FOTO_ACUSE_RES_2
                 },
@@ -896,6 +892,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_TIMESTAMP_MARCADA,
                         KEY_NOTIFICACION_SEGUNDO_INTENTO,
                         KEY_NOTIFICACION_ES_LISTA,
+                        KEY_NOTIFICACION_ES_CERTIFICADO,
                         KEY_NOTIFICACION_FOTO_ACUSE_RES_1,
                         KEY_NOTIFICACION_FOTO_ACUSE_RES_2
                 },
@@ -1032,6 +1029,8 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_NOMBRE_FICHERO,
                         KEY_NOTIFICACION_MARCADA,
                         KEY_NOTIFICACION_TIMESTAMP_MARCADA,
+                        KEY_NOTIFICACION_ES_LISTA,
+                        KEY_NOTIFICACION_ES_CERTIFICADO,
                         KEY_NOTIFICACION_FOTO_ACUSE_RES_1,
                         KEY_NOTIFICACION_FOTO_ACUSE_RES_2
 
@@ -1223,32 +1222,43 @@ public class DBHelper extends SQLiteOpenHelper {
             Integer esLista = cursor.getInt(columna);
             notificacion.setEsLista(esLista != null && esLista == 1? true : false);
         }
-
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_ES_CERTIFICADO);
+        if (columna != -1) {
+            Integer esCertificado = cursor.getInt(columna);
+            notificacion.setEsCertificado(esCertificado != null && esCertificado == 1? true : false);
+        }
 
         // Se mapea el backgroundcolor segun valores del resultado
         // Inicialmente pongo el BLANCO
         Integer colorBackground = R.color.colorBackgroundSinGestionar;
         Resultado resultado = null;
 
-        // No hay reparto de segundo al estar en LISTA
-        if(!notificacion.getSegundoIntento() && notificacion.getEsLista()) {
-            colorBackground = R.color.colorPrimaryDark;
-        }
-        // Si hemos cargado el primer intento y existe resultado del segundo obtenemos el resultado
-        if(notificacion.getSegundoIntento() && !notificacion.getEsLista()) {
-            if (notificacion.getResultado2() != null && notificacion.getResultado2().trim().length() > 0) {
-                resultado = this.obtenerResultado(notificacion.getResultado2());
-              // Hay primero pendiente de segundo
-            } else if (notificacion.getResultado1() != null && notificacion.getResultado1().trim().length() > 0) {
-                colorBackground = R.color.colorGrisSuave;
+        // LISTA
+        if(notificacion.getEsLista()) {
+            if (notificacion.getEsCertificado()){
+                colorBackground = R.color.colorPrimaryDark;
             }
-            // No hemos cargado el primero del fichero txt lo hemos hecho hoy obtenemos el resultado
+            if (!notificacion.getEsCertificado()){
+                colorBackground = R.color.colorAccent;
+            }
+        }
+        // LISTA
+        if(!notificacion.getEsLista()) {
+            // Si hemos cargado el primer intento y existe resultado del segundo obtenemos el resultado
+            if (notificacion.getSegundoIntento() && !notificacion.getEsLista()) {
+                if (notificacion.getResultado2() != null && notificacion.getResultado2().trim().length() > 0) {
+                    resultado = this.obtenerResultado(notificacion.getResultado2());
+                    // Hay primero pendiente de segundo
+                } else if (notificacion.getResultado1() != null && notificacion.getResultado1().trim().length() > 0) {
+                    colorBackground = R.color.colorGrisSuave;
+                }
+                // No hemos cargado el primero del fichero txt lo hemos hecho hoy obtenemos el resultado
             } else {
-                if(notificacion.getResultado1() != null && notificacion.getResultado1().trim().length() > 0) {
+                if (notificacion.getResultado1() != null && notificacion.getResultado1().trim().length() > 0) {
                     resultado = this.obtenerResultado(notificacion.getResultado1());
                 }
             }
-
+        }
         if (resultado != null && colorBackground != R.color.colorGrisSuave && colorBackground != R.color.colorPrimaryDark) {
             // Entregado
             if (resultado.getNotifica()) {
@@ -1273,9 +1283,10 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param notificacion
      * @return Boolean
      */
-    public Boolean guardaResultadoNotificacion(Notificacion notificacion){
+    public Integer guardaResultadoNotificacion(Notificacion notificacion){
         Boolean guardadoOk = Boolean.TRUE;
         SQLiteDatabase db = this.getWritableDatabase();
+        Integer intentoGuardado = null;
 
         try {
             db.beginTransaction();
@@ -1299,6 +1310,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_FIRMA_NOTIFICADOR_RES_1, notificacion.getFirmaNotificadorRes1());
                 cv.put(KEY_NOTIFICACION_FOTO_ACUSE_RES_1, notificacion.getFotoAcuseRes1());
                 cv.put(KEY_NOTIFICACION_FOTO_ACUSE_RES_2, notificacion.getFotoAcuseRes2());
+                intentoGuardado = 1;
 
             } else {
                 cv.put(KEY_NOTIFICACION_RESULTADO_2, notificacion.getResultado2());
@@ -1312,7 +1324,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_FIRMA_NOTIFICADOR_RES_2, notificacion.getFirmaNotificadorRes2());
                 cv.put(KEY_NOTIFICACION_FOTO_ACUSE_RES_1, notificacion.getFotoAcuseRes1());
                 cv.put(KEY_NOTIFICACION_FOTO_ACUSE_RES_2, notificacion.getFotoAcuseRes2());
-
+                intentoGuardado = 2;
             }
 
             db.update(TABLE_NOTIFICACION, cv, KEY_NOTIFICACION_ID + "= ?", new String[]{notificacion.getId().toString()});
@@ -1327,7 +1339,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         db.close();
 
-        return guardadoOk;
+        return intentoGuardado;
     }
 
     /**
@@ -1441,6 +1453,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 + KEY_NOTIFICACION_TIMESTAMP_MARCADA + " TEXT,"
                 + KEY_NOTIFICACION_SEGUNDO_INTENTO + " INTEGER, "
                 + KEY_NOTIFICACION_ES_LISTA + " INTEGER, "
+                + KEY_NOTIFICACION_ES_CERTIFICADO + " INTEGER, "
                 + KEY_NOTIFICACION_FOTO_ACUSE_RES_1 + " TEXT, "
                 + KEY_NOTIFICACION_FOTO_ACUSE_RES_2 + " TEXT, "
                 + KEY_NOTIFICACION_NOMBRE_FICHERO + " TEXT); ";

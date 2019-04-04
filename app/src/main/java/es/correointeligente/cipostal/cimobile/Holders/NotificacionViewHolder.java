@@ -103,19 +103,44 @@ public class NotificacionViewHolder extends RecyclerView.ViewHolder implements V
             // Dependiendo si es una notificacion a gestionar o una notificacion ya gestionada se llama a una pantalla u otra
             Intent intent = null;
             Integer request = null;
-            if(notificacion.getEsLista() && notificacion.getSegundoIntento() && notificacion.getResultado1() ==  null){
-                intent = new Intent(context, NuevaNotificacionActivity.class);
-                request = Util.REQUEST_CODE_NOTIFICATION_RESULT;
-            } else {
-                intent = new Intent(context, DetalleNotificacionActivity.class);
-                request = Util.REQUEST_CODE_NOTIFICATION_DELETE_RESULT;
+
+            // NO LISTA
+            if (!notificacion.getEsLista()) {
+                // Requiere segunda visita y no la hay
+                if ((notificacion.getSegundoIntento() != null && notificacion.getSegundoIntento() && notificacion.getResultado2() == null) ||
+                    // Requiere primera vista y no la hay
+                   ((notificacion.getSegundoIntento() == null || !notificacion.getSegundoIntento())) && notificacion.getResultado1() == null) {
+                    intent = new Intent(context, NuevaNotificacionActivity.class);
+                    request = Util.REQUEST_CODE_NOTIFICATION_RESULT;
+                } else {
+                    intent = new Intent(context, DetalleNotificacionActivity.class);
+                    request = Util.REQUEST_CODE_NOTIFICATION_DELETE_RESULT;
+                }
+            // Lista con 08 o 09
+            }else {
+                // Certificada acabada
+               if (notificacion.getEsCertificado()){
+                  if  (notificacion.getResultado1() != null && !notificacion.getResultado1().isEmpty()) {
+                      intent = new Intent(context, DetalleNotificacionActivity.class);
+                      request = Util.REQUEST_CODE_NOTIFICATION_DELETE_RESULT;
+                  }
+               // No certificada acabada
+               } else {
+                   if (notificacion.getResultado2() != null && !notificacion.getResultado2().isEmpty()) {
+                       intent = new Intent(context, DetalleNotificacionActivity.class);
+                       request = Util.REQUEST_CODE_NOTIFICATION_DELETE_RESULT;
+                   }  else {
+                    intent = new Intent(context, DetalleNotificacionActivity.class);
+                    request = Util.REQUEST_CODE_NOTIFICATION_DELETE_RESULT;
+                }
+               }
             }
 
-            intent.putExtra("idNotificacion", notificacion.getId());
-            intent.putExtra("posicionAdapter", getAdapterPosition());
-            listaNotificacionesActivity.startActivityForResult(intent, request);
+                intent.putExtra("idNotificacion", notificacion.getId());
+                intent.putExtra("posicionAdapter", getAdapterPosition());
+                listaNotificacionesActivity.startActivityForResult(intent, request);
+            }
         }
+
+
     }
-
-
-}
