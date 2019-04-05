@@ -287,6 +287,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                         if (notificacion.getResultado1().equals(Util.RESULTADO_AUSENTE)
                                          || notificacion.getResultado1().equals(Util.RESULTADO_NADIE_SE_HACE_CARGO)){
                                             notificacion.setEsCertificado(true);
+                                            notificacion.setSegundoIntento(true);
                                         }
                                     }
                                     // NO es LISTA

@@ -1324,6 +1324,11 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_FIRMA_NOTIFICADOR_RES_2, notificacion.getFirmaNotificadorRes2());
                 cv.put(KEY_NOTIFICACION_FOTO_ACUSE_RES_1, notificacion.getFotoAcuseRes1());
                 cv.put(KEY_NOTIFICACION_FOTO_ACUSE_RES_2, notificacion.getFotoAcuseRes2());
+                // Cerramos lista al ser CERTIFICADO
+                if (notificacion.getEsCertificado()){
+                    cv.put(KEY_NOTIFICACION_SEGUNDO_INTENTO,false);
+                    }
+
                 intentoGuardado = 2;
             }
 

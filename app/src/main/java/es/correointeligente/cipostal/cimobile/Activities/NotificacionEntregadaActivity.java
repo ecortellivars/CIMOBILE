@@ -55,7 +55,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
     Lienzo mLienzo;
     Toolbar mToolbar;
     DBHelper dbHelper;
-    String resultado1, referenciaPostal, referenciaPostalSCB, longitud, latitud, observaciones, notificador;
+    String resultado1, referenciaPostal, referenciaPostalSCB, longitud, latitud, observaciones, notificador, esLista, esCertificado;
     Integer idNotificacion, posicionAdapter;
     Boolean esPrimerResultado;
     EditText edt_numeroDocumentoReceptor, edt_nombreReceptor;
@@ -87,6 +87,8 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
         esPrimerResultado = getIntent().getBooleanExtra("esPrimerResultado", Boolean.TRUE);
         notificador = getIntent().getStringExtra("notificador");
         resultado1 = getIntent().getStringExtra("resultado1");
+        esCertificado = getIntent().getStringExtra("esCertificado");
+        esLista = getIntent().getStringExtra("esLista");
 
 
         // Logica del DNI
@@ -193,14 +195,14 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                         } catch (Exception e) {
                             e.printStackTrace();
                             Toast toast = null;
-                            toast = Toast.makeText(this, "Error guardando firma del receptor. Revisa los permisos del movil", Toast.LENGTH_LONG);
+                            toast = Toast.makeText(this, "Error guardando firma del receptor. REVISE LOS PERMISOS DEL MOVIL", Toast.LENGTH_LONG);
                             toast.show();
                         }
 
                     } catch (Exception e) {
                         e.printStackTrace();
                         Toast toast = null;
-                        toast = Toast.makeText(this, "Error guardando firma del receptor. Revisa los permisos del movil", Toast.LENGTH_LONG);
+                        toast = Toast.makeText(this, "Error guardando firma del receptor. REVISE LOS PERMISOS DEL MOVIL", Toast.LENGTH_LONG);
                         toast.show();
                     }
                 } else {
@@ -217,12 +219,10 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
      */
     private class GuardarNotificacionEntregadaTask extends AsyncTask<String, String, String> {
         ProgressDialog progressDialog;
-        Boolean guardadoNotificacionEnBD;
 
 
         @Override
         protected void onPreExecute() {
-            guardadoNotificacionEnBD = false;
             progressDialog = ProgressDialog.show(NotificacionEntregadaActivity.this, getString(R.string.guardar), getString(R.string.guardando_datos_en_bd_interna));
         }
 
@@ -263,6 +263,17 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setNotificadorRes1(obtenerNombreNotificador());
                 notificacionAux.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador().trim() + ".png");
                 notificacionAux.setSegundoIntento(!esPrimerResultado);
+                if (esCertificado == "0") {
+                    notificacionAux.setEsCertificado(false);
+                }else{
+                    notificacionAux.setEsCertificado(true);
+                }
+                if (esLista == "0") {
+                    notificacionAux.setEsLista(false);
+                }else{
+                    notificacionAux.setEsLista(true);
+                }
+
                 //DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
                 //String fechaHoraFoto1 = df2.format(Calendar.getInstance().getTime());
                 //notificacionAux.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator  + referenciaPostal + "_" + fechaHoraFoto1  + "_" + fechaHoraFoto1   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" +  notificacionAux.getResultado1() + ".jpg");
@@ -276,6 +287,17 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setNotificadorRes2(obtenerNombreNotificador());
                 notificacionAux.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador().trim() +".png");
                 notificacionAux.setSegundoIntento(esPrimerResultado);
+                if (esCertificado.equals("0")) {
+                    notificacionAux.setEsCertificado(false);
+                }else{
+                    notificacionAux.setEsCertificado(true);
+                }
+                if (esLista.equals("0")) {
+                    notificacionAux.setEsLista(false);
+                }else{
+                    notificacionAux.setEsLista(true);
+                }
+
                 //DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
                 //String fechaHoraFoto2 = df2.format(Calendar.getInstance().getTime());
                 //notificacionAux.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse()  + File.separator  + referenciaPostal + "_" + fechaHoraFoto2  + "_" + fechaHoraFoto2   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + notificacionAux.getResultado2() + ".jpg");

@@ -191,6 +191,20 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                 intent.putExtra("observaciones", edt_observaciones.getText().toString());
                 intent.putExtra("notificador", codigoNotificador);
                 intent.putExtra("resultado1", notificacion.getResultado1());
+                String esCertificado = "";
+                if (notificacion.getEsCertificado()) {
+                    esCertificado = "1";
+                } else{
+                    esCertificado = "0";
+                }
+                intent.putExtra("esCertificado", esCertificado);
+                String esLista = "";
+                if (notificacion.getEsCertificado()) {
+                    esLista = "1";
+                } else{
+                    esLista = "0";
+                }
+                intent.putExtra("esLista", esLista);
 
                 startActivity(intent);
 
@@ -574,11 +588,9 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
      */
     private class GuardarResultadoNegativoTask extends AsyncTask<Void, String, String> {
         ProgressDialog progressDialog;
-        Boolean guardadoNotificacionEnBD;
 
         @Override
         protected void onPreExecute() {
-            guardadoNotificacionEnBD = false;
             progressDialog = ProgressDialog.show(NuevaNotificacionActivity.this, getString(R.string.guardar), getString(R.string.guardando_datos_en_bd_interna));
         }
 

@@ -116,21 +116,26 @@ public class NotificacionViewHolder extends RecyclerView.ViewHolder implements V
                     intent = new Intent(context, DetalleNotificacionActivity.class);
                     request = Util.REQUEST_CODE_NOTIFICATION_DELETE_RESULT;
                 }
-            // Lista con 08 o 09
+            // Lista
             }else {
-                // Certificada acabada
+                // Certificada
                if (notificacion.getEsCertificado()){
-                  if  (notificacion.getResultado1() != null && !notificacion.getResultado1().isEmpty()) {
+                  if  (notificacion.getSegundoIntento()) {
+                      intent = new Intent(context, NuevaNotificacionActivity.class);
+                      request = Util.REQUEST_CODE_NOTIFICATION_DELETE_RESULT;
+                  } else {
                       intent = new Intent(context, DetalleNotificacionActivity.class);
                       request = Util.REQUEST_CODE_NOTIFICATION_DELETE_RESULT;
                   }
-               // No certificada acabada
+               // No certificada
                } else {
+                   // Acabada
                    if (notificacion.getResultado2() != null && !notificacion.getResultado2().isEmpty()) {
                        intent = new Intent(context, DetalleNotificacionActivity.class);
                        request = Util.REQUEST_CODE_NOTIFICATION_DELETE_RESULT;
+                       // No acabada
                    }  else {
-                    intent = new Intent(context, DetalleNotificacionActivity.class);
+                    intent = new Intent(context, NuevaNotificacionActivity.class);
                     request = Util.REQUEST_CODE_NOTIFICATION_DELETE_RESULT;
                 }
                }

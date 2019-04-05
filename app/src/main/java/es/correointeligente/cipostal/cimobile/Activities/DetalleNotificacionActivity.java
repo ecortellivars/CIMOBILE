@@ -1,5 +1,6 @@
 package es.correointeligente.cipostal.cimobile.Activities;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -129,86 +131,95 @@ public class DetalleNotificacionActivity extends BaseActivity {
             case R.id.imageButton_listaNotificaciones_foto:
                 if (!esAplicacionPEE) {
                     // Revisamos que el dispositivo tiene camara
-                    if (checkCameraHardware(this) == Boolean.TRUE) {
-                        try {
-                            // Si es segundo intento obtengo los datos para la foto
-                            if (notificacion.getSegundoIntento()) {
-                                // Hacemos la foto
-                                Intent intentNuevaNoti = new Intent(DetalleNotificacionActivity.this, FotoAcuseActivity.class);
-                                if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
-                                    intentNuevaNoti.putExtra("referencia", notificacion.getReferencia());
-                                    intentNuevaNoti.putExtra("resultado", notificacion.getResultado2());
-                                    DateFormat df3 = new SimpleDateFormat("yyyyMMdd");
-                                    String fechaHoraString3 = df3.format(Calendar.getInstance().getTime());
-                                    intentNuevaNoti.putExtra("fechaHoraRes", fechaHoraString3);
-                                    startActivity(intentNuevaNoti);
-                                    notificacion = dbHelper.obtenerNotificacion(idNotificacion);
-                                    // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.webp
-                                    // Create an image file name
-                                    if (!esAplicacionPEE) {
-                                        notificacion.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado2() + ".webp");
-                                        notificacion.setFotoAcuseRes1(null);
-                                    } else {
-                                        notificacion.setFotoAcuseRes2(null);
-                                        notificacion.setFotoAcuseRes1(null);
-                                    }
-                                    Integer intentoGuardado = null;
-                                    intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
-                                    if (intentoGuardado != null) {
-                                        Toast toast = null;
-                                        toast = Toast.makeText(this, "Resultado guardado Correctamente", Toast.LENGTH_LONG);
-                                        toast.show();
-                                    } else {
-                                        Toast toast = null;
-                                        toast = Toast.makeText(this, "Resultado NO guardado", Toast.LENGTH_LONG);
-                                        toast.show();
+                    // Assume thisActivity is the current activity
+                    int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+                    if (permissionCheck != -1) {
+                        if (checkCameraHardware(this) == Boolean.TRUE) {
+                            try {
+                                // Si es segundo intento obtengo los datos para la foto
+                                if (notificacion.getSegundoIntento()) {
+                                    // Hacemos la foto
+                                    Intent intentNuevaNoti = new Intent(DetalleNotificacionActivity.this, FotoAcuseActivity.class);
+                                    if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
+                                        intentNuevaNoti.putExtra("referencia", notificacion.getReferencia());
+                                        intentNuevaNoti.putExtra("resultado", notificacion.getResultado2());
+                                        DateFormat df3 = new SimpleDateFormat("yyyyMMdd");
+                                        String fechaHoraString3 = df3.format(Calendar.getInstance().getTime());
+                                        intentNuevaNoti.putExtra("fechaHoraRes", fechaHoraString3);
+                                        startActivity(intentNuevaNoti);
+                                        notificacion = dbHelper.obtenerNotificacion(idNotificacion);
+                                        // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.webp
+                                        // Create an image file name
+                                        if (!esAplicacionPEE) {
+                                            notificacion.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado2() + ".webp");
+                                            notificacion.setFotoAcuseRes1(null);
+                                        } else {
+                                            notificacion.setFotoAcuseRes2(null);
+                                            notificacion.setFotoAcuseRes1(null);
+                                        }
+                                        Integer intentoGuardado = null;
+                                        intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
+                                        if (intentoGuardado != null) {
+                                            Toast toast = null;
+                                            toast = Toast.makeText(this, "Resultado guardado Correctamente", Toast.LENGTH_LONG);
+                                            toast.show();
+                                        } else {
+                                            Toast toast = null;
+                                            toast = Toast.makeText(this, "Resultado NO guardado", Toast.LENGTH_LONG);
+                                            toast.show();
+                                        }
                                     }
                                 }
-                            }
-                            // Si es primer intento obtengo sus datos para la foto
-                            else {
-                                // Hacemos la foto
-                                Intent intentNuevaNoti = new Intent(DetalleNotificacionActivity.this, FotoAcuseActivity.class);
-                                if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
-                                    intentNuevaNoti.putExtra("referencia", notificacion.getReferencia());
-                                    intentNuevaNoti.putExtra("resultado", notificacion.getResultado1());
-                                    DateFormat df3 = new SimpleDateFormat("yyyyMMdd");
-                                    String fechaHoraString3 = df3.format(Calendar.getInstance().getTime());
-                                    intentNuevaNoti.putExtra("fechaHoraRes", fechaHoraString3);
-                                    startActivity(intentNuevaNoti);
-                                    notificacion = dbHelper.obtenerNotificacion(idNotificacion);
+                                // Si es primer intento obtengo sus datos para la foto
+                                else {
+                                    // Hacemos la foto
+                                    Intent intentNuevaNoti = new Intent(DetalleNotificacionActivity.this, FotoAcuseActivity.class);
+                                    if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
+                                        intentNuevaNoti.putExtra("referencia", notificacion.getReferencia());
+                                        intentNuevaNoti.putExtra("resultado", notificacion.getResultado1());
+                                        DateFormat df3 = new SimpleDateFormat("yyyyMMdd");
+                                        String fechaHoraString3 = df3.format(Calendar.getInstance().getTime());
+                                        intentNuevaNoti.putExtra("fechaHoraRes", fechaHoraString3);
+                                        startActivity(intentNuevaNoti);
+                                        notificacion = dbHelper.obtenerNotificacion(idNotificacion);
 
-                                    // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.webp
-                                    if (!esAplicacionPEE) {
-                                        notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado1() + ".webp");
-                                        notificacion.setFotoAcuseRes2(null);
-                                    }else {
-                                        notificacion.setFotoAcuseRes2(null);
-                                        notificacion.setFotoAcuseRes1(null);
-                                    }
-                                    Integer intentoGuardado = null;
-                                    intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
-                                    if (intentoGuardado != null) {
-                                        Toast toast = null;
-                                        toast = Toast.makeText(this, "Resultado guardado Correctamente", Toast.LENGTH_LONG);
-                                        toast.show();
-                                    } else {
-                                        Toast toast = null;
-                                        toast = Toast.makeText(this, "Resultado NO guardado", Toast.LENGTH_LONG);
-                                        toast.show();
+                                        // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.webp
+                                        if (!esAplicacionPEE) {
+                                            notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado1() + ".webp");
+                                            notificacion.setFotoAcuseRes2(null);
+                                        }else {
+                                            notificacion.setFotoAcuseRes2(null);
+                                            notificacion.setFotoAcuseRes1(null);
+                                        }
+                                        Integer intentoGuardado = null;
+                                        intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
+                                        if (intentoGuardado != null) {
+                                            Toast toast = null;
+                                            toast = Toast.makeText(this, "Resultado guardado Correctamente", Toast.LENGTH_LONG);
+                                            toast.show();
+                                        } else {
+                                            Toast toast = null;
+                                            toast = Toast.makeText(this, "Resultado NO guardado", Toast.LENGTH_LONG);
+                                            toast.show();
+                                        }
                                     }
                                 }
+                                finish();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Toast toast = null;
+                                toast = Toast.makeText(this, "NO SE PUDO HACER LA FOTO. REVISE LOS PERMISOS DE LA APLICACION", Toast.LENGTH_LONG);
+                                toast.show();
+                                finish();
                             }
-                            finish();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Toast toast = null;
-                            toast = Toast.makeText(this, "Revisa los permisos de la camara del movil", Toast.LENGTH_LONG);
-                            toast.show();
-                            finish();
+                            break;
                         }
-                        break;
+                    }else {
+                        Toast toast = null;
+                        toast = Toast.makeText(this, "NO SE PUDO HACER LA FOTO. REVISE LOS PERMISOS DE LA APLICACION", Toast.LENGTH_LONG);
+                        toast.show();
                     }
+
                 }
             default:
                 break;
