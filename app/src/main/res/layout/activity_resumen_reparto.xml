@@ -48,20 +48,21 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/textView_resumen_total_notificaciones"
+                    android:id="@+id/textView_resumen_total_notif_marcadas"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/total_notificaciones"
+                    android:text="@string/total_notificaciones_marcadas"
                     android:textSize="12sp" />
 
                 <TextView
-                    android:id="@+id/textView_resumen_total_notificaciones_value"
+                    android:id="@+id/textView_resumen_total_notif_marcadas_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginStart="20dp"
                     android:textSize="10sp"
                     android:textStyle="bold" />
+
             </TableRow>
 
 
@@ -108,22 +109,22 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
                 <TextView
-                    android:id="@+id/textView_resumen_total_notif_marcadas"
+                    android:id="@+id/textView_resumen_total_notificaciones"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/total_notificaciones_marcadas"
+                    android:text="@string/total_notificaciones"
                     android:textSize="12sp" />
 
                 <TextView
-                    android:id="@+id/textView_resumen_total_notif_marcadas_value"
+                    android:id="@+id/textView_resumen_total_notificaciones_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginStart="20dp"
                     android:textSize="10sp"
                     android:textStyle="bold" />
+
 
             </TableRow>
         </TableLayout>

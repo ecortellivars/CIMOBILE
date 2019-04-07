@@ -263,12 +263,12 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setNotificadorRes1(obtenerNombreNotificador());
                 notificacionAux.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador().trim() + ".png");
                 notificacionAux.setSegundoIntento(!esPrimerResultado);
-                if (esCertificado == "0") {
+                if (esCertificado.equals("0")) {
                     notificacionAux.setEsCertificado(false);
                 }else{
                     notificacionAux.setEsCertificado(true);
                 }
-                if (esLista == "0") {
+                if (esLista.equals("0"))  {
                     notificacionAux.setEsLista(false);
                 }else{
                     notificacionAux.setEsLista(true);
@@ -339,7 +339,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 }
             }
             return fallo;
-        }
+         }
 
         @Override
         protected void onProgressUpdate(String... values) {
@@ -357,7 +357,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
 
             if(fallo != null && !fallo.isEmpty()) {
                 // Fallo al guardar
-                if(intentoGuardado != null) {
+                if(intentoGuardado == null) {
                     builder.setTitle(R.string.no_guardado);
                     // Añadir texto indicando que como no se ha generado ni el sello de tiempo ni el xml, esa notificacion
                     // debera realizarla en papel

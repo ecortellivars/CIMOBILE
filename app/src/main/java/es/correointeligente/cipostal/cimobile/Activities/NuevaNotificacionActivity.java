@@ -318,7 +318,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             ll_detallePrimerIntento.setVisibility(View.INVISIBLE);
             ll_botonera.setVisibility(View.VISIBLE);
 
-            // Si hay segundo intento lo muestro
+            // Si requiere segundo intento lo muestro
             if (BooleanUtils.isTrue(notificacion.getSegundoIntento())) {
                 // Se muestra el layout de información referente al primer resultado
                 String horaApartirDe = null;
@@ -441,6 +441,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                         notificacion.setObservacionesRes2(edt_observaciones.getText().toString().trim().length() == 0 ? null : edt_observaciones.getText().toString());
                         notificacion.setNotificadorRes2(obtenerNombreNotificador());
                         notificacion.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador().trim() + ".png");
+                        //notificacion.setSegundoIntento(false);
                     }
 
                     GuardarResultadoNegativoTask guardarResultadoNegativoTask = new GuardarResultadoNegativoTask();
@@ -656,19 +657,12 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             AlertDialog.Builder builder = new AlertDialog.Builder(NuevaNotificacionActivity.this);
             // Si hubo fallo en el XML y en el SELLO de TIEMPO
             if(fallo != null && !fallo.isEmpty()) {
-                // Pero se guardo en base de datos
-                if(intentoGuardado != null)  {
-                    if (intentoGuardado == 1){
-                        dbHelper.eliminarResultadoNotificacion(notificacion.getId(),1);
-                    }
-                    if (intentoGuardado == 2){
-                        dbHelper.eliminarResultadoNotificacion(notificacion.getId(),2);
-                    }
-
+                // Fallo al guardar
+                if(intentoGuardado == null) {
+                    builder.setTitle(R.string.no_guardado);
                     // Añadir texto indicando que como no se ha generado ni el sello de tiempo ni el xml, esa notificacion
                     // debera realizarla en papel
-                    builder.setTitle(R.string.no_guardado);
-                    fallo += ".\n"+getString(R.string.realizar_notif_en_papel);
+                    fallo += getString(R.string.realizar_notif_en_papel);
                     builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialogInterface, int which) {
                             Intent intentResultado = new Intent();
@@ -680,21 +674,19 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                         }
                     });
 
-                // NO se guardo en BASE de DATOS
                 } else {
-                    builder.setTitle(R.string.guardado);
+                    builder.setTitle(R.string.no_guardado);
                     builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialogInterface, int which) {
                             dialogInterface.dismiss();
                         }
                     });
                 }
-                // Mostramos el mensaje de fallo y que realice la NA en papel.
+
                 builder.setMessage(fallo);
-
-            // Guardado y generado correctamente
             } else {
-
+                // Guardado y generado correctamente
+                builder.setTitle(R.string.guardado);
                 builder.setMessage(R.string.notificacion_grabada_correctamente);
                 builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int which) {
@@ -703,13 +695,14 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                         intentResultado.putExtra("idNotificacion", idNotificacion);
                         setResult(CommonStatusCodes.SUCCESS, intentResultado);
                         dialogInterface.dismiss();
+
                         finish();
                     }
                 });
+
             }
             // Crear el dialogo con los parametros que se han definido y se muestra por pantalla
             builder.show();
         }
     }
-
 }

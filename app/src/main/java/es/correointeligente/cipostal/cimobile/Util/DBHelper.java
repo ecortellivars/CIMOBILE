@@ -183,7 +183,7 @@ public class DBHelper extends SQLiteOpenHelper {
         listaResultados.add(new Resultado(Util.RESULTADO_DESCONOCIDO, "Desconocido", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_FALLECIDO, "Fallecido", true, null, false, false));
         listaResultados.add(new Resultado(Util.RESULTADO_REHUSADO, "Rehusado", true, null, false, false));
-        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_OFICINA, "Entregado en oficina", true, null, false, true));
+        listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_OFICINA, "Entregado en oficina", true, null, true, true));
         //listaResultados.add(new Resultado(Util.RESULTADO_ENTREGADO_OFICINA_CON_FIRMA, "Entregado en oficina con Firma", true, null, true, true));
         listaResultados.add(new Resultado(Util.RESULTADO_NO_ENTREGADO_OFICINA, "NO Entregado en oficina", true, null, true, false));
 
@@ -1284,7 +1284,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * @return Boolean
      */
     public Integer guardaResultadoNotificacion(Notificacion notificacion){
-        Boolean guardadoOk = Boolean.TRUE;
+
         SQLiteDatabase db = this.getWritableDatabase();
         Integer intentoGuardado = null;
 
@@ -1338,7 +1338,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
         } catch (Exception e) {
             e.printStackTrace();
-            guardadoOk = Boolean.FALSE;
         } finally {
             db.endTransaction();
         }
@@ -1370,6 +1369,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.putNull(KEY_NOTIFICACION_LONGITUD_RES_1);
                 cv.putNull(KEY_NOTIFICACION_LATITUD_RES_1);
                 cv.putNull(KEY_NOTIFICACION_OBSERVACIONES_RES_1);
+                cv.put(KEY_NOTIFICACION_SEGUNDO_INTENTO,false);
             } else if(resultado == 2) {
                 cv.putNull(KEY_NOTIFICACION_RESULTADO_2);
                 cv.putNull(KEY_NOTIFICACION_DESCRIPCION_RESULTADO_2);
@@ -1377,12 +1377,14 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.putNull(KEY_NOTIFICACION_LONGITUD_RES_2);
                 cv.putNull(KEY_NOTIFICACION_LATITUD_RES_2);
                 cv.putNull(KEY_NOTIFICACION_OBSERVACIONES_RES_2);
+                cv.put(KEY_NOTIFICACION_SEGUNDO_INTENTO,true);
             }
 
             cv.putNull(KEY_NOTIFICACION_FIRMA_RECEPTOR);
             cv.putNull(KEY_NOTIFICACION_NOMBRE_RECEPTOR);
             cv.putNull(KEY_NOTIFICACION_NUM_DOC_RECEPTOR);
             cv.putNull(KEY_NOTIFICACION_TIPO_DOC_RECEPTOR);
+
 
             db.update(TABLE_NOTIFICACION, cv, KEY_NOTIFICACION_ID + "= ?", new String[]{idNotificacion.toString()});
 
