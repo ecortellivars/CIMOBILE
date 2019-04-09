@@ -431,15 +431,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                 // Borro ftp
                                 ftpHelper.borrarFichero(ficheroCSV, pathVolcado);
                                 // Si no fallo y hay TXT continuo con el TXT
-                                } else if (fallo == "" && ftpHelper.subirFichero(ficheroTXT, pathVolcadoSegundoIntento)) {
-                                   publishProgress(getString(R.string.subiendo_fichero_segundo_intento));
-                                    // Si fallo borro ambos
-                                    fallo = getString(R.string.error_subiendo_fichero_segundo_intento);
-                                    // Borro movil
-                                    ficheroCSV.delete();
-                                    // Borro ftp
-                                    ftpHelper.borrarFichero(ficheroCSV, pathVolcado);
-                                } else {
+                                }  else {
                                     // Generar ZIP con los xml, las firmas, los sellos de tiempo, las fotos de los acuses y el csv
                                     publishProgress(getString(R.string.generando_fichero_zip));
                                     ficheroZIP = Util.comprimirZIP(obtenerCodigoNotificador(), obtenerDelegacion());

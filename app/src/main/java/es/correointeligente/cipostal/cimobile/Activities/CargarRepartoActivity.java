@@ -234,7 +234,13 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                 notificacion.setReferenciaSCB(linea.substring(561, 631).trim());
                                 notificacion.setSegundoIntento(false);
                                 notificacion.setEsLista(false);
-                                notificacion.setEsCertificado(false);
+                                if (linea.substring(632, 633).trim().equals("C")){
+                                    notificacion.setEsCertificado(true);
+                                }
+                                if (linea.substring(632, 633).trim().equals("N")){
+                                    notificacion.setEsCertificado(false);
+                                }
+
 
                                 if(!mapaNotificacion.containsKey(notificacion.getReferencia())) {
                                     listaNotificaciones.add(notificacion);

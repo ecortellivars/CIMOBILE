@@ -1236,10 +1236,10 @@ public class DBHelper extends SQLiteOpenHelper {
         // LISTA
         if(notificacion.getEsLista()) {
             if (notificacion.getEsCertificado()){
-                colorBackground = R.color.colorPrimaryDark;
+                colorBackground = R.color.colorPrimary;
             }
             if (!notificacion.getEsCertificado()){
-                colorBackground = R.color.colorAccent;
+                colorBackground = R.color.colorBoton;
             }
         }
         // LISTA
@@ -1253,12 +1253,15 @@ public class DBHelper extends SQLiteOpenHelper {
                     colorBackground = R.color.colorGrisSuave;
                 }
                 // No hemos cargado el primero del fichero txt lo hemos hecho hoy obtenemos el resultado
-            } else {
-                if (notificacion.getResultado1() != null && notificacion.getResultado1().trim().length() > 0) {
+            } else if (notificacion.getResultado1() != null && notificacion.getResultado1().trim().length() > 0) {
                     resultado = this.obtenerResultado(notificacion.getResultado1());
-                }
+                } else if (notificacion.getEsCertificado()){
+                        colorBackground = R.color.colorBotonNoEntregadoPressed;
+                    }else{
+                        resultado = this.obtenerResultado(notificacion.getResultado1());
+                    }
             }
-        }
+
         if (resultado != null && colorBackground != R.color.colorGrisSuave && colorBackground != R.color.colorPrimaryDark) {
             // Entregado
             if (resultado.getNotifica()) {
