@@ -445,7 +445,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                     ficheroZIP = Util.comprimirZIP(obtenerCodigoNotificador(), obtenerDelegacion());
                                     publishProgress(getString(R.string.subiendo_fichero_zip));
                                     if (!ftpHelper.subirFichero(ficheroZIP, pathVolcado)) {
-                                        // Si fallo borro los 3
+                                        // Si fallo borro los 2
                                         fallo = getString(R.string.error_subir_fichero_zip);
                                         // Borro movil
                                         ficheroZIP.delete();

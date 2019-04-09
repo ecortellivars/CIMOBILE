@@ -18,6 +18,7 @@ import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
@@ -523,25 +524,53 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                                 tv_latitud.setText(Double.toString(mLastLocation.getLatitude()));
                                 tv_longitud.setText(Double.toString(mLastLocation.getLongitude()));
 //                             getAddressFromLocation(mLastLocation, getApplicationContext(), new NuevaNotificacionActivity.GeoCoderHandler());*
+                            } else {
+                                tv_latitud.setText("-0.0000000");
+                                tv_longitud.setText("00.0000000");
                             }
                         } else {
-                            tv_latitud.setText("-0.0000000");
-                            tv_longitud.setText("00.0000000");
                             // La aplicacion no tiene los permisos concedidos, por lo que se le solicita al usuario si lo permite
-                            // ActivityCompat.requestPermissions(NuevaNotificacionActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+                            ActivityCompat.requestPermissions(NuevaNotificacionActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+                            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                            if (mLastLocation != null) {
+                                tv_latitud.setText(Double.toString(mLastLocation.getLatitude()));
+                                tv_longitud.setText(Double.toString(mLastLocation.getLongitude()));
+//                             getAddressFromLocation(mLastLocation, getApplicationContext(), new NuevaNotificacionActivity.GeoCoderHandler());*
+                            } else {
+                                tv_latitud.setText("-0.0000000");
+                                tv_longitud.setText("00.0000000");
+                            }
                         }
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                        // Location settings are not satisfied, but this can be fixed
-                        // by showing the user a dialog.
-                       /* try {
-                            // Show the dialog by calling startResolutionForResult(),
-                            // and check the result in onActivityResult().
-                            status.startResolutionForResult(NuevaNotificacionActivity.this, REQUEST_CHECK_SETTINGS);
-                        } catch (IntentSender.SendIntentException e) {
-                            // Ignore the error.
-                        }*/
+                        // All location settings are satisfied. The client can
+                        // initialize location requests here.
+                        if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                            if (mLastLocation != null) {
+                                tv_latitud.setText(Double.toString(mLastLocation.getLatitude()));
+                                tv_longitud.setText(Double.toString(mLastLocation.getLongitude()));
+//                             getAddressFromLocation(mLastLocation, getApplicationContext(), new NuevaNotificacionActivity.GeoCoderHandler());*
+                            } else {
+                                tv_latitud.setText("-0.0000000");
+                                tv_longitud.setText("00.0000000");
+                            }
+                        } else {
+                            // La aplicacion no tiene los permisos concedidos, por lo que se le solicita al usuario si lo permite
+                            ActivityCompat.requestPermissions(NuevaNotificacionActivity.this, new String[]{Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS, Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+                            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                            if (mLastLocation != null) {
+                                tv_latitud.setText(Double.toString(mLastLocation.getLatitude()));
+                                tv_longitud.setText(Double.toString(mLastLocation.getLongitude()));
+//                             getAddressFromLocation(mLastLocation, getApplicationContext(), new NuevaNotificacionActivity.GeoCoderHandler());*
+                            } else {
+                                tv_latitud.setText("-0.0000000");
+                                tv_longitud.setText("00.0000000");
+                            }
+                        }
                         break;
+
+
                     case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
                         // Location settings are not satisfied. However, we have no way
                         // to fix the settings so we won't show the dialog.
