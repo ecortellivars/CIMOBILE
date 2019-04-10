@@ -407,9 +407,34 @@ public class Util {
                 resultadoString = notificacion.getResultado2();
                 resultadoDescString = notificacion.getDescResultado2();
                 date = formatter.parse(notificacion.getFechaHoraRes2());
-                latitudString = notificacion.getLatitudRes2();
-                longitudString = notificacion.getLongitudRes2();
-                observacionesString = notificacion.getObservacionesRes2();
+
+                if (notificacion.getLatitudRes2().isEmpty() ||
+                    notificacion.getLatitudRes2().equals(null) ||
+                    notificacion.getLatitudRes2() == null ||
+                    notificacion.getLatitudRes2().length() == 0 ||
+                    notificacion.getLatitudRes2().equals("")){
+                        latitudString = "SIN LATITUD";
+                }else {
+                        latitudString = notificacion.getLatitudRes2();
+                }
+                if (notificacion.getLongitudRes2().isEmpty() ||
+                    notificacion.getLongitudRes2().equals(null) ||
+                    notificacion.getLongitudRes2() == null ||
+                    notificacion.getLongitudRes2().length() == 0 ||
+                    notificacion.getLongitudRes2().equals("")){
+                        longitudString = "SIN LONGITUD";
+                }else {
+                        longitudString = notificacion.getLongitudRes2();
+                }
+                if (notificacion.getObservacionesRes2().isEmpty() ||
+                    notificacion.getObservacionesRes2().equals(null) ||
+                    notificacion.getObservacionesRes2() == null ||
+                    notificacion.getObservacionesRes2().length() == 0 ||
+                    notificacion.getObservacionesRes2().equals("")){
+                        observacionesString = "SIN OBSERVACIONES";
+                }else {
+                    observacionesString = notificacion.getObservacionesRes2();
+                }
                 notificadorString = notificacion.getNotificadorRes2();
                 firmaNotificadorString = notificacion.getFirmaNotificadorRes2();
 
@@ -417,9 +442,34 @@ public class Util {
                 resultadoString = notificacion.getResultado1();
                 resultadoDescString = notificacion.getDescResultado1();
                 date = formatter.parse(notificacion.getFechaHoraRes1());
-                latitudString = notificacion.getLatitudRes1();
-                longitudString = notificacion.getLongitudRes1();
-                observacionesString = notificacion.getObservacionesRes1();
+
+                if (notificacion.getLatitudRes1().isEmpty() ||
+                    notificacion.getLatitudRes1().equals(null) ||
+                    notificacion.getLatitudRes1() == null ||
+                    notificacion.getLatitudRes1().length() == 0 ||
+                    notificacion.getLatitudRes1().equals("")){
+                        latitudString = "SIN LATITUD";
+                }else {
+                        latitudString = notificacion.getLatitudRes1();
+                }
+                if (notificacion.getLongitudRes1().isEmpty() ||
+                    notificacion.getLongitudRes1().equals(null) ||
+                    notificacion.getLongitudRes1() == null ||
+                    notificacion.getLongitudRes1().length() == 0 ||
+                    notificacion.getLongitudRes1().equals("")){
+                        longitudString = "SIN LONGITUD";
+                }else {
+                        longitudString = notificacion.getLongitudRes1();
+                }
+                if (notificacion.getObservacionesRes1().isEmpty() ||
+                    notificacion.getObservacionesRes1().equals(null) ||
+                    notificacion.getObservacionesRes1() == null ||
+                    notificacion.getObservacionesRes1().length() == 0 ||
+                    notificacion.getObservacionesRes1().equals("")    ){
+                        observacionesString = "SIN OBSERVACIONES";
+                }else{
+                        observacionesString = notificacion.getObservacionesRes1();
+                }
                 notificadorString = notificacion.getNotificadorRes1();
                 firmaNotificadorString = notificacion.getFirmaNotificadorRes1();
              }
@@ -485,7 +535,6 @@ public class Util {
             }
             longitud.appendChild(doc.createTextNode(longitudString));
             rootElement.appendChild(longitud);
-
 
             Element observaciones = doc.createElement("observaciones");
             if (observacionesString == null  ){

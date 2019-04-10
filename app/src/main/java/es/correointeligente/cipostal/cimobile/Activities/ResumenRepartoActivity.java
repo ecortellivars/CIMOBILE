@@ -375,41 +375,8 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                     fechaResultadoString2 = df.format(calendarAux.getTime());
                                     writerCSV.append(obtenerDelegacion() + ";" + obtenerCodigoNotificador() + ";" + codResultado2 + ";" + notificacion.getReferencia() + ";" + fechaResultadoString2 + ";" + fechaResultadoString2 + "\n");
 
-                                    if (codResultado2.equals(Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO)
-                                     || codResultado2.equals(Util.RESULTADO_AUSENTE_SEGUNDO)){
-                                        if (notificacion.getLongitudRes1().isEmpty()
-                                         || notificacion.getLongitudRes1().toString().length() == 0
-                                         || notificacion.getLongitudRes1() == null) {
-                                              notificacion.setLongitudRes1("-0.0000000");
-                                        }
-
-                                        if (notificacion.getLatitudRes1().isEmpty()
-                                         || notificacion.getLatitudRes1().toString().length() == 0
-                                         || notificacion.getLatitudRes1() == null) {
-                                            notificacion.setLatitudRes1("00.0000000");
-                                        }
-                                    }
                                 } else {
-                                    // Si es resultado de primer intento, dependiendo de si el resultado es final o no,
-                                    // hay que ir añadiendolo al fichero de segundos intentos para el dia siguiente
-                                    Resultado resultado = dbHelper.obtenerResultado(codResultado1);
-                                    // Si es primera visita y NO ES FINAL lo guardamos en un TXT para la carga del dia siguiente
-                                    // O es segunda visita pero gestiona lista y no es 08 ni 09
-                                    if (BooleanUtils.isFalse(resultado.getEsFinal()) && BooleanUtils.isFalse(resultado.getEsResultadoOficina()))
-                                    {
-                                        if (notificacion.getLongitudRes1().isEmpty()
-                                         || notificacion.getLongitudRes1().toString().length() == 0
-                                         || notificacion.getLongitudRes1() == null) {
-                                                 notificacion.setLongitudRes1("-0.0000000");
-                                        }
-
-                                        if (notificacion.getLatitudRes1().isEmpty()
-                                         || notificacion.getLatitudRes1().toString().length() == 0
-                                         || notificacion.getLatitudRes1() == null) {
-                                                 notificacion.setLatitudRes1("00.0000000");
-                                        }
-                                    }
-                                    // Se formatea la fecha resultado
+                                    // Se formatea la fecha resultado y se inserta en el csv
                                     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                                     Date dateAux = formatter.parse(fechaResultadoString1);
                                     DateFormat df = new SimpleDateFormat("yyyyMMdd");

@@ -233,14 +233,20 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                 notificacion.setPoblacion(linea.substring(461, 561).trim());
                                 notificacion.setReferenciaSCB(linea.substring(561, 631).trim());
                                 notificacion.setSegundoIntento(false);
+                                notificacion.setObservacionesRes1("");
+                                notificacion.setObservacionesRes2("");
+                                notificacion.setLatitudRes1("");
+                                notificacion.setLongitudRes1("");
+                                notificacion.setLatitudRes2("");
+                                notificacion.setLongitudRes2("");
                                 notificacion.setEsLista(false);
-                                if (linea.substring(632, 633).trim().equals("C")){
+                                String ultimaLetra = linea.substring(631, 632).trim();
+                                if (ultimaLetra.equals("C")){
                                     notificacion.setEsCertificado(true);
                                 }
-                                if (linea.substring(632, 633).trim().equals("N")){
+                                if (ultimaLetra.trim().equals("N")){
                                     notificacion.setEsCertificado(false);
                                 }
-
 
                                 if(!mapaNotificacion.containsKey(notificacion.getReferencia())) {
                                     listaNotificaciones.add(notificacion);
@@ -266,7 +272,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
 
                                 // Se recupera la referencia postal
                                 String referenciaPostal = linea.substring(1, 71).trim();
-                                String referenciaSCB = linea.substring(188, 258).trim();
+                                //String referenciaSCB = linea.substring(188, 258).trim();
 
                                 // Lo primero se busca si existe en la base de datos interna la notificacion
                                 // cargada desde el SICER anterior
@@ -279,6 +285,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                     notificacion.setLatitudRes1(linea.substring(118, 138).trim());
                                     notificacion.setNotificadorRes1(linea.substring(138, 188).trim());
                                     notificacion.setFechaHoraRes1(linea.substring(258, 277).trim());
+                                    notificacion.setObservacionesRes1("");
 
                                     // Es LISTA
                                     if (linea.endsWith("L")){

@@ -428,7 +428,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                         notificacion.setDescResultado1(descResultado);
                         notificacion.setLatitudRes1(tv_latitud.getText().toString().trim().length() == 0 ? "-0.0000000" : tv_latitud.getText().toString());
                         notificacion.setLongitudRes1(tv_longitud.getText().toString().trim().length() == 0 ? "00.0000000" : tv_longitud.getText().toString());
-                        notificacion.setObservacionesRes1(edt_observaciones.getText().toString().trim().length() == 0 ? null : edt_observaciones.getText().toString());
+                        notificacion.setObservacionesRes1(edt_observaciones.getText().toString().trim().length() == 0 ? "" : edt_observaciones.getText().toString());
                         notificacion.setNotificadorRes1(obtenerNombreNotificador());
                         notificacion.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
                     }
@@ -439,7 +439,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                         notificacion.setDescResultado2(descResultado);
                         notificacion.setLatitudRes2(tv_latitud.getText().toString().trim().length() == 0 ? "-0.0000000" : tv_latitud.getText().toString());
                         notificacion.setLongitudRes2(tv_longitud.getText().toString().trim().length() == 0 ? "00.0000000" : tv_longitud.getText().toString());
-                        notificacion.setObservacionesRes2(edt_observaciones.getText().toString().trim().length() == 0 ? null : edt_observaciones.getText().toString());
+                        notificacion.setObservacionesRes2(edt_observaciones.getText().toString().trim().length() == 0 ? "" : edt_observaciones.getText().toString());
                         notificacion.setNotificadorRes2(obtenerNombreNotificador());
                         notificacion.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador().trim() + ".png");
                         //notificacion.setSegundoIntento(false);
@@ -481,8 +481,6 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             mDialog.show();
             }
     }
-
-
 
     // Se inicializa el cliente Api de Google
     public void connectGPS() {

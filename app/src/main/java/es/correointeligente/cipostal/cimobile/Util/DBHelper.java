@@ -701,6 +701,12 @@ public class DBHelper extends SQLiteOpenHelper {
                 values.put(KEY_NOTIFICACION_SEGUNDO_INTENTO, notificacion.getSegundoIntento());
                 values.put(KEY_NOTIFICACION_ES_LISTA, notificacion.getEsLista());
                 values.put(KEY_NOTIFICACION_ES_CERTIFICADO, notificacion.getEsCertificado());
+                values.put(KEY_NOTIFICACION_OBSERVACIONES_RES_1, notificacion.getObservacionesRes1());
+                values.put(KEY_NOTIFICACION_OBSERVACIONES_RES_2, notificacion.getObservacionesRes2());
+                values.put(KEY_NOTIFICACION_LATITUD_RES_1, notificacion.getLatitudRes1());
+                values.put(KEY_NOTIFICACION_LONGITUD_RES_1, notificacion.getLongitudRes1());
+                values.put(KEY_NOTIFICACION_LATITUD_RES_2, notificacion.getLatitudRes2());
+                values.put(KEY_NOTIFICACION_LONGITUD_RES_2, notificacion.getLongitudRes2());
                 db.insert(TABLE_NOTIFICACION, null, values);
 
                 id ++;
@@ -746,6 +752,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_SEGUNDO_INTENTO,notificacion.getSegundoIntento());
                 cv.put(KEY_NOTIFICACION_ES_LISTA,notificacion.getEsLista());
                 cv.put(KEY_NOTIFICACION_ES_CERTIFICADO,notificacion.getEsCertificado());
+                cv.put(KEY_NOTIFICACION_OBSERVACIONES_RES_1, notificacion.getObservacionesRes1());
+                cv.put(KEY_NOTIFICACION_LATITUD_RES_1, notificacion.getLatitudRes1());
+                cv.put(KEY_NOTIFICACION_LONGITUD_RES_1, notificacion.getLongitudRes1());
 
                 db.update(
                         // Tabla
@@ -1258,7 +1267,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 } else if (notificacion.getEsCertificado()){
                         colorBackground = R.color.colorBotonNoEntregadoPressed;
                     }else{
-                        resultado = this.obtenerResultado(notificacion.getResultado1());
+                        colorBackground = R.color.colorBackgroundSinGestionar;
                     }
             }
 
