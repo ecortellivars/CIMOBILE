@@ -522,11 +522,11 @@ public class DBHelper extends SQLiteOpenHelper {
                 null, null, null, null, null);
         resumenReparto.setTotNumListaCert(cursor.getCount());
 
-        // Resultados REPARTO
+        // Resultados almacenados
         cursor = db.query(false, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_ID},
-                "(" + KEY_NOTIFICACION_RESULTADO_1 + " IS NOT NULL OR "
-                             + KEY_NOTIFICACION_RESULTADO_2 + " IS NOT NULL)" +
-                     "AND (" + KEY_NOTIFICACION_ES_LISTA + " = 0)" ,
+                "(" + KEY_NOTIFICACION_RESULTADO_1 + " IS NOT NULL OR " + KEY_NOTIFICACION_RESULTADO_2 + " IS NOT NULL)" +
+                     "AND (" + KEY_NOTIFICACION_ES_LISTA + " = 0 " +
+                     "OR  (" + KEY_NOTIFICACION_ES_LISTA + " = 1 AND " + KEY_NOTIFICACION_ES_CERTIFICADO + " = 1))" ,
                 null, null, null, null, null);
         resumenReparto.setTotResultadosReparto(cursor.getCount());
 
