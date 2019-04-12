@@ -165,6 +165,8 @@
         <item>Rehusado</item>
         <item>Nadie se hace cargo</item>
         <item>Marcadas notificador</item>
+        <item>Entregada en Oficina</item>
+        <item>No Entregada en Oficina</item>
     </string-array>
 
 </resources>

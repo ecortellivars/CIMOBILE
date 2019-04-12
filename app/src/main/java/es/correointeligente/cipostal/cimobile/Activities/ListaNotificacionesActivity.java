@@ -214,6 +214,8 @@ public class ListaNotificacionesActivity extends BaseActivity {
         checkedFiltros[5] = mFiltroNotificacion.getRehusado();
         checkedFiltros[6] = mFiltroNotificacion.getNadieSeHaceCargo();
         checkedFiltros[7] = mFiltroNotificacion.getMarcadas();
+        checkedFiltros[8] = mFiltroNotificacion.getNoEntregadoEnOficina();
+        checkedFiltros[9] = mFiltroNotificacion.getEntregadoEnOficina();
 
 
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(ListaNotificacionesActivity.this);
@@ -254,6 +256,12 @@ public class ListaNotificacionesActivity extends BaseActivity {
                             break;
                         case 7:
                             mFiltroNotificacion.setMarcadas(checkedFiltros[position]);
+                            break;
+                        case 8:
+                            mFiltroNotificacion.setNoEntregadoEnOficina(checkedFiltros[position]);
+                            break;
+                        case 9:
+                            mFiltroNotificacion.setEntregadoEnOficna(checkedFiltros[position]);
                             break;
 
                     }

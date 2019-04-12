@@ -10,6 +10,8 @@ public class FiltroNotificacion {
     private Boolean rehusado;
     private Boolean nadieSeHaceCargo;
     private Boolean marcadas;
+    private Boolean entregadoEnOficina;
+    private Boolean noEntregadoEnOficina;
     private String referencia;
     private Integer pagina;
 
@@ -21,6 +23,8 @@ public class FiltroNotificacion {
         this.fallecido = false;
         this.rehusado = false;
         this.nadieSeHaceCargo = false;
+        this.entregadoEnOficina = false;
+        this.noEntregadoEnOficina = false;
         this.marcadas = false;
         this.pagina = 0;
     }
@@ -28,7 +32,7 @@ public class FiltroNotificacion {
 
 
     public FiltroNotificacion(Boolean entregado, Boolean dirIncorrecta, Boolean ausente, Boolean desconocido, Boolean fallecido,
-                              Boolean rehusado, Boolean nadieSeHaceCargo, Boolean marcadas, String referencia,
+                              Boolean rehusado, Boolean nadieSeHaceCargo, Boolean marcadas, Boolean entregadoEnOficina, Boolean noEntregadoEnOficina, String referencia,
                               Integer pagina) {
         this.entregado = entregado;
         this.dirIncorrecta = dirIncorrecta;
@@ -38,6 +42,8 @@ public class FiltroNotificacion {
         this.rehusado = rehusado;
         this.nadieSeHaceCargo = nadieSeHaceCargo;
         this.marcadas = marcadas;
+        this.entregadoEnOficina = entregadoEnOficina;
+        this.noEntregadoEnOficina = noEntregadoEnOficina;
         this.referencia = referencia;
         this.pagina = pagina;
     }
@@ -52,9 +58,7 @@ public class FiltroNotificacion {
 
     public Boolean getDirIncorrecta() { return dirIncorrecta; }
 
-    public void setDirIncorrecta(Boolean dirIncorrecta) {
-        this.dirIncorrecta = dirIncorrecta;
-    }
+    public void setDirIncorrecta(Boolean dirIncorrecta) {this.dirIncorrecta = dirIncorrecta;}
 
     public Boolean getAusente() {
         return ausente;
@@ -117,4 +121,13 @@ public class FiltroNotificacion {
     public void setPagina(Integer pagina) {
         this.pagina = pagina;
     }
+
+    public Boolean getEntregadoEnOficina() {return entregadoEnOficina;}
+
+    public void setEntregadoEnOficna(Boolean entregadoEnOficina) {this.entregadoEnOficina = entregadoEnOficina;}
+
+    public Boolean getNoEntregadoEnOficina() {return noEntregadoEnOficina;}
+
+    public void setNoEntregadoEnOficina(Boolean noEntregadoEnOficina) {this.noEntregadoEnOficina = noEntregadoEnOficina;}
+
 }

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -99,7 +100,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     private PendingResult<LocationSettingsResult> result;
     private LocationSettingsRequest.Builder builder;
     private Location mLastLocation;
-//    private final int REQUEST_LOCATION = 200;
+    //    private final int REQUEST_LOCATION = 200;
 //    private final int REQUEST_CHECK_SETTINGS = 300; Variables para la localizacion de la calle via google Maps
     private static int TAKE_PICTURE = 1;
     private static int SELECT_PICTURE = 2;
@@ -121,7 +122,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         // Se recupera el valor que se nos ha pasado desde la lista de notificaciones
         idNotificacion = getIntent().getIntExtra("idNotificacion", 0);
         posicionAdapter = getIntent().getIntExtra("posicionAdapter", 0);
-        codigoNotificador = sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"");
+        codigoNotificador = sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "");
 
         // Mapeamos toda la vista del layout
         this.mapearVista();
@@ -176,7 +177,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                 this.crearSelectorNoEntregado();
                 break;
 
-                // Solo ENTREGADO CON FIRMA
+            // Solo ENTREGADO CON FIRMA
             case R.id.button_nueva_notificacion_entregado:
                 Intent intent = new Intent(NuevaNotificacionActivity.this, NotificacionEntregadaActivity.class);
 
@@ -195,14 +196,14 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                 String esCertificado = "";
                 if (notificacion.getEsCertificado()) {
                     esCertificado = "1";
-                } else{
+                } else {
                     esCertificado = "0";
                 }
                 intent.putExtra("esCertificado", esCertificado);
                 String esLista = "";
                 if (notificacion.getEsCertificado()) {
                     esLista = "1";
-                } else{
+                } else {
                     esLista = "0";
                 }
                 intent.putExtra("esLista", esLista);
@@ -237,47 +238,46 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             Boolean esAplicacionPEE = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_PEE, getBaseContext(), Boolean.class.getSimpleName());
             Notificacion notificacion = dbHelper.obtenerNotificacion(idNotificacion);
             // Hay PRIMERA VISITA
-            if (notificacion.getResultado1() != null){
-                    if (esAplicacionOficina && notificacion.getEsLista()) {
-                        listaResultados = dbHelper.obtenerResultadosEnOficina();
-                    }
+            if (notificacion.getResultado1() != null) {
+                if (esAplicacionOficina && notificacion.getEsLista()) {
+                    listaResultados = dbHelper.obtenerResultadosEnOficina();
+                }
 
-                    if (esAplicacionOficina && !notificacion.getEsLista()) {
-                                listaResultados = null;
-                    }
+                if (esAplicacionOficina && !notificacion.getEsLista()) {
+                    listaResultados = null;
+                }
 
-                    if (!esAplicacionOficina && !notificacion.getEsLista()) {
-                        listaResultados = dbHelper.obtenerResultadosFinales();
-                    }
+                if (!esAplicacionOficina && !notificacion.getEsLista()) {
+                    listaResultados = dbHelper.obtenerResultadosFinales();
+                }
 
                 // NO hay PRIMERA VISITA
+            } else {
+                if (esAplicacionOficina) {
+                    listaResultados = null;
+                } else if (esAplicacionPEE) {
+                    listaResultados = dbHelper.obtenerResultadosNoFinalesPEE();
                 } else {
-                    if (esAplicacionOficina){
-                        listaResultados = null;
-                    } else if (esAplicacionPEE) {
-                                 listaResultados =  dbHelper.obtenerResultadosNoFinalesPEE();
-                            } else {
-                                listaResultados = dbHelper.obtenerResultadosNoFinales();
-                            }
-
+                    listaResultados = dbHelper.obtenerResultadosNoFinales();
                 }
+
+            }
             return listaResultados;
         }
 
         @Override
-        protected void onPostExecute(List<Resultado> listaResultados)  {
+        protected void onPostExecute(List<Resultado> listaResultados) {
 
             listaResultadosNoNotifica = listaResultados;
             if (listaResultados != null && !listaResultados.isEmpty()) {
-                    listaResultadosNoEntrega = new String[listaResultadosNoNotifica.size()];
-                    int index = 0;
-                    for (Resultado resultado : listaResultadosNoNotifica) {
-                        listaResultadosNoEntrega[index] = (String) resultado.getCodigo() + " " + resultado.getDescripcion().toUpperCase();
-                        index++;
-                    }
-                    progressDialog.dismiss();
+                listaResultadosNoEntrega = new String[listaResultadosNoNotifica.size()];
+                int index = 0;
+                for (Resultado resultado : listaResultadosNoNotifica) {
+                    listaResultadosNoEntrega[index] = (String) resultado.getCodigo() + " " + resultado.getDescripcion().toUpperCase();
+                    index++;
                 }
-            else {
+                progressDialog.dismiss();
+            } else {
                 btn_noEntregado.setVisibility(View.INVISIBLE);
                 btn_entregado.setVisibility(View.INVISIBLE);
                 fallo = getString(R.string.error_carga_resultados);
@@ -303,7 +303,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         @Override
         protected void onPreExecute() {
 
-               progressDialog = ProgressDialog.show(NuevaNotificacionActivity.this, getString(R.string.cargando_notificacion), getString(R.string.espere_info_notificacion));
+            progressDialog = ProgressDialog.show(NuevaNotificacionActivity.this, getString(R.string.cargando_notificacion), getString(R.string.espere_info_notificacion));
 
         }
 
@@ -358,13 +358,13 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     diaLimite = df.format(calendarDiaLimite.getTime());
 
                     //invalidarBotonera = !(calendarParaComparaHoras.after(calendarAntesDe) &&
-                                          //calendarParaComparaHoras.before(calendarApartirDe) &&
-                                          //calendarDiaLimite.after(Calendar.getInstance()));
+                    //calendarParaComparaHoras.before(calendarApartirDe) &&
+                    //calendarDiaLimite.after(Calendar.getInstance()));
 
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                if (!notificacion.getResultado1().equals(Util.RESULTADO_AUSENTE_SEGUNDO) && !notificacion.getResultado1().equals(Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO) ) {
+                if (!notificacion.getResultado1().equals(Util.RESULTADO_AUSENTE_SEGUNDO) && !notificacion.getResultado1().equals(Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO)) {
                     String consejoSegundoIntento = getString(R.string.dia_limite) + " " + diaLimite + "\n" + getString(R.string.informacion_segundo_intento_1) + " " + horaAntesDe + " " + getString(R.string.informacion_segundo_intento_2) + " " + horaApartirDe;
                     ll_detallePrimerIntento.setVisibility(View.VISIBLE);
                     ll_botonera.setVisibility(invalidarBotonera ? View.INVISIBLE : View.VISIBLE);
@@ -422,7 +422,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
 
                     // Preparamos la informacion si es Primer Intento
                     if (BooleanUtils.isFalse(notificacion.getSegundoIntento())
-                     && BooleanUtils.isFalse(notificacion.getEsLista())) {
+                            && BooleanUtils.isFalse(notificacion.getEsLista())) {
                         notificacion.setFechaHoraRes1(fechaHoraString);
                         notificacion.setResultado1(codResultado);
                         notificacion.setDescResultado1(descResultado);
@@ -464,7 +464,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             // Se construye el dialogo y se muestra por pantalla
             AlertDialog mDialog = mBuilder.create();
             mDialog.show();
-        }else {
+        } else {
             mBuilder.setTitle(R.string.sin_resultados_posibles);
             mBuilder.setCancelable(false);
             mBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -479,14 +479,17 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             // Se construye el dialogo y se muestra por pantalla
             AlertDialog mDialog = mBuilder.create();
             mDialog.show();
-            }
+        }
     }
 
     // Se inicializa el cliente Api de Google
     public void connectGPS() {
         if (mGoogleApiClient == null) {
+            // Create a GoogleApiClient instance
             mGoogleApiClient = new GoogleApiClient.Builder(getBaseContext()).addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
+                    .enableAutoManage(this /* FragmentActivity */,
+                            this /* OnConnectionFailedListener */)
                     .addApi(LocationServices.API)
                     .build();
 
@@ -500,6 +503,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
 
     /**
      * Logica para el GPS
+     *
      * @param bundle
      */
     @Override
@@ -516,58 +520,42 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     case LocationSettingsStatusCodes.SUCCESS:
                         // All location settings are satisfied. The client can
                         // initialize location requests here.
-                        if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                        if (ContextCompat.checkSelfPermission(getBaseContext(),Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                         && ContextCompat.checkSelfPermission(getBaseContext(),Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                             if (mLastLocation != null) {
                                 tv_latitud.setText(Double.toString(mLastLocation.getLatitude()));
                                 tv_longitud.setText(Double.toString(mLastLocation.getLongitude()));
 //                             getAddressFromLocation(mLastLocation, getApplicationContext(), new NuevaNotificacionActivity.GeoCoderHandler());*
                             } else {
-                                tv_latitud.setText("-0.0000000");
-                                tv_longitud.setText("00.0000000");
-                            }
-                        } else {
                             // La aplicacion no tiene los permisos concedidos, por lo que se le solicita al usuario si lo permite
-                            ActivityCompat.requestPermissions(NuevaNotificacionActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 0);
-                            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                            if (mLastLocation != null) {
-                                tv_latitud.setText(Double.toString(mLastLocation.getLatitude()));
-                                tv_longitud.setText(Double.toString(mLastLocation.getLongitude()));
-//                             getAddressFromLocation(mLastLocation, getApplicationContext(), new NuevaNotificacionActivity.GeoCoderHandler());*
-                            } else {
-                                tv_latitud.setText("-0.0000000");
-                                tv_longitud.setText("00.0000000");
+                             ActivityCompat.requestPermissions(NuevaNotificacionActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                             }
-                        }
-                        break;
-                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                        // All location settings are satisfied. The client can
-                        // initialize location requests here.
-                        if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                            if (mLastLocation != null) {
-                                tv_latitud.setText(Double.toString(mLastLocation.getLatitude()));
-                                tv_longitud.setText(Double.toString(mLastLocation.getLongitude()));
-//                             getAddressFromLocation(mLastLocation, getApplicationContext(), new NuevaNotificacionActivity.GeoCoderHandler());*
-                            } else {
-                                tv_latitud.setText("-0.0000000");
-                                tv_longitud.setText("00.0000000");
-                            }
-                        } else {
+                        }else {
                             // La aplicacion no tiene los permisos concedidos, por lo que se le solicita al usuario si lo permite
-                            ActivityCompat.requestPermissions(NuevaNotificacionActivity.this, new String[]{Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS, Manifest.permission.ACCESS_FINE_LOCATION}, 0);
-                            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                            if (mLastLocation != null) {
-                                tv_latitud.setText(Double.toString(mLastLocation.getLatitude()));
-                                tv_longitud.setText(Double.toString(mLastLocation.getLongitude()));
-//                             getAddressFromLocation(mLastLocation, getApplicationContext(), new NuevaNotificacionActivity.GeoCoderHandler());*
-                            } else {
-                                tv_latitud.setText("-0.0000000");
-                                tv_longitud.setText("00.0000000");
-                            }
+                            ActivityCompat.requestPermissions(NuevaNotificacionActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                         }
                         break;
 
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        // All location settings are satisfied. The client can
+                        // initialize location requests here.
+                        if (ContextCompat.checkSelfPermission(getBaseContext(),Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                         && ContextCompat.checkSelfPermission(getBaseContext(),Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                            if (mLastLocation != null) {
+                                tv_latitud.setText(Double.toString(mLastLocation.getLatitude()));
+                                tv_longitud.setText(Double.toString(mLastLocation.getLongitude()));
+//                             getAddressFromLocation(mLastLocation, getApplicationContext(), new NuevaNotificacionActivity.GeoCoderHandler());*
+                            } else {
+                                // La aplicacion no tiene los permisos concedidos, por lo que se le solicita al usuario si lo permite
+                                ActivityCompat.requestPermissions(NuevaNotificacionActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                            }
+                        }else {
+                            // La aplicacion no tiene los permisos concedidos, por lo que se le solicita al usuario si lo permite
+                            ActivityCompat.requestPermissions(NuevaNotificacionActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                        }
+                        break;
 
                     case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
                         // Location settings are not satisfied. However, we have no way

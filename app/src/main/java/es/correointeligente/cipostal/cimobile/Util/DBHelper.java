@@ -938,6 +938,12 @@ public class DBHelper extends SQLiteOpenHelper {
             query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_ENTREGADO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
                       "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_ENTREGADO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
         }
+        if (filtroNotificacion.getEntregadoEnOficina()) {
+            query += "AND (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_ENTREGADO_OFICINA + "') ";
+        }
+        if (filtroNotificacion.getNoEntregadoEnOficina()) {
+            query += "AND (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_NO_ENTREGADO_OFICINA + "') ";
+        }
         if (filtroNotificacion.getDirIncorrecta()) {
             query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_DIR_INCORRECTA + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
                       "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_DIR_INCORRECTA + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
@@ -1229,12 +1235,12 @@ public class DBHelper extends SQLiteOpenHelper {
         columna = cursor.getColumnIndex(KEY_NOTIFICACION_ES_LISTA);
         if (columna != -1) {
             Integer esLista = cursor.getInt(columna);
-            notificacion.setEsLista(esLista != null && esLista == 1? true : false);
+            notificacion.setEsLista(esLista != 1? true : false);
         }
         columna = cursor.getColumnIndex(KEY_NOTIFICACION_ES_CERTIFICADO);
         if (columna != -1) {
             Integer esCertificado = cursor.getInt(columna);
-            notificacion.setEsCertificado(esCertificado != null && esCertificado == 1? true : false);
+            notificacion.setEsCertificado(esCertificado != 1? true : false);
         }
 
         // Se mapea el backgroundcolor segun valores del resultado
@@ -1269,21 +1275,21 @@ public class DBHelper extends SQLiteOpenHelper {
                     }else{
                         colorBackground = R.color.colorBackgroundSinGestionar;
                     }
-            }
 
-        if (resultado != null && colorBackground != R.color.colorGrisSuave && colorBackground != R.color.colorPrimaryDark) {
-            // Entregado
-            if (resultado.getNotifica()) {
-                colorBackground = R.color.colorBackgroundEntregado;
-                // Pendiente de segunda visita
-                } else if (!resultado.getEsFinal()) {
-                    colorBackground = R.color.colorBackgroundAusente;
-                    // Acabado con otro resultado que no es ENTREGADO
-                    } else if (resultado.getEsFinal() && !resultado.getNotifica()) {
-                        colorBackground = R.color.colorBackgroundNoEntregado;
+
+            if (resultado != null && colorBackground != R.color.colorGrisSuave && colorBackground != R.color.colorPrimaryDark) {
+                // Entregado
+                if (resultado.getNotifica()) {
+                    colorBackground = R.color.colorBackgroundEntregado;
+                    // Pendiente de segunda visita
+                    } else if (!resultado.getEsFinal()) {
+                        colorBackground = R.color.colorBackgroundAusente;
+                        // Acabado con otro resultado que no es ENTREGADO
+                        } else if (resultado.getEsFinal() && !resultado.getNotifica()) {
+                            colorBackground = R.color.colorBackgroundNoEntregado;
+                }
             }
         }
-
         notificacion.setBackgroundColor(colorBackground);
 
         return notificacion;
