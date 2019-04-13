@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
@@ -23,6 +24,7 @@ import java.util.Map;
 import es.correointeligente.cipostal.cimobile.Adapters.FicheroAdapter;
 import es.correointeligente.cipostal.cimobile.Holders.FicheroViewHolder;
 import es.correointeligente.cipostal.cimobile.Model.Notificacion;
+import es.correointeligente.cipostal.cimobile.Model.Resultado;
 import es.correointeligente.cipostal.cimobile.R;
 import es.correointeligente.cipostal.cimobile.Util.BaseActivity;
 import es.correointeligente.cipostal.cimobile.Util.CiMobileException;
@@ -240,11 +242,12 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                 notificacion.setLatitudRes2("");
                                 notificacion.setLongitudRes2("");
                                 notificacion.setEsLista(false);
-                                String ultimaLetra = linea.substring(631, 632).trim();
-                                if (ultimaLetra.equals("C")){
+                                notificacion.setBackgroundColor(R.color.colorBackgroundSinGestionar);
+                                notificacion.setSegundoIntento(false);
+                                if (linea.trim().endsWith("C")){
                                     notificacion.setEsCertificado(true);
                                 }
-                                if (ultimaLetra.trim().equals("N")){
+                                if (linea.trim().endsWith("N")){
                                     notificacion.setEsCertificado(false);
                                 }
 
@@ -270,6 +273,8 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                 }
                                 esCargaPrimeraEntrega = Boolean.FALSE;
 
+                                Resultado resultado = null;
+
                                 // Se recupera la referencia postal
                                 String referenciaPostal = linea.substring(1, 71).trim();
                                 //String referenciaSCB = linea.substring(188, 258).trim();
@@ -278,7 +283,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                 // cargada desde el SICER anterior
                                 Notificacion notificacion = dbHelper.obtenerNotificacion(referenciaPostal, "");
                                 if(notificacion != null) {
-
+                                    Integer colorBackground = notificacion.getBackgroundColor();
                                     notificacion.setResultado1(linea.substring(71, 73).trim());
                                     notificacion.setDescResultado1(linea.substring(73, 98).trim());
                                     notificacion.setLongitudRes1(linea.substring(98, 118).trim());
@@ -286,29 +291,35 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                     notificacion.setNotificadorRes1(linea.substring(138, 188).trim());
                                     notificacion.setFechaHoraRes1(linea.substring(258, 277).trim());
                                     notificacion.setObservacionesRes1("");
+                                    notificacion.setSegundoIntento(true);
 
                                     // Es LISTA
-                                    if (linea.endsWith("L")){
-                                        notificacion.setSegundoIntento(false);
+                                    if (linea.trim().endsWith("L")){
                                         notificacion.setEsLista(true);
-                                        // Segundo intento y a LISTA
-                                        if (notificacion.getResultado1().equals(Util.RESULTADO_AUSENTE_SEGUNDO)
-                                         || notificacion.getResultado1().equals(Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO)){
-                                            notificacion.setEsCertificado(false);
-                                        }
-                                        // Un intento y a LISTA
-                                        if (notificacion.getResultado1().equals(Util.RESULTADO_AUSENTE)
-                                         || notificacion.getResultado1().equals(Util.RESULTADO_NADIE_SE_HACE_CARGO)){
-                                            notificacion.setEsCertificado(true);
-                                            notificacion.setSegundoIntento(true);
-                                        }
                                     }
                                     // NO es LISTA
-                                    if (linea.endsWith("R")){
-                                        notificacion.setSegundoIntento(true);
+                                    if (linea.trim().endsWith("R")){
                                         notificacion.setEsLista(false);
-                                        notificacion.setEsCertificado(false);
                                     }
+                                    // Se mapea el backgroundcolor segun valores del resultado
+                                    // LISTA
+                                    if(notificacion.getEsLista()) {
+                                        if (notificacion.getEsCertificado()){
+                                            colorBackground = R.color.colorPrimary;
+                                        }
+                                        if (!notificacion.getEsCertificado()){
+                                            colorBackground = R.color.colorBoton;
+                                        }
+                                        //NO LISTA
+                                        } else {
+                                            // Si hemos cargado el primer intento y existe resultado del segundo obtenemos el resultado
+                                            if (notificacion.getSegundoIntento()) {
+                                                if (notificacion.getResultado1() != null && notificacion.getResultado1().trim().length() > 0) {
+                                                    colorBackground = R.color.colorGrisSuave;
+                                                }
+                                            }
+                                    }
+                                    notificacion.setBackgroundColor(colorBackground);
 
                                     listaNotificaciones.add(notificacion);
 

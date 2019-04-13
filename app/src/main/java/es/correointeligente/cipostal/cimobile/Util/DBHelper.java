@@ -1235,12 +1235,12 @@ public class DBHelper extends SQLiteOpenHelper {
         columna = cursor.getColumnIndex(KEY_NOTIFICACION_ES_LISTA);
         if (columna != -1) {
             Integer esLista = cursor.getInt(columna);
-            notificacion.setEsLista(esLista != 1? true : false);
+            notificacion.setEsLista(esLista != 1? false : true);
         }
         columna = cursor.getColumnIndex(KEY_NOTIFICACION_ES_CERTIFICADO);
         if (columna != -1) {
             Integer esCertificado = cursor.getInt(columna);
-            notificacion.setEsCertificado(esCertificado != 1? true : false);
+            notificacion.setEsCertificado(esCertificado != 1? false : true);
         }
 
         // Se mapea el backgroundcolor segun valores del resultado
@@ -1256,40 +1256,42 @@ public class DBHelper extends SQLiteOpenHelper {
             if (!notificacion.getEsCertificado()){
                 colorBackground = R.color.colorBoton;
             }
-        }
-        // LISTA
-        if(!notificacion.getEsLista()) {
-            // Si hemos cargado el primer intento y existe resultado del segundo obtenemos el resultado
-            if (notificacion.getSegundoIntento() && !notificacion.getEsLista()) {
-                if (notificacion.getResultado2() != null && notificacion.getResultado2().trim().length() > 0) {
-                    resultado = this.obtenerResultado(notificacion.getResultado2());
-                    // Hay primero pendiente de segundo
-                } else if (notificacion.getResultado1() != null && notificacion.getResultado1().trim().length() > 0) {
-                    colorBackground = R.color.colorGrisSuave;
-                }
-                // No hemos cargado el primero del fichero txt lo hemos hecho hoy obtenemos el resultado
-            } else if (notificacion.getResultado1() != null && notificacion.getResultado1().trim().length() > 0) {
-                    resultado = this.obtenerResultado(notificacion.getResultado1());
-                } else if (notificacion.getEsCertificado()){
-                        colorBackground = R.color.colorBotonNoEntregadoPressed;
-                    }else{
-                        colorBackground = R.color.colorBackgroundSinGestionar;
+            //NO LISTA
+            } else {
+                // Si hemos cargado el primer intento y existe resultado del segundo obtenemos el resultado
+                if (notificacion.getSegundoIntento()) {
+                    if (notificacion.getResultado2() != null && notificacion.getResultado2().trim().length() > 0) {
+                        resultado = this.obtenerResultado(notificacion.getResultado2());
+                        // Hay primero pendiente de segundo
+                    } else if (notificacion.getResultado1() != null && notificacion.getResultado1().trim().length() > 0) {
+                        colorBackground = R.color.colorGrisSuave;
                     }
+                    // No hemos cargado el primero del fichero txt lo hemos hecho hoy obtenemos el resultado
+                } else if (notificacion.getResultado1() != null && notificacion.getResultado1().trim().length() > 0) {
+                        resultado = this.obtenerResultado(notificacion.getResultado1());
+                    } else if (notificacion.getEsCertificado()){
+                            colorBackground = R.color.colorBotonNoEntregadoPressed;
+                        }else{
+                            colorBackground = R.color.colorBackgroundSinGestionar;
+                        }
 
 
-            if (resultado != null && colorBackground != R.color.colorGrisSuave && colorBackground != R.color.colorPrimaryDark) {
-                // Entregado
-                if (resultado.getNotifica()) {
-                    colorBackground = R.color.colorBackgroundEntregado;
-                    // Pendiente de segunda visita
-                    } else if (!resultado.getEsFinal()) {
-                        colorBackground = R.color.colorBackgroundAusente;
-                        // Acabado con otro resultado que no es ENTREGADO
-                        } else if (resultado.getEsFinal() && !resultado.getNotifica()) {
-                            colorBackground = R.color.colorBackgroundNoEntregado;
+                if (resultado != null && colorBackground != R.color.colorGrisSuave
+                 && colorBackground != R.color.colorBotonNoEntregadoPressed
+                 && colorBackground != R.color.colorPrimary
+                 && colorBackground != R.color.colorBoton) {
+                    // Entregado
+                    if (resultado.getNotifica()) {
+                        colorBackground = R.color.colorBackgroundEntregado;
+                        // Pendiente de segunda visita
+                        } else if (!resultado.getEsFinal()) {
+                            colorBackground = R.color.colorBackgroundAusente;
+                            // Acabado con otro resultado que no es ENTREGADO
+                            } else if (resultado.getEsFinal() && !resultado.getNotifica()) {
+                                colorBackground = R.color.colorBackgroundNoEntregado;
+                            }
                 }
             }
-        }
         notificacion.setBackgroundColor(colorBackground);
 
         return notificacion;
