@@ -939,10 +939,11 @@ public class DBHelper extends SQLiteOpenHelper {
                       "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_ENTREGADO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) ";
         }
         if (filtroNotificacion.getEntregadoEnOficina()) {
-            query += "AND (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_ENTREGADO_OFICINA + "') ";
+            query += "AND (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_ENTREGADO_OFICINA +  "' AND " + KEY_NOTIFICACION_ES_LISTA + " = 1) " +
+                     "OR  (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_ENTREGADO +  "' AND " + KEY_NOTIFICACION_ES_LISTA + " = 1)";
         }
         if (filtroNotificacion.getNoEntregadoEnOficina()) {
-            query += "AND (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_NO_ENTREGADO_OFICINA + "') ";
+            query += "AND (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_NO_ENTREGADO_OFICINA +  "' AND " + KEY_NOTIFICACION_ES_LISTA + " = 1) ";
         }
         if (filtroNotificacion.getDirIncorrecta()) {
             query += "AND (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_DIR_INCORRECTA + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) " +
@@ -1271,8 +1272,6 @@ public class DBHelper extends SQLiteOpenHelper {
                         resultado = this.obtenerResultado(notificacion.getResultado1());
                     } else if (notificacion.getEsCertificado()){
                             colorBackground = R.color.colorBotonNoEntregadoPressed;
-                        }else{
-                            colorBackground = R.color.colorBackgroundSinGestionar;
                         }
 
 

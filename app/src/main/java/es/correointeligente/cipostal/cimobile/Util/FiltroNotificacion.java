@@ -60,9 +60,7 @@ public class FiltroNotificacion {
 
     public void setDirIncorrecta(Boolean dirIncorrecta) {this.dirIncorrecta = dirIncorrecta;}
 
-    public Boolean getAusente() {
-        return ausente;
-    }
+    public Boolean getAusente() {return ausente;}
 
     public void setAusente(Boolean ausente) {
         this.ausente = ausente;

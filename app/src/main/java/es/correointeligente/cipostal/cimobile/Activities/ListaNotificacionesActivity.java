@@ -258,10 +258,10 @@ public class ListaNotificacionesActivity extends BaseActivity {
                             mFiltroNotificacion.setMarcadas(checkedFiltros[position]);
                             break;
                         case 8:
-                            mFiltroNotificacion.setNoEntregadoEnOficina(checkedFiltros[position]);
+                            mFiltroNotificacion.setEntregadoEnOficna(checkedFiltros[position]);
                             break;
                         case 9:
-                            mFiltroNotificacion.setEntregadoEnOficna(checkedFiltros[position]);
+                            mFiltroNotificacion.setNoEntregadoEnOficina(checkedFiltros[position]);
                             break;
 
                     }
