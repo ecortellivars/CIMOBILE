@@ -730,12 +730,13 @@ public class DBHelper extends SQLiteOpenHelper {
     /**
      * Actualiza las notificaciones existentes en la base de datos que han sido cargadas previamente,
      * con los datos del primer intento para poder gestionar el segundo intento
+     * @param dbHelper
      * @param listaNotificaciones
      */
-    public void actualizarNotificacionesSegundoIntentoInicial(List<Notificacion> listaNotificaciones) throws CiMobileException {
+    public static void actualizarNotificacionesSegundoIntentoInicial(DBHelper dbHelper, List<Notificacion> listaNotificaciones) throws CiMobileException {
         Boolean hayError = false;
 
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         try {
             db.beginTransaction();
@@ -779,7 +780,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
 
         if(hayError) {
-            throw new CiMobileException(    context.getString(R.string.error_actualizar_notificaciones));
+            throw new CiMobileException(    dbHelper.context.getString(R.string.error_actualizar_notificaciones));
         }
     }
 

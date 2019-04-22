@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
@@ -344,7 +343,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                             // seguntoIntento.txt
                         } else {
                             // UPDATE
-                            dbHelper.actualizarNotificacionesSegundoIntentoInicial(listaNotificaciones);
+                            DBHelper.actualizarNotificacionesSegundoIntentoInicial(dbHelper, listaNotificaciones);
                         }
 
                     } catch (CiMobileException e) {

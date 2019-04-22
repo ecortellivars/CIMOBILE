@@ -201,7 +201,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                 }
                 intent.putExtra("esCertificado", esCertificado);
                 String esLista = "";
-                if (notificacion.getEsCertificado()) {
+                if (notificacion.getEsLista()) {
                     esLista = "1";
                 } else {
                     esLista = "0";
