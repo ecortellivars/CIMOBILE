@@ -224,7 +224,8 @@ public class DBHelper extends SQLiteOpenHelper {
         String query = "SELECT * FROM " + TABLE_RESULTADO +
                       " WHERE " + KEY_RESULTADO_FINAL + " = 1 " +
                       //" AND " + KEY_RESULTADO_NOTIFICA + " = 1 " +
-                      " AND " + KEY_RESULTADO_RESULTADO_OFICINA + " = 0 ";
+                      " AND " + KEY_RESULTADO_RESULTADO_OFICINA + " = 0 " +
+                      " ORDER BY " + KEY_RESULTADO_CODIGO;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -263,8 +264,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String query = "SELECT * FROM " + TABLE_RESULTADO +
-                       " WHERE " + KEY_RESULTADO_DESCRIPCION + " IN ('Notificado en Domicilio','Dirección Incorrecta','Desconocido','Fallecido', 'Rehusado', 'Ausente (1ª Visita)', 'Nadie se hace cargo (1ª Visita)') " +
-                       " ORDER BY " + KEY_RESULTADO_CODIGO;
+                       " WHERE " + KEY_RESULTADO_DESCRIPCION + " IN ('Notificado en Domicilio','Dirección Incorrecta','Desconocido','Fallecido', 'Rehusado', 'Ausente (1ª Visita)', 'Nadie se hace cargo (1ª Visita)') " ;
 
         Cursor cursor = db.rawQuery(query, null);
 
