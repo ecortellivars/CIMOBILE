@@ -980,7 +980,7 @@ public class DBHelper extends SQLiteOpenHelper {
             query += "AND " + KEY_NOTIFICACION_MARCADA + " = " + 1 + " ";
             query += "ORDER BY " + KEY_NOTIFICACION_TIMESTAMP_MARCADA + " ASC ";
         } else {
-            query += "ORDER BY " + KEY_NOTIFICACION_DESCRIPCION_RESULTADO_1 + " DESC ";
+            query += "ORDER BY " + KEY_NOTIFICACION_DESCRIPCION_RESULTADO_2 + " DESC ";
         }
         // SELECT DISTINCT * FROM notificacion WHERE 1 = 1 ORDER BY referencia ASC LIMIT 10
         if(filtroNotificacion.getPagina() > 0) {

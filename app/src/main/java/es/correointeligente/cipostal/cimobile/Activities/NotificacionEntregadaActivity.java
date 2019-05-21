@@ -182,10 +182,9 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                     try {
                         mLienzo.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape));
                         Bitmap bitmap = mLienzo.getDrawingCache();
-                        //File file = new File(Util.obtenerRutaFirmasReceptor(), referenciaPostal + "_" + StringUtils.defaultIfBlank(referenciaPostalSCB,"") + ".png");
                         File file = new File(Util.obtenerRutaFirmasReceptor(), referenciaPostal + ".png");
+                        Long tamanyo = file.getTotalSpace();
                         try (FileOutputStream ostream = new FileOutputStream(file)) {
-
                             bitmap.compress(Bitmap.CompressFormat.PNG, 10, ostream);
                             ostream.close();
 
@@ -209,6 +208,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                     // Si no se ha introducido texto en el nombre receptor se pinta en rojo
                     edt_nombreReceptor.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape_error));
                 }
+
             }
         }
     }
@@ -244,7 +244,9 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
             Resultado resultado = null;
             if (resultado1 != null && esAplicacionDeOficina) {
                 if (resultado1.equals(Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO)
-                 || resultado1.equals(Util.RESULTADO_AUSENTE_SEGUNDO)) {
+                 || resultado1.equals(Util.RESULTADO_AUSENTE_SEGUNDO)
+                 || resultado1.equals(Util.RESULTADO_AUSENTE)
+                 || resultado1.equals(Util.RESULTADO_NADIE_SE_HACE_CARGO)) {
                     resultado = dbHelper.obtenerResultado(Util.RESULTADO_ENTREGADO_OFICINA);
                 } else {
                     resultado = dbHelper.obtenerResultado(Util.RESULTADO_ENTREGADO);
