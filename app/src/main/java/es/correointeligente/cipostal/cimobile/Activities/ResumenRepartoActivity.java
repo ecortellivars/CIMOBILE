@@ -56,7 +56,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
     TextView tv_entregado, tv_dirIncorrecta, tv_ausente, tv_ausente_pendiente, tv_desconocido, tv_fallecido, tv_rehusado,
              tv_noSeHaceCargo, tv_noSeHaceCargoPendiente, tv_entregado_en_oficina, tv_no_entregado_en_oficina,
              tv_entregado_en_oficina_txt, tv_no_entregado_en_oficina_txt, tv_totNotiLista_txt, tv_totCertLista_txt,
-             tv_totResultados_reparto_txt;
+             tv_totResultados_reparto_txt, tv_nombreFicheroSicer, tv_nombreFicheroSegundo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,8 +115,8 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
         tv_totNotiLista_txt = (TextView) findViewById(R.id.textView_resumen_total_lista_txt);
         tv_totCertLista = (TextView) findViewById(R.id.textView_resumen_total_cert_lista_value);
         tv_totCertLista_txt = (TextView) findViewById(R.id.textView_resumen_total_lista_cert_txt);
-
-
+        tv_nombreFicheroSicer = (TextView) findViewById(R.id.textView_resumen_nombre_fichero_sicer_value);
+        tv_nombreFicheroSegundo = (TextView) findViewById(R.id.textView_resumen_nombre_fichero_segundo_value);
         tv_entregado = (TextView) findViewById(R.id.textView_resumen_entregado_value);
         tv_entregado_en_oficina = (TextView) findViewById(R.id.textView_resumen_entregado_en_oficina_value);
         tv_no_entregado_en_oficina = (TextView) findViewById(R.id.textView_resumen_no_entregado_en_oficina_value);
@@ -194,6 +194,16 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             tv_totNotifMarcadas.setText(resumenReparto.getTotNotifMarcadas().toString());
             tv_totCertLista.setText(resumenReparto.getTotNumListaCert().toString());
             tv_totNotiLista.setText(resumenReparto.getTotNumListaNA().toString());
+            tv_nombreFicheroSicer.setText(dbHelper.obtenerNombreFicheroSicerCargado());
+            String nombreSegundo = dbHelper.obtenerNombreFicheroSegundoListaCargado();
+            if (!nombreSegundo.isEmpty() && nombreSegundo.length() != 0){
+                tv_nombreFicheroSegundo.setText(nombreSegundo);
+            } else {
+                nombreSegundo = dbHelper.obtenerNombreFicheroSegundoRepartoCargado();
+                tv_nombreFicheroSegundo.setText(nombreSegundo);
+            }
+
+
 
             // Se recuperan las notificaciones que se han gestionado durante el reparto para contar la fotos
             List<Notificacion> listaNotificacionesGestionadas = dbHelper.obtenerNotificacionesGestionadas();
@@ -202,12 +212,12 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                 for (Notificacion noti : listaNotificacionesGestionadas){
                     if (noti.getFotoAcuseRes2() != null && !noti.getFotoAcuseRes2().isEmpty()) {
                         contadorFotos = contadorFotos + 1;
-                    }
-                    if (noti.getFotoAcuseRes1() != null && !noti.getFotoAcuseRes1().isEmpty()) {
-                        contadorFotos = contadorFotos + 1;
-                    }
+                        }else if (noti.getFotoAcuseRes1() != null && !noti.getFotoAcuseRes1().isEmpty()) {
+                            contadorFotos = contadorFotos + 1;
+                        }
                 }
             }
+
             totFotosHechas = contadorFotos;
             tv_totFotos.setText(contadorFotos.toString());
             tv_totResultados_reparto.setText(resumenReparto.getTotResultadosReparto().toString());

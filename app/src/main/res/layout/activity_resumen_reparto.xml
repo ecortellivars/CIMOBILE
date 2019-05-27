@@ -32,7 +32,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/total_ficheros"
-                    android:textSize="12sp" />
+                    android:textSize="10sp" />
 
                 <TextView
                     android:id="@+id/textView_resumen_total_ficheros_value"
@@ -48,14 +48,14 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/textView_resumen_total_notif_marcadas"
+                    android:id="@+id/textView_resumen_nombre_fichero_sicer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/total_notificaciones_marcadas"
-                    android:textSize="12sp" />
+                    android:text="@string/total_nombre_fichero_sicer"
+                    android:textSize="10sp" />
 
                 <TextView
-                    android:id="@+id/textView_resumen_total_notif_marcadas_value"
+                    android:id="@+id/textView_resumen_nombre_fichero_sicer_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -64,7 +64,6 @@
                     android:textStyle="bold" />
 
             </TableRow>
-
 
             <TableRow
                 android:layout_width="match_parent"
@@ -75,7 +74,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/total_notificaciones_pendientes_2_hoy"
-                    android:textSize="12sp" />
+                    android:textSize="10sp" />
 
                 <TextView
                     android:id="@+id/textView_resumen_total_notif_pendientes_2_hoy_value"
@@ -94,7 +93,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/total_notificaciones_pendientes_2_otro_dia"
-                    android:textSize="12sp" />
+                    android:textSize="10sp" />
 
                 <TextView
                     android:id="@+id/textView_resumen_total_notif_pendientes_2_otro_dia_value"
@@ -114,7 +113,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/total_notificaciones"
-                    android:textSize="12sp" />
+                    android:textSize="10sp" />
 
                 <TextView
                     android:id="@+id/textView_resumen_total_notificaciones_value"
@@ -125,7 +124,44 @@
                     android:textSize="10sp"
                     android:textStyle="bold" />
 
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
+                <TextView
+                    android:id="@+id/textView_resumen_total_notif_marcadas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/total_notificaciones_marcadas"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/textView_resumen_total_notif_marcadas_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/textView_resumen_nombre_fichero_segundo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/total_nombre_fichero_segundo"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/textView_resumen_nombre_fichero_segundo_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
+                android:textSize="10sp"
+                android:textStyle="bold" />
             </TableRow>
         </TableLayout>
     </LinearLayout>

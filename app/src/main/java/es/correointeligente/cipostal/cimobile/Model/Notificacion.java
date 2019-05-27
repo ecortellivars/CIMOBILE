@@ -29,7 +29,9 @@ public class Notificacion {
     private String numDocReceptor;
     private String nombreReceptor;
     private String firmaReceptor;
-    private String nombreFichero;
+    private String nombreFicheroSicer;
+    private String nombreFicheroSegundoRepartidor;
+    private String nombreFicheroSegundoLista;
     private Boolean marcada;
     private String timestampMarcada;
     // Nos indica que existe un primer intento pero requiere un segundo para CERRAR la notifacion
@@ -48,7 +50,7 @@ public class Notificacion {
     }
 
     public Notificacion(Integer id, String referencia, String nombre, String direccion, String poblacion,
-                        String codigoPostal, String nombreFichero, Boolean marcada, Boolean segundoIntento,
+                        String codigoPostal, String nombreFicheroSegundo, String nombreFicheroSicer, Boolean marcada, Boolean segundoIntento,
                         Boolean esCertificado, Integer backgroundColor, String referenciaSCB, String fotoAcuse, Boolean esLista) {
         this.id = id;
         this.referencia = referencia;
@@ -57,7 +59,9 @@ public class Notificacion {
         this.direccion = direccion;
         this.poblacion = poblacion;
         this.codigoPostal = codigoPostal;
-        this.nombreFichero = nombreFichero;
+        this.nombreFicheroSicer = nombreFicheroSicer;
+        this.nombreFicheroSegundoRepartidor = nombreFicheroSegundoRepartidor;
+        this.nombreFicheroSegundoLista = nombreFicheroSegundoLista;
         this.marcada = marcada;
         this.segundoIntento = segundoIntento;
         this.esLista = esLista;
@@ -265,14 +269,6 @@ public class Notificacion {
         this.firmaReceptor = firmaReceptor;
     }
 
-    public String getNombreFichero() {
-        return nombreFichero;
-    }
-
-    public void setNombreFichero(String nombreFichero) {
-        this.nombreFichero = nombreFichero;
-    }
-
     public Boolean getMarcada() {
         return marcada;
     }
@@ -340,6 +336,18 @@ public class Notificacion {
     public Boolean getEsCertificado() {return esCertificado;}
 
     public void setEsCertificado(Boolean esCertificado) {this.esCertificado = esCertificado;}
+
+    public String getNombreFicheroSicer() {return nombreFicheroSicer;}
+
+    public void setNombreFicheroSicer(String nombreFicheroSicer) {this.nombreFicheroSicer = nombreFicheroSicer;}
+
+    public String getNombreFicheroSegundoRepartidor() {return nombreFicheroSegundoRepartidor;}
+
+    public void setNombreFicheroSegundoRepartidor(String nombreFicheroSegundoRepartidor) {this.nombreFicheroSegundoRepartidor = nombreFicheroSegundoRepartidor;}
+
+    public String getNombreFicheroSegundoLista() {return nombreFicheroSegundoLista;}
+
+    public void setNombreFicheroSegundoLista(String nombreFicheroSegundoLista) {this.nombreFicheroSegundoLista = nombreFicheroSegundoLista;}
 
 
 }

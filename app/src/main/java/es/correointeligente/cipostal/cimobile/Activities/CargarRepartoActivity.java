@@ -207,154 +207,215 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
         protected String doInBackground(String... args) {
             String nombreFicheroSeleccionado = args[0];
             String fallo = null;
-            String esCertificado = "";
+            Boolean existeFicheroSICER = Boolean.FALSE;
+            Boolean existeFicheroSEGUNDOLista = Boolean.FALSE;
+            Boolean existeFicheroSEGUNDOReparto = Boolean.FALSE;
+            Boolean cargadoSICER = Boolean.FALSE;
+            Boolean cargadoSEGUNDOReparto = Boolean.FALSE;
+            Boolean cargadoSEGUNDOLista = Boolean.FALSE;
+
+            Boolean esAplicacionDeOficina = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_DE_OFICINA, getBaseContext(), Boolean.class.getSimpleName());
 
             if (nombreFicheroSeleccionado != null && ftpHelper.isConnected()) {
                 // Se comprueba si existe en la base de datos por lo que ya fue cargado anteriormente
-                Boolean existeFichero = dbHelper.existeFichero(nombreFicheroSeleccionado);
+                if (nombreFicheroSeleccionado.contains("sicer")) {
+                    existeFicheroSICER = dbHelper.cargadoFicheroSICER();
+                }
+                // Se comprueba si existe en la base de datos por lo que ya fue cargado anteriormente
+                if (nombreFicheroSeleccionado.contains("segundo_intento_repartidores")) {
+                    existeFicheroSEGUNDOReparto = dbHelper.cargadoFicheroSEGUNDOSReparto();
+                }
+                // Se comprueba si existe en la base de datos por lo que ya fue cargado anteriormente
+                if (nombreFicheroSeleccionado.contains("segundo_intento_lista")) {
+                    existeFicheroSEGUNDOLista = dbHelper.cargadoFicheroSEGUNDOSLista();
+                }
                 // Si no fue cargado con anterioridad
-                if (!existeFichero) {
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(ftpHelper.leerFichero(nombreFicheroSeleccionado)))) {
+                if ((!cargadoSICER && !existeFicheroSICER && nombreFicheroSeleccionado.contains("sicer"))
+                 || (!cargadoSEGUNDOLista && !existeFicheroSEGUNDOLista && nombreFicheroSeleccionado.contains("segundo_intento_lista"))
+                 || (!cargadoSEGUNDOReparto && !existeFicheroSEGUNDOReparto && nombreFicheroSeleccionado.contains("segundo_intento_repartidores"))) {
 
-                        Integer numLinea = 1;
-                        List<Notificacion> listaNotificaciones = new ArrayList<>();
-                        Map<String, String> mapaNotificacion = new HashMap<>();
+                    // No fue cargado pero es el fichero de segundos errorneo
+                    if ((!cargadoSEGUNDOLista && esAplicacionDeOficina && nombreFicheroSeleccionado.contains("segundo_intento_lista"))
+                      || (nombreFicheroSeleccionado.contains("sicer"))
+                      || (nombreFicheroSeleccionado.contains("segundo_intento_repartidores"))) {
+                        // No fue cargado pero es el fichero de segundos errorneo
+                        if ((!cargadoSEGUNDOReparto && !esAplicacionDeOficina && nombreFicheroSeleccionado.contains("segundo_intento_repartidores"))
+                          || (nombreFicheroSeleccionado.contains("sicer")) ) {
 
-                        Boolean esCargaPrimeraEntrega = Boolean.TRUE;
-                        for (String linea = reader.readLine(); linea != null; linea = reader.readLine()) {
-                            // DETALLE (nosotros usaremos "P" para primera entrega)
-                            if (linea.startsWith("P")) {
+                            try (BufferedReader reader = new BufferedReader(new InputStreamReader(ftpHelper.leerFichero(nombreFicheroSeleccionado)))) {
+                                Integer numLinea = 1;
+                                List<Notificacion> listaNotificaciones = new ArrayList<>();
+                                Map<String, String> mapaNotificacion = new HashMap<>();
+                                // Es fichero SICER
+                                Boolean esCargaPrimeraEntrega = Boolean.TRUE;
+                                for (String linea = reader.readLine(); linea != null; linea = reader.readLine()) {
+                                    // DETALLE (nosotros usaremos "P" para primera entrega)
+                                    if (linea.startsWith("P")) {
 
-                                Notificacion notificacion = new Notificacion();
-                                notificacion.setNombreFichero(nombreFicheroSeleccionado);
-                                notificacion.setReferencia(linea.substring(1, 71).trim());
-                                notificacion.setNombre(linea.substring(71, 321).trim());
-                                notificacion.setDireccion(linea.substring(321, 456).trim());
-                                notificacion.setCodigoPostal(linea.substring(456, 461).trim());
-                                notificacion.setPoblacion(linea.substring(461, 561).trim());
-                                notificacion.setReferenciaSCB(linea.substring(561, 631).trim());
-                                notificacion.setSegundoIntento(false);
-                                notificacion.setObservacionesRes1("");
-                                notificacion.setObservacionesRes2("");
-                                notificacion.setLatitudRes1("");
-                                notificacion.setLongitudRes1("");
-                                notificacion.setLatitudRes2("");
-                                notificacion.setLongitudRes2("");
-                                notificacion.setEsLista(false);
-                                notificacion.setBackgroundColor(R.color.colorBackgroundSinGestionar);
-                                notificacion.setSegundoIntento(false);
-                                if (linea.trim().endsWith("C")){
-                                    notificacion.setEsCertificado(true);
-                                }
-                                if (linea.trim().endsWith("N")){
-                                    notificacion.setEsCertificado(false);
-                                }
-
-                                if(!mapaNotificacion.containsKey(notificacion.getReferencia())) {
-                                    listaNotificaciones.add(notificacion);
-                                    mapaNotificacion.put(notificacion.getReferencia(), notificacion.getReferenciaSCB());
-                                } else {
-                                    // Se valida si la referencia sin codigo de barras es la misma
-                                    if(!mapaNotificacion.get(notificacion.getReferencia()).equalsIgnoreCase(notificacion.getReferenciaSCB())) {
-                                        // si no es la misma, entonces, se incluye, en caso contrario no se incluye ya que es una duplicidad
-                                        listaNotificaciones.add(notificacion);
-                                        mapaNotificacion.put(notificacion.getReferencia(), notificacion.getReferenciaSCB());
-                                    }
-                                }
-                                // Determina que es el formato del sicer de segundo intento
-                            } else if(linea.startsWith("S")) {
-
-                                if(esCargaPrimeraEntrega) {
-                                    // Si es la primera vez que entra aquí, se tiene que comprobar si se ha cargado antes el primer fichero
-                                    if(dbHelper.obtenerNotificacion(1) == null) {
-                                        throw new CiMobileException(getString(R.string.error_cargar_primero_reparto_sicer));
-                                    }
-                                }
-                                esCargaPrimeraEntrega = Boolean.FALSE;
-
-                                Resultado resultado = null;
-
-                                // Se recupera la referencia postal
-                                String referenciaPostal = linea.substring(1, 71).trim();
-                                //String referenciaSCB = linea.substring(188, 258).trim();
-
-                                // Lo primero se busca si existe en la base de datos interna la notificacion
-                                // cargada desde el SICER anterior
-                                Notificacion notificacion = dbHelper.obtenerNotificacion(referenciaPostal, "");
-                                if(notificacion != null) {
-                                    Integer colorBackground = notificacion.getBackgroundColor();
-                                    notificacion.setResultado1(linea.substring(71, 73).trim());
-                                    notificacion.setDescResultado1(linea.substring(73, 98).trim());
-                                    notificacion.setLongitudRes1(linea.substring(98, 118).trim());
-                                    notificacion.setLatitudRes1(linea.substring(118, 138).trim());
-                                    notificacion.setNotificadorRes1(linea.substring(138, 188).trim());
-                                    notificacion.setFechaHoraRes1(linea.substring(258, 277).trim());
-                                    notificacion.setObservacionesRes1("");
-                                    notificacion.setSegundoIntento(true);
-
-                                    // Es LISTA
-                                    if (linea.trim().endsWith("L")){
-                                        notificacion.setEsLista(true);
-                                    }
-                                    // NO es LISTA
-                                    if (linea.trim().endsWith("R")){
+                                        Notificacion notificacion = new Notificacion();
+                                        notificacion.setNombreFicheroSicer(nombreFicheroSeleccionado);
+                                        notificacion.setReferencia(linea.substring(1, 71).trim());
+                                        notificacion.setNombre(linea.substring(71, 321).trim());
+                                        notificacion.setDireccion(linea.substring(321, 456).trim());
+                                        notificacion.setCodigoPostal(linea.substring(456, 461).trim());
+                                        notificacion.setPoblacion(linea.substring(461, 561).trim());
+                                        notificacion.setReferenciaSCB(linea.substring(561, 631).trim());
+                                        notificacion.setSegundoIntento(false);
+                                        notificacion.setObservacionesRes1("");
+                                        notificacion.setObservacionesRes2("");
+                                        notificacion.setLatitudRes1("");
+                                        notificacion.setLongitudRes1("");
+                                        notificacion.setLatitudRes2("");
+                                        notificacion.setLongitudRes2("");
                                         notificacion.setEsLista(false);
-                                    }
-                                    // Se mapea el backgroundcolor segun valores del resultado
-                                    // LISTA
-                                    if(notificacion.getEsLista()) {
-                                        if (notificacion.getEsCertificado()){
-                                            colorBackground = R.color.colorPrimary;
+                                        notificacion.setBackgroundColor(R.color.colorBackgroundSinGestionar);
+                                        notificacion.setSegundoIntento(false);
+
+                                        if (linea.trim().endsWith("C")) {
+                                            notificacion.setEsCertificado(true);
                                         }
-                                        if (!notificacion.getEsCertificado()){
-                                            colorBackground = R.color.colorBoton;
+                                        if (linea.trim().endsWith("N")) {
+                                            notificacion.setEsCertificado(false);
                                         }
-                                        //NO LISTA
+
+                                        if (!mapaNotificacion.containsKey(notificacion.getReferencia())) {
+                                            listaNotificaciones.add(notificacion);
+                                            mapaNotificacion.put(notificacion.getReferencia(), notificacion.getReferenciaSCB());
                                         } else {
-                                            // Si hemos cargado el primer intento y existe resultado del segundo obtenemos el resultado
-                                            if (notificacion.getSegundoIntento()) {
-                                                if (notificacion.getResultado1() != null && notificacion.getResultado1().trim().length() > 0) {
-                                                    colorBackground = R.color.colorGrisSuave;
+                                            // Se valida si la referencia sin codigo de barras es la misma
+                                            if (!mapaNotificacion.get(notificacion.getReferencia()).equalsIgnoreCase(notificacion.getReferenciaSCB())) {
+                                                // si no es la misma, entonces, se incluye, en caso contrario no se incluye ya que es una duplicidad
+                                                listaNotificaciones.add(notificacion);
+                                                mapaNotificacion.put(notificacion.getReferencia(), notificacion.getReferenciaSCB());
+                                            }
+                                        }
+                                        // Determina que es el formato del sicer de segundo intento
+                                    } else if (linea.startsWith("S")) {
+
+                                        if (esCargaPrimeraEntrega) {
+                                            // Si es la primera vez que entra aquí, se tiene que comprobar si se ha cargado antes el primer fichero
+                                            if (dbHelper.obtenerNotificacion(1) == null) {
+                                                throw new CiMobileException(getString(R.string.error_cargar_primero_reparto_sicer));
+                                            }
+                                        }
+                                        // Es SEGUNDOS_INETNTOS
+                                        esCargaPrimeraEntrega = Boolean.FALSE;
+
+                                        // Se recupera la referencia postal
+                                        String referenciaPostal = linea.substring(1, 71).trim();
+                                        //String referenciaSCB = linea.substring(188, 258).trim();
+
+                                        // Lo primero se busca si existe en la base de datos interna la notificacion
+                                        // cargada desde el SICER anterior
+                                        Notificacion notificacion = dbHelper.obtenerNotificacion(referenciaPostal);
+                                        if (notificacion != null) {
+                                            Integer colorBackground = notificacion.getBackgroundColor();
+                                            notificacion.setResultado1(linea.substring(71, 73).trim());
+                                            notificacion.setDescResultado1(linea.substring(73, 98).trim());
+                                            notificacion.setLongitudRes1(linea.substring(98, 118).trim());
+                                            notificacion.setLatitudRes1(linea.substring(118, 138).trim());
+                                            notificacion.setNotificadorRes1(linea.substring(138, 188).trim());
+                                            notificacion.setFechaHoraRes1(linea.substring(258, 277).trim());
+                                            notificacion.setObservacionesRes1("");
+                                            notificacion.setSegundoIntento(true);
+                                            // Se comprueba si existe en la base de datos por lo que ya fue cargado anteriormente
+                                            if (nombreFicheroSeleccionado.contains("segundo_intento_repartidores")) {
+                                                notificacion.setNombreFicheroSegundoRepartidor(nombreFicheroSeleccionado);
+                                            }
+                                            // Se comprueba si existe en la base de datos por lo que ya fue cargado anteriormente
+                                            if (nombreFicheroSeleccionado.contains("segundo_intento_lista")) {
+                                                notificacion.setNombreFicheroSegundoLista(nombreFicheroSeleccionado);
+                                            }
+
+                                            // Es LISTA
+                                            if (linea.trim().endsWith("L")) {
+                                                notificacion.setEsLista(true);
+                                            }
+                                            // NO es LISTA
+                                            if (linea.trim().endsWith("R")) {
+                                                notificacion.setEsLista(false);
+                                            }
+                                            // Se mapea el backgroundcolor segun valores del resultado
+                                            // LISTA
+                                            if (notificacion.getEsLista()) {
+                                                if (notificacion.getEsCertificado()) {
+                                                    colorBackground = R.color.colorPrimary;
+                                                }
+                                                if (!notificacion.getEsCertificado()) {
+                                                    colorBackground = R.color.colorBoton;
+                                                }
+                                                //NO LISTA
+                                            } else {
+                                                // Si hemos cargado el primer intento ponemos la notificacion en gris
+                                                if (notificacion.getSegundoIntento()) {
+                                                    if (notificacion.getResultado1() != null && notificacion.getResultado1().trim().length() > 0) {
+                                                        colorBackground = R.color.colorGrisSuave;
+                                                    }
                                                 }
                                             }
+                                            notificacion.setBackgroundColor(colorBackground);
+
+                                            listaNotificaciones.add(notificacion);
+
+                                        } else {
+                                            // Si no se ha encontrado, se debe sacar un mensaje con el error al notificador
+                                            fallo = getString(R.string.error_no_existe_notif_en_carga_previa) + "(" + referenciaPostal + ")";
+                                        }
                                     }
-                                    notificacion.setBackgroundColor(colorBackground);
 
-                                    listaNotificaciones.add(notificacion);
-
-                                } else {
-                                    // Si no se ha encontrado, se debe sacar un mensaje con el error al notificador
-                                    fallo = getString(R.string.error_no_existe_notif_en_carga_previa) + "(" + referenciaPostal + ")";
+                                    publishProgress(getString(R.string.cargando_fichero_sicer) + numLinea);
+                                    numLinea++;
                                 }
+
+                                // Se limpia el mapa
+                                mapaNotificacion = null;
+
+                                publishProgress(getString(R.string.guardando_datos_en_bd_interna));
+                                // SICER.txt
+                                if (esCargaPrimeraEntrega) {
+                                    // INSERT INTO
+                                    dbHelper.guardarNotificacionesInicial(listaNotificaciones);
+                                    cargadoSICER = Boolean.TRUE;
+
+                                    // seguntoIntento.txt
+                                } else {
+                                    // UPDATE
+                                    DBHelper.actualizarNotificacionesSegundoIntentoInicial(dbHelper, listaNotificaciones);
+                                    // Se comprueba si existe en la base de datos por lo que ya fue cargado anteriormente
+                                    if (nombreFicheroSeleccionado.contains("segundo_intento_repartidores")) {
+                                        cargadoSEGUNDOReparto = Boolean.TRUE;
+                                    }
+                                    // Se comprueba si existe en la base de datos por lo que ya fue cargado anteriormente
+                                    if (nombreFicheroSeleccionado.contains("segundo_intento_lista")) {
+                                        cargadoSEGUNDOLista = Boolean.TRUE;
+                                    }
+                                }
+
+                            } catch (CiMobileException e) {
+                                fallo = e.getError();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                fallo = getString(R.string.error_carga_fichero);
                             }
-
-                            publishProgress(getString(R.string.cargando_fichero_sicer) + numLinea);
-                            numLinea++;
-                        }
-
-                        // Se limpia el mapa
-                        mapaNotificacion = null;
-
-                        publishProgress(getString(R.string.guardando_datos_en_bd_interna));
-                        // SICER.txt
-                        if(esCargaPrimeraEntrega) {
-                            // INSERT INTO
-                            dbHelper.guardarNotificacionesInicial(listaNotificaciones);
-                            // seguntoIntento.txt
                         } else {
-                            // UPDATE
-                            DBHelper.actualizarNotificacionesSegundoIntentoInicial(dbHelper, listaNotificaciones);
+                            fallo = getString(R.string.segundos_lista_cargado_avisos);
                         }
-
-                    } catch (CiMobileException e) {
-                        fallo = e.getError();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        fallo = getString(R.string.error_carga_fichero);
+                    } else {
+                        fallo = getString(R.string.segundos_reparto_cargado_aviso);
                     }
-                } else {
-                    fallo = getString(R.string.fichero_cargado_anteriormente);
+
+            } else {
+                if (nombreFicheroSeleccionado.contains("sicer")) {
+                    fallo = getString(R.string.sicer_fichero_cargado_anteriormente);
                 }
+                if (nombreFicheroSeleccionado.contains("segundo_intento_repartidores")) {
+                    fallo = getString(R.string.segundos_reparto_fichero_cargado_anteriormente);
+                }
+                if (nombreFicheroSeleccionado.contains("segundo_intento_lista")) {
+                    fallo = getString(R.string.segundos_lista_fichero_cargado_anteriormente);
+                }
+            }
+
             } else {
                 fallo = getString(R.string.fallo_conexion_servidor_ftp);
             }

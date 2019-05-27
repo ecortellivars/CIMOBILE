@@ -58,7 +58,9 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String KEY_NOTIFICACION_NUM_DOC_RECEPTOR = "numDocReceptor";
     private static final String KEY_NOTIFICACION_NOMBRE_RECEPTOR = "nombreReceptor";
     private static final String KEY_NOTIFICACION_FIRMA_RECEPTOR = "firmaReceptor";
-    private static final String KEY_NOTIFICACION_NOMBRE_FICHERO = "nombreFichero";
+    private static final String KEY_NOTIFICACION_NOMBRE_FICHERO_SICER = "nombreFicheroSicer";
+    private static final String KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_REPARTO = "nombreFicheroSegundoReparto";
+    private static final String KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_LISTA = "nombreFicheroSegundoLista";
     private static final String KEY_NOTIFICACION_MARCADA = "marcada";
     private static final String KEY_NOTIFICACION_TIMESTAMP_MARCADA = "timestampMarcada";
     private static final String KEY_NOTIFICACION_SEGUNDO_INTENTO = "segundoIntento";
@@ -379,18 +381,73 @@ public class DBHelper extends SQLiteOpenHelper {
 
     /**
      * Valida si ya se ha incluido el fichero a cargar anteriormente
-     * @param nombreFichero
      * @return Boolean
      */
-    public Boolean existeFichero(String nombreFichero) {
+    public Boolean cargadoFicheroSICER() {
         Boolean existe = Boolean.FALSE;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(true,
                 TABLE_NOTIFICACION,
                 new String[]{
-                        KEY_NOTIFICACION_NOMBRE_FICHERO
+                        KEY_NOTIFICACION_NOMBRE_FICHERO_SICER
                 },
-                KEY_NOTIFICACION_NOMBRE_FICHERO + " = ?", new String[]{nombreFichero},
+                KEY_NOTIFICACION_NOMBRE_FICHERO_SICER + " IS NOT NULL ",null,
+                null, null, null, null
+        );
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                existe = Boolean.TRUE;
+            }
+        }
+
+        db.close();
+
+        return existe;
+    }
+
+
+
+    /**
+     * Valida si ya se ha incluido el fichero a cargar anteriormente
+     * @return Boolean
+     */
+    public Boolean cargadoFicheroSEGUNDOSReparto() {
+        Boolean existe = Boolean.FALSE;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(true,
+                TABLE_NOTIFICACION,
+                new String[]{
+                        KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_REPARTO
+                },
+                KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_REPARTO + " IS NOT NULL ",null,
+                null, null, null, null
+        );
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                existe = Boolean.TRUE;
+            }
+        }
+
+        db.close();
+
+        return existe;
+    }
+
+    /**
+     * Valida si ya se ha incluido el fichero a cargar anteriormente
+     * @return Boolean
+     */
+    public Boolean cargadoFicheroSEGUNDOSLista() {
+        Boolean existe = Boolean.FALSE;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(true,
+                TABLE_NOTIFICACION,
+                new String[]{
+                        KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_LISTA
+                },
+                KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_LISTA + " IS NOT NULL ",null,
                 null, null, null, null
         );
 
@@ -444,7 +501,9 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_LATITUD_RES_2,
                         KEY_NOTIFICACION_OBSERVACIONES_RES_1,
                         KEY_NOTIFICACION_OBSERVACIONES_RES_2,
-                        KEY_NOTIFICACION_NOMBRE_FICHERO,
+                        KEY_NOTIFICACION_NOMBRE_FICHERO_SICER,
+                        KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_LISTA,
+                        KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_REPARTO,
                         KEY_NOTIFICACION_MARCADA,
                         KEY_NOTIFICACION_TIMESTAMP_MARCADA,
                         KEY_NOTIFICACION_SEGUNDO_INTENTO,
@@ -481,7 +540,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         ResumenReparto resumenReparto = new ResumenReparto();
 
-        Cursor cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_NOMBRE_FICHERO}, null, null, null, null, null, null);
+        Cursor cursor = db.query(true, TABLE_NOTIFICACION, new String[]{KEY_NOTIFICACION_NOMBRE_FICHERO_SICER}, null, null, null, null, null, null);
         resumenReparto.setTotFicheros(cursor.getCount());
 
         // Notificaciones cargadas
@@ -707,6 +766,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 values.put(KEY_NOTIFICACION_LONGITUD_RES_1, notificacion.getLongitudRes1());
                 values.put(KEY_NOTIFICACION_LATITUD_RES_2, notificacion.getLatitudRes2());
                 values.put(KEY_NOTIFICACION_LONGITUD_RES_2, notificacion.getLongitudRes2());
+                values.put(KEY_NOTIFICACION_NOMBRE_FICHERO_SICER, notificacion.getNombreFicheroSicer());
                 db.insert(TABLE_NOTIFICACION, null, values);
 
                 id ++;
@@ -756,6 +816,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_OBSERVACIONES_RES_1, notificacion.getObservacionesRes1());
                 cv.put(KEY_NOTIFICACION_LATITUD_RES_1, notificacion.getLatitudRes1());
                 cv.put(KEY_NOTIFICACION_LONGITUD_RES_1, notificacion.getLongitudRes1());
+                cv.put(KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_REPARTO, notificacion.getNombreFicheroSegundoRepartidor());
+                cv.put(KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_LISTA, notificacion.getNombreFicheroSegundoLista());
 
                 db.update(
                         // Tabla
@@ -824,7 +886,9 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_LATITUD_RES_2,
                         KEY_NOTIFICACION_OBSERVACIONES_RES_1,
                         KEY_NOTIFICACION_OBSERVACIONES_RES_2,
-                        KEY_NOTIFICACION_NOMBRE_FICHERO,
+                        KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_REPARTO,
+                        KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_LISTA,
+                        KEY_NOTIFICACION_NOMBRE_FICHERO_SICER,
                         KEY_NOTIFICACION_MARCADA,
                         KEY_NOTIFICACION_TIMESTAMP_MARCADA,
                         KEY_NOTIFICACION_SEGUNDO_INTENTO,
@@ -851,20 +915,16 @@ public class DBHelper extends SQLiteOpenHelper {
     /**
      * Obtiene la notificacion por referencia y si tuviera segunda referencia, tambien por ella, para evitar duplicados
      * @param referencia
-     * @param referenciaSCB
      * @return Notificacion
      */
-    public Notificacion obtenerNotificacion(String referencia, String referenciaSCB) {
+    public Notificacion obtenerNotificacion(String referencia) {
         Notificacion notificacion = null;
 
-        int numParametros = StringUtils.isNotBlank(referenciaSCB) ? 2 : 1;
+        int numParametros = StringUtils.isNotBlank(referencia) ? 1 : 0;
         String[] parametros = new String[numParametros];
         String whereClause = KEY_NOTIFICACION_REFERENCIA + " = ?";
         parametros[0] = referencia;
-        if(StringUtils.isNotBlank(referenciaSCB)) {
-            whereClause += " OR " + KEY_NOTIFICACION_REFERENCIA_SCB + " = ?";
-            parametros[1] = referenciaSCB;
-        }
+
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(
@@ -897,7 +957,9 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_LATITUD_RES_2,
                         KEY_NOTIFICACION_OBSERVACIONES_RES_1,
                         KEY_NOTIFICACION_OBSERVACIONES_RES_2,
-                        KEY_NOTIFICACION_NOMBRE_FICHERO,
+                        KEY_NOTIFICACION_NOMBRE_FICHERO_SICER,
+                        KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_LISTA,
+                        KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_REPARTO,
                         KEY_NOTIFICACION_MARCADA,
                         KEY_NOTIFICACION_TIMESTAMP_MARCADA,
                         KEY_NOTIFICACION_SEGUNDO_INTENTO,
@@ -1043,7 +1105,9 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_LATITUD_RES_2,
                         KEY_NOTIFICACION_OBSERVACIONES_RES_1,
                         KEY_NOTIFICACION_OBSERVACIONES_RES_2,
-                        KEY_NOTIFICACION_NOMBRE_FICHERO,
+                        KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_REPARTO,
+                        KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_LISTA,
+                        KEY_NOTIFICACION_NOMBRE_FICHERO_SICER,
                         KEY_NOTIFICACION_MARCADA,
                         KEY_NOTIFICACION_TIMESTAMP_MARCADA,
                         KEY_NOTIFICACION_ES_LISTA,
@@ -1216,9 +1280,17 @@ public class DBHelper extends SQLiteOpenHelper {
         if (columna != -1) {
             notificacion.setObservacionesRes2(cursor.getString(columna));
         }
-        columna = cursor.getColumnIndex(KEY_NOTIFICACION_NOMBRE_FICHERO);
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_NOMBRE_FICHERO_SICER);
         if (columna != -1) {
-            notificacion.setNombreFichero(cursor.getString(columna));
+            notificacion.setNombreFicheroSicer(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_LISTA);
+        if (columna != -1) {
+            notificacion.setNombreFicheroSegundoLista(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_REPARTO);
+        if (columna != -1) {
+            notificacion.setNombreFicheroSegundoRepartidor(cursor.getString(columna));
         }
         columna = cursor.getColumnIndex(KEY_NOTIFICACION_MARCADA);
         if (columna != -1) {
@@ -1483,7 +1555,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 + KEY_NOTIFICACION_ES_CERTIFICADO + " INTEGER, "
                 + KEY_NOTIFICACION_FOTO_ACUSE_RES_1 + " TEXT, "
                 + KEY_NOTIFICACION_FOTO_ACUSE_RES_2 + " TEXT, "
-                + KEY_NOTIFICACION_NOMBRE_FICHERO + " TEXT); ";
+                + KEY_NOTIFICACION_NOMBRE_FICHERO_SICER + " TEXT, "
+                + KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_REPARTO + " TEXT, "
+                + KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_LISTA + " TEXT); ";
 
         sqLiteDatabase.execSQL(qry);
     }
@@ -1498,6 +1572,91 @@ public class DBHelper extends SQLiteOpenHelper {
                 + KEY_RESULTADO_NOTIFICA + " INTEGER);";
 
         sqLiteDatabase.execSQL(qry);
+    }
+
+
+    /**
+     * Obtiene el nombre del fichero SICER cargado
+     * @return List<Notificacion>
+     */
+    public String obtenerNombreFicheroSicerCargado() {
+        String nombreFichero = "";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(true,
+                TABLE_NOTIFICACION,
+                new String[]{
+                        KEY_NOTIFICACION_NOMBRE_FICHERO_SICER
+
+                }, null, null, null, null, KEY_NOTIFICACION_REFERENCIA + " ASC", null
+        );
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    Notificacion notificacion = mapearCursorANotificacion(cursor);
+                    nombreFichero = notificacion.getNombreFicheroSicer();
+                } while (cursor.moveToNext());
+            }
+        }
+
+        return nombreFichero;
+    }
+
+    /**
+     * Obtiene el nombre del fichero SEGUNDO REPARTO cargado
+     * @return List<Notificacion>
+     */
+    public String obtenerNombreFicheroSegundoRepartoCargado() {
+        String nombreFichero = "";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(true,
+                TABLE_NOTIFICACION,
+                new String[]{
+                        KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_REPARTO
+
+                }, null, null, null, null, KEY_NOTIFICACION_REFERENCIA + " ASC", null
+        );
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    Notificacion notificacion = mapearCursorANotificacion(cursor);
+                    nombreFichero = notificacion.getNombreFicheroSegundoRepartidor();
+                } while (cursor.moveToNext());
+            }
+        }
+
+        return nombreFichero;
+    }
+
+    /**
+     * Obtiene el nombre del fichero SEGUNDO LISTA cargado
+     * @return List<Notificacion>
+     */
+    public String obtenerNombreFicheroSegundoListaCargado() {
+        String nombreFichero = "";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(true,
+                TABLE_NOTIFICACION,
+                new String[]{
+                        KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_LISTA
+
+                }, null, null, null, null, KEY_NOTIFICACION_REFERENCIA + " ASC", null
+        );
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    Notificacion notificacion = mapearCursorANotificacion(cursor);
+                    nombreFichero = notificacion.getNombreFicheroSegundoLista();
+                } while (cursor.moveToNext());
+            }
+        }
+
+        return nombreFichero;
     }
 
 
