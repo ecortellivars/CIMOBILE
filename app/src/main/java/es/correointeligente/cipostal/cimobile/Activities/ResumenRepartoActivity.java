@@ -196,7 +196,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             tv_totNotiLista.setText(resumenReparto.getTotNumListaNA().toString());
             tv_nombreFicheroSicer.setText(dbHelper.obtenerNombreFicheroSicerCargado());
             String nombreSegundo = dbHelper.obtenerNombreFicheroSegundoListaCargado();
-            if (!nombreSegundo.isEmpty() && nombreSegundo.length() != 0){
+            if (nombreSegundo != null){
                 tv_nombreFicheroSegundo.setText(nombreSegundo);
             } else {
                 nombreSegundo = dbHelper.obtenerNombreFicheroSegundoRepartoCargado();

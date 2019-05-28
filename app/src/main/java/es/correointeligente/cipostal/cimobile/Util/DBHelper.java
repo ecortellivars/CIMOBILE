@@ -1161,6 +1161,170 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param cursor
      * @return Notificacion
      */
+    private Notificacion mapearCursorANotificacionSimple(Cursor cursor) {
+        Notificacion notificacion = new Notificacion();
+
+        int columna = cursor.getColumnIndex(KEY_NOTIFICACION_ID);
+        if (columna != -1) {
+            notificacion.setId(cursor.getInt(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_REFERENCIA);
+        if (columna != -1) {
+            notificacion.setReferencia(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_REFERENCIA_SCB);
+        if (columna != -1) {
+            notificacion.setReferenciaSCB(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_NOMBRE);
+        if (columna != -1) {
+            notificacion.setNombre(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_DIRECCION);
+        if (columna != -1) {
+            notificacion.setDireccion(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_POBLACION);
+        if (columna != -1) {
+            notificacion.setPoblacion(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_CODIGO_POSTAL);
+        if (columna != -1) {
+            notificacion.setCodigoPostal(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_RESULTADO_1);
+        if (columna != -1) {
+            notificacion.setResultado1(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_DESCRIPCION_RESULTADO_1);
+        if (columna != -1) {
+            notificacion.setDescResultado1(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_FECHA_HORA_RES_1);
+        if (columna != -1) {
+            notificacion.setFechaHoraRes1(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_NOTIFICADOR_RES_1);
+        if (columna != -1) {
+            notificacion.setNotificadorRes1(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_FIRMA_NOTIFICADOR_RES_1);
+        if (columna != -1) {
+            notificacion.setFirmaNotificadorRes1(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_RESULTADO_2);
+        if (columna != -1) {
+            notificacion.setResultado2(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_DESCRIPCION_RESULTADO_2);
+        if (columna != -1) {
+            notificacion.setDescResultado2(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_FECHA_HORA_RES_2);
+        if (columna != -1) {
+            notificacion.setFechaHoraRes2(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_NOTIFICADOR_RES_2);
+        if (columna != -1) {
+            notificacion.setNotificadorRes2(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_FIRMA_NOTIFICADOR_RES_2);
+        if (columna != -1) {
+            notificacion.setFirmaNotificadorRes2(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_TIPO_DOC_RECEPTOR);
+        if (columna != -1) {
+            notificacion.setTipoDocReceptor(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_NUM_DOC_RECEPTOR);
+        if (columna != -1) {
+            notificacion.setNumDocReceptor(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_NOMBRE_RECEPTOR);
+        if (columna != -1) {
+            notificacion.setNombreReceptor(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_FIRMA_RECEPTOR);
+        if (columna != -1) {
+            notificacion.setFirmaReceptor(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_FOTO_ACUSE_RES_1);
+        if (columna != -1) {
+            notificacion.setFotoAcuseRes1(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_FOTO_ACUSE_RES_2);
+        if (columna != -1) {
+            notificacion.setFotoAcuseRes2(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_LONGITUD_RES_1);
+        if (columna != -1) {
+            notificacion.setLongitudRes1(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_LATITUD_RES_1);
+        if (columna != -1) {
+            notificacion.setLatitudRes1(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_LONGITUD_RES_2);
+        if (columna != -1) {
+            notificacion.setLongitudRes2(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_LATITUD_RES_2);
+        if (columna != -1) {
+            notificacion.setLatitudRes2(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_OBSERVACIONES_RES_1);
+        if (columna != -1) {
+            notificacion.setObservacionesRes1(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_OBSERVACIONES_RES_2);
+        if (columna != -1) {
+            notificacion.setObservacionesRes2(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_NOMBRE_FICHERO_SICER);
+        if (columna != -1) {
+            notificacion.setNombreFicheroSicer(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_LISTA);
+        if (columna != -1) {
+            notificacion.setNombreFicheroSegundoLista(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_REPARTO);
+        if (columna != -1) {
+            notificacion.setNombreFicheroSegundoRepartidor(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_MARCADA);
+        if (columna != -1) {
+            Integer marcada = cursor.getInt(columna);
+            notificacion.setMarcada(marcada != null && marcada == 1 ? true : false);
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_TIMESTAMP_MARCADA);
+        if (columna != -1) {
+            notificacion.setTimestampMarcada(cursor.getString(columna));
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_SEGUNDO_INTENTO);
+        if (columna != -1) {
+            Integer segundoIntento = cursor.getInt(columna);
+            notificacion.setSegundoIntento(segundoIntento != null && segundoIntento == 1 ? true : false);
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_ES_LISTA);
+        if (columna != -1) {
+            Integer esLista = cursor.getInt(columna);
+            notificacion.setEsLista(esLista != 1? false : true);
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_ES_CERTIFICADO);
+        if (columna != -1) {
+            Integer esCertificado = cursor.getInt(columna);
+            notificacion.setEsCertificado(esCertificado != 1? false : true);
+        }
+
+        return notificacion;
+    }
+
+    /**
+     * Es un método privado que se encarga de mapear correctamente el valor devuelto por la consulta
+     * @param cursor
+     * @return Notificacion
+     */
     private Notificacion mapearCursorANotificacion(Cursor cursor) {
         Notificacion notificacion = new Notificacion();
 
@@ -1594,7 +1758,7 @@ public class DBHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
-                    Notificacion notificacion = mapearCursorANotificacion(cursor);
+                    Notificacion notificacion = mapearCursorANotificacionSimple(cursor);
                     nombreFichero = notificacion.getNombreFicheroSicer();
                 } while (cursor.moveToNext());
             }
@@ -1622,7 +1786,7 @@ public class DBHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
-                    Notificacion notificacion = mapearCursorANotificacion(cursor);
+                    Notificacion notificacion = mapearCursorANotificacionSimple(cursor);
                     nombreFichero = notificacion.getNombreFicheroSegundoRepartidor();
                 } while (cursor.moveToNext());
             }
@@ -1650,14 +1814,11 @@ public class DBHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
-                    Notificacion notificacion = mapearCursorANotificacion(cursor);
+                    Notificacion notificacion = mapearCursorANotificacionSimple(cursor);
                     nombreFichero = notificacion.getNombreFicheroSegundoLista();
                 } while (cursor.moveToNext());
             }
         }
-
         return nombreFichero;
     }
-
-
 }

@@ -240,7 +240,8 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                       || (nombreFicheroSeleccionado.contains("segundo_intento_repartidores"))) {
                         // No fue cargado pero es el fichero de segundos errorneo
                         if ((!cargadoSEGUNDOReparto && !esAplicacionDeOficina && nombreFicheroSeleccionado.contains("segundo_intento_repartidores"))
-                          || (nombreFicheroSeleccionado.contains("sicer")) ) {
+                          || (nombreFicheroSeleccionado.contains("sicer"))
+                          || (nombreFicheroSeleccionado.contains("segundo_intento_lista"))) {
 
                             try (BufferedReader reader = new BufferedReader(new InputStreamReader(ftpHelper.leerFichero(nombreFicheroSeleccionado)))) {
                                 Integer numLinea = 1;
