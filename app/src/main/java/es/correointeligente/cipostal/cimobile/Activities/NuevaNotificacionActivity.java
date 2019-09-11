@@ -593,8 +593,10 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
 
     protected LocationRequest createLocationRequest() {
         LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setInterval(1);
+        mLocationRequest.setFastestInterval(1);
+        mLocationRequest.setMaxWaitTime(1);
+        mLocationRequest.setSmallestDisplacement(1);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         return mLocationRequest;
     }

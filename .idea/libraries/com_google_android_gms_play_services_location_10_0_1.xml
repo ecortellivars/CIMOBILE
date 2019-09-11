@@ -5,9 +5,6 @@
       <root url="file://$USER_HOME$/.android/build-cache/fc372c78d3710c10ecd0d3e5e7db715d257b26ac/output/res" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="jar://$USER_HOME$/.android/build-cache/fc372c78d3710c10ecd0d3e5e7db715d257b26ac/output/jars/classes.jar!/" />
-      <root url="jar://$USER_HOME$/.android/build-cache/fc372c78d3710c10ecd0d3e5e7db715d257b26ac/output/jars/classes.jar!/" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>

@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\scipostal\AndroidStudioProjects\cimobile_ultimo\cimobile_bueno.iml" filepath="C:\Users\scipostal\AndroidStudioProjects\cimobile_ultimo\cimobile_bueno.iml" />
       <module fileurl="file://$PROJECT_DIR$/cimobile_ultimo.iml" filepath="$PROJECT_DIR$/cimobile_ultimo.iml" />
     </modules>
   </component>

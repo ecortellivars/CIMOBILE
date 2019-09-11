@@ -5,8 +5,8 @@
     <string name="titulo_logout">CERRAR SESION (Sin Cerrar Reparto)</string>
     <string name="nueva_notificacion">NUEVA notificación</string>
     <string name="borrar_reparto">BORRAR Reparto</string>
-    <string name="cargar_reparto">CARGAR (Reparto/Lista)</string>
-    <string name="resumen_reparto">RESUMEN/CIERRE (Reparto/Lista)</string>
+    <string name="cargar_reparto">CARGAR (Reparto o Lista)</string>
+    <string name="resumen_reparto">RESUMEN/CIERRE (Reparto o Lista)</string>
     <string name="cargando_notificacion">Cargando notificación</string>
     <string name="sin_resultados">Sin resultados</string>
     <string name="cargando_resultados">Cargando resultados</string>
@@ -20,8 +20,8 @@
     <string name="total_ficheros">Ficheros Sicer cargados</string>
     <string name="total_remesas">Total remesas</string>
     <string name="total_notificaciones">Cargadas</string>
-    <string name="total_nombre_fichero_sicer">Nombre Fichero Sicer</string>
-    <string name="total_nombre_fichero_segundo">Nombre Fichero Segundos</string>
+    <string name="total_nombre_fichero_sicer">Fichero Sicer</string>
+    <string name="total_nombre_fichero_segundo">Fichero Segundos</string>
     <string name="total_notificaciones_gestionadas">Total notificaciones gestionadas</string>
     <string name="total_notificaciones_acabadas">Notificaciones hechas hoy</string>
     <string name="total_resultados_reparto">Resultados almacenados para REPARTO</string>
@@ -161,6 +161,10 @@
     <string name="foto_no_acuse">No Hacer Foto</string>
     <string name="foto_acuse_salir">SALIR</string>
     <string name="aviso_foto">Falta realizar la foto del acuse con los datos rellenados</string>
+    <string name="sin_valores">Sin Valores</string>
+    <string name="precision">Precision</string>
+    <string name="altura">Altura</string>
+    <string name="localizar">Localizar</string>
 
     <string-array name="filtro_busqueda_array">
         <item>Entregado</item>
