@@ -165,6 +165,8 @@
     <string name="precision">Precision</string>
     <string name="altura">Altura</string>
     <string name="localizar">Localizar</string>
+    <string name="parar_actualizaciones">PARAR GPS</string>
+    <string name="iniciar_actualizaciones">INICIAR GPS</string>
 
     <string-array name="filtro_busqueda_array">
         <item>Entregado</item>
