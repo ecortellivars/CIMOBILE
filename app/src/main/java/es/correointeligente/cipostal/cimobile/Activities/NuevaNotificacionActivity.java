@@ -4,13 +4,13 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
@@ -95,8 +95,8 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     private Double latitud2 = -0.0000000;
     private Double longitud2 = 00.0000000;
     private ToggleButton btnActualizar;
-
-
+    private Integer id = 0;
+    protected static final int REQUEST_CHECK_SETTINGS = 0x1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -422,8 +422,8 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                         notificacion.setFechaHoraRes1(fechaHoraString);
                         notificacion.setResultado1(codResultado);
                         notificacion.setDescResultado1(descResultado);
-                        notificacion.setLatitudRes1(tv_latitud.getText().toString().trim().length() == 0 ? "-0.0000000" : tv_latitud.getText().toString());
-                        notificacion.setLongitudRes1(tv_longitud.getText().toString().trim().length() == 0 ? "00.0000000" : tv_longitud.getText().toString());
+                        notificacion.setLatitudRes1(tv_latitud.getText().toString().trim().length() == 0 ? "0" : tv_latitud.getText().toString());
+                        notificacion.setLongitudRes1(tv_longitud.getText().toString().trim().length() == 0 ? "0" : tv_longitud.getText().toString());
                         notificacion.setObservacionesRes1(edt_observaciones.getText().toString().trim().length() == 0 ? "" : edt_observaciones.getText().toString());
                         notificacion.setNotificadorRes1(obtenerNombreNotificador());
                         notificacion.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
@@ -433,8 +433,8 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                         notificacion.setFechaHoraRes2(fechaHoraString);
                         notificacion.setResultado2(codResultado);
                         notificacion.setDescResultado2(descResultado);
-                        notificacion.setLatitudRes2(tv_latitud.getText().toString().trim().length() == 0 ? "-0.0000000" : tv_latitud.getText().toString());
-                        notificacion.setLongitudRes2(tv_longitud.getText().toString().trim().length() == 0 ? "00.0000000" : tv_longitud.getText().toString());
+                        notificacion.setLatitudRes2(tv_latitud.getText().toString().trim().length() == 0 ? "0" : tv_latitud.getText().toString());
+                        notificacion.setLongitudRes2(tv_longitud.getText().toString().trim().length() == 0 ? "0" : tv_longitud.getText().toString());
                         notificacion.setObservacionesRes2(edt_observaciones.getText().toString().trim().length() == 0 ? "" : edt_observaciones.getText().toString());
                         notificacion.setNotificadorRes2(obtenerNombreNotificador());
                         notificacion.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador().trim() + ".png");
@@ -481,17 +481,17 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     /**
      * Logica para el GPS
      */
+
     // Se inicializa el cliente Api de Google
     public void connectGPS() {
         if (mGoogleApiClient == null) {
             // Create a GoogleApiClient instance
             mGoogleApiClient = new GoogleApiClient.Builder(getBaseContext()).addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
-                    .enableAutoManage(this /* FragmentActivity */,
+                    .enableAutoManage(this /* FragmentActivity */,id,
                             this /* OnConnectionFailedListener */)
                     .addApi(LocationServices.API)
                     .build();
-
             mGoogleApiClient.disconnect();
             mGoogleApiClient.reconnect();
         }
@@ -523,7 +523,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                                         tv_latitud.setText(Double.toString(latitud2));
                                         //getAddressFromLocation(mLastLocation, getApplicationContext(), new NuevaNotificacionActivity.GeoCoderHandler());
                                     } else {
-                                        tv_latitud.setText("-0.0000000");
+                                        tv_latitud.setText("0");
                                         // La aplicacion no tiene los permisos concedidos, por lo que se le solicita al usuario si lo permite
                                         // ActivityCompat.requestPermissions(NuevaNotificacionActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
                                     }
@@ -531,7 +531,6 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                                         tv_longitud.setText(Double.toString(longitud2));
                                         //getAddressFromLocation(mLastLocation, getApplicationContext(), new NuevaNotificacionActivity.GeoCoderHandler());
                                     } else {
-                                        tv_longitud.setText("-0.0000000");
                                         // La aplicacion no tiene los permisos concedidos, por lo que se le solicita al usuario si lo permite
                                         // ActivityCompat.requestPermissions(NuevaNotificacionActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
                                     }
@@ -545,13 +544,13 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                             case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                                 // Location settings are not satisfied, but this can be fixed
                                 // by showing the user a dialog.
-                       /* try {
-                            // Show the dialog by calling startResolutionForResult(),
-                            // and check the result in onActivityResult().
-                            status.startResolutionForResult(NuevaNotificacionActivity.this, REQUEST_CHECK_SETTINGS);
-                        } catch (IntentSender.SendIntentException e) {
-                            // Ignore the error.
-                        }*/
+                               try {
+                                    // Show the dialog by calling startResolutionForResult(),
+                                    // and check the result in onActivityResult().
+                                    status.startResolutionForResult(NuevaNotificacionActivity.this, REQUEST_CHECK_SETTINGS);
+                                } catch (IntentSender.SendIntentException e) {
+                                    // Ignore the error.
+                                }
                                 break;
                             case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
                                 // Location settings are not satisfied. However, we have no way
@@ -596,6 +595,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         mLocationRequest.setSmallestDisplacement(1);
         mLocationRequest.setExpirationDuration(1);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        id = id + 1;
         connectGPS();
         return mLocationRequest;
     }
@@ -604,8 +604,8 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         latitud2 = -0.0000000;
         longitud2 = 00.0000000;
-        mLastLocation.setLatitude(-0.0000000);
-        mLastLocation.setLongitude(00.0000000);
+        //mLastLocation.setLatitude(-0.0000000);
+        //mLastLocation.setLongitude(00.0000000);
         mGoogleApiClient.disconnect();
         notificacion.setLatitudRes1("-0.0000000");
         notificacion.setLongitudRes1("00.0000000");
@@ -613,7 +613,12 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         notificacion.setLongitudRes2("00.0000000");
         tv_latitud.setText("-0.0000000");
         tv_longitud.setText("00.0000000");
-        //mGoogleApiClient =  null;
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.stopAutoManage(this);
+            mGoogleApiClient.disconnect();
+        }
+        id = id + 1;
+        mGoogleApiClient = null;
     }
 
     /**
@@ -639,37 +644,39 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
             if(intentoGuardado == null) {
                 fallo = getString(R.string.error_guardar_en_bd)   ;
-            } else {
-                notificacion = dbHelper.obtenerNotificacion(idNotificacion);
-                File ficheroXML = null;
-                try {
-                    // Se genera el fichero XML
-                    publishProgress(getString(R.string.generado_xml));
-                    ficheroXML = Util.NotificacionToXML(notificacion, getBaseContext());
+                } else if (intentoGuardado == 0) {
+                    fallo = getString(R.string.error_guardar_en_bd_localizacion)   ;
+                        } else {
+                                notificacion = dbHelper.obtenerNotificacion(idNotificacion);
+                                File ficheroXML = null;
+                                try {
+                                    // Se genera el fichero XML
+                                    publishProgress(getString(R.string.generado_xml));
+                                    ficheroXML = Util.NotificacionToXML(notificacion, getBaseContext());
 
-                    // Se realiza la llamada al servidor del sellado de tiempo y se genera el fichero de sello de tiempo
-                    Boolean tsaActivo = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_ACTIVO, getBaseContext(), Boolean.class.getSimpleName());
-                    if(BooleanUtils.isTrue(tsaActivo)) {
-                        publishProgress(getString(R.string.generado_sello_de_tiempo));
-                        String tsaUrl = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_URL, getBaseContext(), String.class.getSimpleName());
-                        String tsaUser = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_USER, getBaseContext(), String.class.getSimpleName());
-                        TimeStampRequestParameters timeStampRequestParameters = null;
-                        if (StringUtils.isNotBlank(tsaUser)) {
-                            String tsaPassword = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_PASSWORD, getBaseContext(), String.class.getSimpleName());
-                            timeStampRequestParameters = new TimeStampRequestParameters();
-                            timeStampRequestParameters.setUser(tsaUser);
-                            timeStampRequestParameters.setPassword(tsaPassword);
-                        }
-                        TimeStamp t = TimeStamp.stampDocument(FileUtils.readFileToByteArray(ficheroXML), new URL(tsaUrl), timeStampRequestParameters, null);
-                        Util.guardarFicheroSelloTiempo(notificacion, t.toDER());
-                    }
+                                    // Se realiza la llamada al servidor del sellado de tiempo y se genera el fichero de sello de tiempo
+                                    Boolean tsaActivo = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_ACTIVO, getBaseContext(), Boolean.class.getSimpleName());
+                                    if(BooleanUtils.isTrue(tsaActivo)) {
+                                        publishProgress(getString(R.string.generado_sello_de_tiempo));
+                                        String tsaUrl = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_URL, getBaseContext(), String.class.getSimpleName());
+                                        String tsaUser = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_USER, getBaseContext(), String.class.getSimpleName());
+                                        TimeStampRequestParameters timeStampRequestParameters = null;
+                                        if (StringUtils.isNotBlank(tsaUser)) {
+                                            String tsaPassword = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_PASSWORD, getBaseContext(), String.class.getSimpleName());
+                                            timeStampRequestParameters = new TimeStampRequestParameters();
+                                            timeStampRequestParameters.setUser(tsaUser);
+                                            timeStampRequestParameters.setPassword(tsaPassword);
+                                        }
+                                        TimeStamp t = TimeStamp.stampDocument(FileUtils.readFileToByteArray(ficheroXML), new URL(tsaUrl), timeStampRequestParameters, null);
+                                        Util.guardarFicheroSelloTiempo(notificacion, t.toDER());
+                                    }
 
-                } catch (CiMobileException e) {
-                    fallo = e.getError();
-                } catch (IOException e) {
-                    fallo = getString(R.string.error_lectura_fichero_xml);
-                }
-            }
+                                } catch (CiMobileException e) {
+                                    fallo = e.getError();
+                                } catch (IOException e) {
+                                    fallo = getString(R.string.error_lectura_fichero_xml);
+                                }
+                            }
 
             return fallo;
         }
@@ -731,7 +738,6 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                         finish();
                     }
                 });
-
             }
             // Crear el dialogo con los parametros que se han definido y se muestra por pantalla
             builder.show();

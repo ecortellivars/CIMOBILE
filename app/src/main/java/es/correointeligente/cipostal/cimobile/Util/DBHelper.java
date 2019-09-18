@@ -8,8 +8,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import es.correointeligente.cipostal.cimobile.Model.Notificacion;
 import es.correointeligente.cipostal.cimobile.Model.Resultado;
 import es.correointeligente.cipostal.cimobile.Model.ResumenReparto;
@@ -1566,8 +1568,11 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_FIRMA_NOTIFICADOR_RES_1, notificacion.getFirmaNotificadorRes1());
                 cv.put(KEY_NOTIFICACION_FOTO_ACUSE_RES_1, notificacion.getFotoAcuseRes1());
                 cv.put(KEY_NOTIFICACION_FOTO_ACUSE_RES_2, notificacion.getFotoAcuseRes2());
-                intentoGuardado = 1;
-
+                if ((notificacion.getLatitudRes1() == "0") && (notificacion.getLongitudRes1() == "0")){
+                    intentoGuardado = 0;
+                    } else {
+                        intentoGuardado = 1;
+                    }
             } else {
                 cv.put(KEY_NOTIFICACION_RESULTADO_2, notificacion.getResultado2());
                 cv.put(KEY_NOTIFICACION_DESCRIPCION_RESULTADO_2, notificacion.getDescResultado2());
@@ -1585,7 +1590,11 @@ public class DBHelper extends SQLiteOpenHelper {
                     cv.put(KEY_NOTIFICACION_SEGUNDO_INTENTO,false);
                     }
 
-                intentoGuardado = 2;
+                if ((notificacion.getLatitudRes2() == "0") && (notificacion.getLongitudRes2() == "0")){
+                    intentoGuardado = 0;
+                    } else {
+                        intentoGuardado = 2;
+                    }
             }
 
             db.update(TABLE_NOTIFICACION, cv, KEY_NOTIFICACION_ID + "= ?", new String[]{notificacion.getId().toString()});

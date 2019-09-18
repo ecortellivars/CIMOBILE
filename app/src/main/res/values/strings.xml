@@ -103,6 +103,7 @@
     <string name="error_lectura_fichero_xml">Se ha producido un fallo al leer el fichero XML para realizar el sellado de tiempo</string>
     <string name="error_carga_resultados">No hay resultados para esta notificacion</string>
     <string name="error_guardar_en_bd">Se ha producido un error al guardar en la base de datos</string>
+    <string name="error_guardar_en_bd_localizacion">Debes INICIAR GPS (Sin cobertura se pondra (-0.0000000,00.0000000))"</string>
     <string name="guardado">GUARDADO!!!</string>
     <string name="no_guardado">NO GUARDADO!!!</string>
     <string name="realizar_notif_en_papel">REVISE LOS PERMISOS DE LA APLICACION si estan todos activos REALICE LA NOTIFICACION EN PAPEL</string>
