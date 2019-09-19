@@ -607,12 +607,12 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         //mLastLocation.setLatitude(-0.0000000);
         //mLastLocation.setLongitude(00.0000000);
         mGoogleApiClient.disconnect();
-        notificacion.setLatitudRes1("-0.0000000");
-        notificacion.setLongitudRes1("00.0000000");
-        notificacion.setLatitudRes2("-0.0000000");
-        notificacion.setLongitudRes2("00.0000000");
-        tv_latitud.setText("-0.0000000");
-        tv_longitud.setText("00.0000000");
+        notificacion.setLatitudRes1("0");
+        notificacion.setLongitudRes1("0");
+        notificacion.setLatitudRes2("0");
+        notificacion.setLongitudRes2("0");
+        tv_latitud.setText("0");
+        tv_longitud.setText("0");
         if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
             mGoogleApiClient.stopAutoManage(this);
             mGoogleApiClient.disconnect();
