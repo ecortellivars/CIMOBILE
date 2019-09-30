@@ -23,7 +23,6 @@ import java.util.Map;
 import es.correointeligente.cipostal.cimobile.Adapters.FicheroAdapter;
 import es.correointeligente.cipostal.cimobile.Holders.FicheroViewHolder;
 import es.correointeligente.cipostal.cimobile.Model.Notificacion;
-import es.correointeligente.cipostal.cimobile.Model.Resultado;
 import es.correointeligente.cipostal.cimobile.R;
 import es.correointeligente.cipostal.cimobile.Util.BaseActivity;
 import es.correointeligente.cipostal.cimobile.Util.CiMobileException;
@@ -139,7 +138,6 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
         protected String doInBackground(Void... args) {
             String fallo = null;
             try {
-
                 // Inicializamos la clase Singleton para la gestion FTP con el usuario por defecto que es delegacio/delegacion
                 ftpHelper = FTPHelper.getInstancia();
                 if(ftpHelper != null && ftpHelper.connect(CargarRepartoActivity.this)) {
@@ -234,10 +232,11 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                  || (!cargadoSEGUNDOLista && !existeFicheroSEGUNDOLista && nombreFicheroSeleccionado.contains("segundo_intento_lista"))
                  || (!cargadoSEGUNDOReparto && !existeFicheroSEGUNDOReparto && nombreFicheroSeleccionado.contains("segundo_intento_repartidores"))) {
 
-                    // No fue cargado pero es el fichero de segundos errorneo
+                    // No fue cargado pero es el fichero de segundos erroneo
                     if ((!cargadoSEGUNDOLista && esAplicacionDeOficina && nombreFicheroSeleccionado.contains("segundo_intento_lista"))
                       || (nombreFicheroSeleccionado.contains("sicer"))
                       || (nombreFicheroSeleccionado.contains("segundo_intento_repartidores"))) {
+
                         // No fue cargado pero es el fichero de segundos errorneo
                         if ((!cargadoSEGUNDOReparto && !esAplicacionDeOficina && nombreFicheroSeleccionado.contains("segundo_intento_repartidores"))
                           || (nombreFicheroSeleccionado.contains("sicer"))

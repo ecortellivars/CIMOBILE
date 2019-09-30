@@ -6,14 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.StrictMode;
-import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
@@ -22,8 +17,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -42,6 +35,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import es.correointeligente.cipostal.cimobile.Model.Notificacion;
 import es.correointeligente.cipostal.cimobile.R;
@@ -51,13 +45,6 @@ import es.correointeligente.cipostal.cimobile.Util.BaseActivity;
 import es.correointeligente.cipostal.cimobile.Util.CiMobileException;
 import es.correointeligente.cipostal.cimobile.Util.DBHelper;
 import es.correointeligente.cipostal.cimobile.Util.Util;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
-import static es.correointeligente.cipostal.cimobile.Util.Util.RESULTADO_AUSENTE;
-import static es.correointeligente.cipostal.cimobile.Util.Util.RESULTADO_AUSENTE_SEGUNDO;
-import static es.correointeligente.cipostal.cimobile.Util.Util.RESULTADO_NADIE_SE_HACE_CARGO;
-import static es.correointeligente.cipostal.cimobile.Util.Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO;
 
 public class DetalleNotificacionActivity extends BaseActivity {
 
@@ -587,8 +574,9 @@ public class DetalleNotificacionActivity extends BaseActivity {
         protected Boolean doInBackground(Void... voids) {
             File file = null;
             String firmaPath = notificacion.getFirmaReceptor();
+            String fotoAcuse1Path = notificacion.getFotoAcuseRes1();
+            String fotoAcuse2Path = notificacion.getFotoAcuseRes2();
             String referencia = notificacion.getReferencia();
-            String referenciaSCB = notificacion.getReferenciaSCB();
 
             Boolean eliminado = dbHelper.eliminarResultadoNotificacion(idNotificacion, resultadoEliminable);
 
@@ -605,9 +593,35 @@ public class DetalleNotificacionActivity extends BaseActivity {
                 }
             }
 
+            // Se elimina la FOTO1 si la tuviera
+            if(BooleanUtils.isTrue(eliminado) && StringUtils.isNotBlank(fotoAcuse1Path)) {
+                try {
+                    // Si se ha eliminado de la base de datos correctamente, se intenta eliminar si tuviera imagen asociada
+                    file = new File(fotoAcuse1Path);
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            // Se elimina la FOTO2 si la tuviera
+            if(BooleanUtils.isTrue(eliminado) && StringUtils.isNotBlank(fotoAcuse2Path)) {
+                try {
+                    // Si se ha eliminado de la base de datos correctamente, se intenta eliminar si tuviera imagen asociada
+                    file = new File(fotoAcuse2Path);
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
             // Elimina el fichero xml
             try {
-                String nombeFichero = referencia + "_" + StringUtils.defaultIfBlank(referenciaSCB,"") + ".xml";
+                String nombeFichero = referencia +  ".xml";
                 file = new File(Util.obtenerRutaXML() + File.separator + nombeFichero);
                 if (file.exists()) {
                     file.delete();
@@ -616,9 +630,9 @@ public class DetalleNotificacionActivity extends BaseActivity {
                 e.printStackTrace();
             }
 
-            // Elimina el fichero xml
+            // Elimina el fichero ts
             try {
-                String nombeFichero = referencia + "_" + StringUtils.defaultIfBlank(referenciaSCB,"") + ".ts";
+                String nombeFichero = referencia + ".ts";
                 file = new File(Util.obtenerRutaSelloDeTiempo() + File.separator + nombeFichero);
                 if (file.exists()) {
                     file.delete();
