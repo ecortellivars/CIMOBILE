@@ -12,12 +12,12 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.PasswordTransformationMethod;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.ksoap2.SoapEnvelope;
@@ -25,26 +25,22 @@ import org.ksoap2.SoapFault;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
-import org.spongycastle.util.StringList;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 
 import es.correointeligente.cipostal.cimobile.Model.Notificador;
 import es.correointeligente.cipostal.cimobile.R;
 import es.correointeligente.cipostal.cimobile.Util.FTPHelper;
 import es.correointeligente.cipostal.cimobile.Util.Util;
 
-import static android.provider.Settings.AUTHORITY;
-
 
 /** Actividad inicial dada de alta en AndroidManifest con intent lo que significa que desde esta empezaremos
-    siempre a debugar. Esta Actividad gestiona el layout llamado activity_start_session
-    La acción ACTION_MAIN indica que este es el punto de entrada principal y que no se esperan datos de intents.
-    La categoría CATEGORY_LAUNCHER indica que el ícono de esta actividad debe colocarse en el lanzador de
-    la aplicación del sistema. **/
+ siempre a debugar. Esta Actividad gestiona el layout llamado activity_start_session
+ La acción ACTION_MAIN indica que este es el punto de entrada principal y que no se esperan datos de intents.
+ La categoría CATEGORY_LAUNCHER indica que el ícono de esta actividad debe colocarse en el lanzador de
+ la aplicación del sistema. **/
 public class StartSessionActivity extends AppCompatActivity implements View.OnClickListener {
 
     // Declaracion de variables a utilizar en el metodo
@@ -332,14 +328,14 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                 // Si no ha habido error mando al layout el nuevo TextView con la nueva version instalada
                 txt_version_value = (TextView) findViewById(R.id.edt_startSession_version_value);
                 txt_version_value.setText("Versión: " + versionMandada);
-                }
-                // Si hubo error
-                else  if( args2[3] != null)  {
-                    toast = Toast.makeText(StartSessionActivity.this, "Se produjo un error durante la actualización. Revisa los permisos del movil", Toast.LENGTH_LONG);
-                    toast.setGravity(1,0,500);
-                    toast.show();
-                }
             }
+            // Si hubo error
+            else  if( args2[3] != null)  {
+                toast = Toast.makeText(StartSessionActivity.this, "Se produjo un error durante la actualización. Revisa los permisos del movil", Toast.LENGTH_LONG);
+                toast.setGravity(1,0,500);
+                toast.show();
+            }
+        }
     }
 
 

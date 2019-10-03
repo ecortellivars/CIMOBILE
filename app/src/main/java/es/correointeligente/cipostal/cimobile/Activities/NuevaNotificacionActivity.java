@@ -92,8 +92,8 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     private String fallo = "";
     private static LocationRequest mLocRequest;
     private LocationListener listener;
-    private Double latitud2 = -0.0000000;
-    private Double longitud2 = 00.0000000;
+    private Double latitud2 = 0.0;
+    private Double longitud2 = 0.0;
     private ToggleButton btnActualizar;
     private Integer id = 0;
     protected static final int REQUEST_CHECK_SETTINGS = 0x1;
@@ -517,8 +517,14 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                                 if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                                  && ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                                     mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                                    latitud2 = mLastLocation.getLatitude();
-                                    longitud2 = mLastLocation.getLongitude();
+                                    if (mLastLocation != null){
+                                        latitud2 = mLastLocation.getLatitude();
+                                        longitud2 = mLastLocation.getLongitude();
+                                    } else {
+                                        latitud2 = 0.0;
+                                        longitud2 = 0.0;
+                                    }
+
                                     if (latitud2 != null) {
                                         tv_latitud.setText(Double.toString(latitud2));
                                         //getAddressFromLocation(mLastLocation, getApplicationContext(), new NuevaNotificacionActivity.GeoCoderHandler());
@@ -556,6 +562,8 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                                 // Location settings are not satisfied. However, we have no way
                                 // to fix the settings so we won't show the dialog.
                                 break;
+                            default:
+                                throw new IllegalStateException("Unexpected value: " + status.getStatusCode());
                         }
                     }
                 });
