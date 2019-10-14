@@ -22,6 +22,4 @@
         android:title="@string/generado_sello_de_tiempo"
         android:visible="false"
         app:showAsAction="always" />
-
-
 </menu>

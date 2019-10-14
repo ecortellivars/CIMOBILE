@@ -418,7 +418,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
 
                     // Preparamos la informacion si es Primer Intento
                     if (BooleanUtils.isFalse(notificacion.getSegundoIntento())
-                            && BooleanUtils.isFalse(notificacion.getEsLista())) {
+                     && BooleanUtils.isFalse(notificacion.getEsLista())) {
                         notificacion.setFechaHoraRes1(fechaHoraString);
                         notificacion.setResultado1(codResultado);
                         notificacion.setDescResultado1(descResultado);
@@ -427,6 +427,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                         notificacion.setObservacionesRes1(edt_observaciones.getText().toString().trim().length() == 0 ? "" : edt_observaciones.getText().toString());
                         notificacion.setNotificadorRes1(obtenerNombreNotificador());
                         notificacion.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
+                        notificacion.setNombreReceptor("SIN RECEPTOR");
                     }
                     // Preparamos la informacion si es Segundo Intento
                     else {
@@ -438,6 +439,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                         notificacion.setObservacionesRes2(edt_observaciones.getText().toString().trim().length() == 0 ? "" : edt_observaciones.getText().toString());
                         notificacion.setNotificadorRes2(obtenerNombreNotificador());
                         notificacion.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador().trim() + ".png");
+                        notificacion.setNombreReceptor("SIN RECEPTOR");
                         //notificacion.setSegundoIntento(false);
                     }
 

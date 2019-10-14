@@ -127,9 +127,12 @@
 
                         <ToggleButton
                             android:id="@+id/btnActualizar"
-                            style="?attr/buttonStyle"
+                            style="@android:style/Widget.Material.Button.Colored"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:shadowColor="@color/colorBoton"
+                            android:textColor="@color/cardview_dark_background"
+                            android:textColorLink="#E91E63"
                             android:textOff="@string/iniciar_actualizaciones"
                             android:textOn="@string/parar_actualizaciones" />
 

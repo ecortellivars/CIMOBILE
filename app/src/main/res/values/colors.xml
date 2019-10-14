@@ -11,7 +11,7 @@
     <color name="colorBotonNoEntregadoPressed">#efb0b0</color>
     <color name="colorBackgroundEntregado">#79f779</color>
     <color name="colorBackgroundAusente">#ffcf70</color>
-    <color name="colorBackgroundNoEntregado">#f25353</color>
+    <color name="colorBackgroundNoEntregado">#F25353</color>
     <color name="colorBackgroundSinGestionar">#FFFFFF</color>
     <color name="colorBackgroundFotoAcuse">#FFFFCF70</color>
     <color name="colorFotoAcuse">#FFFFCF70</color>

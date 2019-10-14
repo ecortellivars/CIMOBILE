@@ -24,8 +24,8 @@
     <string name="total_nombre_fichero_segundo">Fichero Segundos</string>
     <string name="total_notificaciones_gestionadas">Total notificaciones gestionadas</string>
     <string name="total_notificaciones_acabadas">Notificaciones hechas hoy</string>
-    <string name="total_resultados_reparto">Resultados almacenados para REPARTO</string>
-    <string name="total_resultados_lista">Resultados almacenados Lista</string>
+    <string name="total_resultados_reparto">Resultados almacenados en modo REPARTO</string>
+    <string name="total_resultados_lista">Resultados almacenados en modo OFICINA</string>
     <string name="total_fotos">Fotos hechas hoy</string>
     <string name="total_notificaciones_pendientes_2_hoy">2ª vistas para hoy </string>
     <string name="total_notificaciones_pendientes_2_otro_dia">2ª visita para otro dia </string>

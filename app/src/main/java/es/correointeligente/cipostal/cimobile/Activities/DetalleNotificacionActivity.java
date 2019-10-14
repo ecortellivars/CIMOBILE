@@ -55,6 +55,10 @@ public class DetalleNotificacionActivity extends BaseActivity {
     TextView tv_refPostal, tv_refSCB, tv_nombre, tv_direccion;
     private ViewGroup layoutResultado1, layoutResultado2;
     int resultadoEliminable = 0;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    Integer intentoGuardado = 1000;
+    Boolean esAplicacionPEE = Boolean.FALSE;
+    String fechaHoraString3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,19 +106,22 @@ public class DetalleNotificacionActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Dependiendo de si es una aplicación PEE revisara las fotos o no
-        Boolean esAplicacionPEE = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_PEE, getBaseContext(), Boolean.class.getSimpleName());
+        esAplicacionPEE = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_PEE, getBaseContext(), Boolean.class.getSimpleName());
         Intent i = null;
 
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 break;
+
             case R.id.menu_borrar_notificaciones:
                 this.crearDialogoEliminarResultado();
                 break;
+
             case R.id.menu_sello_tiempo:
                 this.crearSelloTiempo();
                 break;
+
             case R.id.imageButton_listaNotificaciones_foto:
                 if (!esAplicacionPEE) {
                     // Revisamos que el dispositivo tiene camara
@@ -123,79 +130,39 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     if (permissionCheck != -1) {
                         if (checkCameraHardware(this) == Boolean.TRUE) {
                             try {
-                                // Si es segundo intento obtengo los datos para la foto
+                                // Si es segundo intento obtengo los datos para invocar al componente FotoAcuseActivity
                                 if (notificacion.getSegundoIntento()) {
-                                    // Hacemos la foto
+                                    // Invocamos al componente FotoAcuseActivity
                                     Intent intentNuevaNoti = new Intent(DetalleNotificacionActivity.this, FotoAcuseActivity.class);
                                     if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
-                                        intentNuevaNoti.putExtra("referencia", notificacion.getReferencia());
-                                        intentNuevaNoti.putExtra("resultado", notificacion.getResultado2());
-                                        DateFormat df3 = new SimpleDateFormat("yyyyMMdd");
-                                        String fechaHoraString3 = df3.format(Calendar.getInstance().getTime());
-                                        intentNuevaNoti.putExtra("fechaHoraRes", fechaHoraString3);
-                                        startActivity(intentNuevaNoti);
-                                        notificacion = dbHelper.obtenerNotificacion(idNotificacion);
-                                        // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.webp
-                                        // Create an image file name
-                                        if (!esAplicacionPEE) {
-                                            notificacion.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado2() + ".webp");
-                                            notificacion.setFotoAcuseRes1(null);
-                                        } else {
-                                            notificacion.setFotoAcuseRes2(null);
-                                            notificacion.setFotoAcuseRes1(null);
-                                        }
-                                        Integer intentoGuardado = null;
-                                        intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
-                                        if (intentoGuardado != null) {
-                                            Toast toast = null;
-                                            toast = Toast.makeText(this, "Resultado guardado Correctamente", Toast.LENGTH_LONG);
-                                            toast.show();
-                                        } else {
-                                            Toast toast = null;
-                                            toast = Toast.makeText(this, "Resultado NO guardado", Toast.LENGTH_LONG);
-                                            toast.show();
-                                        }
+                                            // Mandamos los parametros al componente FotoAcuseActivity
+                                            intentNuevaNoti.putExtra("referencia", notificacion.getReferencia());
+                                            intentNuevaNoti.putExtra("resultado", notificacion.getResultado2());
+                                            DateFormat df3 = new SimpleDateFormat("yyyyMMdd");
+                                            fechaHoraString3 = df3.format(Calendar.getInstance().getTime());
+                                            intentNuevaNoti.putExtra("fechaHoraRes", fechaHoraString3);
+                                            startActivityForResult(intentNuevaNoti, REQUEST_IMAGE_CAPTURE);
                                     }
                                 }
-                                // Si es primer intento obtengo sus datos para la foto
+                                // Si es primer intento obtengo sus datos para invocar al componente FotoAcuseActivity
                                 else {
                                     // Hacemos la foto
                                     Intent intentNuevaNoti = new Intent(DetalleNotificacionActivity.this, FotoAcuseActivity.class);
                                     if (intentNuevaNoti.resolveActivity(getPackageManager()) != null) {
-                                        intentNuevaNoti.putExtra("referencia", notificacion.getReferencia());
-                                        intentNuevaNoti.putExtra("resultado", notificacion.getResultado1());
-                                        DateFormat df3 = new SimpleDateFormat("yyyyMMdd");
-                                        String fechaHoraString3 = df3.format(Calendar.getInstance().getTime());
-                                        intentNuevaNoti.putExtra("fechaHoraRes", fechaHoraString3);
-                                        startActivity(intentNuevaNoti);
-                                        notificacion = dbHelper.obtenerNotificacion(idNotificacion);
-
-                                        // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.webp
-                                        if (!esAplicacionPEE) {
-                                            notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado1() + ".webp");
-                                            notificacion.setFotoAcuseRes2(null);
-                                        }else {
-                                            notificacion.setFotoAcuseRes2(null);
-                                            notificacion.setFotoAcuseRes1(null);
-                                        }
-                                        Integer intentoGuardado = null;
-                                        intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
-                                        if (intentoGuardado != null) {
-                                            Toast toast = null;
-                                            toast = Toast.makeText(this, "Resultado guardado Correctamente", Toast.LENGTH_LONG);
-                                            toast.show();
-                                        } else {
-                                            Toast toast = null;
-                                            toast = Toast.makeText(this, "Resultado NO guardado", Toast.LENGTH_LONG);
-                                            toast.show();
-                                        }
+                                            // Mandamos los parametros al componente FotoAcuseActivity
+                                            intentNuevaNoti.putExtra("referencia", notificacion.getReferencia());
+                                            intentNuevaNoti.putExtra("resultado", notificacion.getResultado1());
+                                            DateFormat df3 = new SimpleDateFormat("yyyyMMdd");
+                                            fechaHoraString3 = df3.format(Calendar.getInstance().getTime());
+                                            intentNuevaNoti.putExtra("fechaHoraRes", fechaHoraString3);
+                                            startActivityForResult(intentNuevaNoti, REQUEST_IMAGE_CAPTURE);
                                     }
                                 }
                                 finish();
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 Toast toast = null;
-                                toast = Toast.makeText(this, "NO SE PUDO HACER LA FOTO. REVISE LOS PERMISOS DE LA APLICACION", Toast.LENGTH_LONG);
+                                toast = Toast.makeText(this, "NO SE PUDO HACER LA FOTO! REVISE LOS PERMISOS DE CAMARA DE LA APLICACION", Toast.LENGTH_LONG);
                                 toast.show();
                                 finish();
                             }
@@ -203,7 +170,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                         }
                     }else {
                         Toast toast = null;
-                        toast = Toast.makeText(this, "NO SE PUDO HACER LA FOTO. REVISE LOS PERMISOS DE LA APLICACION", Toast.LENGTH_LONG);
+                        toast = Toast.makeText(this, "NO SE PUDO HACER LA FOTO! REVISE LOS PERMISOS DE CAMARA DE LA APLICACION", Toast.LENGTH_LONG);
                         toast.show();
                     }
 
@@ -212,6 +179,42 @@ public class DetalleNotificacionActivity extends BaseActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Método que determina los resultados de las diferentes actividades que se han lanzado
+        // y dependiendo de su requestCode sabemos que actividad ha sido.
+        if (requestCode == REQUEST_IMAGE_CAPTURE) {
+            if (resultCode == CommonStatusCodes.SUCCESS) {
+                    // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.webp
+                    // Create an image file name
+                    if (!esAplicacionPEE && notificacion.getResultado2() != null) {
+                        notificacion.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado2() + ".webp");
+                        notificacion.setFotoAcuseRes1(null);
+                        intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
+
+                    } else  if (!esAplicacionPEE && notificacion.getResultado1() != null) {
+                        notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado2() + ".webp");
+                        notificacion.setFotoAcuseRes2(null);
+                        intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
+                    }
+
+                    if (intentoGuardado != 1000) {
+                        Toast toast = null;
+                        toast = Toast.makeText(this, "Resultado guardado Correctamente", Toast.LENGTH_LONG);
+                        toast.show();
+                    } else {
+                        Toast toast = null;
+                        toast = Toast.makeText(this, "Resultado NO guardado", Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+
+            } else {
+                super.onActivityResult(requestCode, resultCode, data);
+            }
+        }
+
     }
 
     private void mapearVista() {
@@ -250,8 +253,8 @@ public class DetalleNotificacionActivity extends BaseActivity {
             tv_nombre.setText(notificacion.getNombre().toString());
             tv_direccion.setText(notificacion.getDireccion().toString());
 
-            TextView tv_resultado1, tv_fecha1, tv_notificador1, tv_longitud1, tv_latitud1, tv_observaciones1, tv_cabeceraResultado1, tv_receptor = null;
-            TextView tv_resultado2, tv_fecha2, tv_notificador2, tv_longitud2, tv_latitud2, tv_observaciones2, tv_cabeceraResultado2;
+            TextView tv_receptor1 = null, tv_resultado1, tv_fecha1, tv_notificador1, tv_longitud1, tv_latitud1, tv_observaciones1, tv_cabeceraResultado1, tv_receptor = null;
+            TextView tv_receptor2 = null, tv_resultado2, tv_fecha2, tv_notificador2, tv_longitud2, tv_latitud2, tv_observaciones2, tv_cabeceraResultado2;
             ImageView img_firma_receptor = null;
             ImageView img_foto_acuse_res1 = null;
             ImageView img_foto_acuse_res2 = null;
@@ -284,9 +287,9 @@ public class DetalleNotificacionActivity extends BaseActivity {
                 tv_observaciones1.setText(notificacion.getObservacionesRes1());
                 tv_cabeceraResultado1.setText(R.string.resultado1);
 
+
                 // Lo agrego al layout principal
                 layoutResultado1.addView(linearLayout1);
-
 
                 // Instancio el otro layout para cargar los resultados del segundo intento ENTREGADO
                 linearLayout2 = (LinearLayout) inflater.inflate(R.layout.datos_resultado_entregado, null, false);
@@ -298,6 +301,8 @@ public class DetalleNotificacionActivity extends BaseActivity {
                 tv_latitud2 = (TextView) linearLayout2.findViewById(R.id.tv_result_entregado_latitud);
                 tv_observaciones2 = (TextView) linearLayout2.findViewById(R.id.tv_result_entregado_observaciones);
                 tv_cabeceraResultado2 = (TextView) linearLayout2.findViewById(R.id.tv_result_entregado_cabecera_resultado);
+                tv_receptor2 = (TextView)linearLayout2.findViewById(R.id.tv_result_entregado_receptor);
+
                 if (notificacion.getFirmaNotificadorRes2() != null && !notificacion.getFirmaNotificadorRes2().isEmpty()) {
                     img_firma_receptor = (ImageView) linearLayout2.findViewById(R.id.imageView_result_entregado_firma);
                 }
@@ -305,6 +310,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     img_foto_acuse_res2 = (ImageView) linearLayout2.findViewById(R.id.imageView_result_entregado_foto_acuse);
                     img_foto_acuse_res2.setVisibility(View.VISIBLE);
                 }
+
 
                 // Se cargan los datos del segundo resultado en el layout2
                 tv_resultado2.setText(notificacion.getResultado2() + " " + notificacion.getDescResultado2());
@@ -314,15 +320,10 @@ public class DetalleNotificacionActivity extends BaseActivity {
                 tv_latitud2.setText(notificacion.getLatitudRes2());
                 tv_observaciones2.setText(notificacion.getObservacionesRes2());
                 tv_cabeceraResultado2.setText(R.string.resultado2);
-
-                tv_receptor = (TextView) linearLayout2.findViewById(R.id.tv_result_entregado_receptor);
-                // Como es ENTREGADO reviso si FIRMO el receptor
-                if (notificacion.getResultado2().equals(Util.RESULTADO_ENTREGADO)
-                 || notificacion.getResultado2().equals(Util.RESULTADO_ENTREGADO_OFICINA))
-                         {tv_receptor.setText(notificacion.getNumDocReceptor() + " " + notificacion.getNombreReceptor());
-                }
-                else  {
-                    tv_receptor.setText("NO REQUIERE FIRMA");
+                if (notificacion.getNombreReceptor() != null){
+                    tv_receptor2.setText(notificacion.getNombreReceptor());
+                } else {
+                    tv_receptor2.setText("SIN RECEPTOR");
                 }
 
                 // Buscamos la imagen de la firma si la hay
@@ -380,7 +381,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     tv_longitud1 = (TextView) linearLayout.findViewById(R.id.tv_result_entregado_longitud);
                     tv_latitud1 = (TextView) linearLayout.findViewById(R.id.tv_result_entregado_latitud);
                     tv_observaciones1 = (TextView) linearLayout.findViewById(R.id.tv_result_entregado_observaciones);
-                    tv_receptor = (TextView)linearLayout.findViewById(R.id.tv_result_entregado_receptor);
+                    tv_receptor1 = (TextView)linearLayout.findViewById(R.id.tv_result_entregado_receptor);
                     img_firma_receptor = (ImageView) linearLayout.findViewById(R.id.imageView_result_entregado_firma);
 
                     img_foto_acuse_res1 = (ImageView) linearLayout.findViewById(R.id.imageView_result_entregado_foto_acuse);
@@ -396,18 +397,13 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     tv_longitud1.setText(notificacion.getLongitudRes1());
                     tv_latitud1.setText(notificacion.getLatitudRes1());
                     tv_observaciones1.setText(notificacion.getObservacionesRes1());
-
+                    if (notificacion.getNombreReceptor() != null){
+                        tv_receptor1.setText(notificacion.getNombreReceptor());
+                    } else {
+                        tv_receptor1.setText("SIN RECEPTOR");
+                    }
 
                     layoutResultado1.addView(linearLayout);
-
-                    // Como es ENTREGADO reviso si FIRMO el receptor
-                    if (notificacion.getResultado1().equals(Util.RESULTADO_ENTREGADO)
-                     || notificacion.getResultado1().equals(Util.RESULTADO_ENTREGADO_OFICINA))
-                            {tv_receptor.setText(notificacion.getNumDocReceptor() + " " + notificacion.getNombreReceptor());
-                    }
-                    else  {
-                        tv_receptor.setText("NO REQUIERE FIRMA");
-                    }
 
                     // Buscamos la imagen de la firma si la hay
                     if (notificacion.getFirmaReceptor() != null && notificacion.getFirmaReceptor().trim().length() > 0) {

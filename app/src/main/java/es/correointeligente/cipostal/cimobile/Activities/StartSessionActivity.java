@@ -260,7 +260,6 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
             // Posicion [2] : versionMandada
             // Posicion [3] : KO
 
-
             try {
                 // Inicializamos la clase Singleton para la gestion FTP
                 ftpHelper = FTPHelper.getInstancia();

@@ -14,8 +14,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -202,8 +200,6 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                 nombreSegundo = dbHelper.obtenerNombreFicheroSegundoRepartoCargado();
                 tv_nombreFicheroSegundo.setText(nombreSegundo);
             }
-
-
 
             // Se recuperan las notificaciones que se han gestionado durante el reparto para contar la fotos
             List<Notificacion> listaNotificacionesGestionadas = dbHelper.obtenerNotificacionesGestionadas();
