@@ -3,7 +3,6 @@ package es.correointeligente.cipostal.cimobile.Util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
-import android.provider.ContactsContract;
 import android.util.Base64;
 
 import org.apache.commons.io.FileUtils;
@@ -364,7 +363,7 @@ public class Util {
      * @param contenido Contenido a guardar
      * @throws Exception No se puede escribir
      */
-    public static void guardarFicheroSelloTiempo(Notificacion notificacion, byte[] contenido) throws IOException {
+    public static String  guardarFicheroSelloTiempo(Notificacion notificacion, byte[] contenido) throws IOException {
         String nombreFichero = "";
 
         // Los guardamos a disco.
@@ -374,6 +373,8 @@ public class Util {
             nombreFichero = StringUtils.defaultIfBlank(notificacion.getReferenciaSCB(),"") + ".ts";
         }
         FileUtils.writeByteArrayToFile(new File(obtenerRutaSelloDeTiempo(), nombreFichero), contenido);
+
+        return nombreFichero;
     }
 
     /**

@@ -105,6 +105,46 @@
 
             </TableLayout>
 
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="*"
+                android:layout_marginTop="5dp">
+
+                <TableRow>
+
+                    <TextView
+                        android:text="@string/xml"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:text="@string/st"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"/>
+
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:id="@+id/tv_result_xml"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/xml"/>
+
+                    <TextView
+                        android:id="@+id/tv_result_st"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/st" />
+
+                </TableRow>
+
+            </TableLayout>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

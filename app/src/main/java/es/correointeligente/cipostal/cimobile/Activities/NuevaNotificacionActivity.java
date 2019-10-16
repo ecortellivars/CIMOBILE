@@ -67,7 +67,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     Integer posicionAdapter;
     DBHelper dbHelper;
     TextView tv_refPostal, tv_nombre, tv_direccion, tv_resultadoDetallePrimerIntento, tv_consejoSegundoIntento,
-            tv_latitud, tv_longitud, tv_fechaDetallePrimerIntento, tv_refSCB;
+            tv_latitud, tv_longitud, tv_fechaDetallePrimerIntento, tv_refSCB, tv_xml, tv_st;
     EditText edt_observaciones;
     Button btn_noEntregado, btn_entregado;
     LinearLayout ll_detallePrimerIntento, ll_botonera;
@@ -650,6 +650,8 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         @Override
         protected String doInBackground(Void... voids) {
             String fallo = "";
+            String ficheroST = "";
+
             // Primero guarda el resultado de notificacion y recupera todos los datos para generar el fichero xml
             intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
             if(intentoGuardado == null) {
@@ -663,7 +665,10 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                                     // Se genera el fichero XML
                                     publishProgress(getString(R.string.generado_xml));
                                     ficheroXML = Util.NotificacionToXML(notificacion, getBaseContext());
-
+                                    if (ficheroXML != null) {
+                                        notificacion.setHayXML(Boolean.TRUE);
+                                        dbHelper.guardaResultadoNotificacion(notificacion);
+                                    }
                                     // Se realiza la llamada al servidor del sellado de tiempo y se genera el fichero de sello de tiempo
                                     Boolean tsaActivo = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_ACTIVO, getBaseContext(), Boolean.class.getSimpleName());
                                     if(BooleanUtils.isTrue(tsaActivo)) {
@@ -678,7 +683,11 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                                             timeStampRequestParameters.setPassword(tsaPassword);
                                         }
                                         TimeStamp t = TimeStamp.stampDocument(FileUtils.readFileToByteArray(ficheroXML), new URL(tsaUrl), timeStampRequestParameters, null);
-                                        Util.guardarFicheroSelloTiempo(notificacion, t.toDER());
+                                        ficheroST = Util.guardarFicheroSelloTiempo(notificacion, t.toDER());
+                                        if (ficheroST != ""){
+                                            notificacion.setHayST(Boolean.TRUE);
+                                            dbHelper.guardaResultadoNotificacion(notificacion);
+                                        }
                                     }
 
                                 } catch (CiMobileException e) {

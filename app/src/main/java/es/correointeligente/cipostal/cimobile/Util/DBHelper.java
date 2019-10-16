@@ -70,6 +70,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String KEY_NOTIFICACION_ES_CERTIFICADO = "esCertificado";
     private static final String KEY_NOTIFICACION_FOTO_ACUSE_RES_1 = "fotoAcuse1";
     private static final String KEY_NOTIFICACION_FOTO_ACUSE_RES_2 = "fotoAcuse2";
+    private static final String KEY_NOTIFICACION_HAY_XML = "hayXML";
+    private static final String KEY_NOTIFICACION_HAY_ST = "hayST";
 
 
     /******************************************************************************************/
@@ -512,7 +514,9 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_ES_LISTA,
                         KEY_NOTIFICACION_ES_CERTIFICADO,
                         KEY_NOTIFICACION_FOTO_ACUSE_RES_1,
-                        KEY_NOTIFICACION_FOTO_ACUSE_RES_2
+                        KEY_NOTIFICACION_FOTO_ACUSE_RES_2,
+                        KEY_NOTIFICACION_HAY_ST,
+                        KEY_NOTIFICACION_HAY_XML
                 },
                 "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0 AND " + KEY_NOTIFICACION_ES_LISTA + " = 0 AND " + KEY_NOTIFICACION_RESULTADO_1 + " IS NOT NULL)  OR "+
                          "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0 AND " + KEY_NOTIFICACION_ES_LISTA + " = 1 AND " + KEY_NOTIFICACION_RESULTADO_2 + " IS NOT NULL) OR "+
@@ -769,6 +773,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 values.put(KEY_NOTIFICACION_LATITUD_RES_2, notificacion.getLatitudRes2());
                 values.put(KEY_NOTIFICACION_LONGITUD_RES_2, notificacion.getLongitudRes2());
                 values.put(KEY_NOTIFICACION_NOMBRE_FICHERO_SICER, notificacion.getNombreFicheroSicer());
+                values.put(KEY_NOTIFICACION_HAY_ST, notificacion.getHayST());
+                values.put(KEY_NOTIFICACION_HAY_XML, notificacion.getHayXML());
                 db.insert(TABLE_NOTIFICACION, null, values);
 
                 id ++;
@@ -820,7 +826,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_LONGITUD_RES_1, notificacion.getLongitudRes1());
                 cv.put(KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_REPARTO, notificacion.getNombreFicheroSegundoRepartidor());
                 cv.put(KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_LISTA, notificacion.getNombreFicheroSegundoLista());
-
+                cv.put(KEY_NOTIFICACION_HAY_ST, notificacion.getHayST());
+                cv.put(KEY_NOTIFICACION_HAY_XML, notificacion.getHayXML());
                 db.update(
                         // Tabla
                         TABLE_NOTIFICACION,
@@ -897,7 +904,9 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_ES_LISTA,
                         KEY_NOTIFICACION_ES_CERTIFICADO,
                         KEY_NOTIFICACION_FOTO_ACUSE_RES_1,
-                        KEY_NOTIFICACION_FOTO_ACUSE_RES_2
+                        KEY_NOTIFICACION_FOTO_ACUSE_RES_2,
+                        KEY_NOTIFICACION_HAY_XML,
+                        KEY_NOTIFICACION_HAY_ST
                 },
                 KEY_NOTIFICACION_ID + " = ?", new String[]{idNotificacion.toString()},
                 null, null, null, null
@@ -968,7 +977,9 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_ES_LISTA,
                         KEY_NOTIFICACION_ES_CERTIFICADO,
                         KEY_NOTIFICACION_FOTO_ACUSE_RES_1,
-                        KEY_NOTIFICACION_FOTO_ACUSE_RES_2
+                        KEY_NOTIFICACION_FOTO_ACUSE_RES_2,
+                        KEY_NOTIFICACION_HAY_XML,
+                        KEY_NOTIFICACION_HAY_ST
                 },
                 whereClause, parametros,
                 null, null, null, null
@@ -1115,7 +1126,9 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_ES_LISTA,
                         KEY_NOTIFICACION_ES_CERTIFICADO,
                         KEY_NOTIFICACION_FOTO_ACUSE_RES_1,
-                        KEY_NOTIFICACION_FOTO_ACUSE_RES_2
+                        KEY_NOTIFICACION_FOTO_ACUSE_RES_2,
+                        KEY_NOTIFICACION_HAY_XML,
+                        KEY_NOTIFICACION_HAY_ST
 
                 }, null, null, null, null, KEY_NOTIFICACION_REFERENCIA + " ASC", null
         );
@@ -1318,6 +1331,16 @@ public class DBHelper extends SQLiteOpenHelper {
             Integer esCertificado = cursor.getInt(columna);
             notificacion.setEsCertificado(esCertificado != 1? false : true);
         }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_HAY_XML);
+        if (columna != -1) {
+            Integer hayXML = cursor.getInt(columna);
+            notificacion.setHayXML(hayXML != 1? false : true);
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_HAY_ST);
+        if (columna != -1) {
+            Integer hayST = cursor.getInt(columna);
+            notificacion.setHayST(hayST != 1? false : true);
+        }
 
         return notificacion;
     }
@@ -1482,6 +1505,16 @@ public class DBHelper extends SQLiteOpenHelper {
             Integer esCertificado = cursor.getInt(columna);
             notificacion.setEsCertificado(esCertificado != 1? false : true);
         }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_HAY_ST);
+        if (columna != -1) {
+            Integer hayST = cursor.getInt(columna);
+            notificacion.setHayST(hayST != 1? false : true);
+        }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_HAY_XML);
+        if (columna != -1) {
+            Integer hayXML = cursor.getInt(columna);
+            notificacion.setHayXML(hayXML != 1? false : true);
+        }
 
         // Se mapea el backgroundcolor segun valores del resultado
         // Inicialmente pongo el BLANCO
@@ -1568,6 +1601,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_FIRMA_NOTIFICADOR_RES_1, notificacion.getFirmaNotificadorRes1());
                 cv.put(KEY_NOTIFICACION_FOTO_ACUSE_RES_1, notificacion.getFotoAcuseRes1());
                 cv.put(KEY_NOTIFICACION_FOTO_ACUSE_RES_2, notificacion.getFotoAcuseRes2());
+                cv.put(KEY_NOTIFICACION_HAY_ST, notificacion.getHayST());
+                cv.put(KEY_NOTIFICACION_HAY_XML, notificacion.getHayXML());
                 if ((notificacion.getLatitudRes1() == "0") && (notificacion.getLongitudRes1() == "0")){
                     intentoGuardado = 0;
                     } else {
@@ -1585,6 +1620,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_FIRMA_NOTIFICADOR_RES_2, notificacion.getFirmaNotificadorRes2());
                 cv.put(KEY_NOTIFICACION_FOTO_ACUSE_RES_1, notificacion.getFotoAcuseRes1());
                 cv.put(KEY_NOTIFICACION_FOTO_ACUSE_RES_2, notificacion.getFotoAcuseRes2());
+                cv.put(KEY_NOTIFICACION_HAY_ST, notificacion.getHayST());
+                cv.put(KEY_NOTIFICACION_HAY_XML, notificacion.getHayXML());
                 // Cerramos lista al ser CERTIFICADO
                 if (notificacion.getEsCertificado()){
                     cv.put(KEY_NOTIFICACION_SEGUNDO_INTENTO,false);
@@ -1634,6 +1671,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.putNull(KEY_NOTIFICACION_LONGITUD_RES_1);
                 cv.putNull(KEY_NOTIFICACION_LATITUD_RES_1);
                 cv.putNull(KEY_NOTIFICACION_OBSERVACIONES_RES_1);
+                cv.put(KEY_NOTIFICACION_HAY_XML,false);
+                cv.put(KEY_NOTIFICACION_HAY_ST,false);
                 cv.put(KEY_NOTIFICACION_SEGUNDO_INTENTO,false);
             } else if(resultado == 2) {
                 cv.putNull(KEY_NOTIFICACION_RESULTADO_2);
@@ -1642,6 +1681,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.putNull(KEY_NOTIFICACION_LONGITUD_RES_2);
                 cv.putNull(KEY_NOTIFICACION_LATITUD_RES_2);
                 cv.putNull(KEY_NOTIFICACION_OBSERVACIONES_RES_2);
+                cv.put(KEY_NOTIFICACION_HAY_XML,false);
+                cv.put(KEY_NOTIFICACION_HAY_ST,false);
                 cv.put(KEY_NOTIFICACION_SEGUNDO_INTENTO,true);
             }
 
@@ -1725,6 +1766,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 + KEY_NOTIFICACION_TIMESTAMP_MARCADA + " TEXT,"
                 + KEY_NOTIFICACION_SEGUNDO_INTENTO + " INTEGER, "
                 + KEY_NOTIFICACION_ES_LISTA + " INTEGER, "
+                + KEY_NOTIFICACION_HAY_ST + " INTEGER, "
+                + KEY_NOTIFICACION_HAY_XML + " INTEGER, "
                 + KEY_NOTIFICACION_ES_CERTIFICADO + " INTEGER, "
                 + KEY_NOTIFICACION_FOTO_ACUSE_RES_1 + " TEXT, "
                 + KEY_NOTIFICACION_FOTO_ACUSE_RES_2 + " TEXT, "

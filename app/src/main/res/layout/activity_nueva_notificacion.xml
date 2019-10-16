@@ -106,9 +106,6 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/longitud"
                                 android:textStyle="bold" />
-
-
-
                         </TableRow>
 
                         <TableRow>

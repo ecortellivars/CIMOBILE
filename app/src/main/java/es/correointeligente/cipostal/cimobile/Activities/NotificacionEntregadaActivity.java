@@ -4,13 +4,9 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
@@ -27,7 +23,6 @@ import com.google.android.gms.common.api.CommonStatusCodes;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -37,7 +32,6 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import es.correointeligente.cipostal.cimobile.Model.Notificacion;
 import es.correointeligente.cipostal.cimobile.Model.Resultado;
@@ -289,6 +283,8 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setNotificadorRes2(obtenerNombreNotificador());
                 notificacionAux.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador().trim() +".png");
                 notificacionAux.setSegundoIntento(esPrimerResultado);
+                notificacionAux.setHayST(Boolean.FALSE);
+                notificacionAux.setHayXML(Boolean.FALSE);
                 if (esCertificado.equals("0")) {
                     notificacionAux.setEsCertificado(false);
                 }else{
@@ -312,12 +308,16 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
             } else {
                 notificacionAux = dbHelper.obtenerNotificacion(idNotificacion);
                 File ficheroXML = null;
+                String ficheroST = null;
 
                 try {
                     // Se genera el fichero XML
                     publishProgress(getString(R.string.generado_xml));
                     ficheroXML = Util.NotificacionToXML(notificacionAux, getBaseContext());
-
+                    if (ficheroXML != null){
+                        notificacionAux.setHayXML(Boolean.TRUE);
+                        dbHelper.guardaResultadoNotificacion(notificacionAux);
+                    }
                     // Se realiza la llamada al servidor del sellado de tiempo y se genera el fichero de sello de tiempo
                     Boolean tsaActivo = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_ACTIVO, getBaseContext(), Boolean.class.getSimpleName());
                     if(BooleanUtils.isTrue(tsaActivo)) {
@@ -332,7 +332,11 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                         }
                         publishProgress(getString(R.string.generado_sello_de_tiempo));
                         TimeStamp t = TimeStamp.stampDocument(FileUtils.readFileToByteArray(ficheroXML), new URL(tsaUrl), timeStampRequestParameters, null);
-                        Util.guardarFicheroSelloTiempo(notificacionAux, t.toDER());
+                        ficheroST = Util.guardarFicheroSelloTiempo(notificacionAux, t.toDER());
+                        if (ficheroST != null){
+                            notificacionAux.setHayST(Boolean.TRUE);
+                            dbHelper.guardaResultadoNotificacion(notificacionAux);
+                        }
                     }
                 } catch (CiMobileException e) {
                     fallo = e.getError();

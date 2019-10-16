@@ -44,17 +44,20 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
     Integer totFotosHechas = 0;
     Integer totNumListaNA = 0;
     Integer totNumListaCert = 0;
+    Integer totXML = 0;
+    Integer totST = 0;
 
     Boolean borradoManual = Boolean.FALSE;
 
     // Variables para instanciar los objetos del layaout y darles valor
     TextView tv_totFicheros, tv_totNotificaciones, tv_totNotifGestionadas, tv_totNotifPendientes_2_hoy,
-             tv_totNotifPendientes_2_otro_dia, tv_totNotifMarcadas, tv_totFotos, tv_totFotos_txt,  tv_totResultados_reparto,
-             tv_totNotiLista, tv_totCertLista;
+             tv_totNotifPendientes_2_otro_dia, tv_totNotifMarcadas, tv_totFotos, tv_totResultados_reparto,
+             tv_totNotiLista, tv_totCertLista, tv_totXml, tv_totST;
     TextView tv_entregado, tv_dirIncorrecta, tv_ausente, tv_ausente_pendiente, tv_desconocido, tv_fallecido, tv_rehusado,
              tv_noSeHaceCargo, tv_noSeHaceCargoPendiente, tv_entregado_en_oficina, tv_no_entregado_en_oficina,
              tv_entregado_en_oficina_txt, tv_no_entregado_en_oficina_txt, tv_totNotiLista_txt, tv_totCertLista_txt,
-             tv_totResultados_reparto_txt, tv_nombreFicheroSicer, tv_nombreFicheroSegundo;
+             tv_totResultados_reparto_txt, tv_nombreFicheroSicer, tv_nombreFicheroSegundo, tv_totFotos_txt,
+             tv_totXml_txt, tv_totST_txt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +107,10 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
         tv_totNotifGestionadas = (TextView) findViewById(R.id.textView_resumen_total_notif_gestionadas_value);
         tv_totFotos_txt = (TextView) findViewById(R.id.textView_resumen_total_fotos);
         tv_totFotos = (TextView) findViewById(R.id.textView_resumen_total_fotos_value);
+        tv_totXml_txt = (TextView) findViewById(R.id.textView_resumen_total_xml);
+        tv_totXml = (TextView) findViewById(R.id.textView_resumen_total_xml_value);
+        tv_totST_txt = (TextView) findViewById(R.id.textView_resumen_total_st);
+        tv_totST = (TextView) findViewById(R.id.textView_resumen_total_st_value);
         tv_totResultados_reparto = (TextView) findViewById(R.id.textView_resumen_total_resultados_reparto_value);
         tv_totResultados_reparto_txt = (TextView) findViewById(R.id.textView_resumen_total_resultados_reparto);
         tv_totNotifPendientes_2_hoy = (TextView) findViewById(R.id.textView_resumen_total_notif_pendientes_2_hoy_value);
@@ -204,18 +211,34 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             // Se recuperan las notificaciones que se han gestionado durante el reparto para contar la fotos
             List<Notificacion> listaNotificacionesGestionadas = dbHelper.obtenerNotificacionesGestionadas();
             Integer contadorFotos = 0;
+            Integer contadorXml = 0;
+            Integer contadorSt = 0;
+
             if (!listaNotificacionesGestionadas.isEmpty()){
                 for (Notificacion noti : listaNotificacionesGestionadas){
+                    // Contamos fotos
                     if (noti.getFotoAcuseRes2() != null && !noti.getFotoAcuseRes2().isEmpty()) {
                         contadorFotos = contadorFotos + 1;
                         }else if (noti.getFotoAcuseRes1() != null && !noti.getFotoAcuseRes1().isEmpty()) {
                             contadorFotos = contadorFotos + 1;
                         }
+                    // Contamos ST
+                    if (noti.getHayST()) {
+                        contadorSt = contadorSt + 1;
+                    }
+                    // Contamos XML
+                    if (noti.getHayXML()) {
+                        contadorXml = contadorXml + 1;
+                    }
                 }
             }
 
             totFotosHechas = contadorFotos;
             tv_totFotos.setText(contadorFotos.toString());
+            totXML = contadorXml;
+            tv_totXml.setText(contadorXml.toString());
+            totST = contadorSt;
+            tv_totST.setText(contadorSt.toString());
             tv_totResultados_reparto.setText(resumenReparto.getTotResultadosReparto().toString());
             tv_totNotifGestionadas.setText(resumenReparto.getTotNotifGestionadas().toString());
             tv_entregado.setText(resumenReparto.getNumEntregados().toString());
@@ -224,6 +247,8 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
 
             Boolean esAplicacionDeOficina = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_DE_OFICINA, getBaseContext(), Boolean.class.getSimpleName());
             Boolean esAplicacionPEE = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_PEE, getBaseContext(), Boolean.class.getSimpleName());
+            Boolean esSt = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_ACTIVO, getBaseContext(), Boolean.class.getSimpleName());
+
             // No hay LISTA oculto
             if (!esAplicacionDeOficina){
                 tv_entregado_en_oficina.setVisibility(View.INVISIBLE);
@@ -243,6 +268,12 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                 tv_totFotos.setVisibility(View.INVISIBLE);
                 tv_totFotos_txt.setVisibility(View.INVISIBLE);
             }
+            // Trabaja con ST
+            if (!esSt){
+                tv_totST.setVisibility(View.INVISIBLE);
+                tv_totST_txt.setVisibility(View.INVISIBLE);
+            }
+
             tv_dirIncorrecta.setText(resumenReparto.getNumDirIncorrectas().toString());
             tv_ausente.setText(resumenReparto.getNumAusentes().toString());
             tv_ausente_pendiente.setText(resumenReparto.getNumAusentesPendientes().toString());
@@ -265,28 +296,34 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             Toast toast = null;
             toast = Toast.makeText(ResumenRepartoActivity.this, "Existen notificaciones sin foto por lo que no se puede cerrar el reparto", Toast.LENGTH_LONG);
             toast.show();
-        }
-        else {
-            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.cerrar_reparto);
-            builder.setMessage(R.string.cerrar_reparto_info);
-            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    // Lanza la tarea en background de la carga del fichero SICER
-                    CerrarRepartoTASK cerrarRepartoTASK = new CerrarRepartoTASK();
-                    cerrarRepartoTASK.execute();
-                }
-            });
-            builder.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+            } else if (totNotisGestionadas != totXML) {
+                Toast toast = null;
+                toast = Toast.makeText(ResumenRepartoActivity.this, "Existen notificaciones sin XML por lo que no se puede cerrar el reparto", Toast.LENGTH_LONG);
+                toast.show();
+                } else if (totNotisGestionadas != totST) {
+                Toast toast = null;
+                toast = Toast.makeText(ResumenRepartoActivity.this, "Existen notificaciones sin ST por lo que no se puede cerrar el reparto", Toast.LENGTH_LONG);
+                toast.show();
+                } else {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle(R.string.cerrar_reparto);
+                    builder.setMessage(R.string.cerrar_reparto_info);
+                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Lanza la tarea en background de la carga del fichero SICER
+                            CerrarRepartoTASK cerrarRepartoTASK = new CerrarRepartoTASK();
+                            cerrarRepartoTASK.execute();
+                        }
+                    });
+                    builder.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
 
-                @Override
-                public void onClick(DialogInterface dialogInterface, int wich) {
-                    dialogInterface.cancel();
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int wich) {
+                            dialogInterface.cancel();
+                        }
+                    });
+                    builder.show();
                 }
-            });
-
-            builder.show();
-        }
     }
 
     /**
@@ -308,7 +345,6 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
             String fallo = "";
             File ficheroZIP = null;
             File ficheroCSV = null;
-            File ficheroTXT = null;
 
             DateFormat dfDia = new SimpleDateFormat("ddMMyyyy");
             // Modificación 
@@ -520,7 +556,6 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
 
         builder.show();
     }
-
 
     /**
      * Clase privada que se encarga de eliminar todas las notificaciones

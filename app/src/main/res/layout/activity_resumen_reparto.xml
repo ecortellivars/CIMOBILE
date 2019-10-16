@@ -85,9 +85,10 @@
                     android:textSize="10sp"
                     android:textStyle="bold" />
             </TableRow>
+
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/textView_resumen_total_notif_pendientes_2_otro_dia"
@@ -428,12 +429,12 @@
 
                     <TextView
                         android:id="@+id/textView_resumen_total_notif_gestionadas"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:text="@string/total_notificaciones_acabadas"
                         android:textAllCaps="false"
                         android:textColor="@color/colorBackgroundNoEntregado"
-                        android:textSize="14sp"
+                        android:textSize="12sp"
                         android:textStyle="bold|italic" />
 
                     <TextView
@@ -448,18 +449,72 @@
                 </TableRow>
 
                 <TableRow
+                    android:id="@+id/tabla_resumen_xml"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textView_resumen_total_xml"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="@string/total_xml"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/colorBackgroundNoEntregado"
+                        android:textSize="12sp"
+                        android:textStyle="italic" />
+
+                    <TextView
+                        android:id="@+id/textView_resumen_total_xml_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="20dp"
+                        android:textSize="15sp"
+                        android:textColor="@color/colorBackgroundNoEntregado"
+                        android:textStyle="bold" />
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/tabla_resumen_st"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/textView_resumen_total_st"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="@string/total_st"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/colorBackgroundNoEntregado"
+                        android:textSize="12sp"
+                        android:textStyle="italic" />
+
+                    <TextView
+                        android:id="@+id/textView_resumen_total_st_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="20dp"
+                        android:textSize="15sp"
+                        android:textColor="@color/colorBackgroundNoEntregado"
+                        android:textStyle="bold" />
+                </TableRow>
+
+                <TableRow
                     android:id="@+id/tabla_resumen_total_fotos"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
                     <TextView
                         android:id="@+id/textView_resumen_total_fotos"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:text="@string/total_fotos"
+                        android:textAlignment="textEnd"
                         android:textColor="@color/colorBackgroundNoEntregado"
-                        android:textSize="14sp"
-                        android:textStyle="bold|italic" />
+                        android:textDirection="firstStrongRtl"
+                        android:textSize="12sp"
+                        android:textStyle="italic" />
 
                     <TextView
                         android:id="@+id/textView_resumen_total_fotos_value"
