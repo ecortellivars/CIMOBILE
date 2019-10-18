@@ -108,6 +108,28 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
+
+    public void borrarCrearTablaNotificacion(){
+
+        SQLiteDatabase database = this.getWritableDatabase();
+        // Borrar las tabla antiguas si existe
+        database.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTIFICACION);
+
+        // Crea las tablas de nuevo
+        this.crearTablaNotificaciones(database);
+    }
+
+    public void borrarCrearTablaResultados(){
+
+        SQLiteDatabase database = this.getWritableDatabase();
+        // Borrar las tabla antiguas si existe
+        database.execSQL("DROP TABLE IF EXISTS " + TABLE_RESULTADO);
+
+        // Crea las tablas de nuevo
+        this.crearTablaResultados(database);
+    }
+
+
     /******************************************************************************************/
     /******************************** QUERIES RESULTADOS **************************************/
     /******************************************************************************************/
@@ -473,7 +495,6 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public List<Notificacion> obtenerNotificacionesGestionadas() {
         List<Notificacion> listaNotificaciones = new ArrayList<>();
-
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(
                 TABLE_NOTIFICACION,
@@ -527,10 +548,8 @@ public class DBHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
-
                     Notificacion notificacion = this.mapearCursorANotificacion(cursor);
                     listaNotificaciones.add(notificacion);
-
                 } while (cursor.moveToNext());
             }
         }
@@ -863,8 +882,10 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public Notificacion obtenerNotificacion(Integer idNotificacion) {
         Notificacion notificacion = null;
+        SQLiteDatabase db = null;
 
-        SQLiteDatabase db = this.getReadableDatabase();
+        this.crearTablaNotificaciones(db);
+        db = this.getReadableDatabase();
         Cursor cursor = db.query(
                 TABLE_NOTIFICACION,
                 new String[]{
@@ -1873,4 +1894,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         return nombreFichero;
     }
+
+
+
 }

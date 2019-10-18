@@ -124,7 +124,6 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         // Mapeamos toda la vista del layout
         this.mapearVista();
 
-
         // Obtenemos la instancia del helper de la base de datos
         dbHelper = new DBHelper(this);
 

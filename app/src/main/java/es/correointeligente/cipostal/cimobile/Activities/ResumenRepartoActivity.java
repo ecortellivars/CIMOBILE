@@ -157,9 +157,13 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                 this.crearDialogoEliminarNotificaciones();
                 borradoManual = Boolean.TRUE;
                 break;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     /**
      * Clase privada que se lanza en background para realizar las consultas a la BD SQLite y

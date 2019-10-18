@@ -89,6 +89,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
         // Este metodo recoge el item seleccionado de la lista mostrada por pantalla
         // Obtenemos la instancia del helper de la base de datos
         dbHelper = new DBHelper(this);
+
         List<Notificacion> notificaciones = dbHelper.obtenerNotificacionesGestionadas();
         if (notificaciones.size() > 0) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -121,7 +122,6 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
 
             builder.show();
         }
-
     }
 
     /**
@@ -270,6 +270,8 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                         notificacion.setEsLista(false);
                                         notificacion.setBackgroundColor(R.color.colorBackgroundSinGestionar);
                                         notificacion.setSegundoIntento(false);
+                                        notificacion.setHayST(false);
+                                        notificacion.setHayXML(false);
 
                                         if (linea.trim().endsWith("C")) {
                                             notificacion.setEsCertificado(true);
@@ -318,6 +320,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                             notificacion.setFechaHoraRes1(linea.substring(258, 277).trim());
                                             notificacion.setObservacionesRes1("");
                                             notificacion.setSegundoIntento(true);
+
                                             // Se comprueba si existe en la base de datos por lo que ya fue cargado anteriormente
                                             if (nombreFicheroSeleccionado.contains("segundo_intento_repartidores")) {
                                                 notificacion.setNombreFicheroSegundoRepartidor(nombreFicheroSeleccionado);

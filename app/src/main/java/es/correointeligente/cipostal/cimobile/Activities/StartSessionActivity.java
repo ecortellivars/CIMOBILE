@@ -32,6 +32,7 @@ import java.io.InputStreamReader;
 
 import es.correointeligente.cipostal.cimobile.Model.Notificador;
 import es.correointeligente.cipostal.cimobile.R;
+import es.correointeligente.cipostal.cimobile.Util.DBHelper;
 import es.correointeligente.cipostal.cimobile.Util.FTPHelper;
 import es.correointeligente.cipostal.cimobile.Util.Util;
 
@@ -50,6 +51,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
     FTPHelper ftpHelper;
     TextView txt_version_value;
     String fallo = null;
+    DBHelper dbHelper;
 
 
     @Override
@@ -190,7 +192,6 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
             // Si no ha habido error y el dispositivo no esta a la ultima version
             if ( args[2] == null && args[3] == null) {
                 if (hayNuevaVersion == "1") {
-
                     // Usamos la clase AlertDialog para mandar mensajes al usuario
                     // Primero le damos el contexto de la aplicacion
                     AlertDialog.Builder builder = new AlertDialog.Builder(StartSessionActivity.this);
@@ -208,6 +209,7 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
                     // Si el usuario si quiere actualizarse
                     builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialogInterface, int which) {
+
                             // Creamos el objeto que descargara la apk
                             DescargarEInstalarAPKTask descargarEInstalarAPKTask = new DescargarEInstalarAPKTask(versionMandada);
                             // Tarea en background
@@ -336,8 +338,6 @@ public class StartSessionActivity extends AppCompatActivity implements View.OnCl
             }
         }
     }
-
-
 
     /**
      * Clase publica que tiene la logica necesaria cuando el usuario hace click en el boton

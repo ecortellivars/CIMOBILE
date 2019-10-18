@@ -45,7 +45,6 @@ public class Notificacion {
     private Boolean hayXML;
     private Boolean hayST;
 
-
     // Variables de visualizacion
     private Integer backgroundColor;
 
@@ -53,9 +52,8 @@ public class Notificacion {
     }
 
     public Notificacion(Integer id, String referencia, String nombre, String direccion, String poblacion,
-                        String codigoPostal, String nombreFicheroSicer, Boolean marcada, Boolean segundoIntento,
-                        Boolean esCertificado, Integer backgroundColor, String referenciaSCB,
-                        Boolean esLista, Boolean hayXML, Boolean hayST) {
+                        String codigoPostal, String nombreFicheroSegundo, String nombreFicheroSicer, Boolean marcada, Boolean segundoIntento,
+                        Boolean esCertificado, Integer backgroundColor, String referenciaSCB, String fotoAcuse, Boolean esLista) {
         this.id = id;
         this.referencia = referencia;
         this.referenciaSCB = referenciaSCB;
@@ -64,15 +62,28 @@ public class Notificacion {
         this.poblacion = poblacion;
         this.codigoPostal = codigoPostal;
         this.nombreFicheroSicer = nombreFicheroSicer;
+        this.nombreFicheroSegundoRepartidor = nombreFicheroSegundoRepartidor;
+        this.nombreFicheroSegundoLista = nombreFicheroSegundoLista;
         this.marcada = marcada;
         this.segundoIntento = segundoIntento;
         this.esLista = esLista;
         this.backgroundColor = backgroundColor;
+        this.fotoAcuseRes1 = fotoAcuseRes1;
+        this.fotoAcuseRes2 = fotoAcuseRes2;
         this.esCertificado = esCertificado;
-        this.hayST = hayST;
-        this.hayXML = hayXML;
     }
 
+    public Boolean getHayPrimerResultado() {
+        return hayPrimerResultado;
+    }
+
+    public void setHayPrimerResultado(Boolean hayPrimerResultado) {this.hayPrimerResultado = hayPrimerResultado;}
+
+    public Boolean getHaySegundoResultado() {
+        return haySegundoResultado;
+    }
+
+    public void setHaySegundoResultado(Boolean haySegundoResultado) {this.haySegundoResultado = haySegundoResultado;}
 
     public Boolean getEsLista() {return esLista;}
 
@@ -110,7 +121,13 @@ public class Notificacion {
         this.direccion = direccion;
     }
 
-    public void setPoblacion(String poblacion) { this.poblacion = poblacion; }
+    public String getPoblacion() {
+        return poblacion;
+    }
+
+    public void setPoblacion(String poblacion) {
+        this.poblacion = poblacion;
+    }
 
     public String getCodigoPostal() {
         return codigoPostal;
@@ -334,12 +351,13 @@ public class Notificacion {
 
     public void setNombreFicheroSegundoLista(String nombreFicheroSegundoLista) {this.nombreFicheroSegundoLista = nombreFicheroSegundoLista;}
 
-    public Boolean getHayXML() {return hayXML;}
+    public Boolean getHayXML() { return hayXML; }
 
-    public void setHayXML(Boolean hayXML) {this.hayXML = hayXML;}
+    public void setHayXML(Boolean hayXML) { this.hayXML = hayXML; }
 
-    public Boolean getHayST() {return hayST;}
+    public Boolean getHayST() { return hayST; }
 
-    public void setHayST(Boolean hayST) {this.hayST = hayST;}
+    public void setHayST(Boolean hayST) { this.hayST = hayST; }
+
 
 }
