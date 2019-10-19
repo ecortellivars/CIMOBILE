@@ -227,41 +227,32 @@ public class DetalleNotificacionActivity extends BaseActivity {
             toast = Toast.makeText(this, "Foto cancelado por el usuario", Toast.LENGTH_LONG);
             toast.show();
         } else if (resultCode == CommonStatusCodes.SUCCESS) {
-            switch (requestCode){
+            switch (requestCode) {
                 case REQUEST_IMAGE_CAPTURE:
-                    fotoCamara = (Bitmap) data.getExtras().get("data");
-                    if (fotoCamara != null){
-                        // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.webp
-                        if (!esAplicacionPEE && notificacion.getResultado2() != null) {
-                            notificacion.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado2() + ".webp");
-                            notificacion.setFotoAcuseRes1(null);
-                            intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
+                    // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.webp
+                    if (!esAplicacionPEE && notificacion.getResultado2() != null) {
+                        notificacion.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado2() + ".webp");
+                        notificacion.setFotoAcuseRes1(null);
+                        intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
 
-                        } else  if (!esAplicacionPEE && notificacion.getResultado1() != null) {
-                            notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado2() + ".webp");
-                            notificacion.setFotoAcuseRes2(null);
-                            intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
-                        }
-
-                        if (intentoGuardado != 1000) {
-                            Toast toast = null;
-                            toast = Toast.makeText(this, "Resultado guardado Correctamente", Toast.LENGTH_LONG);
-                            toast.show();
-                        } else {
-                            Toast toast = null;
-                            toast = Toast.makeText(this, "Resultado NO guardado", Toast.LENGTH_LONG);
-                            toast.show();
-                        }
-                    } else {
-                        Toast toast = null;
-                        toast = Toast.makeText(this, "La foto no se ha guardado en el dispositivo", Toast.LENGTH_LONG);
-                        toast.show();
+                    } else if (!esAplicacionPEE && notificacion.getResultado1() != null) {
+                        notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado2() + ".webp");
+                        notificacion.setFotoAcuseRes2(null);
+                        intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
                     }
 
-                    break;
-                }
+                    if (intentoGuardado != 1000) {
+                        Toast toast = null;
+                        toast = Toast.makeText(this, "Resultado guardado Correctamente", Toast.LENGTH_LONG);
+                        toast.show();
+                    } else {
+                        Toast toast = null;
+                        toast = Toast.makeText(this, "Resultado NO guardado", Toast.LENGTH_LONG);
+                        toast.show();
+                    }
             }
         }
+    }
 
     private void mapearVista() {
         tv_refPostal = (TextView) findViewById(R.id.textView_detalleNotificacion_refPostal);

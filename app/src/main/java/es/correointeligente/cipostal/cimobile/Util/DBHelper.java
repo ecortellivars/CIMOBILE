@@ -24,6 +24,7 @@ public class DBHelper extends SQLiteOpenHelper {
     // Database version
     private static final int DATABASE_VERSION = 1;
     // Database name
+    // SQLiteDatabase: /data/user/0/es.correointeligente.cipostal.cimobile/databases/notificacionesManager
     private static final String DATABASE_NAME = "notificacionesManager";
 
     private Context context;
@@ -127,8 +128,13 @@ public class DBHelper extends SQLiteOpenHelper {
 
         // Crea las tablas de nuevo
         this.crearTablaResultados(database);
+        this.crearResultadosPorDefecto(database);
     }
 
+    public void eliminarBDA() {
+        this.borrarCrearTablaResultados();
+        this.borrarCrearTablaNotificacion();
+    }
 
     /******************************************************************************************/
     /******************************** QUERIES RESULTADOS **************************************/
@@ -440,6 +446,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public Boolean cargadoFicheroSEGUNDOSReparto() {
         Boolean existe = Boolean.FALSE;
+        // SQLiteDatabase: /data/user/0/es.correointeligente.cipostal.cimobile/databases/notificacionesManager
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(true,
                 TABLE_NOTIFICACION,
@@ -882,10 +889,8 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public Notificacion obtenerNotificacion(Integer idNotificacion) {
         Notificacion notificacion = null;
-        SQLiteDatabase db = null;
 
-        this.crearTablaNotificaciones(db);
-        db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(
                 TABLE_NOTIFICACION,
                 new String[]{

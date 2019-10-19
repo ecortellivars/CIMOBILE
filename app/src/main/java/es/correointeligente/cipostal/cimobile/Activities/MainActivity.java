@@ -14,6 +14,7 @@ import android.widget.Button;
 
 import es.correointeligente.cipostal.cimobile.R;
 import es.correointeligente.cipostal.cimobile.Util.BaseActivity;
+import es.correointeligente.cipostal.cimobile.Util.DBHelper;
 import es.correointeligente.cipostal.cimobile.Util.Util;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener{
@@ -23,7 +24,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     Button mCargarReparto;
     Button mCerrarSesion;
     Button mResumenReparto;
-
+    Button mResetearAPP;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
         mResumenReparto = (Button) findViewById(R.id.button_resumen_reparto);
         mResumenReparto.setOnClickListener(this);
+
+        mResetearAPP = (Button) findViewById(R.id.button_resetear_app);
+        mResetearAPP.setOnClickListener(this);
+
     }
 
     @Override
@@ -85,6 +90,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
             case R.id.button_cerrar_sesion:
                 this.cerrarSesion();
+                break;
+
+            case R.id.button_resetear_app:
+                DBHelper dbHelper;
+                dbHelper = new DBHelper(this);
+                dbHelper.eliminarBDA();
                 break;
 
             default:
