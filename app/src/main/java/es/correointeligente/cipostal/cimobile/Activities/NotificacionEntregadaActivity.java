@@ -49,10 +49,10 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
     Lienzo mLienzo;
     Toolbar mToolbar;
     DBHelper dbHelper;
-    String resultado1, referenciaPostal, referenciaPostalSCB, longitud, latitud, observaciones, notificador, esLista, esCertificado;
+    String editTextValue = " ", resultado1, referenciaPostal, referenciaPostalSCB, longitud, latitud, observaciones, notificador, esLista, esCertificado;
     Integer idNotificacion, posicionAdapter;
     Boolean esPrimerResultado;
-    EditText edt_numeroDocumentoReceptor, edt_nombreReceptor;
+    EditText edt_numeroDocumentoReceptor, edt_nombreReceptor, edt_relacionDestinatario;
     Spinner spinner_tipoDocumentoReceptor;
     Boolean numeroDocumentoValido;
     final String[] listaTiposDocumento = new String[]{Util.TIPO_DOCUMENTO_NIF, Util.TIPO_DOCUMENTO_CIF, Util.TIPO_DOCUMENTO_NIE, Util.TIPO_DOCUMENTO_OTRO};
@@ -102,6 +102,8 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
             }
         });
 
+        edt_relacionDestinatario = (EditText) findViewById(R.id.editText_notificacionEntregada_relacionDestinatario);
+        editTextValue = edt_relacionDestinatario.getText().toString();
         edt_nombreReceptor = (EditText) findViewById(R.id.editText_notificacionEntregada_nombreApellidos);
         spinner_tipoDocumentoReceptor = (Spinner) findViewById(R.id.spinner_notificacionEntregada_tipoDocumento);
         spinner_tipoDocumentoReceptor.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, listaTiposDocumento));
@@ -159,7 +161,6 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
 
         return super.onOptionsItemSelected(item);
     }
-
 
     @Override
     public void onClick(View view) {
@@ -232,6 +233,10 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
             notificacionAux.setFirmaReceptor(args[0]);
             notificacionAux.setNombreReceptor(args[1]);
             notificacionAux.setNumDocReceptor(args[2]);
+            if (editTextValue.equals("")){
+                editTextValue = "El Interesado";
+            }
+            notificacionAux.setRelacionDestinatario(editTextValue);
 
             // Dependiendo de si es una aplicación de oficina o no, el resultado entregado tiene un código u otro
             Boolean esAplicacionDeOficina = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_DE_OFICINA, getBaseContext(), Boolean.class.getSimpleName());

@@ -226,7 +226,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
             Toast toast = null;
             toast = Toast.makeText(this, "Foto cancelado por el usuario", Toast.LENGTH_LONG);
             toast.show();
-        } else if (resultCode == CommonStatusCodes.SUCCESS) {
+        } else if (resultCode == CommonStatusCodes.SUCCESS_CACHE) {
             switch (requestCode) {
                 case REQUEST_IMAGE_CAPTURE:
                     // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.webp
@@ -236,7 +236,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                         intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
 
                     } else if (!esAplicacionPEE && notificacion.getResultado1() != null) {
-                        notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado2() + ".webp");
+                        notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado1() + ".webp");
                         notificacion.setFotoAcuseRes2(null);
                         intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
                     }
@@ -251,6 +251,10 @@ public class DetalleNotificacionActivity extends BaseActivity {
                         toast.show();
                     }
             }
+        }else {
+            Toast toast = null;
+            toast = Toast.makeText(this, "NO SE PUDO HACER LA FOTO! REVISE LOS PERMISOS DE CAMARA DE LA APLICACION", Toast.LENGTH_LONG);
+            toast.show();
         }
     }
 

@@ -44,6 +44,7 @@ public class Notificacion {
     private Boolean haySegundoResultado;
     private Boolean hayXML;
     private Boolean hayST;
+    private String relacionDestinatario;
 
     // Variables de visualizacion
     private Integer backgroundColor;
@@ -53,7 +54,7 @@ public class Notificacion {
 
     public Notificacion(Integer id, String referencia, String nombre, String direccion, String poblacion,
                         String codigoPostal, String nombreFicheroSegundo, String nombreFicheroSicer, Boolean marcada, Boolean segundoIntento,
-                        Boolean esCertificado, Integer backgroundColor, String referenciaSCB, String fotoAcuse, Boolean esLista) {
+                        Boolean esCertificado, Integer backgroundColor, String referenciaSCB, String fotoAcuse, Boolean esLista, String relacionDestinatario) {
         this.id = id;
         this.referencia = referencia;
         this.referenciaSCB = referenciaSCB;
@@ -71,6 +72,7 @@ public class Notificacion {
         this.fotoAcuseRes1 = fotoAcuseRes1;
         this.fotoAcuseRes2 = fotoAcuseRes2;
         this.esCertificado = esCertificado;
+        this.relacionDestinatario = relacionDestinatario;
     }
 
     public Boolean getHayPrimerResultado() {
@@ -358,6 +360,10 @@ public class Notificacion {
     public Boolean getHayST() { return hayST; }
 
     public void setHayST(Boolean hayST) { this.hayST = hayST; }
+
+    public String getRelacionDestinatario() { return relacionDestinatario; }
+
+    public void setRelacionDestinatario(String relacionDestinatario) { this.relacionDestinatario = relacionDestinatario; }
 
 
 }

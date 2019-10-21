@@ -272,11 +272,6 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                 tv_totFotos.setVisibility(View.INVISIBLE);
                 tv_totFotos_txt.setVisibility(View.INVISIBLE);
             }
-            // Trabaja con ST
-            if (!esSt){
-                tv_totST.setVisibility(View.INVISIBLE);
-                tv_totST_txt.setVisibility(View.INVISIBLE);
-            }
 
             tv_dirIncorrecta.setText(resumenReparto.getNumDirIncorrectas().toString());
             tv_ausente.setText(resumenReparto.getNumAusentes().toString());

@@ -73,6 +73,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String KEY_NOTIFICACION_FOTO_ACUSE_RES_2 = "fotoAcuse2";
     private static final String KEY_NOTIFICACION_HAY_XML = "hayXML";
     private static final String KEY_NOTIFICACION_HAY_ST = "hayST";
+    private static final String KEY_NOTIFICACION_RELACION_DESTINATARIO = "relacionDestinatario";
 
 
     /******************************************************************************************/
@@ -1629,6 +1630,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_FOTO_ACUSE_RES_2, notificacion.getFotoAcuseRes2());
                 cv.put(KEY_NOTIFICACION_HAY_ST, notificacion.getHayST());
                 cv.put(KEY_NOTIFICACION_HAY_XML, notificacion.getHayXML());
+                cv.put(KEY_NOTIFICACION_HAY_XML, notificacion.getHayXML());
+                cv.put(KEY_NOTIFICACION_RELACION_DESTINATARIO, notificacion.getRelacionDestinatario());
+
                 if ((notificacion.getLatitudRes1() == "0") && (notificacion.getLongitudRes1() == "0")){
                     intentoGuardado = 0;
                     } else {
@@ -1648,6 +1652,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_FOTO_ACUSE_RES_2, notificacion.getFotoAcuseRes2());
                 cv.put(KEY_NOTIFICACION_HAY_ST, notificacion.getHayST());
                 cv.put(KEY_NOTIFICACION_HAY_XML, notificacion.getHayXML());
+                cv.put(KEY_NOTIFICACION_RELACION_DESTINATARIO, notificacion.getRelacionDestinatario());
+
                 // Cerramos lista al ser CERTIFICADO
                 if (notificacion.getEsCertificado()){
                     cv.put(KEY_NOTIFICACION_SEGUNDO_INTENTO,false);

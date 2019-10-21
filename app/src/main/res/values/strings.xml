@@ -72,6 +72,8 @@
     <string name="sin_resultados_posibles">Notificacion sin resultados posibles</string>
     <string name="numero_documento">Número documento</string>
     <string name="nombre_y_apellidos">Nombre y apellidos</string>
+    <string name="relacion_destinatario">Relacion Destinatario</string>
+    <string name="el_interesado">El Interesado</string>
     <string name="firma_receptor">Firma del receptor</string>
     <string name="foto_acuse_detalle">Foto del acuse</string>
     <string name="guardar">Guardar</string>

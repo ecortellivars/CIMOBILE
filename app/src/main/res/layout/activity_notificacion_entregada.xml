@@ -76,6 +76,25 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/relacion_destinatario"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/editText_notificacionEntregada_relacionDestinatario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edit_text_shape"
+                android:hint="@string/el_interesado"
+                android:inputType="textPersonName"
+                android:maxLines="1"
+                android:padding="8dp"
+                android:textStyle="bold" />
+
+
+            <TextView
                 android:layout_width="269dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
