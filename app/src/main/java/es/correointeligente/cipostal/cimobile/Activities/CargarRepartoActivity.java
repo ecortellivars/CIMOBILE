@@ -320,7 +320,6 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                             notificacion.setFechaHoraRes1(linea.substring(258, 277).trim());
                                             notificacion.setObservacionesRes1("");
                                             notificacion.setSegundoIntento(true);
-
                                             // Se comprueba si existe en la base de datos por lo que ya fue cargado anteriormente
                                             if (nombreFicheroSeleccionado.contains("segundo_intento_repartidores")) {
                                                 notificacion.setNombreFicheroSegundoRepartidor(nombreFicheroSeleccionado);

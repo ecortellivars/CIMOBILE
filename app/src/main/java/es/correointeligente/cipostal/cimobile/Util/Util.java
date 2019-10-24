@@ -404,6 +404,7 @@ public class Util {
             String notificadorString = null;
             String firmaNotificadorString = null;
 
+
             if(StringUtils.isNotBlank(notificacion.getResultado2())) {
                 resultadoString = notificacion.getResultado2();
                 resultadoDescString = notificacion.getDescResultado2();
@@ -561,6 +562,11 @@ public class Util {
                 Element nombreReceptor = doc.createElement("nombreReceptor");
                 nombreReceptor.appendChild(doc.createTextNode(notificacion.getNombreReceptor()));
                 rootElement.appendChild(nombreReceptor);
+
+                Element relacionDestinatario = doc.createElement("relacionDestinatario");
+                relacionDestinatario.appendChild(doc.createTextNode(notificacion.getRelacionDestinatario()));
+                rootElement.appendChild(relacionDestinatario);
+
 
                 fis = new FileInputStream(notificacion.getFirmaReceptor());
                 filedata = IOUtils.toByteArray(fis);

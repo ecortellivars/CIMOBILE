@@ -933,7 +933,8 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_FOTO_ACUSE_RES_1,
                         KEY_NOTIFICACION_FOTO_ACUSE_RES_2,
                         KEY_NOTIFICACION_HAY_XML,
-                        KEY_NOTIFICACION_HAY_ST
+                        KEY_NOTIFICACION_HAY_ST,
+                        KEY_NOTIFICACION_RELACION_DESTINATARIO
                 },
                 KEY_NOTIFICACION_ID + " = ?", new String[]{idNotificacion.toString()},
                 null, null, null, null
@@ -1006,7 +1007,8 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_FOTO_ACUSE_RES_1,
                         KEY_NOTIFICACION_FOTO_ACUSE_RES_2,
                         KEY_NOTIFICACION_HAY_XML,
-                        KEY_NOTIFICACION_HAY_ST
+                        KEY_NOTIFICACION_HAY_ST,
+                        KEY_NOTIFICACION_RELACION_DESTINATARIO
                 },
                 whereClause, parametros,
                 null, null, null, null
@@ -1460,6 +1462,10 @@ public class DBHelper extends SQLiteOpenHelper {
         if (columna != -1) {
             notificacion.setNombreReceptor(cursor.getString(columna));
         }
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_RELACION_DESTINATARIO);
+        if (columna != -1) {
+            notificacion.setRelacionDestinatario(cursor.getString(columna));
+        }
         columna = cursor.getColumnIndex(KEY_NOTIFICACION_FIRMA_RECEPTOR);
         if (columna != -1) {
             notificacion.setFirmaReceptor(cursor.getString(columna));
@@ -1805,6 +1811,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 + KEY_NOTIFICACION_FOTO_ACUSE_RES_2 + " TEXT, "
                 + KEY_NOTIFICACION_NOMBRE_FICHERO_SICER + " TEXT, "
                 + KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_REPARTO + " TEXT, "
+                + KEY_NOTIFICACION_RELACION_DESTINATARIO + " TEXT, "
                 + KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_LISTA + " TEXT); ";
 
         sqLiteDatabase.execSQL(qry);
