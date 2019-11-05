@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="C:\Users\scipostal\AndroidStudioProjects\cimobile\app\libs\ksoap2-android-assembly-3.6.2-jar-with-dependencies.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="b457441023b25f0b6bae28c76be982a4e49a8666">
+        <dex dex="C:\Users\scipostal\AndroidStudioProjects\cimobile\app\build\intermediates\transforms\dex\debug\folders\1000\2\ksoap2-android-assembly-3.6.2-jar-with-dependencies_9c5d1a27a59307bbd29290af557faf8158211df1\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\scipostal\AndroidStudioProjects\cimobile\app\libs\jsch-0.1.54.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="0d7d8aba0d11e8cd2f775f47cd3a6cfbf2837da4">
+        <dex dex="C:\Users\scipostal\AndroidStudioProjects\cimobile\app\build\intermediates\transforms\dex\debug\folders\1000\2\jsch-0.1.54_80c385d460b683624a8ae865e6087837e2724db3\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\scipostal\.android\build-cache\aa2c389e2a6ffa21850713a72078430706051886\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="b15c6ded887ad967e20bb335c1a121b253c04dce">
+        <dex dex="C:\Users\scipostal\AndroidStudioProjects\cimobile\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_09f49c8a2977666390858b46a59f6ca8cf96598a\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\scipostal\.gradle\caches\modules-2\files-2.1\com.android.support.constraint\constraint-layout-solver\1.1.3\bde0667d7414c16ed62d3cfe993cff7f9d732373\constraint-layout-solver-1.1.3.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="bde0667d7414c16ed62d3cfe993cff7f9d732373">
+        <dex dex="C:\Users\scipostal\AndroidStudioProjects\cimobile\app\build\intermediates\transforms\dex\debug\folders\1000\10\constraint-layout-solver-1.1.3_be4c65cb0df5e37f27ca0ca82add348972e1fdb2\classes.dex" />
+    </item>
+
+</items>
