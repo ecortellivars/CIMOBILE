@@ -28,6 +28,7 @@
 
             <Button
                 android:id="@+id/button_cargar_reparto"
+                style="@android:style/Widget.Material.Light.Button"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 android:layout_gravity="center_horizontal"
@@ -36,7 +37,8 @@
                 android:text="@string/cargar_reparto"
                 android:textAllCaps="false"
                 android:textColor="@color/cardview_dark_background"
-                android:textSize="18sp" />
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/button_resumen_reparto"
@@ -49,7 +51,8 @@
                 android:text="@string/resumen_reparto"
                 android:textAllCaps="false"
                 android:textColor="@color/cardview_dark_background"
-                android:textSize="18sp" />
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/button_nueva_notificacion"
@@ -62,7 +65,8 @@
                 android:text="@string/nueva_notificacion"
                 android:textAllCaps="false"
                 android:textColor="@color/cardview_dark_background"
-                android:textSize="18sp" />
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/button_cerrar_sesion"
@@ -84,16 +88,17 @@
 
             <Button
                 android:id="@+id/button_resetear_app"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
                 android:layout_width="wrap_content"
-                android:layout_height="70dp"
+                android:layout_height="37dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="16dp"
                 android:background="@color/colorBackgroundNoEntregado"
                 android:text="@string/resetear_app"
                 android:textAllCaps="false"
-                android:textColor="@color/cardview_dark_background"
-                android:textSize="18sp" />
+                android:textColor="@android:color/holo_orange_light"
+                android:textSize="18sp"
+                android:textStyle="bold" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

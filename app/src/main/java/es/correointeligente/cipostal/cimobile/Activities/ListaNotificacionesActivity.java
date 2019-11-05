@@ -339,7 +339,7 @@ public class ListaNotificacionesActivity extends BaseActivity {
      * su actividad
      */
     public void mapearImageButtonScanBar() {
-        mButtonScanBar = (ImageButton) findViewById(R.id.imageButton_listaNotificaciones_barScan);
+        mButtonScanBar = findViewById(R.id.imageButton_listaNotificaciones_barScan);
         mButtonScanBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
