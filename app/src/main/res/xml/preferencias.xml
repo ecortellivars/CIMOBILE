@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory android:title="Webservice de login">
 
@@ -30,7 +29,7 @@
         <EditTextPreference
             android:key="ftpPuerto"
             android:title="Puerto"
-            android:numeric="integer"
+            android:inputType ="number"
             android:summary="Puerto del servidor FTP" />
 
         <EditTextPreference
@@ -47,7 +46,7 @@
         <EditTextPreference
             android:key="ftpTimeOut"
             android:title="Timeout"
-            android:numeric="integer"
+            android:inputType ="number"
             android:summary="Tiempo de espera en ms" />
 
         <EditTextPreference
@@ -95,13 +94,13 @@
         <EditTextPreference
             android:key="sigVisitaDias"
             android:title="Dias"
-            android:numeric="integer"
+            android:inputType ="number"
             android:summary="Dias de margen para el segundo intento"/>
 
         <EditTextPreference
             android:key="sigVisitaHoras"
             android:title="Horas"
-            android:numeric="integer"
+            android:inputType ="number"
             android:summary="Horas de margen para el segundo intento"/>
 
     </PreferenceCategory>
@@ -126,6 +125,20 @@
             android:title="Aplicación de oficina"
             android:summary="Usar con tablet en la oficina para GESTIONAR LISTA"
             android:defaultValue="false"/>
+
+        <EditTextPreference
+            android:key="numDiasListaCert"
+            android:title="Dias Certificadas"
+            android:inputType ="number"
+            android:summary="Dias de Lista CERTIFICADAS"/>
+
+        <EditTextPreference
+            android:key="numDiasListaNotificaciones"
+            android:title="Dias Notificaciones"
+            android:inputType ="number"
+            android:summary="Dias de Lista NOTIFICACIONES"/>
+
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Aplicación PEE">

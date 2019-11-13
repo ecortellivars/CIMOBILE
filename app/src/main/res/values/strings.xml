@@ -42,7 +42,7 @@
     <string name="entregado">Entregado</string>
     <string name="entregadoConSinFirma">01 Entregado</string>
     <string name="todos">Todos</string>
-    <string name="entregado_con_firma_01">01 Entregado con Firma</string>
+    <string name="entregado_con_firma_01">01 Notificado en Domicilio con Firma</string>
     <string name="entregado_01">01 Entregado sin Firma</string>
     <string name="dir_incorrecta_02">02 Dir. incorrecta</string>
     <string name="ausente_31">31 Ausente (1ª Visita) </string>
@@ -113,7 +113,9 @@
     <string name="error_guardar_en_bd_localizacion">Debes INICIAR GPS (Sin cobertura se pondra (-0.0000000,00.0000000))"</string>
     <string name="guardado">GUARDADO!!!</string>
     <string name="no_guardado">NO GUARDADO!!!</string>
-    <string name="realizar_notif_en_papel">REVISE LOS PERMISOS DE LA APLICACION si estan todos activos REALICE LA NOTIFICACION EN PAPEL</string>
+    <string name="problema_guardar_realizar_notif_en_papel">PROBLEMA al guardar la notificacion en el dispositivo. REALICE LA NOTIFICACION EN PAPEL</string>
+    <string name="problema_guardar_XML_realizar_notif_en_papel">PROBLEMA al generar el fichero XML. REALICE LA NOTIFICACION EN PAPEL</string>
+    <string name="problema_guardar_ST_realizar_notif_en_papel">PROBLEMA al generar el fichero ST. Revise las PREFERENCIAS o REALICE LA NOTIFICACION EN PAPEL</string>
     <string name="notificacion_grabada_correctamente">La notificación se ha guardado correctamente</string>
     <string name="cerrar_reparto_info">Va a CERRAR el reparto, se generará el fichero con los RESULTADOS su subida al FTP y el BORRADO de los datos del dispositivo si no estas gestionando por PEE. ¿Desea Continuar?</string>
     <string name="borrar_reparto_info">Va a BORRAR el reparto, se eliminaran todos de los datos del dispositivo. ¿Desea Continuar?</string>

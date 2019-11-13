@@ -1848,13 +1848,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {
-                do {
                     Notificacion notificacion = mapearCursorANotificacionSimple(cursor);
                     nombreFichero = notificacion.getNombreFicheroSicer();
-                } while (cursor.moveToNext());
             }
         }
-
         return nombreFichero;
     }
 
@@ -1904,10 +1901,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {
-                do {
                     Notificacion notificacion = mapearCursorANotificacionSimple(cursor);
                     nombreFichero = notificacion.getNombreFicheroSegundoLista();
-                } while (cursor.moveToNext());
             }
         }
         return nombreFichero;

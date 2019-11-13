@@ -377,20 +377,11 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                 if (esCargaPrimeraEntrega) {
                                     // INSERT INTO
                                     dbHelper.guardarNotificacionesInicial(listaNotificaciones);
-                                    cargadoSICER = Boolean.TRUE;
 
                                     // seguntoIntento.txt
                                 } else {
                                     // UPDATE
                                     DBHelper.actualizarNotificacionesSegundoIntentoInicial(dbHelper, listaNotificaciones);
-                                    // Se comprueba si existe en la base de datos por lo que ya fue cargado anteriormente
-                                    if (nombreFicheroSeleccionado.contains("segundo_intento_repartidores")) {
-                                        cargadoSEGUNDOReparto = Boolean.TRUE;
-                                    }
-                                    // Se comprueba si existe en la base de datos por lo que ya fue cargado anteriormente
-                                    if (nombreFicheroSeleccionado.contains("segundo_intento_lista")) {
-                                        cargadoSEGUNDOLista = Boolean.TRUE;
-                                    }
                                 }
 
                             } catch (CiMobileException e) {

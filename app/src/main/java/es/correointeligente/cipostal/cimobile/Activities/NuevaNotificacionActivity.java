@@ -189,6 +189,8 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                 intent.putExtra("observaciones", edt_observaciones.getText().toString());
                 intent.putExtra("notificador", codigoNotificador);
                 intent.putExtra("resultado1", notificacion.getResultado1());
+                intent.putExtra("destinatario", notificacion.getNombre());
+                intent.putExtra("dirDestinatario", notificacion.getDireccion());
                 String esCertificado = "";
                 if (notificacion.getEsCertificado()) {
                     esCertificado = "1";
@@ -427,6 +429,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                         notificacion.setNotificadorRes1(obtenerNombreNotificador());
                         notificacion.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador() + ".png");
                         notificacion.setNombreReceptor("SIN RECEPTOR");
+                        notificacion.setRelacionDestinatario("NO PROCEDE");
                     }
                     // Preparamos la informacion si es Segundo Intento
                     else {
@@ -439,6 +442,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                         notificacion.setNotificadorRes2(obtenerNombreNotificador());
                         notificacion.setFirmaNotificadorRes2(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador().trim() + ".png");
                         notificacion.setNombreReceptor("SIN RECEPTOR");
+                        notificacion.setRelacionDestinatario("NO PROCEDE");
                         //notificacion.setSegundoIntento(false);
                     }
 
@@ -651,23 +655,15 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             String fallo = "";
             String ficheroST = "";
 
-            // Primero guarda el resultado de notificacion y recupera todos los datos para generar el fichero xml
-            intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
-            if(intentoGuardado == null) {
-                fallo = getString(R.string.error_guardar_en_bd)   ;
-                } else if (intentoGuardado == 0) {
+            if ((notificacion.getLatitudRes1() == "0") && (notificacion.getLongitudRes1() == "0")){
                     fallo = getString(R.string.error_guardar_en_bd_localizacion)   ;
                         } else {
-                                notificacion = dbHelper.obtenerNotificacion(idNotificacion);
                                 File ficheroXML = null;
                                 try {
                                     // Se genera el fichero XML
                                     publishProgress(getString(R.string.generado_xml));
                                     ficheroXML = Util.NotificacionToXML(notificacion, getBaseContext());
-                                    if (ficheroXML != null) {
-                                        notificacion.setHayXML(Boolean.TRUE);
-                                        dbHelper.guardaResultadoNotificacion(notificacion);
-                                    }
+
                                     // Se realiza la llamada al servidor del sellado de tiempo y se genera el fichero de sello de tiempo
                                     Boolean tsaActivo = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_ACTIVO, getBaseContext(), Boolean.class.getSimpleName());
                                     if(BooleanUtils.isTrue(tsaActivo)) {
@@ -683,19 +679,26 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                                         }
                                         TimeStamp t = TimeStamp.stampDocument(FileUtils.readFileToByteArray(ficheroXML), new URL(tsaUrl), timeStampRequestParameters, null);
                                         ficheroST = Util.guardarFicheroSelloTiempo(notificacion, t.toDER());
-                                        if (ficheroST != ""){
-                                            notificacion.setHayST(Boolean.TRUE);
-                                            dbHelper.guardaResultadoNotificacion(notificacion);
-                                        }
                                     }
-
+                                if (ficheroXML != null) {
+                                    notificacion.setHayXML(Boolean.TRUE);
+                                }
+                                if (ficheroST != ""){
+                                    notificacion.setHayST(Boolean.TRUE);
+                                }
+                                if (!notificacion.getHayXML()){
+                                    fallo = getString(R.string.problema_guardar_XML_realizar_notif_en_papel);
+                                    } else if (!notificacion.getHayST()){
+                                        fallo = getString(R.string.problema_guardar_ST_realizar_notif_en_papel);
+                                        } else {
+                                            dbHelper.guardaResultadoNotificacion(notificacion);
+                                            }
                                 } catch (CiMobileException e) {
                                     fallo = e.getError();
                                 } catch (IOException e) {
                                     fallo = getString(R.string.error_lectura_fichero_xml);
                                 }
                             }
-
             return fallo;
         }
 
@@ -714,12 +717,12 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             AlertDialog.Builder builder = new AlertDialog.Builder(NuevaNotificacionActivity.this);
             // Si hubo fallo en el XML y en el SELLO de TIEMPO
             if(fallo != null && !fallo.isEmpty()) {
-                // Fallo al guardar
-                if(intentoGuardado == null) {
+                fallo = "";
+                if (notificacion.getHayXML().booleanValue() == false){
                     builder.setTitle(R.string.no_guardado);
                     // Añadir texto indicando que como no se ha generado ni el sello de tiempo ni el xml, esa notificacion
                     // debera realizarla en papel
-                    fallo += getString(R.string.realizar_notif_en_papel);
+                    fallo += getString(R.string.problema_guardar_XML_realizar_notif_en_papel);
                     builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialogInterface, int which) {
                             Intent intentResultado = new Intent();
@@ -730,33 +733,64 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                             finish();
                         }
                     });
+                    } else if (notificacion.getHayST().booleanValue() == false){
+                        builder.setTitle(R.string.no_guardado);
+                        // Añadir texto indicando que como no se ha generado ni el sello de tiempo ni el xml, esa notificacion
+                        // debera realizarla en papel
+                        fallo += getString(R.string.problema_guardar_ST_realizar_notif_en_papel);
+                        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialogInterface, int which) {
+                                Intent intentResultado = new Intent();
+                                intentResultado.putExtra("posicionAdapter", posicionAdapter);
+                                intentResultado.putExtra("idNotificacion", idNotificacion);
+                                setResult(CommonStatusCodes.SUCCESS, intentResultado);
+                                dialogInterface.dismiss();
+                                finish();
+                            }
+                        });
+                        } else
+                        // Fallo al guardar
+                        if(intentoGuardado == null) {
+                            builder.setTitle(R.string.no_guardado);
+                            // Añadir texto indicando que como no se ha generado ni el sello de tiempo ni el xml, esa notificacion
+                            // debera realizarla en papel
+                            fallo += getString(R.string.problema_guardar_realizar_notif_en_papel);
+                            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialogInterface, int which) {
+                                    Intent intentResultado = new Intent();
+                                    intentResultado.putExtra("posicionAdapter", posicionAdapter);
+                                    intentResultado.putExtra("idNotificacion", idNotificacion);
+                                    setResult(CommonStatusCodes.SUCCESS, intentResultado);
+                                    dialogInterface.dismiss();
+                                    finish();
+                                }
+                            });
 
-                } else {
-                    builder.setTitle(R.string.no_guardado);
-                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialogInterface, int which) {
-                            dialogInterface.dismiss();
+                            } else  {
+                                        builder.setTitle(R.string.guardado);
+                                        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialogInterface, int which) {
+                                                dialogInterface.dismiss();
+                                            }
+                                        });
+                                    }
+                        builder.setMessage(fallo);
+                        } else {
+                            // Guardado y generado correctamente
+                            builder.setTitle(R.string.guardado);
+                            builder.setMessage(R.string.notificacion_grabada_correctamente);
+                            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialogInterface, int which) {
+                                    Intent intentResultado = new Intent();
+                                    intentResultado.putExtra("posicionAdapter", posicionAdapter);
+                                    intentResultado.putExtra("idNotificacion", idNotificacion);
+                                    setResult(CommonStatusCodes.SUCCESS, intentResultado);
+                                    dialogInterface.dismiss();
+
+                                    finish();
+                                }
+                            });
                         }
-                    });
-                }
-
-                builder.setMessage(fallo);
-            } else {
-                // Guardado y generado correctamente
-                builder.setTitle(R.string.guardado);
-                builder.setMessage(R.string.notificacion_grabada_correctamente);
-                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialogInterface, int which) {
-                        Intent intentResultado = new Intent();
-                        intentResultado.putExtra("posicionAdapter", posicionAdapter);
-                        intentResultado.putExtra("idNotificacion", idNotificacion);
-                        setResult(CommonStatusCodes.SUCCESS, intentResultado);
-                        dialogInterface.dismiss();
-                        mGoogleApiClient = null;
-                        finish();
-                    }
-                });
-            }
             // Crear el dialogo con los parametros que se han definido y se muestra por pantalla
             builder.show();
         }

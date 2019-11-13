@@ -294,8 +294,8 @@ public class DetalleNotificacionActivity extends BaseActivity {
             tv_nombre.setText(notificacion.getNombre().toString());
             tv_direccion.setText(notificacion.getDireccion().toString());
 
-            TextView tv_XML1, tv_ST1, tv_receptor1 = null, tv_resultado1, tv_fecha1, tv_notificador1, tv_longitud1, tv_latitud1, tv_observaciones1, tv_cabeceraResultado1;
-            TextView tv_XML2, tv_ST2, tv_receptor2 = null, tv_resultado2, tv_fecha2, tv_notificador2, tv_longitud2, tv_latitud2, tv_observaciones2, tv_cabeceraResultado2;
+            TextView tv_relacion_destinatario1 = null, tv_XML1, tv_ST1, tv_receptor1 = null, tv_resultado1, tv_fecha1, tv_notificador1, tv_longitud1, tv_latitud1, tv_observaciones1, tv_cabeceraResultado1;
+            TextView tv_relacion_destinatario2 = null, tv_XML2, tv_ST2, tv_receptor2 = null, tv_resultado2, tv_fecha2, tv_notificador2, tv_longitud2, tv_latitud2, tv_observaciones2, tv_cabeceraResultado2;
             ImageView img_firma_receptor = null;
             ImageView img_foto_acuse_res1;
             ImageView img_foto_acuse_res2 = null;
@@ -355,6 +355,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                 tv_observaciones2 = (TextView) linearLayout2.findViewById(R.id.tv_result_entregado_observaciones);
                 tv_cabeceraResultado2 = (TextView) linearLayout2.findViewById(R.id.tv_result_entregado_cabecera_resultado);
                 tv_receptor2 = (TextView)linearLayout2.findViewById(R.id.tv_result_entregado_receptor);
+                tv_relacion_destinatario2 = (TextView)linearLayout2.findViewById(R.id.tv_result_entregado_relacion_destinatario);
                 tv_XML2 = (TextView) linearLayout1.findViewById(R.id.tv_result_xml);
                 tv_ST2 = (TextView) linearLayout1.findViewById(R.id.tv_result_st);
 
@@ -390,6 +391,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                 } else {
                     tv_ST2.setText("NO EXISTE");
                 }
+                tv_relacion_destinatario2.setText(notificacion.getRelacionDestinatario());
 
 
                 // Buscamos la imagen de la firma si la hay
@@ -448,6 +450,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     tv_latitud1 = (TextView) linearLayout.findViewById(R.id.tv_result_entregado_latitud);
                     tv_observaciones1 = (TextView) linearLayout.findViewById(R.id.tv_result_entregado_observaciones);
                     tv_receptor1 = (TextView)linearLayout.findViewById(R.id.tv_result_entregado_receptor);
+                    tv_relacion_destinatario1 = (TextView)linearLayout.findViewById(R.id.tv_result_entregado_relacion_destinatario);
                     img_firma_receptor = (ImageView) linearLayout.findViewById(R.id.imageView_result_entregado_firma);
                     tv_XML1 = (TextView) linearLayout.findViewById(R.id.tv_result_xml);
                     tv_ST1 = (TextView) linearLayout.findViewById(R.id.tv_result_st);
@@ -481,6 +484,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     } else {
                         tv_ST1.setText("NO EXISTE");
                     }
+                    tv_relacion_destinatario1.setText(notificacion.getRelacionDestinatario());
 
                     layoutResultado1.addView(linearLayout);
 
@@ -615,8 +619,6 @@ public class DetalleNotificacionActivity extends BaseActivity {
         } catch (IOException e) {
             fallo = getString(R.string.error_lectura_fichero_xml);
         }
-
-
         //return fallo;
     }
 

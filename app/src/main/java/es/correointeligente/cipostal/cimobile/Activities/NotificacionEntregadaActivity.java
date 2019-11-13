@@ -49,7 +49,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
     Lienzo mLienzo;
     Toolbar mToolbar;
     DBHelper dbHelper;
-    String editTextValue = " ", resultado1, referenciaPostal, referenciaPostalSCB, longitud, latitud, observaciones, notificador, esLista, esCertificado;
+    String  dirDestinatario, destinatario, resultado1, referenciaPostal, referenciaPostalSCB, longitud, latitud, observaciones, notificador, esLista, esCertificado;
     Integer idNotificacion, posicionAdapter;
     Boolean esPrimerResultado;
     EditText edt_numeroDocumentoReceptor, edt_nombreReceptor, edt_relacionDestinatario;
@@ -58,6 +58,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
     final String[] listaTiposDocumento = new String[]{Util.TIPO_DOCUMENTO_NIF, Util.TIPO_DOCUMENTO_CIF, Util.TIPO_DOCUMENTO_NIE, Util.TIPO_DOCUMENTO_OTRO};
     Button btn_guardar;
     Integer intentoGuardado = null;
+    Notificacion notificacionAux = new Notificacion();
 
 
     @Override
@@ -83,6 +84,8 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
         resultado1 = getIntent().getStringExtra("resultado1");
         esCertificado = getIntent().getStringExtra("esCertificado");
         esLista = getIntent().getStringExtra("esLista");
+        destinatario = getIntent().getStringExtra("destinatario");
+        dirDestinatario = getIntent().getStringExtra("dirDestinatario");
 
 
         // Logica del DNI
@@ -103,7 +106,6 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
         });
 
         edt_relacionDestinatario = (EditText) findViewById(R.id.editText_notificacionEntregada_relacionDestinatario);
-        editTextValue = edt_relacionDestinatario.getText().toString();
         edt_nombreReceptor = (EditText) findViewById(R.id.editText_notificacionEntregada_nombreApellidos);
         spinner_tipoDocumentoReceptor = (Spinner) findViewById(R.id.spinner_notificacionEntregada_tipoDocumento);
         spinner_tipoDocumentoReceptor.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, listaTiposDocumento));
@@ -130,6 +132,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
         // Se fuerza que el inputText se haga entero en mayusculas
         edt_numeroDocumentoReceptor.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         edt_nombreReceptor.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
+        edt_relacionDestinatario.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
         // Zona para la firma del ciudadano
         mLienzo = (Lienzo) findViewById(R.id.lienzo_firma);
@@ -171,6 +174,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
 
                 // Primero se pone el fondo en su color original para validar posteriormente
                 edt_nombreReceptor.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape));
+                edt_relacionDestinatario.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape));
                 if(StringUtils.isNotBlank(edt_nombreReceptor.getText().toString())) {
 
                     // Guarda la imagen firmada en el sistema de archivos
@@ -185,7 +189,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
 
                             // Lanza en background el guardado de la notificacion entregada
                             GuardarNotificacionEntregadaTask guardarNotificacionEntregadaTask = new GuardarNotificacionEntregadaTask();
-                            guardarNotificacionEntregadaTask.execute(file.getPath(), edt_nombreReceptor.getText().toString(), edt_numeroDocumentoReceptor.getText().toString());
+                            guardarNotificacionEntregadaTask.execute(file.getPath(), edt_nombreReceptor.getText().toString(), edt_numeroDocumentoReceptor.getText().toString(), edt_relacionDestinatario.getText().toString());
                         } catch (Exception e) {
                             e.printStackTrace();
                             Toast toast = null;
@@ -228,15 +232,15 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
             DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             String fechaHoraString = df.format(Calendar.getInstance().getTime());
 
-            Notificacion notificacionAux = new Notificacion();
             notificacionAux.setId(idNotificacion);
             notificacionAux.setFirmaReceptor(args[0]);
             notificacionAux.setNombreReceptor(args[1]);
             notificacionAux.setNumDocReceptor(args[2]);
-            if (editTextValue.equals("")){
-                editTextValue = "El Interesado";
+            String relacionDestinatario = args[3];
+            if (relacionDestinatario.equals("")) {
+                relacionDestinatario = "El Interesado";
             }
-            notificacionAux.setRelacionDestinatario(editTextValue);
+            notificacionAux.setRelacionDestinatario(relacionDestinatario);
 
             // Dependiendo de si es una aplicación de oficina o no, el resultado entregado tiene un código u otro
             Boolean esAplicacionDeOficina = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_DE_OFICINA, getBaseContext(), Boolean.class.getSimpleName());
@@ -264,6 +268,13 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setNotificadorRes1(obtenerNombreNotificador());
                 notificacionAux.setFirmaNotificadorRes1(Util.obtenerRutaFirmaNotificador() + File.separator + obtenerCodigoNotificador().trim() + ".png");
                 notificacionAux.setSegundoIntento(!esPrimerResultado);
+                notificacionAux.setHayST(Boolean.FALSE);
+                notificacionAux.setHayXML(Boolean.FALSE);
+                notificacionAux.setReferencia(referenciaPostal);
+                notificacionAux.setReferenciaSCB(referenciaPostalSCB);
+                notificacionAux.setNombre(destinatario);
+                notificacionAux.setDireccion(dirDestinatario);
+
                 if (esCertificado.equals("0")) {
                     notificacionAux.setEsCertificado(false);
                 }else{
@@ -290,6 +301,11 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 notificacionAux.setSegundoIntento(esPrimerResultado);
                 notificacionAux.setHayST(Boolean.FALSE);
                 notificacionAux.setHayXML(Boolean.FALSE);
+                notificacionAux.setReferencia(referenciaPostal);
+                notificacionAux.setReferenciaSCB(referenciaPostalSCB);
+                notificacionAux.setNombre(destinatario);
+                notificacionAux.setDireccion(dirDestinatario);
+
                 if (esCertificado.equals("0")) {
                     notificacionAux.setEsCertificado(false);
                 }else{
@@ -306,51 +322,55 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                 //notificacionAux.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse()  + File.separator  + referenciaPostal + "_" + fechaHoraFoto2  + "_" + fechaHoraFoto2   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + notificacionAux.getResultado2() + ".jpg");
             }
 
-            intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacionAux);
+            String ficheroST = "";
+            if (((notificacionAux.getLatitudRes1() == "0") && (notificacionAux.getLongitudRes1() == "0"))
+             || ((notificacionAux.getLatitudRes2() == "0") && (notificacionAux.getLongitudRes2() == "0"))){
+                fallo = getString(R.string.error_guardar_en_bd_localizacion)   ;
+                } else {
+                    File ficheroXML = null;
+                    try {
+                        // Se genera el fichero XML
+                        publishProgress(getString(R.string.generado_xml));
+                        ficheroXML = Util.NotificacionToXML(notificacionAux, getBaseContext());
 
-            if(intentoGuardado == null) {
-                fallo = getString(R.string.error_guardar_en_bd);
-            } else {
-                notificacionAux = dbHelper.obtenerNotificacion(idNotificacion);
-                File ficheroXML = null;
-                String ficheroST = null;
-
-                try {
-                    // Se genera el fichero XML
-                    publishProgress(getString(R.string.generado_xml));
-                    ficheroXML = Util.NotificacionToXML(notificacionAux, getBaseContext());
-                    if (ficheroXML != null){
-                        notificacionAux.setHayXML(Boolean.TRUE);
-                        dbHelper.guardaResultadoNotificacion(notificacionAux);
-                    }
-                    // Se realiza la llamada al servidor del sellado de tiempo y se genera el fichero de sello de tiempo
-                    Boolean tsaActivo = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_ACTIVO, getBaseContext(), Boolean.class.getSimpleName());
-                    if(BooleanUtils.isTrue(tsaActivo)) {
-                        String tsaUrl = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_URL, getBaseContext(), String.class.getSimpleName());
-                        String tsaUser = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_USER, getBaseContext(), String.class.getSimpleName());
-                        TimeStampRequestParameters timeStampRequestParameters = null;
-                        if (StringUtils.isNotBlank(tsaUser)) {
-                            String tsaPassword = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_PASSWORD, getBaseContext(), String.class.getSimpleName());
-                            timeStampRequestParameters = new TimeStampRequestParameters();
-                            timeStampRequestParameters.setUser(tsaUser);
-                            timeStampRequestParameters.setPassword(tsaPassword);
+                        // Se realiza la llamada al servidor del sellado de tiempo y se genera el fichero de sello de tiempo
+                        Boolean tsaActivo = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_ACTIVO, getBaseContext(), Boolean.class.getSimpleName());
+                        if(BooleanUtils.isTrue(tsaActivo)) {
+                            publishProgress(getString(R.string.generado_sello_de_tiempo));
+                            String tsaUrl = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_URL, getBaseContext(), String.class.getSimpleName());
+                            String tsaUser = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_USER, getBaseContext(), String.class.getSimpleName());
+                            TimeStampRequestParameters timeStampRequestParameters = null;
+                            if (StringUtils.isNotBlank(tsaUser)) {
+                                String tsaPassword = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_PASSWORD, getBaseContext(), String.class.getSimpleName());
+                                timeStampRequestParameters = new TimeStampRequestParameters();
+                                timeStampRequestParameters.setUser(tsaUser);
+                                timeStampRequestParameters.setPassword(tsaPassword);
+                            }
+                            TimeStamp t = TimeStamp.stampDocument(FileUtils.readFileToByteArray(ficheroXML), new URL(tsaUrl), timeStampRequestParameters, null);
+                            ficheroST = Util.guardarFicheroSelloTiempo(notificacionAux, t.toDER());
                         }
-                        publishProgress(getString(R.string.generado_sello_de_tiempo));
-                        TimeStamp t = TimeStamp.stampDocument(FileUtils.readFileToByteArray(ficheroXML), new URL(tsaUrl), timeStampRequestParameters, null);
-                        ficheroST = Util.guardarFicheroSelloTiempo(notificacionAux, t.toDER());
-                        if (ficheroST != null){
+                        if (ficheroXML != null) {
+                            notificacionAux.setHayXML(Boolean.TRUE);
+                        }
+                        if (ficheroST != ""){
                             notificacionAux.setHayST(Boolean.TRUE);
-                            dbHelper.guardaResultadoNotificacion(notificacionAux);
                         }
+                        if (!notificacionAux.getHayXML()){
+                            fallo = getString(R.string.problema_guardar_XML_realizar_notif_en_papel);
+                            } else if (!notificacionAux.getHayST()){
+                                fallo = getString(R.string.problema_guardar_ST_realizar_notif_en_papel);
+                                } else {
+                                    dbHelper.guardaResultadoNotificacion(notificacionAux);
+                                }
+                    } catch (CiMobileException e) {
+                        fallo = e.getError();
+                    } catch (IOException e) {
+                        fallo = getString(R.string.error_lectura_fichero_xml);
                     }
-                } catch (CiMobileException e) {
-                    fallo = e.getError();
-                } catch (IOException e) {
-                    fallo = getString(R.string.error_lectura_fichero_xml);
                 }
-            }
             return fallo;
-         }
+        }
+
 
         @Override
         protected void onProgressUpdate(String... values) {
@@ -366,13 +386,14 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
             // Se crea el dialogo de respuesta del guardado
             AlertDialog.Builder builder = new AlertDialog.Builder(NotificacionEntregadaActivity.this);
 
+            // Si hubo fallo en el XML y en el SELLO de TIEMPO
             if(fallo != null && !fallo.isEmpty()) {
-                // Fallo al guardar
-                if(intentoGuardado == null) {
+                fallo = "";
+                if (notificacionAux.getHayXML().booleanValue() == false){
                     builder.setTitle(R.string.no_guardado);
                     // Añadir texto indicando que como no se ha generado ni el sello de tiempo ni el xml, esa notificacion
                     // debera realizarla en papel
-                    fallo += getString(R.string.realizar_notif_en_papel);
+                    fallo += getString(R.string.problema_guardar_XML_realizar_notif_en_papel);
                     builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialogInterface, int which) {
                             Intent intentResultado = new Intent();
@@ -383,16 +404,47 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                             finish();
                         }
                     });
-
-                } else {
-                    builder.setTitle(R.string.guardado);
+                } else if (notificacionAux.getHayST().booleanValue() == false){
+                    builder.setTitle(R.string.no_guardado);
+                    // Añadir texto indicando que como no se ha generado ni el sello de tiempo ni el xml, esa notificacion
+                    // debera realizarla en papel
+                    fallo += getString(R.string.problema_guardar_ST_realizar_notif_en_papel);
                     builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialogInterface, int which) {
+                            Intent intentResultado = new Intent();
+                            intentResultado.putExtra("posicionAdapter", posicionAdapter);
+                            intentResultado.putExtra("idNotificacion", idNotificacion);
+                            setResult(CommonStatusCodes.SUCCESS, intentResultado);
                             dialogInterface.dismiss();
+                            finish();
                         }
                     });
-                }
+                } else
+                    // Fallo al guardar
+                    if(intentoGuardado == null) {
+                        builder.setTitle(R.string.no_guardado);
+                        // Añadir texto indicando que como no se ha generado ni el sello de tiempo ni el xml, esa notificacion
+                        // debera realizarla en papel
+                        fallo += getString(R.string.problema_guardar_realizar_notif_en_papel);
+                        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialogInterface, int which) {
+                                Intent intentResultado = new Intent();
+                                intentResultado.putExtra("posicionAdapter", posicionAdapter);
+                                intentResultado.putExtra("idNotificacion", idNotificacion);
+                                setResult(CommonStatusCodes.SUCCESS, intentResultado);
+                                dialogInterface.dismiss();
+                                finish();
+                            }
+                        });
 
+                    } else  {
+                        builder.setTitle(R.string.guardado);
+                        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialogInterface, int which) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                    }
                 builder.setMessage(fallo);
             } else {
                 // Guardado y generado correctamente
@@ -409,11 +461,10 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                         finish();
                     }
                 });
-
             }
             // Crear el dialogo con los parametros que se han definido y se muestra por pantalla
             builder.show();
         }
     }
-
 }
+

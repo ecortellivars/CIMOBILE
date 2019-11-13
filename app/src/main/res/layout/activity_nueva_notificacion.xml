@@ -191,7 +191,7 @@
                     android:background="@color/colorBotonEntregadoPressed"
                     android:text="@string/todos"
                     android:textAllCaps="false"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/cardview_dark_background"
                     android:textColorLink="@drawable/button_selector"
                     android:textSize="24sp" />
 
@@ -206,8 +206,8 @@
                     android:background="@drawable/button_entregado"
                     android:text="@string/entregado_con_firma_01"
                     android:textAllCaps="false"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp" />
+                    android:textColor="@color/cardview_dark_background"
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
