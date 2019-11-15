@@ -234,6 +234,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         protected List<Resultado> doInBackground(Void... voids) {
             Boolean esAplicacionOficina = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_DE_OFICINA, getBaseContext(), Boolean.class.getSimpleName());
             Boolean esAplicacionPEE = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_PEE, getBaseContext(), Boolean.class.getSimpleName());
+
             Notificacion notificacion = dbHelper.obtenerNotificacion(idNotificacion);
             // Hay PRIMERA VISITA
             if (notificacion.getResultado1() != null) {
@@ -316,6 +317,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             tv_direccion.setText(notificacion.getDireccion().toString());
             ll_detallePrimerIntento.setVisibility(View.INVISIBLE);
             ll_botonera.setVisibility(View.VISIBLE);
+            Boolean esAplicacionOficina = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_DE_OFICINA, getBaseContext(), Boolean.class.getSimpleName());
 
             // Si requiere segundo intento lo muestro
             if (BooleanUtils.isTrue(notificacion.getSegundoIntento())) {

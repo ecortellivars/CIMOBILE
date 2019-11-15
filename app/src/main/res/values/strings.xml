@@ -3,6 +3,7 @@
     <string name="iniciar_sesion">Iniciar sesión</string>
     <string name="iniciando_sesion">Iniciando sesión</string>
     <string name="titulo_logout">CERRAR SESION (Sin Cerrar Reparto)</string>
+    <string name="titulo_regenerarBDA">REGENERAR BASE DE DATOS</string>
     <string name="nueva_notificacion">NUEVA notificación</string>
     <string name="resetear_app">RESETEAR APP</string>
     <string name="borrar_reparto">BORRAR Reparto</string>
@@ -12,6 +13,7 @@
     <string name="sin_resultados">Sin resultados</string>
     <string name="cargando_resultados">Cargando resultados</string>
     <string name="detalle_logout">Va a salir y cerrar la sesión, ¿Desea continuar?</string>
+    <string name="detalle_regenerar_bda">ATENCION!!! SE PERDERAN TODOS LOS DATOS!!</string>
     <string name="ok">OK</string>
     <string name="cancelar">Cancelar</string>
     <string name="volver">Volver</string>

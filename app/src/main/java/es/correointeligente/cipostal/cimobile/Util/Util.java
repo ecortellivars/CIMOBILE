@@ -129,6 +129,9 @@ public class Util {
     public final static String CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_DIAS = "sigVisitaDias";
     public final static String CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_HORAS = "sigVisitaHoras";
 
+    public final static String CLAVE_PREFERENCIAS_DIAS_CERTIFICADAS_LISTA = "listaCertDias";
+    public final static String CLAVE_PREFERENCIAS_DIAS_NA_LISTA = "listaNADias";
+
     public final static String CLAVE_PREFERENCIAS_APP_DE_OFICINA = "usarAPPEnOficina";
     public final static String CLAVE_PREFERENCIAS_APP_PEE = "usarAPPPEE";
 
@@ -183,6 +186,8 @@ public class Util {
             // En realidad son 3 días pero cuando coincide en finde no deja hacerla
             e.putString(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_DIAS, "5");
             e.putString(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_HORAS, "3");
+
+
 
             // Preferencias para el uso de la aplicación en oficina
             e.putBoolean(Util.CLAVE_PREFERENCIAS_APP_DE_OFICINA, false);

@@ -15,7 +15,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +41,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
     FicheroAdapter itemsAdapter;
     DBHelper dbHelper;
     FTPHelper ftpHelper;
+    Date fechaHoraRes1Date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -327,6 +332,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                             // Se comprueba si existe en la base de datos por lo que ya fue cargado anteriormente
                                             if (nombreFicheroSeleccionado.contains("segundo_intento_lista")) {
                                                 notificacion.setNombreFicheroSegundoLista(nombreFicheroSeleccionado);
+                                                fechaHoraRes1Date = this.stringToDate(notificacion.getFechaHoraRes1(), "dd/MM/yyyy HH:mm:ss");
                                             }
 
                                             // Es LISTA
@@ -341,10 +347,20 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                             // LISTA
                                             if (notificacion.getEsLista()) {
                                                 if (notificacion.getEsCertificado()) {
-                                                    colorBackground = R.color.colorPrimary;
+                                                    colorBackground = R.color.colorPrimaryDark;
+                                                    Integer numDiasCert = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_DIAS_CERTIFICADAS_LISTA, getBaseContext(), Integer.class.getSimpleName());
+                                                    Calendar calendar = Calendar.getInstance();
+                                                    calendar.setTime(fechaHoraRes1Date);
+                                                    calendar.add(Calendar.DAY_OF_MONTH, numDiasCert);
+                                                    notificacion.setfechaSalidaLista(calendar);
                                                 }
                                                 if (!notificacion.getEsCertificado()) {
                                                     colorBackground = R.color.colorBoton;
+                                                    Integer numDiasNA = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_DIAS_NA_LISTA, getBaseContext(), Integer.class.getSimpleName());
+                                                    Calendar calendar = Calendar.getInstance();
+                                                    calendar.setTime(fechaHoraRes1Date);
+                                                    calendar.add(Calendar.DAY_OF_MONTH, numDiasNA);
+                                                    notificacion.setfechaSalidaLista(calendar);
                                                 }
                                                 //NO LISTA
                                             } else {
@@ -416,6 +432,15 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
             return fallo;
         }
 
+        private Date stringToDate(String aDate,String aFormat) {
+
+            if(aDate == null) return null;
+            ParsePosition pos = new ParsePosition(0);
+            SimpleDateFormat simpledateformat = new SimpleDateFormat(aFormat);
+            Date stringDate = simpledateformat.parse(aDate, pos);
+            return stringDate;
+
+        }
         @Override
         protected void onProgressUpdate(String... values) {
             super.onProgressUpdate(values);

@@ -25,6 +25,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     Button mCerrarSesion;
     Button mResumenReparto;
     Button mResetearAPP;
+    DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,9 +94,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 break;
 
             case R.id.button_resetear_app:
-                DBHelper dbHelper;
-                dbHelper = new DBHelper(this);
-                dbHelper.eliminarBDA();
+                this.avisoRegenerarBDA();
+
                 break;
 
             default:
@@ -136,6 +136,32 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.titulo_logout);
         builder.setMessage(R.string.detalle_logout);
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                SharedPreferences.Editor e = sp.edit();
+                dbHelper.regeneraBDA();
+                e.clear();
+                e.commit();
+                finish();
+            }
+        });
+        builder.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialogInterface, int wich) {
+                dialogInterface.cancel();
+            }
+        });
+        builder.show();
+    }
+
+    /**
+     * Método privado que muestra un dialogo donde se pide confirmación para regenerar la base de datos
+     */
+    private void avisoRegenerarBDA() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.titulo_regenerarBDA);
+        builder.setMessage(R.string.detalle_regenerar_bda);
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 SharedPreferences.Editor e = sp.edit();

@@ -91,6 +91,7 @@ public class DBHelper extends SQLiteOpenHelper {
     // Constructor
     public DBHelper(Context context) {super(context, DATABASE_NAME, null, DATABASE_VERSION); this.context = context;}
 
+
     // CREATEs
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
@@ -132,7 +133,7 @@ public class DBHelper extends SQLiteOpenHelper {
         this.crearResultadosPorDefecto(database);
     }
 
-    public void eliminarBDA() {
+    public void regeneraBDA() {
         this.borrarCrearTablaResultados();
         this.borrarCrearTablaNotificacion();
     }
@@ -1557,7 +1558,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // LISTA
         if(notificacion.getEsLista()) {
             if (notificacion.getEsCertificado()){
-                colorBackground = R.color.colorPrimary;
+                colorBackground = R.color.colorPrimaryDark;
             }
             if (!notificacion.getEsCertificado()){
                 colorBackground = R.color.colorBoton;

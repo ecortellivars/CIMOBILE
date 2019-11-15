@@ -127,13 +127,13 @@
             android:defaultValue="false"/>
 
         <EditTextPreference
-            android:key="numDiasListaCert"
+            android:key="listaCertDias"
             android:title="Dias Certificadas"
             android:inputType ="number"
             android:summary="Dias de Lista CERTIFICADAS"/>
 
         <EditTextPreference
-            android:key="numDiasListaNotificaciones"
+            android:key="listaNADias"
             android:title="Dias Notificaciones"
             android:inputType ="number"
             android:summary="Dias de Lista NOTIFICACIONES"/>

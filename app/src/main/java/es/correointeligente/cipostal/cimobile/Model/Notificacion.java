@@ -1,5 +1,7 @@
 package es.correointeligente.cipostal.cimobile.Model;
 
+import java.util.Calendar;
+
 public class Notificacion {
 
     private Integer id;
@@ -45,6 +47,7 @@ public class Notificacion {
     private Boolean hayXML;
     private Boolean hayST;
     private String relacionDestinatario;
+    private Calendar fechaSalidaLista;
 
     // Variables de visualizacion
     private Integer backgroundColor;
@@ -54,7 +57,8 @@ public class Notificacion {
 
     public Notificacion(Integer id, String referencia, String nombre, String direccion, String poblacion,
                         String codigoPostal, String nombreFicheroSegundo, String nombreFicheroSicer, Boolean marcada, Boolean segundoIntento,
-                        Boolean esCertificado, Integer backgroundColor, String referenciaSCB, String fotoAcuse, Boolean esLista, String relacionDestinatario) {
+                        Boolean esCertificado, Integer backgroundColor, String referenciaSCB, String fotoAcuse, Boolean esLista,
+                        String relacionDestinatario, Calendar fechaSalidaLista) {
         this.id = id;
         this.referencia = referencia;
         this.referenciaSCB = referenciaSCB;
@@ -73,6 +77,7 @@ public class Notificacion {
         this.fotoAcuseRes2 = fotoAcuseRes2;
         this.esCertificado = esCertificado;
         this.relacionDestinatario = relacionDestinatario;
+        this.fechaSalidaLista = fechaSalidaLista;
     }
 
     public Boolean getHayPrimerResultado() {
@@ -365,5 +370,7 @@ public class Notificacion {
 
     public void setRelacionDestinatario(String relacionDestinatario) { this.relacionDestinatario = relacionDestinatario; }
 
+    public Calendar getfechaSalidaLista() {return fechaSalidaLista;}
 
+    public void setfechaSalidaLista(Calendar fechaSalidaLista) {this.fechaSalidaLista = fechaSalidaLista;}
 }
