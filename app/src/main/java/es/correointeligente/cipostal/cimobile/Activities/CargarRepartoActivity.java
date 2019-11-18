@@ -352,7 +352,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                                     Calendar calendar = Calendar.getInstance();
                                                     calendar.setTime(fechaHoraRes1Date);
                                                     calendar.add(Calendar.DAY_OF_MONTH, numDiasCert);
-                                                    notificacion.setfechaSalidaLista(calendar);
+                                                    notificacion.setfechaSalidaLista(calendar.toString());
                                                 }
                                                 if (!notificacion.getEsCertificado()) {
                                                     colorBackground = R.color.colorBoton;
@@ -360,7 +360,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                                     Calendar calendar = Calendar.getInstance();
                                                     calendar.setTime(fechaHoraRes1Date);
                                                     calendar.add(Calendar.DAY_OF_MONTH, numDiasNA);
-                                                    notificacion.setfechaSalidaLista(calendar);
+                                                    notificacion.setfechaSalidaLista(calendar.toString());
                                                 }
                                                 //NO LISTA
                                             } else {
@@ -433,14 +433,13 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
         }
 
         private Date stringToDate(String aDate,String aFormat) {
-
             if(aDate == null) return null;
             ParsePosition pos = new ParsePosition(0);
             SimpleDateFormat simpledateformat = new SimpleDateFormat(aFormat);
             Date stringDate = simpledateformat.parse(aDate, pos);
             return stringDate;
-
         }
+
         @Override
         protected void onProgressUpdate(String... values) {
             super.onProgressUpdate(values);

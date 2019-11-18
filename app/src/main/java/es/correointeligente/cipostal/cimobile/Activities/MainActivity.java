@@ -27,6 +27,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     Button mResetearAPP;
     DBHelper dbHelper;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +53,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
         mResetearAPP = (Button) findViewById(R.id.button_resetear_app);
         mResetearAPP.setOnClickListener(this);
+
+        // Obtenemos la instancia del helper de la base de datos
+        dbHelper = new DBHelper(this);
 
     }
 
@@ -95,7 +99,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
             case R.id.button_resetear_app:
                 this.avisoRegenerarBDA();
-
                 break;
 
             default:
@@ -139,7 +142,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 SharedPreferences.Editor e = sp.edit();
-                dbHelper.regeneraBDA();
                 e.clear();
                 e.commit();
                 finish();
@@ -164,9 +166,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         builder.setMessage(R.string.detalle_regenerar_bda);
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                SharedPreferences.Editor e = sp.edit();
-                e.clear();
-                e.commit();
+                dbHelper.regeneraBDA();
                 finish();
             }
         });

@@ -40,6 +40,7 @@
     <string name="detalle_notificaciones">Resumen gestionadas</string>
     <string name="detalle_notificacion">Detalle notificación</string>
     <string name="detalle_primer_intento">Detalle primer intento</string>
+    <string name="detalle_lista">Detalle lista</string>
     <string name="no_entregado">No entregado</string>
     <string name="entregado">Entregado</string>
     <string name="entregadoConSinFirma">01 Entregado</string>
@@ -106,6 +107,7 @@
     <string name="receptor">Receptor</string>
     <string name="informacion_segundo_intento_1">El segundo intento de notificación debería ser antes de las</string>
     <string name="informacion_segundo_intento_2">o después de las</string>
+    <string name="informacion_lista">No se puede añadir resultado por estar fuera de plazo de LISTA</string>
     <string name="generado_xml">Generando el fichero XML</string>
     <string name="generado_sello_de_tiempo">Generando el sello de tiempo del fichero XML</string>
     <string name="error_generar_XML">No se ha generado el fichero XML de resultados. REVISE LOS PERMISOS DEL MOVIL</string>
@@ -169,6 +171,9 @@
     <string name="error_cargar_primero_reparto_sicer">AVISO!! Debes cargar primero el SICER de reparto</string>
     <string name="info_firma_notificador">Para facilitar el trabajo durante el trabajo de reparto, se precisa que firme por primera vez para dejar constancia de la persona que notifica.</string>
     <string name="dia_limite">Día límite</string>
+    <string name="dia_limite_cert">Días límite Carta Certificada</string>
+    <string name="dia_limite_NA">Día límite Notificacion Administrativa</string>
+
     <string name="foto_acuse">Hacer Foto</string>
     <string name="foto_no_acuse">No Hacer Foto</string>
     <string name="foto_acuse_salir">SALIR</string>

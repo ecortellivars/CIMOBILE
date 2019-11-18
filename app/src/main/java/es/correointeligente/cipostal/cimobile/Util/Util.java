@@ -857,9 +857,9 @@ public class Util {
                         final char caracterFin = numeroDocumento.charAt(8);
 
                         valido = (CONTROL_SOLO_NUMEROS.indexOf(letraIni) < 0 && // ¿el caracter de control es válido como letra?
-                                                   CONTROL_NUMERO_A_LETRA.charAt(digitoD) == caracterFin) || // ¿el carácter de control es válido como dígito?
-                                                  (CONTROL_SOLO_LETRAS.indexOf(letraIni) < 0 &&
-                                                   digitoD == Character.digit(caracterFin, 10));
+                                  CONTROL_NUMERO_A_LETRA.charAt(digitoD) == caracterFin) || // ¿el carácter de control es válido como dígito?
+                                 (CONTROL_SOLO_LETRAS.indexOf(letraIni) < 0 &&
+                                  digitoD == Character.digit(caracterFin, 10));
                     }
                 }
 

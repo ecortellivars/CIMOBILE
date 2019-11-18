@@ -411,10 +411,12 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                     // Se formatea la fecha resultado y se inserta en el csv
                                     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                                     Date dateAux = formatter.parse(fechaResultadoString2);
-                                    DateFormat df = new SimpleDateFormat("yyyyMMdd");
+                                    DateFormat df1 = new SimpleDateFormat("yyyyMMdd");
                                     calendarAux.setTime(dateAux);
-                                    fechaResultadoString2 = df.format(calendarAux.getTime());
-                                    writerCSV.append(obtenerDelegacion() + ";" + obtenerCodigoNotificador() + ";" + codResultado2 + ";" + notificacion.getReferencia() + ";" + fechaResultadoString2 + ";" + fechaResultadoString2 + "\n");
+                                    fechaResultadoString2 = df1.format(calendarAux.getTime());
+                                    DateFormat df2 = new SimpleDateFormat("HH:mm");
+                                    String hora = df2.format(calendarAux.getTime());
+                                    writerCSV.append(obtenerDelegacion() + ";" + obtenerCodigoNotificador() + ";" + codResultado2 + ";" + notificacion.getReferencia() + ";" + fechaResultadoString2 + ";" + fechaResultadoString2 + ";" + hora + ";" + notificacion.getLatitudRes2() + ";" + notificacion.getLongitudRes2() + ";" + notificacion.getNombreReceptor()+ ";" + notificacion.getNumDocReceptor()+ ";" + notificacion.getRelacionDestinatario() + "\n");
 
                                 } else {
                                     // Se formatea la fecha resultado y se inserta en el csv
@@ -422,8 +424,9 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                     Date dateAux = formatter.parse(fechaResultadoString1);
                                     DateFormat df = new SimpleDateFormat("yyyyMMdd");
                                     calendarAux.setTime(dateAux);
-                                    fechaResultadoString1 = df.format(calendarAux.getTime());
-                                    writerCSV.append(obtenerDelegacion() + ";" + obtenerCodigoNotificador() + ";" + codResultado1 + ";" + notificacion.getReferencia() + ";" + fechaResultadoString1 + ";" + fechaResultadoString1 + "\n");
+                                    fechaResultadoString1 = df.format(calendarAux.getTime());  DateFormat df2 = new SimpleDateFormat("HH:mm");
+                                    String hora = df2.format(calendarAux.getTime());
+                                    writerCSV.append(obtenerDelegacion() + ";" + obtenerCodigoNotificador() + ";" + codResultado1 + ";" + notificacion.getReferencia() + ";" + fechaResultadoString1 + ";" + fechaResultadoString1 + ";" + hora + ";" +  notificacion.getLatitudRes1() + ";" + notificacion.getLongitudRes1() + ";" + notificacion.getNombreReceptor()+ ";" + notificacion.getNumDocReceptor()+ ";" + notificacion.getRelacionDestinatario() + "\n");
                                 }
                                }
 

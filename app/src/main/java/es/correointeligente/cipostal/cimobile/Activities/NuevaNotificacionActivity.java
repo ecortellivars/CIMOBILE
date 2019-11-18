@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -66,11 +67,11 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     Integer idNotificacion;
     Integer posicionAdapter;
     DBHelper dbHelper;
-    TextView tv_refPostal, tv_nombre, tv_direccion, tv_resultadoDetallePrimerIntento, tv_consejoSegundoIntento,
-            tv_latitud, tv_longitud, tv_fechaDetallePrimerIntento, tv_refSCB, tv_xml, tv_st;
+    TextView tv_consejoLista, tv_refPostal, tv_nombre, tv_direccion, tv_resultadoDetallePrimerIntento, tv_consejoSegundoIntento,
+             tv_latitud, tv_longitud, tv_fechaDetallePrimerIntento, tv_refSCB, tv_xml, tv_st;
     EditText edt_observaciones;
     Button btn_noEntregado, btn_entregado;
-    LinearLayout ll_detallePrimerIntento, ll_botonera;
+    LinearLayout ll_detalleLista, ll_detallePrimerIntento, ll_botonera;
     String[] listaResultadosNoEntrega;
     List<Resultado> listaResultadosNoNotifica, listaResultados, listaResultadosNoNotificaEliminar;
     int checkedItem;
@@ -159,6 +160,8 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         btn_noEntregado = (Button) findViewById(R.id.button_nueva_notificacion_entregado);
         btn_noEntregado.setOnClickListener(this);
         btnActualizar = (ToggleButton) findViewById(R.id.btnActualizar);
+        tv_consejoLista = (TextView) findViewById(R.id.textView_nuevaNotificacion_consejo_lista);
+        ll_detalleLista = (LinearLayout) findViewById(R.id.linearLayout_detalle_lista);
     }
 
     @Override
@@ -306,6 +309,14 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
 
         }
 
+        private Date stringToDate(String aDate,String aFormat) {
+            if(aDate == null) return null;
+            ParsePosition pos = new ParsePosition(0);
+            SimpleDateFormat simpledateformat = new SimpleDateFormat(aFormat);
+            Date stringDate = simpledateformat.parse(aDate, pos);
+            return stringDate;
+        }
+
         @Override
         protected void onPostExecute(Notificacion notificacionAux) {
 
@@ -316,65 +327,90 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             tv_nombre.setText(notificacion.getNombre().toString());
             tv_direccion.setText(notificacion.getDireccion().toString());
             ll_detallePrimerIntento.setVisibility(View.INVISIBLE);
+            ll_detalleLista.setVisibility(View.INVISIBLE);
             ll_botonera.setVisibility(View.VISIBLE);
             Boolean esAplicacionOficina = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_DE_OFICINA, getBaseContext(), Boolean.class.getSimpleName());
-
-            // Si requiere segundo intento lo muestro
-            if (BooleanUtils.isTrue(notificacion.getSegundoIntento())) {
-                // Se muestra el layout de información referente al primer resultado
-                String horaApartirDe = null;
-                String horaAntesDe = null;
-                String diaLimite = null;
+            // Si esta gestionando lista
+            if (esAplicacionOficina) {
+                // Se muestra el layout de información referente a la lista
                 Boolean invalidarBotonera = Boolean.FALSE;
-                try {
 
-                    Integer numHoras = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_HORAS, getBaseContext(), Integer.class.getSimpleName());
-                    numHoras = numHoras == null ? 3 : numHoras; // en caso de no obtener el valor de las preferencias, por defecto son 3
-                    Integer numDias = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_DIAS, getBaseContext(), Integer.class.getSimpleName());
-                    numDias = numDias == null ? 3 : numDias; // en caso de no obtener el valor de las preferencias, por defecto son 3
-
-                    String fechaString = notificacion.getFechaHoraRes1();
-                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-                    Date date = formatter.parse(fechaString);
-                    Calendar calendarApartirDe = Calendar.getInstance();
-                    Calendar calendarAntesDe = Calendar.getInstance();
-                    Calendar calendarDiaLimite = Calendar.getInstance();
-                    calendarApartirDe.setTime(date);
-                    calendarApartirDe.add(Calendar.HOUR, numHoras);
-                    calendarAntesDe.setTime(date);
-                    calendarAntesDe.add(Calendar.HOUR, -numHoras);
-                    calendarDiaLimite.setTime(date);
-                    calendarDiaLimite.add(Calendar.DATE, numDias);
-                    calendarDiaLimite.add(Calendar.HOUR, numHoras);
-
-                    DateFormat df = new SimpleDateFormat("HH:mm");
-                    horaApartirDe = df.format(calendarApartirDe.getTime());
-                    horaAntesDe = df.format(calendarAntesDe.getTime());
-
-                    Calendar calendarParaComparaHoras = Calendar.getInstance();
-                    calendarParaComparaHoras.setTime(date);
-
-                    df = new SimpleDateFormat("dd/MM/yyyy");
-                    diaLimite = df.format(calendarDiaLimite.getTime());
-
-                    //invalidarBotonera = !(calendarParaComparaHoras.after(calendarAntesDe) &&
-                    //calendarParaComparaHoras.before(calendarApartirDe) &&
-                    //calendarDiaLimite.after(Calendar.getInstance()));
-
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                Integer numDiasNA = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_DIAS_NA_LISTA, getBaseContext(), Integer.class.getSimpleName());
+                numDiasNA = numDiasNA == null ? 7 : numDiasNA; // en caso de no obtener el valor de las preferencias, por defecto son 3
+                Integer numDiasCert = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_DIAS_CERTIFICADAS_LISTA, getBaseContext(), Integer.class.getSimpleName());
+                numDiasCert = numDiasCert == null ? 10 : numDiasCert; // en caso de no obtener el valor de las preferencias, por defecto son 3
+                Date hoy = new Date();
+                Date fechaSalidoListaDate = this.stringToDate(notificacion.getfechaSalidaLista(), "dd/MM/yyyy HH:mm:ss");
+                if (fechaSalidoListaDate.after(hoy)) {
+                    if (notificacion.getEsCertificado()){
+                        String consejoLista = getString(R.string.dia_limite_cert) + " " + numDiasCert + "\n" + getString(R.string.informacion_lista) ;
+                        ll_detalleLista.setVisibility(View.VISIBLE);
+                        ll_botonera.setVisibility(invalidarBotonera ? View.INVISIBLE : View.VISIBLE);
+                        tv_consejoLista.setText(consejoLista);
+                    } else {
+                        String consejoLista = getString(R.string.dia_limite_NA) + " " + numDiasNA + "\n" + getString(R.string.informacion_lista);
+                        ll_detalleLista.setVisibility(View.VISIBLE);
+                        ll_botonera.setVisibility(invalidarBotonera ? View.INVISIBLE : View.VISIBLE);
+                        tv_consejoLista.setText(consejoLista);
+                    }
                 }
-                if (!notificacion.getResultado1().equals(Util.RESULTADO_AUSENTE_SEGUNDO) && !notificacion.getResultado1().equals(Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO)) {
-                    String consejoSegundoIntento = getString(R.string.dia_limite) + " " + diaLimite + "\n" + getString(R.string.informacion_segundo_intento_1) + " " + horaAntesDe + " " + getString(R.string.informacion_segundo_intento_2) + " " + horaApartirDe;
-                    ll_detallePrimerIntento.setVisibility(View.VISIBLE);
-                    ll_botonera.setVisibility(invalidarBotonera ? View.INVISIBLE : View.VISIBLE);
-                    tv_resultadoDetallePrimerIntento.setText(notificacion.getResultado1() + " " + notificacion.getDescResultado1());
-                    tv_fechaDetallePrimerIntento.setText(notificacion.getFechaHoraRes1());
-                    tv_consejoSegundoIntento.setText(consejoSegundoIntento);
+            } else
+                // Si requiere segundo intento lo muestro
+                if (BooleanUtils.isTrue(notificacion.getSegundoIntento())) {
+                    // Se muestra el layout de información referente al primer resultado
+                    String horaApartirDe = null;
+                    String horaAntesDe = null;
+                    String diaLimite = null;
+                    Boolean invalidarBotonera = Boolean.FALSE;
+                    try {
+
+                        Integer numHoras = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_HORAS, getBaseContext(), Integer.class.getSimpleName());
+                        numHoras = numHoras == null ? 3 : numHoras; // en caso de no obtener el valor de las preferencias, por defecto son 3
+                        Integer numDias = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_DIAS, getBaseContext(), Integer.class.getSimpleName());
+                        numDias = numDias == null ? 3 : numDias; // en caso de no obtener el valor de las preferencias, por defecto son 3
+
+                        String fechaString = notificacion.getFechaHoraRes1();
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                        Date date = formatter.parse(fechaString);
+                        Calendar calendarApartirDe = Calendar.getInstance();
+                        Calendar calendarAntesDe = Calendar.getInstance();
+                        Calendar calendarDiaLimite = Calendar.getInstance();
+                        calendarApartirDe.setTime(date);
+                        calendarApartirDe.add(Calendar.HOUR, numHoras);
+                        calendarAntesDe.setTime(date);
+                        calendarAntesDe.add(Calendar.HOUR, -numHoras);
+                        calendarDiaLimite.setTime(date);
+                        calendarDiaLimite.add(Calendar.DATE, numDias);
+                        calendarDiaLimite.add(Calendar.HOUR, numHoras);
+
+                        DateFormat df = new SimpleDateFormat("HH:mm");
+                        horaApartirDe = df.format(calendarApartirDe.getTime());
+                        horaAntesDe = df.format(calendarAntesDe.getTime());
+
+                        Calendar calendarParaComparaHoras = Calendar.getInstance();
+                        calendarParaComparaHoras.setTime(date);
+
+                        df = new SimpleDateFormat("dd/MM/yyyy");
+                        diaLimite = df.format(calendarDiaLimite.getTime());
+
+                        //invalidarBotonera = !(calendarParaComparaHoras.after(calendarAntesDe) &&
+                        //calendarParaComparaHoras.before(calendarApartirDe) &&
+                        //calendarDiaLimite.after(Calendar.getInstance()));
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    if (!notificacion.getResultado1().equals(Util.RESULTADO_AUSENTE_SEGUNDO) && !notificacion.getResultado1().equals(Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO)) {
+                        String consejoSegundoIntento = getString(R.string.dia_limite) + " " + diaLimite + "\n" + getString(R.string.informacion_segundo_intento_1) + " " + horaAntesDe + " " + getString(R.string.informacion_segundo_intento_2) + " " + horaApartirDe;
+                        ll_detallePrimerIntento.setVisibility(View.VISIBLE);
+                        ll_botonera.setVisibility(invalidarBotonera ? View.INVISIBLE : View.VISIBLE);
+                        tv_resultadoDetallePrimerIntento.setText(notificacion.getResultado1() + " " + notificacion.getDescResultado1());
+                        tv_fechaDetallePrimerIntento.setText(notificacion.getFechaHoraRes1());
+                        tv_consejoSegundoIntento.setText(consejoSegundoIntento);
+                    }
                 }
+                progressDialog.dismiss();
             }
-            progressDialog.dismiss();
-        }
     }
 
     @Override
@@ -795,6 +831,8 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                         }
             // Crear el dialogo con los parametros que se han definido y se muestra por pantalla
             builder.show();
+
+
         }
     }
 }

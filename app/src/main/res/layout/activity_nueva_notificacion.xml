@@ -243,7 +243,6 @@
                         android:stretchColumns="*">
 
                         <TableRow>
-
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -255,11 +254,9 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/fecha"
                                 android:textStyle="bold" />
-
                         </TableRow>
 
                         <TableRow>
-
                             <TextView
                                 android:id="@+id/textView_nuevaNotificacion_resultadoDetalle_primerIntento"
                                 android:layout_width="wrap_content"
@@ -272,7 +269,6 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/fecha" />
-
                         </TableRow>
 
                     </TableLayout>
@@ -288,8 +284,44 @@
 
             </LinearLayout>
 
-        </LinearLayout>
+            <LinearLayout
+                android:id="@+id/linearLayout_detalle_lista"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="10dp"
+                android:weightSum="1">
 
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="351dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/detalle_lista"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/fieldset_shape"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:id="@+id/textView_nuevaNotificacion_consejo_lista"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </ScrollView>
 
