@@ -45,7 +45,7 @@ public class Notificacion {
     private Boolean hayXML;
     private Boolean hayST;
     private String relacionDestinatario;
-    private String fechaSalidaLista;
+    private Boolean fueraPlazoLista;
 
     // Variables de visualizacion
     private Integer backgroundColor;
@@ -344,7 +344,9 @@ public class Notificacion {
 
     public void setRelacionDestinatario(String relacionDestinatario) { this.relacionDestinatario = relacionDestinatario; }
 
-    public String getfechaSalidaLista() {return fechaSalidaLista;}
+    public Boolean getFueraPlazoLista() {return fueraPlazoLista;}
 
-    public void setfechaSalidaLista(String fechaSalidaLista) {this.fechaSalidaLista = fechaSalidaLista;}
+    public void setFueraPlazoLista(Boolean fueraPlazoLista) {this.fueraPlazoLista = fueraPlazoLista;}
+
+
 }

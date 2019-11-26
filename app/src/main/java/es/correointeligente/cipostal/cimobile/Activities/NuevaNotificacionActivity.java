@@ -44,7 +44,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -98,6 +97,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     private ToggleButton btnActualizar;
     private Integer id = 0;
     protected static final int REQUEST_CHECK_SETTINGS = 0x1;
+    private Date fechaSalidoListaDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +144,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
 
     private void mapearVista() {
         ll_detallePrimerIntento = (LinearLayout) findViewById(R.id.linearLayout_detalle_primer_intento);
+        ll_botonera = (LinearLayout) findViewById(R.id.linearLayout_nueva_notificacion_botonera);
         ll_botonera = (LinearLayout) findViewById(R.id.linearLayout_nueva_notificacion_botonera);
         tv_refPostal = (TextView) findViewById(R.id.textView_nuevaNotificacion_refPostal);
         tv_refSCB = (TextView) findViewById(R.id.textView_nuevaNotificacion_refSCB);
@@ -309,13 +310,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
 
         }
 
-        private Date stringToDate(String aDate,String aFormat) {
-            if(aDate == null) return null;
-            ParsePosition pos = new ParsePosition(0);
-            SimpleDateFormat simpledateformat = new SimpleDateFormat(aFormat);
-            Date stringDate = simpledateformat.parse(aDate, pos);
-            return stringDate;
-        }
+
 
         @Override
         protected void onPostExecute(Notificacion notificacionAux) {
@@ -329,6 +324,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             ll_detallePrimerIntento.setVisibility(View.INVISIBLE);
             ll_detalleLista.setVisibility(View.INVISIBLE);
             ll_botonera.setVisibility(View.VISIBLE);
+
             Boolean esAplicacionOficina = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_DE_OFICINA, getBaseContext(), Boolean.class.getSimpleName());
             // Si esta gestionando lista
             if (esAplicacionOficina) {
@@ -336,12 +332,12 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                 Boolean invalidarBotonera = Boolean.FALSE;
 
                 Integer numDiasNA = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_DIAS_NA_LISTA, getBaseContext(), Integer.class.getSimpleName());
-                numDiasNA = numDiasNA == null ? 7 : numDiasNA; // en caso de no obtener el valor de las preferencias, por defecto son 3
+                numDiasNA = numDiasNA == null ? 7 : numDiasNA; // en caso de no obtener el valor de las preferencias, por defecto son 7
                 Integer numDiasCert = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_DIAS_CERTIFICADAS_LISTA, getBaseContext(), Integer.class.getSimpleName());
-                numDiasCert = numDiasCert == null ? 10 : numDiasCert; // en caso de no obtener el valor de las preferencias, por defecto son 3
-                Date hoy = new Date();
-                Date fechaSalidoListaDate = this.stringToDate(notificacion.getfechaSalidaLista(), "dd/MM/yyyy HH:mm:ss");
-                if (fechaSalidoListaDate.after(hoy)) {
+                numDiasCert = numDiasCert == null ? 10 : numDiasCert; // en caso de no obtener el valor de las preferencias, por defecto son 10
+
+                if (!notificacion.getFueraPlazoLista()) {
+                    invalidarBotonera = Boolean.TRUE;
                     if (notificacion.getEsCertificado()){
                         String consejoLista = getString(R.string.dia_limite_cert) + " " + numDiasCert + "\n" + getString(R.string.informacion_lista) ;
                         ll_detalleLista.setVisibility(View.VISIBLE);
@@ -354,9 +350,9 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                         tv_consejoLista.setText(consejoLista);
                     }
                 }
-            } else
+            }
                 // Si requiere segundo intento lo muestro
-                if (BooleanUtils.isTrue(notificacion.getSegundoIntento())) {
+            if (BooleanUtils.isTrue(notificacion.getSegundoIntento())) {
                     // Se muestra el layout de información referente al primer resultado
                     String horaApartirDe = null;
                     String horaAntesDe = null;

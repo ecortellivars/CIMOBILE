@@ -391,7 +391,6 @@ public class Util {
     public static File NotificacionToXML(Notificacion notificacion, Context context) throws CiMobileException {
         File xmlFile = null;
         try {
-
             String nombeFichero = notificacion.getReferencia() + ".xml";
 
             // Se Determina si viene del primer o del segundo resultado
@@ -408,7 +407,6 @@ public class Util {
             String observacionesString = "";
             String notificadorString = null;
             String firmaNotificadorString = null;
-
 
             if(StringUtils.isNotBlank(notificacion.getResultado2())) {
                 resultadoString = notificacion.getResultado2();

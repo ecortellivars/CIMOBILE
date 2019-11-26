@@ -42,6 +42,8 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
     DBHelper dbHelper;
     FTPHelper ftpHelper;
     Date fechaHoraRes1Date;
+    Date fechaSalidaListaDate;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -332,7 +334,6 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                             // Se comprueba si existe en la base de datos por lo que ya fue cargado anteriormente
                                             if (nombreFicheroSeleccionado.contains("segundo_intento_lista")) {
                                                 notificacion.setNombreFicheroSegundoLista(nombreFicheroSeleccionado);
-                                                fechaHoraRes1Date = this.stringToDate(notificacion.getFechaHoraRes1(), "dd/MM/yyyy HH:mm:ss");
                                             }
 
                                             // Es LISTA
@@ -343,34 +344,51 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                             if (linea.trim().endsWith("R")) {
                                                 notificacion.setEsLista(false);
                                             }
-                                            // Se mapea el backgroundcolor segun valores del resultado
+
                                             // LISTA
                                             if (notificacion.getEsLista()) {
                                                 if (notificacion.getEsCertificado()) {
                                                     colorBackground = R.color.colorPrimaryDark;
                                                     Integer numDiasCert = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_DIAS_CERTIFICADAS_LISTA, getBaseContext(), Integer.class.getSimpleName());
-                                                    Calendar calendar = Calendar.getInstance();
-                                                    calendar.setTime(fechaHoraRes1Date);
-                                                    calendar.add(Calendar.DAY_OF_MONTH, numDiasCert);
-                                                    notificacion.setfechaSalidaLista(calendar.toString());
+                                                    Calendar hoy = Calendar.getInstance();
+                                                    Calendar calendarFechaLista = Calendar.getInstance();
+                                                    Calendar calendarFechaListaSumada = Calendar.getInstance();
+                                                    fechaHoraRes1Date = this.stringToDate(notificacion.getFechaHoraRes1(), "dd/MM/yyyy");
+                                                    calendarFechaLista.setTime(fechaHoraRes1Date);
+                                                    calendarFechaListaSumada.setTime(fechaHoraRes1Date);
+                                                    calendarFechaListaSumada.add(Calendar.DATE, numDiasCert);
+                                                    if (calendarFechaListaSumada.after(hoy) && calendarFechaLista.before(hoy)) {
+                                                        notificacion.setFueraPlazoLista(Boolean.FALSE);
+                                                    } else {
+                                                        notificacion.setFueraPlazoLista(Boolean.TRUE);
+                                                    }
                                                 }
                                                 if (!notificacion.getEsCertificado()) {
                                                     colorBackground = R.color.colorBoton;
                                                     Integer numDiasNA = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_DIAS_NA_LISTA, getBaseContext(), Integer.class.getSimpleName());
-                                                    Calendar calendar = Calendar.getInstance();
-                                                    calendar.setTime(fechaHoraRes1Date);
-                                                    calendar.add(Calendar.DAY_OF_MONTH, numDiasNA);
-                                                    notificacion.setfechaSalidaLista(calendar.toString());
-                                                }
-                                                //NO LISTA
-                                            } else {
-                                                // Si hemos cargado el primer intento ponemos la notificacion en gris
-                                                if (notificacion.getSegundoIntento()) {
-                                                    if (notificacion.getResultado1() != null && notificacion.getResultado1().trim().length() > 0) {
-                                                        colorBackground = R.color.colorGrisSuave;
+                                                    Calendar hoy = Calendar.getInstance();
+                                                    Calendar calendarFechaLista = Calendar.getInstance();
+                                                    Calendar calendarFechaListaSumada = Calendar.getInstance();
+                                                    fechaHoraRes1Date = this.stringToDate(notificacion.getFechaHoraRes1(), "dd/MM/yyyy");
+                                                    calendarFechaLista.setTime(fechaHoraRes1Date);
+                                                    calendarFechaListaSumada.setTime(fechaHoraRes1Date);
+                                                    calendarFechaListaSumada.add(Calendar.DATE, numDiasNA);
+                                                    if (calendarFechaListaSumada.after(hoy) && calendarFechaLista.before(hoy)) {
+                                                        notificacion.setFueraPlazoLista(Boolean.FALSE);
+                                                    } else {
+                                                        notificacion.setFueraPlazoLista(Boolean.TRUE);
                                                     }
                                                 }
-                                            }
+                                                //NO LISTA
+                                                } else {
+                                                    // Si hemos cargado el primer intento ponemos la notificacion en gris
+                                                    if (notificacion.getSegundoIntento()) {
+                                                        if (notificacion.getResultado1() != null && notificacion.getResultado1().trim().length() > 0) {
+                                                            colorBackground = R.color.colorGrisSuave;
+                                                        }
+                                                    }
+                                                }
+                                            // Se mapea el backgroundcolor segun valores del resultado
                                             notificacion.setBackgroundColor(colorBackground);
 
                                             listaNotificaciones.add(notificacion);

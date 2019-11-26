@@ -107,7 +107,7 @@
     <string name="receptor">Receptor</string>
     <string name="informacion_segundo_intento_1">El segundo intento de notificación debería ser antes de las</string>
     <string name="informacion_segundo_intento_2">o después de las</string>
-    <string name="informacion_lista">No se puede añadir resultado por estar fuera de plazo de LISTA</string>
+    <string name="informacion_lista">No se puede añadir un NO ENTREGADO EN OFICINA por estar dentro de plazo de LISTA</string>
     <string name="generado_xml">Generando el fichero XML</string>
     <string name="generado_sello_de_tiempo">Generando el sello de tiempo del fichero XML</string>
     <string name="error_generar_XML">No se ha generado el fichero XML de resultados. REVISE LOS PERMISOS DEL MOVIL</string>

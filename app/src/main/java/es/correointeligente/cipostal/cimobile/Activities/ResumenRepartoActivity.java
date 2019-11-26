@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Vibrator;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -456,6 +458,14 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                         // Borro ftp
                                         ftpHelper.borrarFichero(ficheroCSV, pathVolcado);
                                         ftpHelper.borrarFichero(ficheroZIP, pathVolcado);
+                                    }else {
+                                        // Si ha ido bien hacemos copia de CIMOBILE
+                                        Date hoy = new Date();
+                                        SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy");
+                                        Date date = formatter.parse(hoy.toString());
+                                        String nombreFichero = "CIMOBILE_" + date;
+                                        File ficheroZIP_copia = new File(Environment.getExternalStorageDirectory(),nombreFichero);
+                                        FileUtils.copyFileToDirectory(ficheroZIP, ficheroZIP_copia);
                                     }
                                 }
 

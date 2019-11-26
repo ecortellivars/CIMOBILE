@@ -74,7 +74,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String KEY_NOTIFICACION_HAY_XML = "hayXML";
     private static final String KEY_NOTIFICACION_HAY_ST = "hayST";
     private static final String KEY_NOTIFICACION_RELACION_DESTINATARIO = "relacionDestinatario";
-    private static final String KEY_NOTIFICACION_FECHA_SALIDA_LISTA = "fechaSalidaLista";
+    private static final String KEY_NOTIFICACION_FUERA_PLAZO_LISTA = "fueraPlazoLista";
 
 
     /******************************************************************************************/
@@ -546,7 +546,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_FOTO_ACUSE_RES_2,
                         KEY_NOTIFICACION_HAY_ST,
                         KEY_NOTIFICACION_HAY_XML,
-                        KEY_NOTIFICACION_FECHA_SALIDA_LISTA
+                        KEY_NOTIFICACION_FUERA_PLAZO_LISTA
                 },
                 "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0 AND " + KEY_NOTIFICACION_ES_LISTA + " = 0 AND " + KEY_NOTIFICACION_RESULTADO_1 + " IS NOT NULL)  OR "+
                          "(" + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0 AND " + KEY_NOTIFICACION_ES_LISTA + " = 1 AND " + KEY_NOTIFICACION_RESULTADO_2 + " IS NOT NULL) OR "+
@@ -803,6 +803,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 values.put(KEY_NOTIFICACION_NOMBRE_FICHERO_SICER, notificacion.getNombreFicheroSicer());
                 values.put(KEY_NOTIFICACION_HAY_ST, notificacion.getHayST());
                 values.put(KEY_NOTIFICACION_HAY_XML, notificacion.getHayXML());
+                values.put(KEY_NOTIFICACION_FUERA_PLAZO_LISTA, notificacion.getFueraPlazoLista());
+
+
                 db.insert(TABLE_NOTIFICACION, null, values);
 
                 id ++;
@@ -856,7 +859,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_LISTA, notificacion.getNombreFicheroSegundoLista());
                 cv.put(KEY_NOTIFICACION_HAY_ST, notificacion.getHayST());
                 cv.put(KEY_NOTIFICACION_HAY_XML, notificacion.getHayXML());
-                cv.put(KEY_NOTIFICACION_FECHA_SALIDA_LISTA, notificacion.getfechaSalidaLista());
+                cv.put(KEY_NOTIFICACION_FUERA_PLAZO_LISTA, notificacion.getFueraPlazoLista());
                 db.update(
                         // Tabla
                         TABLE_NOTIFICACION,
@@ -937,7 +940,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_HAY_XML,
                         KEY_NOTIFICACION_HAY_ST,
                         KEY_NOTIFICACION_RELACION_DESTINATARIO,
-                        KEY_NOTIFICACION_FECHA_SALIDA_LISTA
+                        KEY_NOTIFICACION_FUERA_PLAZO_LISTA
                 },
                 KEY_NOTIFICACION_ID + " = ?", new String[]{idNotificacion.toString()},
                 null, null, null, null
@@ -1012,7 +1015,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_HAY_XML,
                         KEY_NOTIFICACION_HAY_ST,
                         KEY_NOTIFICACION_RELACION_DESTINATARIO,
-                        KEY_NOTIFICACION_FECHA_SALIDA_LISTA
+                        KEY_NOTIFICACION_FUERA_PLAZO_LISTA
                 },
                 whereClause, parametros,
                 null, null, null, null
@@ -1162,7 +1165,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_FOTO_ACUSE_RES_2,
                         KEY_NOTIFICACION_HAY_XML,
                         KEY_NOTIFICACION_HAY_ST,
-                        KEY_NOTIFICACION_FECHA_SALIDA_LISTA
+                        KEY_NOTIFICACION_FUERA_PLAZO_LISTA
 
                 }, null, null, null, null, KEY_NOTIFICACION_REFERENCIA + " ASC", null
         );
@@ -1375,9 +1378,10 @@ public class DBHelper extends SQLiteOpenHelper {
             Integer hayST = cursor.getInt(columna);
             notificacion.setHayST(hayST != 1? false : true);
         }
-        columna = cursor.getColumnIndex(KEY_NOTIFICACION_FECHA_SALIDA_LISTA);
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_FUERA_PLAZO_LISTA);
         if (columna != -1) {
-            notificacion.setfechaSalidaLista(cursor.getString(columna));
+            Integer fueraPlazoLista = cursor.getInt(columna);
+            notificacion.setFueraPlazoLista(fueraPlazoLista != 1? false : true);
         }
 
         return notificacion;
@@ -1557,9 +1561,10 @@ public class DBHelper extends SQLiteOpenHelper {
             Integer hayXML = cursor.getInt(columna);
             notificacion.setHayXML(hayXML != 1? false : true);
         }
-        columna = cursor.getColumnIndex(KEY_NOTIFICACION_FECHA_SALIDA_LISTA);
+        columna = cursor.getColumnIndex(KEY_NOTIFICACION_FUERA_PLAZO_LISTA);
         if (columna != -1) {
-            notificacion.setfechaSalidaLista(cursor.getString(columna));
+            Integer fueraPlazoLista = cursor.getInt(columna);
+            notificacion.setFueraPlazoLista(fueraPlazoLista != 1? false : true);
         }
 
         // Se mapea el backgroundcolor segun valores del resultado
@@ -1651,7 +1656,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_HAY_XML, notificacion.getHayXML());
                 cv.put(KEY_NOTIFICACION_HAY_XML, notificacion.getHayXML());
                 cv.put(KEY_NOTIFICACION_RELACION_DESTINATARIO, notificacion.getRelacionDestinatario());
-                cv.put(KEY_NOTIFICACION_FECHA_SALIDA_LISTA, notificacion.getfechaSalidaLista());
+                cv.put(KEY_NOTIFICACION_FUERA_PLAZO_LISTA, notificacion.getFueraPlazoLista());
 
                 if ((notificacion.getLatitudRes1() == "0") && (notificacion.getLongitudRes1() == "0")){
                     intentoGuardado = 0;
@@ -1673,7 +1678,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_HAY_ST, notificacion.getHayST());
                 cv.put(KEY_NOTIFICACION_HAY_XML, notificacion.getHayXML());
                 cv.put(KEY_NOTIFICACION_RELACION_DESTINATARIO, notificacion.getRelacionDestinatario());
-                cv.put(KEY_NOTIFICACION_FECHA_SALIDA_LISTA, notificacion.getfechaSalidaLista());
+                cv.put(KEY_NOTIFICACION_FUERA_PLAZO_LISTA, notificacion.getFueraPlazoLista());
 
                 // Cerramos lista al ser CERTIFICADO
                 if (notificacion.getEsCertificado()){
@@ -1724,9 +1729,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.putNull(KEY_NOTIFICACION_LONGITUD_RES_1);
                 cv.putNull(KEY_NOTIFICACION_LATITUD_RES_1);
                 cv.putNull(KEY_NOTIFICACION_OBSERVACIONES_RES_1);
-                cv.put(KEY_NOTIFICACION_HAY_XML,false);
-                cv.put(KEY_NOTIFICACION_HAY_ST,false);
                 cv.put(KEY_NOTIFICACION_SEGUNDO_INTENTO,false);
+
 
             } else if(resultado == 2) {
                 cv.putNull(KEY_NOTIFICACION_RESULTADO_2);
@@ -1735,16 +1739,18 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.putNull(KEY_NOTIFICACION_LONGITUD_RES_2);
                 cv.putNull(KEY_NOTIFICACION_LATITUD_RES_2);
                 cv.putNull(KEY_NOTIFICACION_OBSERVACIONES_RES_2);
-                cv.put(KEY_NOTIFICACION_HAY_XML,false);
-                cv.put(KEY_NOTIFICACION_HAY_ST,false);
                 cv.put(KEY_NOTIFICACION_SEGUNDO_INTENTO,true);
+
             }
 
             cv.putNull(KEY_NOTIFICACION_FIRMA_RECEPTOR);
             cv.putNull(KEY_NOTIFICACION_NOMBRE_RECEPTOR);
             cv.putNull(KEY_NOTIFICACION_NUM_DOC_RECEPTOR);
             cv.putNull(KEY_NOTIFICACION_TIPO_DOC_RECEPTOR);
-            cv.putNull(KEY_NOTIFICACION_FECHA_SALIDA_LISTA);
+            cv.putNull(KEY_NOTIFICACION_FUERA_PLAZO_LISTA);
+            cv.put(KEY_NOTIFICACION_FUERA_PLAZO_LISTA,false);
+            cv.put(KEY_NOTIFICACION_HAY_XML,false);
+            cv.put(KEY_NOTIFICACION_HAY_ST,false);
 
             db.update(TABLE_NOTIFICACION, cv, KEY_NOTIFICACION_ID + "= ?", new String[]{idNotificacion.toString()});
 
@@ -1828,7 +1834,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 + KEY_NOTIFICACION_NOMBRE_FICHERO_SICER + " TEXT, "
                 + KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_REPARTO + " TEXT, "
                 + KEY_NOTIFICACION_RELACION_DESTINATARIO + " TEXT, "
-                + KEY_NOTIFICACION_FECHA_SALIDA_LISTA + " TEXT, "
+                + KEY_NOTIFICACION_FUERA_PLAZO_LISTA + " INTEGER, "
                 + KEY_NOTIFICACION_NOMBRE_FICHERO_SEGUNDO_LISTA + " TEXT); ";
 
         sqLiteDatabase.execSQL(qry);
