@@ -42,7 +42,6 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
     DBHelper dbHelper;
     FTPHelper ftpHelper;
     Date fechaHoraRes1Date;
-    Date fechaSalidaListaDate;
 
 
     @Override
