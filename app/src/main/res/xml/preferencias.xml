@@ -145,7 +145,7 @@
         <CheckBoxPreference
             android:key="usarAPPPEE"
             android:title="Aplicación PEE"
-            android:summary="Determina si se va a usar PEE (Prueba de Entrega Electronica)"
+            android:summary="Prueba de Entrega Electronica (NO requiere foto al NO existir acuse)"
             android:defaultValue="false"/>
     </PreferenceCategory>
 

@@ -1,5 +1,6 @@
 package es.correointeligente.cipostal.cimobile.Activities;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,6 +27,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     Button mResumenReparto;
     Button mResetearAPP;
     DBHelper dbHelper;
+    String usuarioFTP;
 
 
     @Override
@@ -53,6 +55,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
         mResetearAPP = (Button) findViewById(R.id.button_resetear_app);
         mResetearAPP.setOnClickListener(this);
+        usuarioFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_USER, getBaseContext(), String.class.getSimpleName());
+
+        if (usuarioFTP.contains("ultimaversion")){
+            mResetearAPP.setVisibility(View.VISIBLE);
+        } else {
+            mResetearAPP.setVisibility(View.INVISIBLE);
+        }
+
+
 
         // Obtenemos la instancia del helper de la base de datos
         dbHelper = new DBHelper(this);
@@ -98,8 +109,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 break;
 
             case R.id.button_resetear_app:
-                this.avisoRegenerarBDA();
-                break;
+                usuarioFTP = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_USER, getBaseContext(), String.class.getSimpleName());
+                if (usuarioFTP.contains("ultimaversion")){
+                    mResetearAPP.setVisibility(View.VISIBLE);
+                } else {
+                    mResetearAPP.setVisibility(View.INVISIBLE);
+                }
+                if (usuarioFTP.contains("ultimaversion")){
+                    this.avisoRegenerarBDA();
+                } else {
+                    break;
+                }
 
             default:
                 break;
