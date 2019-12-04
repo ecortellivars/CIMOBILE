@@ -60,7 +60,7 @@ import es.correointeligente.cipostal.cimobile.Util.DBHelper;
 import es.correointeligente.cipostal.cimobile.Util.Util;
 
 public class NuevaNotificacionActivity extends BaseActivity implements View.OnClickListener,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+                            GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     Toolbar mToolbar;
     Integer idNotificacion;
@@ -85,10 +85,6 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     private PendingResult<LocationSettingsResult> result;
     private LocationSettingsRequest.Builder builder;
     private Location mLastLocation;
-    //    private final int REQUEST_LOCATION = 200;
-//    private final int REQUEST_CHECK_SETTINGS = 300; Variables para la localizacion de la calle via google Maps
-    private static int TAKE_PICTURE = 1;
-    private static int SELECT_PICTURE = 2;
     private String fallo = "";
     private static LocationRequest mLocRequest;
     private LocationListener listener;
@@ -97,7 +93,6 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     private ToggleButton btnActualizar;
     private Integer id = 0;
     protected static final int REQUEST_CHECK_SETTINGS = 0x1;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -683,8 +678,11 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         protected String doInBackground(Void... voids) {
             String fallo = "";
             String ficheroST = "";
-
-            if ((notificacion.getLatitudRes1() == "0") && (notificacion.getLongitudRes1() == "0")){
+            // Primero guarda el resultado de notificacion y recupera todos los datos para generar el fichero xml
+            intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
+            if(intentoGuardado == null) {
+                fallo = getString(R.string.error_guardar_en_bd)   ;
+            } else if ((notificacion.getLatitudRes1() == "0") && (notificacion.getLongitudRes1() == "0")){
                     fallo = getString(R.string.error_guardar_en_bd_localizacion)   ;
                         } else {
                                 File ficheroXML = null;
@@ -815,7 +813,6 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                                     intentResultado.putExtra("idNotificacion", idNotificacion);
                                     setResult(CommonStatusCodes.SUCCESS, intentResultado);
                                     dialogInterface.dismiss();
-
                                     finish();
                                 }
                             });

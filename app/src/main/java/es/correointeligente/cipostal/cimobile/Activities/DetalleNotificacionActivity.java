@@ -63,7 +63,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     Integer intentoGuardado = 1000;
     Boolean esAplicacionPEE = Boolean.FALSE;
-    String fechaHoraString3;
+    String fechaHoraString3, nombreImagen;
     String imageFileName = null;
     private final String CARPETA_RAIZ = "CiMobile/";
     private final String RUTA_IMAGEN = CARPETA_RAIZ + "FOTOS_ACUSE/";
@@ -116,7 +116,6 @@ public class DetalleNotificacionActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Dependiendo de si es una aplicación PEE revisara las fotos o no
         esAplicacionPEE = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_PEE, getBaseContext(), Boolean.class.getSimpleName());
-        Intent i = null;
 
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -134,66 +133,44 @@ public class DetalleNotificacionActivity extends BaseActivity {
             case R.id.imageButton_listaNotificaciones_foto:
                 if (!esAplicacionPEE) {
                     // Revisamos que el dispositivo tiene camara
-                    // Assume thisActivity is the current activity
                     int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
                     if (permissionCheck != -1) {
                         if (checkCameraHardware(this) == Boolean.TRUE) {
                             try {
-                                // Si es segundo intento obtengo los datos para invocar al componente FotoAcuseActivity
-                                if (notificacion.getSegundoIntento()) {
-                                    // Dependiendo de si es una aplicación PEE revisara las fotos o no
-                                    esAplicacionPEE = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_PEE, getBaseContext(), Boolean.class.getSimpleName());
-                                    DateFormat df3 = new SimpleDateFormat("yyyyMMdd");
-                                    fechaHoraString3 = df3.format(Calendar.getInstance().getTime());
-                                    File storageDir = null;
-                                    File fileDestino = null;
+                                DateFormat df3 = new SimpleDateFormat("yyyyMMdd");
+                                fechaHoraString3 = df3.format(Calendar.getInstance().getTime());
+                                File storageDir = null;
+                                File fileDestino = null;
+                                // Si es LISTA cojo siempre resultado2 para invocar al componente FotoAcuseActivity
+                                if (notificacion.getEsLista()) {
                                     imageFileName = notificacion.getReferencia() + "_" + fechaHoraString3  + "_" + fechaHoraString3   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + notificacion.getResultado2() + ".webp";
-                                    storageDir = new File(Environment.getExternalStorageDirectory(),RUTA_IMAGEN);
-                                    fileDestino = new File(storageDir, imageFileName);
-                                    Uri cameraImageUri = Uri.fromFile(fileDestino);
-
-                                    // Abre la camara
-                                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                    takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                                    // Enviamos la imagen
-                                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,cameraImageUri);
-                                    StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-                                    StrictMode.setVmPolicy(builder.build());
-
-                                    // Lanzamos la actividad
-                                    // Ensure that there's a camera activity to handle the intent
-                                    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                                    }
                                 }
-                                // Si es primer intento obtengo sus datos para invocar al componente FotoAcuseActivity
-                                else {
-                                    // Dependiendo de si es una aplicación PEE revisara las fotos o no
-                                    esAplicacionPEE = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_PEE, getBaseContext(), Boolean.class.getSimpleName());
-                                    DateFormat df3 = new SimpleDateFormat("yyyyMMdd");
-                                    fechaHoraString3 = df3.format(Calendar.getInstance().getTime());
-                                    File storageDir = null;
-                                    File fileDestino = null;
-                                    imageFileName = notificacion.getReferencia() + "_" + fechaHoraString3  + "_" + fechaHoraString3   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + notificacion.getResultado1() + ".webp";
-                                    storageDir = new File(Environment.getExternalStorageDirectory(),RUTA_IMAGEN);
-                                    fileDestino = new File(storageDir, imageFileName);
-                                    Uri cameraImageUri = Uri.fromFile(fileDestino);
+                                    // Si NO es lista es segundo intento obtengo los datos del resultado2 para invocar al componente FotoAcuseActivity
+                                    else if (notificacion.getSegundoIntento()) {
+                                        imageFileName = notificacion.getReferencia() + "_" + fechaHoraString3  + "_" + fechaHoraString3   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + notificacion.getResultado2() + ".webp";
+                                        }
+                                        // Si NO es lista NO es segundo intento obtengo los datos del resultado1 para invocar al componente FotoAcuseActivity
+                                         else {
+                                                imageFileName = notificacion.getReferencia() + "_" + fechaHoraString3  + "_" + fechaHoraString3   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + notificacion.getResultado1() + ".webp";
+                                            }
 
-                                    // Abre la camara
-                                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                    takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                storageDir = new File(Environment.getExternalStorageDirectory(),RUTA_IMAGEN);
+                                fileDestino = new File(storageDir, imageFileName);
+                                Uri cameraImageUri = Uri.fromFile(fileDestino);
 
-                                    // Enviamos la imagen
-                                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,cameraImageUri);
-                                    StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-                                    StrictMode.setVmPolicy(builder.build());
+                                // Abre la camara
+                                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                                    // Lanzamos la actividad
-                                    // Ensure that there's a camera activity to handle the intent
-                                    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                                    }
+                                // Enviamos la imagen
+                                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,cameraImageUri);
+                                StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+                                StrictMode.setVmPolicy(builder.build());
+
+                                // Lanzamos la actividad
+                                // Ensure that there's a camera activity to handle the intent
+                                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
                                 }
 
                             } catch (Exception e) {
@@ -222,12 +199,56 @@ public class DetalleNotificacionActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Método que determina los resultados de las diferentes actividades que se han lanzado
         // y dependiendo de su requestCode sabemos que actividad ha sido.
-        if (resultCode == CommonStatusCodes.CANCELED) {
-            Toast toast = null;
-            toast = Toast.makeText(this, "Foto cancelado por el usuario", Toast.LENGTH_LONG);
-            requestCode = 0;
-            toast.show();
-            } else  {
+        // Dependiendo de si es una aplicación PEE revisara las fotos o no
+        esAplicacionPEE = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_PEE, getBaseContext(), Boolean.class.getSimpleName());
+
+        switch (resultCode) {
+            case CommonStatusCodes.ERROR:{
+                Toast toast = null;
+                toast = Toast.makeText(this, "NO SE PUDO HACER LA FOTO! Revise los permisos de CIMOBILE", Toast.LENGTH_LONG);
+                toast.show();
+            }
+
+            case CommonStatusCodes.CANCELED: {
+                Toast toast = null;
+                toast = Toast.makeText(this, "Foto cancelado por el usuario", Toast.LENGTH_LONG);
+                toast.show();
+            }
+
+            case CommonStatusCodes.INTERRUPTED: {
+                Toast toast = null;
+                toast = Toast.makeText(this, "Foto interrumpida por el usuario", Toast.LENGTH_LONG);
+                toast.show();
+            }
+
+            case (CommonStatusCodes.SUCCESS_CACHE) : {
+                switch (requestCode) {
+                    case REQUEST_IMAGE_CAPTURE:
+                        // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.webp
+                        if (!esAplicacionPEE && notificacion.getResultado2() != null) {
+                            notificacion.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado2() + ".webp");
+                            notificacion.setFotoAcuseRes1(null);
+                            intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
+
+                            } else if (!esAplicacionPEE && notificacion.getResultado1() != null) {
+                                notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado1() + ".webp");
+                                notificacion.setFotoAcuseRes2(null);
+                                intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
+                            }
+
+                        if (intentoGuardado != 1000) {
+                            Toast toast = null;
+                            toast = Toast.makeText(this, "Resultado guardado Correctamente", Toast.LENGTH_LONG);
+                            toast.show();
+                            } else {
+                                Toast toast = null;
+                                toast = Toast.makeText(this, "Resultado NO guardado", Toast.LENGTH_LONG);
+                                toast.show();
+                            }
+                }
+            }
+
+            case (CommonStatusCodes.SUCCESS) : {
                 switch (requestCode) {
                     case REQUEST_IMAGE_CAPTURE:
                         // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.webp
@@ -246,21 +267,16 @@ public class DetalleNotificacionActivity extends BaseActivity {
                             Toast toast = null;
                             toast = Toast.makeText(this, "Resultado guardado Correctamente", Toast.LENGTH_LONG);
                             toast.show();
-                            break;
                         } else {
                             Toast toast = null;
                             toast = Toast.makeText(this, "Resultado NO guardado", Toast.LENGTH_LONG);
                             toast.show();
-                            break;
                         }
-                        default:
-                            Toast toast = null;
-                            toast = Toast.makeText(this, "NO SE PUDO HACER LA FOTO! REVISE LOS PERMISOS DE CAMARA DE LA APLICACION", Toast.LENGTH_LONG);
-                            toast.show();
-                            break;
                 }
+            }
         }
     }
+
 
     private void mapearVista() {
         tv_refPostal = (TextView) findViewById(R.id.textView_detalleNotificacion_refPostal);
@@ -377,14 +393,14 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     tv_receptor2.setText("SIN RECEPTOR");
                 }
                 if (notificacion.getHayXML()){
-                    tv_XML2.setText("EXISTE");
+                    tv_XML2.setText("SI");
                 } else {
-                    tv_XML2.setText("NO EXISTE");
+                    tv_XML2.setText("NO");
                 }
                 if (notificacion.getHayST()){
-                    tv_ST2.setText("EXISTE");
+                    tv_ST2.setText("SI");
                 } else {
-                    tv_ST2.setText("NO EXISTE");
+                    tv_ST2.setText("NO");
                 }
                 tv_relacion_destinatario2.setText(notificacion.getRelacionDestinatario());
 
@@ -470,14 +486,14 @@ public class DetalleNotificacionActivity extends BaseActivity {
                         tv_receptor1.setText("SIN RECEPTOR");
                     }
                     if (notificacion.getHayXML()){
-                        tv_XML1.setText("EXISTE");
+                        tv_XML1.setText("SI");
                     } else {
-                        tv_XML1.setText("NO EXISTE");
+                        tv_XML1.setText("NO");
                     }
                     if (notificacion.getHayST()){
-                        tv_ST1.setText("EXISTE");
+                        tv_ST1.setText("SI");
                     } else {
-                        tv_ST1.setText("NO EXISTE");
+                        tv_ST1.setText("NO");
                     }
                     tv_relacion_destinatario1.setText(notificacion.getRelacionDestinatario());
 
@@ -547,14 +563,14 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     tv_observaciones1.setText(notificacion.getObservacionesRes1());
                     tv_cabeceraResultado1.setText(R.string.resultado1);
                     if (notificacion.getHayXML()){
-                        tv_XML1.setText("EXISTE");
+                        tv_XML1.setText("SI");
                     } else {
-                        tv_XML1.setText("NO EXISTE");
+                        tv_XML1.setText("NO");
                     }
                     if (notificacion.getHayST()){
-                        tv_ST1.setText("EXISTE");
+                        tv_ST1.setText("SI");
                     } else {
-                        tv_ST1.setText("NO EXISTE");
+                        tv_ST1.setText("NO");
                     }
 
                     layoutResultado1.addView(linearLayout);
