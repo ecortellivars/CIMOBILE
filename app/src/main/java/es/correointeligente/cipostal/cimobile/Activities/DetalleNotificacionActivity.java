@@ -261,11 +261,11 @@ public class DetalleNotificacionActivity extends BaseActivity {
                 }
                 if (intentoGuardado != 1000) {
                     Toast toast = null;
-                    toast = Toast.makeText(this, "Resultado guardado Correctamente", Toast.LENGTH_LONG);
+                    toast = Toast.makeText(this, "Foto guardada!!", Toast.LENGTH_LONG);
                     toast.show();
                 } else {
                     Toast toast = null;
-                    toast = Toast.makeText(this, "Resultado NO guardado", Toast.LENGTH_LONG);
+                    toast = Toast.makeText(this, "Foto NO guardada!!", Toast.LENGTH_LONG);
                     toast.show();
                 }
             }
