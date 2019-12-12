@@ -48,8 +48,9 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
     Integer totNumListaCert = 0;
     Integer totXML = 0;
     Integer totST = 0;
-
     Boolean borradoManual = Boolean.FALSE;
+    String nombreFichero = "";
+
 
     // Variables para instanciar los objetos del layaout y darles valor
     TextView tv_totFicheros, tv_totNotificaciones, tv_totNotifGestionadas, tv_totNotifPendientes_2_hoy,
@@ -253,7 +254,6 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
 
             Boolean esAplicacionDeOficina = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_DE_OFICINA, getBaseContext(), Boolean.class.getSimpleName());
             Boolean esAplicacionPEE = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_PEE, getBaseContext(), Boolean.class.getSimpleName());
-            Boolean esSt = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_ACTIVO, getBaseContext(), Boolean.class.getSimpleName());
 
             // No hay LISTA oculto
             if (!esAplicacionDeOficina){
@@ -290,22 +290,6 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
      * Método privado que pide confirmación para el cierre del reparto indicando todas las acciones a realizar
      */
     private void crearDialogoAvisoCierreReparto() {
-        // Dependiendo de si es una aplicación PEE revisara las fotos o no
-        Boolean esAplicacionPEE = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_PEE, getBaseContext(), Boolean.class.getSimpleName());
-
-        if (totNotisGestionadas != totFotosHechas && !esAplicacionPEE) {
-            Toast toast = null;
-            toast = Toast.makeText(ResumenRepartoActivity.this, "Existen notificaciones sin foto por lo que no se puede cerrar el reparto", Toast.LENGTH_LONG);
-            toast.show();
-            } else if (totNotisGestionadas != totXML) {
-                Toast toast = null;
-                toast = Toast.makeText(ResumenRepartoActivity.this, "Existen notificaciones sin XML por lo que no se puede cerrar el reparto", Toast.LENGTH_LONG);
-                toast.show();
-                } else if (totNotisGestionadas != totST) {
-                Toast toast = null;
-                toast = Toast.makeText(ResumenRepartoActivity.this, "Existen notificaciones sin ST por lo que no se puede cerrar el reparto", Toast.LENGTH_LONG);
-                toast.show();
-                } else {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle(R.string.cerrar_reparto);
                     builder.setMessage(R.string.cerrar_reparto_info);
@@ -324,8 +308,48 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                         }
                     });
                     builder.show();
-                }
     }
+
+    /**
+     * Método privado que pide confirmación para el cierre del reparto indicando todas las acciones a realizar
+
+    private void crearDialogoAvisoCierreReparto() {
+        // Dependiendo de si es una aplicación PEE revisara las fotos o no
+        Boolean esAplicacionPEE = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_PEE, getBaseContext(), Boolean.class.getSimpleName());
+
+        if (totNotisGestionadas != totFotosHechas && !esAplicacionPEE) {
+            Toast toast = null;
+            toast = Toast.makeText(ResumenRepartoActivity.this, "Existen notificaciones sin foto por lo que no se puede cerrar el reparto", Toast.LENGTH_LONG);
+            toast.show();
+        } else if (totNotisGestionadas != totXML) {
+            Toast toast = null;
+            toast = Toast.makeText(ResumenRepartoActivity.this, "Existen notificaciones sin XML por lo que no se puede cerrar el reparto", Toast.LENGTH_LONG);
+            toast.show();
+        } else if (totNotisGestionadas != totST) {
+            Toast toast = null;
+            toast = Toast.makeText(ResumenRepartoActivity.this, "Existen notificaciones sin ST por lo que no se puede cerrar el reparto", Toast.LENGTH_LONG);
+            toast.show();
+        } else {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.cerrar_reparto);
+            builder.setMessage(R.string.cerrar_reparto_info);
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // Lanza la tarea en background de la carga del fichero SICER
+                    CerrarRepartoTASK cerrarRepartoTASK = new CerrarRepartoTASK();
+                    cerrarRepartoTASK.execute();
+                }
+            });
+            builder.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialogInterface, int wich) {
+                    dialogInterface.cancel();
+                }
+            });
+            builder.show();
+        }
+    } */
 
     /**
      * Clase privada que se encarga del cierre del reparto, entre las acciones a realizar:
@@ -418,6 +442,12 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                     fechaResultadoString2 = df1.format(calendarAux.getTime());
                                     DateFormat df2 = new SimpleDateFormat("HH:mm");
                                     String hora = df2.format(calendarAux.getTime());
+                                    if (notificacion.getRelacionDestinatario().contains("NO PROCEDE")){
+                                        notificacion.setRelacionDestinatario(null);
+                                    }
+                                    if (nombreFichero == ""){
+                                        nombreFichero = "CIMOBILE_" + fechaResultadoString2;
+                                    }
                                     writerCSV.append(obtenerDelegacion() + ";" + obtenerCodigoNotificador() + ";" + codResultado2 + ";" + notificacion.getReferencia() + ";" + fechaResultadoString2 + ";" + fechaResultadoString2 + ";" + hora + ";" + notificacion.getLatitudRes2() + ";" + notificacion.getLongitudRes2() + ";" + notificacion.getNombreReceptor()+ ";" + notificacion.getNumDocReceptor()+ ";" + notificacion.getRelacionDestinatario() + "\n");
 
                                 } else {
@@ -426,11 +456,18 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                     Date dateAux = formatter.parse(fechaResultadoString1);
                                     DateFormat df = new SimpleDateFormat("yyyyMMdd");
                                     calendarAux.setTime(dateAux);
-                                    fechaResultadoString1 = df.format(calendarAux.getTime());  DateFormat df2 = new SimpleDateFormat("HH:mm");
+                                    fechaResultadoString1 = df.format(calendarAux.getTime());
+                                    DateFormat df2 = new SimpleDateFormat("HH:mm");
                                     String hora = df2.format(calendarAux.getTime());
+                                    if (notificacion.getRelacionDestinatario().contains("NO PROCEDE")){
+                                        notificacion.setRelacionDestinatario(null);
+                                    }
+                                    if (nombreFichero == ""){
+                                        nombreFichero = "CIMOBILE_" + fechaResultadoString1;
+                                    }
                                     writerCSV.append(obtenerDelegacion() + ";" + obtenerCodigoNotificador() + ";" + codResultado1 + ";" + notificacion.getReferencia() + ";" + fechaResultadoString1 + ";" + fechaResultadoString1 + ";" + hora + ";" +  notificacion.getLatitudRes1() + ";" + notificacion.getLongitudRes1() + ";" + notificacion.getNombreReceptor()+ ";" + notificacion.getNumDocReceptor()+ ";" + notificacion.getRelacionDestinatario() + "\n");
                                 }
-                               }
+                            }
 
                             writerCSV.flush();
 
@@ -460,15 +497,15 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                         ftpHelper.borrarFichero(ficheroZIP, pathVolcado);
                                     }else {
                                         // Si ha ido bien hacemos copia de CIMOBILE
-                                        Date hoy = new Date();
-                                        SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy");
-                                        Date date = formatter.parse(hoy.toString());
-                                        String nombreFichero = "CIMOBILE_" + date;
-                                        File ficheroZIP_copia = new File(Environment.getExternalStorageDirectory(),nombreFichero);
-                                        FileUtils.copyFileToDirectory(ficheroZIP, ficheroZIP_copia);
+                                        String DEFAULT_EXTERNAL_DIRECTORY_APP = "CIMobile";
+                                        File fileOrigen = new File(Environment.getExternalStorageDirectory() + File.separator + DEFAULT_EXTERNAL_DIRECTORY_APP);
+                                        File fileDestino = new File(Environment.getExternalStorageDirectory() + File.separator + nombreFichero);
+                                        if(!fileDestino.exists()) {
+                                            fileDestino.mkdirs();
+                                        }
+                                        FileUtils.copyDirectoryToDirectory(fileOrigen,fileDestino);
                                     }
                                 }
-
                         } catch (IOException e) {
                             fallo = getString(R.string.error_apertura_ficheros_escritura);
                         }
@@ -476,7 +513,6 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                         // Error cambio de carpeta o crear carpeta
                         fallo = getString(R.string.error_acceso_carpeta_ftp) + " '" + pathVolcado + "'";
                     }
-
                 } else {
                     // error de conexion
                     fallo = getString(R.string.error_conexion_ftp);

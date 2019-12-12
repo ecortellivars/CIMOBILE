@@ -143,18 +143,18 @@ public class DetalleNotificacionActivity extends BaseActivity {
                                 File fileDestino = null;
                                 // Si es LISTA cojo siempre resultado2 para invocar al componente FotoAcuseActivity
                                 if (notificacion.getEsLista()) {
-                                    imageFileName = notificacion.getReferencia() + "_" + fechaHoraString3  + "_" + fechaHoraString3   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + notificacion.getResultado2() + ".webp";
+                                    imageFileName = notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado2() + ".webp";
                                 }
-                                    // Si NO es lista es segundo intento obtengo los datos del resultado2 para invocar al componente FotoAcuseActivity
-                                    else if (notificacion.getSegundoIntento()) {
-                                        imageFileName = notificacion.getReferencia() + "_" + fechaHoraString3  + "_" + fechaHoraString3   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + notificacion.getResultado2() + ".webp";
-                                        }
-                                        // Si NO es lista NO es segundo intento obtengo los datos del resultado1 para invocar al componente FotoAcuseActivity
-                                         else {
-                                                imageFileName = notificacion.getReferencia() + "_" + fechaHoraString3  + "_" + fechaHoraString3   + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR,"") + "_" + notificacion.getResultado1() + ".webp";
-                                            }
+                                // Si NO es lista es segundo intento obtengo los datos del resultado2 para invocar al componente FotoAcuseActivity
+                                else if (notificacion.getSegundoIntento()) {
+                                    imageFileName = notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado2() + ".webp";
+                                }
+                                // Si NO es lista NO es segundo intento obtengo los datos del resultado1 para invocar al componente FotoAcuseActivity
+                                else {
+                                    imageFileName = notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado1() + ".webp";
+                                }
 
-                                storageDir = new File(Environment.getExternalStorageDirectory(),RUTA_IMAGEN);
+                                storageDir = new File(Environment.getExternalStorageDirectory(), RUTA_IMAGEN);
                                 fileDestino = new File(storageDir, imageFileName);
                                 Uri cameraImageUri = Uri.fromFile(fileDestino);
 
@@ -163,7 +163,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                                 takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
                                 // Enviamos la imagen
-                                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,cameraImageUri);
+                                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraImageUri);
                                 StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
                                 StrictMode.setVmPolicy(builder.build());
 
@@ -182,14 +182,13 @@ public class DetalleNotificacionActivity extends BaseActivity {
                             }
                             break;
                         }
-                    }else {
+                    } else {
                         Toast toast = null;
                         toast = Toast.makeText(this, "NO SE PUDO HACER LA FOTO! REVISE LOS PERMISOS DE CAMARA DE LA APLICACION", Toast.LENGTH_LONG);
                         toast.show();
                     }
 
                 }
-            default:
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -222,20 +221,19 @@ public class DetalleNotificacionActivity extends BaseActivity {
             }
 
             case (CommonStatusCodes.SUCCESS_CACHE) : {
-                switch (requestCode) {
-                    case REQUEST_IMAGE_CAPTURE:
-                        // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.webp
-                        if (!esAplicacionPEE && notificacion.getResultado2() != null) {
-                            notificacion.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado2() + ".webp");
-                            notificacion.setFotoAcuseRes1(null);
-                            intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
+                if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+                    // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.webp
+                    if (!esAplicacionPEE && notificacion.getResultado2() != null) {
+                        notificacion.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado2() + ".webp");
+                        notificacion.setFotoAcuseRes1(null);
+                        intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
 
-                            } else if (!esAplicacionPEE && notificacion.getResultado1() != null) {
-                                notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado1() + ".webp");
-                                notificacion.setFotoAcuseRes2(null);
-                                intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
-                            }
-
+                    } else if (!esAplicacionPEE && notificacion.getResultado1() != null) {
+                        notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado1() + ".webp");
+                        notificacion.setFotoAcuseRes2(null);
+                        intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
+                    }
+                }
                         if (intentoGuardado != 1000) {
                             Toast toast = null;
                             toast = Toast.makeText(this, "Resultado guardado Correctamente", Toast.LENGTH_LONG);
@@ -246,37 +244,33 @@ public class DetalleNotificacionActivity extends BaseActivity {
                                 toast.show();
                             }
                 }
-            }
 
             case (CommonStatusCodes.SUCCESS) : {
-                switch (requestCode) {
-                    case REQUEST_IMAGE_CAPTURE:
-                        // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.webp
-                        if (!esAplicacionPEE && notificacion.getResultado2() != null) {
-                            notificacion.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado2() + ".webp");
-                            notificacion.setFotoAcuseRes1(null);
-                            intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
+                if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+                    // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.webp
+                    if (!esAplicacionPEE && notificacion.getResultado2() != null) {
+                        notificacion.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado2() + ".webp");
+                        notificacion.setFotoAcuseRes1(null);
+                        intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
 
-                        } else if (!esAplicacionPEE && notificacion.getResultado1() != null) {
-                            notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado1() + ".webp");
-                            notificacion.setFotoAcuseRes2(null);
-                            intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
-                        }
-
-                        if (intentoGuardado != 1000) {
-                            Toast toast = null;
-                            toast = Toast.makeText(this, "Resultado guardado Correctamente", Toast.LENGTH_LONG);
-                            toast.show();
-                        } else {
-                            Toast toast = null;
-                            toast = Toast.makeText(this, "Resultado NO guardado", Toast.LENGTH_LONG);
-                            toast.show();
-                        }
+                    } else if (!esAplicacionPEE && notificacion.getResultado1() != null) {
+                        notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado1() + ".webp");
+                        notificacion.setFotoAcuseRes2(null);
+                        intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
+                    }
+                }
+                if (intentoGuardado != 1000) {
+                    Toast toast = null;
+                    toast = Toast.makeText(this, "Resultado guardado Correctamente", Toast.LENGTH_LONG);
+                    toast.show();
+                } else {
+                    Toast toast = null;
+                    toast = Toast.makeText(this, "Resultado NO guardado", Toast.LENGTH_LONG);
+                    toast.show();
                 }
             }
         }
     }
-
 
     private void mapearVista() {
         tv_refPostal = (TextView) findViewById(R.id.textView_detalleNotificacion_refPostal);

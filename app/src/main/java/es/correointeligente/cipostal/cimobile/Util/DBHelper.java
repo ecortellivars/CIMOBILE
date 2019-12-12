@@ -528,6 +528,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         KEY_NOTIFICACION_NUM_DOC_RECEPTOR,
                         KEY_NOTIFICACION_NOMBRE_RECEPTOR,
                         KEY_NOTIFICACION_FIRMA_RECEPTOR,
+                        KEY_NOTIFICACION_RELACION_DESTINATARIO,
                         KEY_NOTIFICACION_LONGITUD_RES_1,
                         KEY_NOTIFICACION_LATITUD_RES_1,
                         KEY_NOTIFICACION_LONGITUD_RES_2,
