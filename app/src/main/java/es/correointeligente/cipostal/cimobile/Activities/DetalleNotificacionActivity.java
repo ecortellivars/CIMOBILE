@@ -189,6 +189,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                     }
 
                 }
+            default:
                 break;
         }
         return super.onOptionsItemSelected(item);

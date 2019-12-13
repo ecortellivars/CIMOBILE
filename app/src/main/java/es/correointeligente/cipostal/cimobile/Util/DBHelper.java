@@ -1655,7 +1655,6 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.put(KEY_NOTIFICACION_FOTO_ACUSE_RES_2, notificacion.getFotoAcuseRes2());
                 cv.put(KEY_NOTIFICACION_HAY_ST, notificacion.getHayST());
                 cv.put(KEY_NOTIFICACION_HAY_XML, notificacion.getHayXML());
-                cv.put(KEY_NOTIFICACION_HAY_XML, notificacion.getHayXML());
                 cv.put(KEY_NOTIFICACION_RELACION_DESTINATARIO, notificacion.getRelacionDestinatario());
                 cv.put(KEY_NOTIFICACION_FUERA_PLAZO_LISTA, notificacion.getFueraPlazoLista());
 

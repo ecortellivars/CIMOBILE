@@ -87,7 +87,6 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
         destinatario = getIntent().getStringExtra("destinatario");
         dirDestinatario = getIntent().getStringExtra("dirDestinatario");
 
-
         // Logica del DNI
         numeroDocumentoValido = true;
         edt_numeroDocumentoReceptor = (EditText) findViewById(R.id.editText_notificacionEntregada_numeroDocumento);
@@ -118,6 +117,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
                     if (!numeroDocumentoValido) {
                         edt_numeroDocumentoReceptor.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape_error));
                     } else {
+                        edt_nombreReceptor.setText(destinatario);
                         edt_numeroDocumentoReceptor.setBackground(ContextCompat.getDrawable(NotificacionEntregadaActivity.this, R.drawable.edit_text_shape));
                     }
                 }
@@ -133,7 +133,7 @@ public class NotificacionEntregadaActivity extends BaseActivity implements View.
         edt_numeroDocumentoReceptor.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         edt_nombreReceptor.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         edt_relacionDestinatario.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
-
+        edt_nombreReceptor.setText(destinatario);
         // Zona para la firma del ciudadano
         mLienzo = (Lienzo) findViewById(R.id.lienzo_firma);
         mLienzo.setDrawingCacheEnabled(true);

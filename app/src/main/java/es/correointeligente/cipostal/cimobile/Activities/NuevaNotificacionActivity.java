@@ -678,11 +678,8 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         protected String doInBackground(Void... voids) {
             String fallo = "";
             String ficheroST = "";
-            // Primero guarda el resultado de notificacion y recupera todos los datos para generar el fichero xml
-            intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
-            if(intentoGuardado == null) {
-                fallo = getString(R.string.error_guardar_en_bd)   ;
-            } else if ((notificacion.getLatitudRes1() == "0") && (notificacion.getLongitudRes1() == "0")){
+
+            if ((notificacion.getLatitudRes1() == "0") && (notificacion.getLongitudRes1() == "0")){
                     fallo = getString(R.string.error_guardar_en_bd_localizacion)   ;
                         } else {
                                 File ficheroXML = null;
@@ -718,8 +715,11 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                                     } else if (!notificacion.getHayST()){
                                         fallo = getString(R.string.problema_guardar_ST_realizar_notif_en_papel);
                                         } else {
-                                            dbHelper.guardaResultadoNotificacion(notificacion);
+                                            intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
+                                            if (intentoGuardado == null) {
+                                                fallo = getString(R.string.error_guardar_en_bd);
                                             }
+                                        }
                                 } catch (CiMobileException e) {
                                     fallo = e.getError();
                                 } catch (IOException e) {
@@ -755,7 +755,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                             Intent intentResultado = new Intent();
                             intentResultado.putExtra("posicionAdapter", posicionAdapter);
                             intentResultado.putExtra("idNotificacion", idNotificacion);
-                            setResult(CommonStatusCodes.SUCCESS, intentResultado);
+                            setResult(CommonStatusCodes.ERROR, intentResultado);
                             dialogInterface.dismiss();
                             finish();
                         }
@@ -770,7 +770,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                                 Intent intentResultado = new Intent();
                                 intentResultado.putExtra("posicionAdapter", posicionAdapter);
                                 intentResultado.putExtra("idNotificacion", idNotificacion);
-                                setResult(CommonStatusCodes.SUCCESS, intentResultado);
+                                setResult(CommonStatusCodes.ERROR, intentResultado);
                                 dialogInterface.dismiss();
                                 finish();
                             }
@@ -787,7 +787,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                                     Intent intentResultado = new Intent();
                                     intentResultado.putExtra("posicionAdapter", posicionAdapter);
                                     intentResultado.putExtra("idNotificacion", idNotificacion);
-                                    setResult(CommonStatusCodes.SUCCESS, intentResultado);
+                                    setResult(CommonStatusCodes.ERROR, intentResultado);
                                     dialogInterface.dismiss();
                                     finish();
                                 }
@@ -797,7 +797,12 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                                         builder.setTitle(R.string.guardado);
                                         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialogInterface, int which) {
+                                                Intent intentResultado = new Intent();
+                                                intentResultado.putExtra("posicionAdapter", posicionAdapter);
+                                                intentResultado.putExtra("idNotificacion", idNotificacion);
+                                                setResult(CommonStatusCodes.ERROR, intentResultado);
                                                 dialogInterface.dismiss();
+                                                finish();
                                             }
                                         });
                                     }
