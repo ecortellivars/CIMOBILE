@@ -67,6 +67,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
     String imageFileName = null;
     private final String CARPETA_RAIZ = "CiMobile/";
     private final String RUTA_IMAGEN = CARPETA_RAIZ + "FOTOS_ACUSE/";
+    String rutaFoto;
 
 
     @Override
@@ -93,7 +94,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
 
         // Obtenemos la instancia del helper de la base de datos
         dbHelper = new DBHelper(this);
-
+        rutaFoto = Util.obtenerRutaFotoAcuse();
         // Lanza en background las consultas para rellenar la vista
         CargarDetalleNotificacionTask cargarDetalleNotificacionTask = new CargarDetalleNotificacionTask();
         cargarDetalleNotificacionTask.execute();
@@ -141,6 +142,7 @@ public class DetalleNotificacionActivity extends BaseActivity {
                                 fechaHoraString3 = df3.format(Calendar.getInstance().getTime());
                                 File storageDir = null;
                                 File fileDestino = null;
+
                                 // Si es LISTA cojo siempre resultado2 para invocar al componente FotoAcuseActivity
                                 if (notificacion.getEsLista()) {
                                     imageFileName = notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado2() + ".webp";
@@ -225,12 +227,12 @@ public class DetalleNotificacionActivity extends BaseActivity {
                 if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
                     // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.webp
                     if (!esAplicacionPEE && notificacion.getResultado2() != null) {
-                        notificacion.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado2() + ".webp");
+                        notificacion.setFotoAcuseRes2(rutaFoto + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado2() + ".webp");
                         notificacion.setFotoAcuseRes1(null);
                         intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
 
                     } else if (!esAplicacionPEE && notificacion.getResultado1() != null) {
-                        notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado1() + ".webp");
+                        notificacion.setFotoAcuseRes1(rutaFoto + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado1() + ".webp");
                         notificacion.setFotoAcuseRes2(null);
                         intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
                     }
@@ -250,12 +252,12 @@ public class DetalleNotificacionActivity extends BaseActivity {
                 if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
                     // Nombre archivo = NA460239960019170000307_20170510_20170512_A3_01.webp
                     if (!esAplicacionPEE && notificacion.getResultado2() != null) {
-                        notificacion.setFotoAcuseRes2(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado2() + ".webp");
+                        notificacion.setFotoAcuseRes2(rutaFoto + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado2() + ".webp");
                         notificacion.setFotoAcuseRes1(null);
                         intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
 
                     } else if (!esAplicacionPEE && notificacion.getResultado1() != null) {
-                        notificacion.setFotoAcuseRes1(Util.obtenerRutaFotoAcuse() + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado1() + ".webp");
+                        notificacion.setFotoAcuseRes1(rutaFoto + File.separator + notificacion.getReferencia() + "_" + fechaHoraString3 + "_" + fechaHoraString3 + "_" + sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "") + "_" + notificacion.getResultado1() + ".webp");
                         notificacion.setFotoAcuseRes2(null);
                         intentoGuardado = dbHelper.guardaResultadoNotificacion(notificacion);
                     }
