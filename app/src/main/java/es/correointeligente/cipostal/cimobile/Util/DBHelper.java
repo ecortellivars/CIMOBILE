@@ -1729,6 +1729,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.putNull(KEY_NOTIFICACION_LONGITUD_RES_1);
                 cv.putNull(KEY_NOTIFICACION_LATITUD_RES_1);
                 cv.putNull(KEY_NOTIFICACION_OBSERVACIONES_RES_1);
+                cv.putNull(KEY_NOTIFICACION_FOTO_ACUSE_RES_1);
                 cv.put(KEY_NOTIFICACION_SEGUNDO_INTENTO,false);
 
 
@@ -1739,6 +1740,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 cv.putNull(KEY_NOTIFICACION_LONGITUD_RES_2);
                 cv.putNull(KEY_NOTIFICACION_LATITUD_RES_2);
                 cv.putNull(KEY_NOTIFICACION_OBSERVACIONES_RES_2);
+                cv.putNull(KEY_NOTIFICACION_FOTO_ACUSE_RES_1);
                 cv.put(KEY_NOTIFICACION_SEGUNDO_INTENTO,true);
 
             }
@@ -1751,6 +1753,7 @@ public class DBHelper extends SQLiteOpenHelper {
             cv.put(KEY_NOTIFICACION_FUERA_PLAZO_LISTA,false);
             cv.put(KEY_NOTIFICACION_HAY_XML,false);
             cv.put(KEY_NOTIFICACION_HAY_ST,false);
+            cv.putNull(KEY_NOTIFICACION_RELACION_DESTINATARIO);
 
             db.update(TABLE_NOTIFICACION, cv, KEY_NOTIFICACION_ID + "= ?", new String[]{idNotificacion.toString()});
 

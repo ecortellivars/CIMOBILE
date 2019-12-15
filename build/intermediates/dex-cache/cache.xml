@@ -3,78 +3,6 @@
 
     <item
         is-multidex="true"
-        jar="C:\Users\scipostal\.android\build-cache\64a526a56a56e468dc4eced7a117b4b90c434dd0\output\jars\classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="25.0.3"
-        sha1="2442771a5590dd4eb4bce00c2e9dca9e22e4c963">
-        <dex dex="C:\Users\scipostal\AndroidStudioProjects\OLD_PROJECTS\cimobile\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_a97e61ab47d016a4b98938a7bf36e3392879ac9c\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\scipostal\.android\build-cache\5db9add8b7262d694409ef8dc624cd76f37c2313\output\jars\classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="25.0.3"
-        sha1="b62fdc4cfef174c1e456014195c83fa7de7dc041">
-        <dex dex="C:\Users\scipostal\AndroidStudioProjects\OLD_PROJECTS\cimobile\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_fe4fa11aa69388ba9d19a5c75a721a45bfc5e6f7\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\scipostal\.android\build-cache\7499d6b04a06e126cf1f620ba08bd58e613445a8\output\jars\classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="25.0.3"
-        sha1="6aad88662d0c2640c6024049b8b0d50d2067c071">
-        <dex dex="C:\Users\scipostal\AndroidStudioProjects\OLD_PROJECTS\cimobile\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_1a7d6fd96deecbe29906cd62bb797bbe66be82bd\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\scipostal\.android\build-cache\1834114d6e9c1b9de2c90b3a9395d30ffb3e7028\output\jars\classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="25.0.3"
-        sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
-        <dex dex="C:\Users\scipostal\AndroidStudioProjects\OLD_PROJECTS\cimobile\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_c5433522f6627a9d5e55fa644084df6434a09f2c\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\scipostal\.android\build-cache\3b39740fd7373a203c214577f3b47e433d4dd41d\output\jars\classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="25.0.3"
-        sha1="ceda0650ec225b9c0143ed8ff1c010d4e621a423">
-        <dex dex="C:\Users\scipostal\AndroidStudioProjects\OLD_PROJECTS\cimobile\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_b86e9285e9a69390f4b0841ad84ddd73c93faedb\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\scipostal\AndroidStudioProjects\OLD_PROJECTS\cimobile\app\libs\jsch-0.1.54.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="25.0.3"
-        sha1="0d7d8aba0d11e8cd2f775f47cd3a6cfbf2837da4">
-        <dex dex="C:\Users\scipostal\AndroidStudioProjects\OLD_PROJECTS\cimobile\app\build\intermediates\transforms\dex\debug\folders\1000\2\jsch-0.1.54_6cb28f0da132470765939cdb7c24be154c63d74d\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\scipostal\.android\build-cache\6d08b514f89c5a7cd888b9c83c1c6fd14088733d\output\jars\classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="25.0.3"
-        sha1="d4fcdb502616fa4dae61969d0bc931fbb7a6e213">
-        <dex dex="C:\Users\scipostal\AndroidStudioProjects\OLD_PROJECTS\cimobile\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_3d161d842c14fd19cb71079d9d47650d9bf95911\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="C:\Users\scipostal\AndroidStudioProjects\OLD_PROJECTS\cimobile\app\libs\ksoap2-android-assembly-3.6.2-jar-with-dependencies.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="25.0.3"
-        sha1="b457441023b25f0b6bae28c76be982a4e49a8666">
-        <dex dex="C:\Users\scipostal\AndroidStudioProjects\OLD_PROJECTS\cimobile\app\build\intermediates\transforms\dex\debug\folders\1000\2\ksoap2-android-assembly-3.6.2-jar-with-dependencies_b42c5e31a4969c468896ff7ed3f825b152443bb8\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
         jar="C:\Users\scipostal\.android\build-cache\e8065287849c66ec9b35cd56af2ef559bc2df95d\output\jars\classes.jar"
         jumboMode="false"
         optimize="true"
@@ -138,12 +66,39 @@
     </item>
     <item
         is-multidex="true"
+        jar="C:\Users\scipostal\.android\build-cache\64a526a56a56e468dc4eced7a117b4b90c434dd0\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="2442771a5590dd4eb4bce00c2e9dca9e22e4c963">
+        <dex dex="C:\Users\scipostal\AndroidStudioProjects\OLD_PROJECTS\cimobile\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_a97e61ab47d016a4b98938a7bf36e3392879ac9c\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\scipostal\.android\build-cache\5db9add8b7262d694409ef8dc624cd76f37c2313\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="b62fdc4cfef174c1e456014195c83fa7de7dc041">
+        <dex dex="C:\Users\scipostal\AndroidStudioProjects\OLD_PROJECTS\cimobile\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_fe4fa11aa69388ba9d19a5c75a721a45bfc5e6f7\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
         jar="C:\Users\scipostal\.android\build-cache\2c4179889076d32ad9cad015a96d5078b372b98d\output\jars\classes.jar"
         jumboMode="false"
         optimize="true"
         revision="25.0.3"
         sha1="58b12bdb21a84f22e0dc3b047aeceb0a546b1b44">
         <dex dex="C:\Users\scipostal\AndroidStudioProjects\OLD_PROJECTS\cimobile\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_4b7599c6d7756189210f5ce181ed64d17fbbddf4\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\scipostal\.android\build-cache\7499d6b04a06e126cf1f620ba08bd58e613445a8\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="6aad88662d0c2640c6024049b8b0d50d2067c071">
+        <dex dex="C:\Users\scipostal\AndroidStudioProjects\OLD_PROJECTS\cimobile\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_1a7d6fd96deecbe29906cd62bb797bbe66be82bd\classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -156,6 +111,15 @@
     </item>
     <item
         is-multidex="true"
+        jar="C:\Users\scipostal\.android\build-cache\1834114d6e9c1b9de2c90b3a9395d30ffb3e7028\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
+        <dex dex="C:\Users\scipostal\AndroidStudioProjects\OLD_PROJECTS\cimobile\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_c5433522f6627a9d5e55fa644084df6434a09f2c\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
         jar="C:\Users\scipostal\.android\build-cache\0de85c6d4bf8d9e815cf860c4123e39bb077085f\output\jars\classes.jar"
         jumboMode="false"
         optimize="true"
@@ -165,12 +129,39 @@
     </item>
     <item
         is-multidex="true"
+        jar="C:\Users\scipostal\.android\build-cache\3b39740fd7373a203c214577f3b47e433d4dd41d\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="ceda0650ec225b9c0143ed8ff1c010d4e621a423">
+        <dex dex="C:\Users\scipostal\AndroidStudioProjects\OLD_PROJECTS\cimobile\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_b86e9285e9a69390f4b0841ad84ddd73c93faedb\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
         jar="C:\Users\scipostal\.android\build-cache\9f958fc464de4857481d537ca21b323859b40828\output\jars\classes.jar"
         jumboMode="false"
         optimize="true"
         revision="25.0.3"
         sha1="b15c6ded887ad967e20bb335c1a121b253c04dce">
         <dex dex="C:\Users\scipostal\AndroidStudioProjects\OLD_PROJECTS\cimobile\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_35bd8d70ab1968f0230c38a121f214eaeb37d8ec\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\scipostal\AndroidStudioProjects\OLD_PROJECTS\cimobile\app\libs\jsch-0.1.54.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="0d7d8aba0d11e8cd2f775f47cd3a6cfbf2837da4">
+        <dex dex="C:\Users\scipostal\AndroidStudioProjects\OLD_PROJECTS\cimobile\app\build\intermediates\transforms\dex\debug\folders\1000\2\jsch-0.1.54_6cb28f0da132470765939cdb7c24be154c63d74d\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\scipostal\.android\build-cache\6d08b514f89c5a7cd888b9c83c1c6fd14088733d\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="d4fcdb502616fa4dae61969d0bc931fbb7a6e213">
+        <dex dex="C:\Users\scipostal\AndroidStudioProjects\OLD_PROJECTS\cimobile\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_3d161d842c14fd19cb71079d9d47650d9bf95911\classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -189,6 +180,15 @@
         revision="25.0.3"
         sha1="6f4138a4e065826cb044d49faea4cfd7191773d1">
         <dex dex="C:\Users\scipostal\AndroidStudioProjects\OLD_PROJECTS\cimobile\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_45e29ba131ff1d7dbf619a49bd5cfddb8c356456\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\scipostal\AndroidStudioProjects\OLD_PROJECTS\cimobile\app\libs\ksoap2-android-assembly-3.6.2-jar-with-dependencies.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="b457441023b25f0b6bae28c76be982a4e49a8666">
+        <dex dex="C:\Users\scipostal\AndroidStudioProjects\OLD_PROJECTS\cimobile\app\build\intermediates\transforms\dex\debug\folders\1000\2\ksoap2-android-assembly-3.6.2-jar-with-dependencies_b42c5e31a4969c468896ff7ed3f825b152443bb8\classes.dex" />
     </item>
 
 </items>
