@@ -191,6 +191,8 @@ public class Util {
 
             // Preferencias para el uso de la aplicación en oficina
             e.putBoolean(Util.CLAVE_PREFERENCIAS_APP_DE_OFICINA, false);
+            e.putString(Util.CLAVE_PREFERENCIAS_DIAS_NA_LISTA, "7");
+            e.putString(Util.CLAVE_PREFERENCIAS_DIAS_CERTIFICADAS_LISTA, "15");
 
             // Preferencias para el uso de la aplicación como PEE
             e.putBoolean(Util.CLAVE_PREFERENCIAS_APP_PEE, false);

@@ -278,6 +278,7 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                         notificacion.setSegundoIntento(false);
                                         notificacion.setHayST(false);
                                         notificacion.setHayXML(false);
+                                        notificacion.setFueraPlazoLista(false);
 
                                         if (linea.trim().endsWith("C")) {
                                             notificacion.setEsCertificado(true);

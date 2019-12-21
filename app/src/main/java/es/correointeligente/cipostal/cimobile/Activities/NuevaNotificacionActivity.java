@@ -324,20 +324,21 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                 numDiasCert = numDiasCert == null ? 10 : numDiasCert; // en caso de no obtener el valor de las preferencias, por defecto son 10
 
                 if (notificacion.getFueraPlazoLista()) {
-                    if (notificacion.getEsCertificado()){
+                    if (notificacion.getEsCertificado()) {
                         consejoLista = getString(R.string.dia_limite_cert) + " " + numDiasCert + "\n" +
-                                       getString(R.string.fecha_ultimo_resultado) + " " + notificacion.getFechaHoraRes1() + "\n" +
-                                       getString(R.string.informacion_lista) ;
+                                getString(R.string.fecha_ultimo_resultado) + " " + notificacion.getFechaHoraRes1() + "\n" +
+                                getString(R.string.informacion_lista);
                     } else {
                         consejoLista = getString(R.string.dia_limite_NA) + " " + numDiasNA + "\n" +
-                                       getString(R.string.fecha_ultimo_resultado) + " " + notificacion.getFechaHoraRes1() + "\n" +
-                                       getString(R.string.informacion_lista);
-                      }
+                                getString(R.string.fecha_ultimo_resultado) + " " + notificacion.getFechaHoraRes1() + "\n" +
+                                getString(R.string.informacion_lista);
+                    }
                     ll_detallePrimerIntento.setVisibility(View.INVISIBLE);
                     ll_detalleLista.setVisibility(View.VISIBLE);
                     tv_consejoLista.setText(consejoLista);
                     btn_noEntregado.setVisibility(View.INVISIBLE);
-                } else
+                }
+            }else
                     // Si requiere segundo intento lo muestro
                     if (BooleanUtils.isTrue(notificacion.getSegundoIntento())) {
                         // Se muestra el layout de información referente al primer resultado
@@ -396,7 +397,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                             tv_consejoSegundoIntento.setText(consejoSegundoIntento);
                         }
                     }
-            }
+
             progressDialog.dismiss();
         }
     }
