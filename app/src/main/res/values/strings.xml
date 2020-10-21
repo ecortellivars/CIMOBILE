@@ -26,12 +26,12 @@
 	<string name="total_nombre_fichero_sicer">Sicer</string>
 	<string name="total_nombre_fichero_segundo">Fichero Segundos</string>
 	<string name="total_notificaciones_gestionadas">Total notificaciones gestionadas</string>
-	<string name="total_notificaciones_acabadas">Tus visitas de hoy con resultado</string>
+	<string name="total_notificaciones_acabadas">Ficheros generados en las visitas de hoy</string>
 	<string name="total_resultados_reparto">Resultados almacenados (REPARTO)</string>
 	<string name="total_resultados_lista">Resultados almacenados (OFICINA)</string>
-	<string name="total_xml">XML de los resultados</string>
-	<string name="total_st">ST de los resultados</string>
-	<string name="total_fotos">Fotos de los resultados</string>
+	<string name="total_xml">XML (Fichero retorno de resultados)</string>
+	<string name="total_st">ST (Fichero sello de tiempo fehaciencia)</string>
+	<string name="total_fotos">Fotos acuses</string>
 	<string name="total_notificaciones_pendientes_2_hoy">2ª vistas para hoy </string>
 	<string name="total_notificaciones_pendientes_2_otro_dia">2ª visita para otro dia </string>
 	<string name="total_notificaciones_marcadas">Marcadas</string>
@@ -44,7 +44,7 @@
 	<string name="no_entregado">No entregado</string>
 	<string name="entregado">Entregado</string>
 	<string name="entregadoConSinFirma">01 Entregado</string>
-	<string name="todos">Todos (Sin Firma)</string>
+	<string name="todos">Resultados Sin Firma o En Papel</string>
 	<string name="entregado_con_firma_01">Notificado con Firma (01-Domicilio/09-Lista)</string>
 	<string name="entregado_01">01 Entregado sin Firma</string>
 	<string name="dir_incorrecta_02">02 Dir. incorrecta</string>
@@ -71,7 +71,7 @@
 	<string name="resultado2">RESULTADO 2</string>
 	<string name="flag_foto">Flag Foto</string>
 	<string name="motivo_no_entrega">Motivo de no entrega</string>
-	<string name="resultados_sin_firma">Resultados SIN firma</string>
+	<string name="resultados_sin_firma">Resultados SIN firma o en papel</string>
 	<string name="sin_resultados_posibles">Notificacion sin resultados posibles</string>
 	<string name="numero_documento">Número documento</string>
 	<string name="nombre_y_apellidos">Nombre y apellidos</string>
@@ -87,7 +87,7 @@
 	<string name="espere_conexion_servidor_ftp">Espere mientras se conecta al servidor FTP</string>
 	<string name="fallo_conexion_servidor_ftp">ERROR!! al conectar al servidor FTP</string>
 	<string name="guardando_datos_en_bd_interna">Guardando los datos en la base de datos interna</string>
-	<string name="cargando_fichero_sicer">"Cargando fichero SICER...\nLinea: "</string>
+	<string name="cargando_fichero_sicer">"Cargando fichero SICER…\nLinea: "</string>
 	<string name="sicer_fichero_cargado_anteriormente">AVISO!! FICHERO SICER YA FUE CARGADO</string>
 	<string name="segundos_reparto_fichero_cargado_anteriormente">AVISO!! FICHERO SEGUNDOS INTENTOS REPARTO YA FUE CARGADO</string>
 	<string name="segundos_lista_fichero_cargado_anteriormente">AVISO!! FICHERO SEGUNDOS INTENTOS LISTA YA FUE CARGADO</string>
@@ -100,13 +100,15 @@
 	<string name="xml">XML</string>
 	<string name="st">ST</string>
 	<string name="observaciones">Observaciones</string>
-	<string name="hint_observaciones">Mis observaciones...</string>
+	<string name="hint_observaciones">Mis observaciones…</string>
 	<string name="referencia_postal">Referencia Postal</string>
 	<string name="referencia_scb">Referencia SCB</string>
 	<string name="direccion">Dirección</string>
 	<string name="receptor">Receptor</string>
-	<string name="informacion_segundo_intento_1">El segundo intento de notificación debería ser antes de las</string>
-	<string name="informacion_segundo_intento_2">o después de las</string>
+	<string name="receptor_numero_documento">Numero Documento Receptor</string>
+	<string name="informacion_segundo_intento_tarde">El segundo intento de notificación debe ser entre las 15:00 y las 20:00</string>
+	<string name="informacion_segundo_intento_mañana">El segundo intento de notificación debe ser entre las 8:00 y las 15:00</string>
+	<string name="informacion_intento_fuera_horario">Intento fuera de horario</string>
 	<string name="informacion_lista">No admite un NO ENTREGADO EN OFICINA por estar en plazo</string>
 	<string name="generado_xml">Generando el fichero XML</string>
 	<string name="generado_sello_de_tiempo">Generando el sello de tiempo del fichero XML</string>
@@ -118,7 +120,9 @@
 	<string name="guardado">GUARDADO!!!</string>
 	<string name="no_guardado">NO GUARDADO!!!</string>
 	<string name="problema_guardar_realizar_notif_en_papel">PROBLEMA al guardar la notificacion en el dispositivo. REALICE LA NOTIFICACION EN PAPEL</string>
-	<string name="problema_guardar_XML_realizar_notif_en_papel">PROBLEMA al generar el fichero XML. REALICE LA NOTIFICACION EN PAPEL</string>
+	<string name="problema_guardar_XML_realizar_notif_en_papel">PROBLEMA al generar el fichero XML. REVISE QUE TIENE ESPACIO EN EL DISCO DE LA PDA o REALICE LA NOTIFICACION EN PAPEL</string>
+	<string name="problema_DNI">Es obligatorio poner NUMERO DE DOCUMENTO para poder guardar el resultado</string>
+	<string name="problema_FIRMA">Es obligatorio poner FIRMA para poder guardar el resultado</string>
 	<string name="problema_guardar_ST_realizar_notif_en_papel">PROBLEMA al generar el fichero ST. Revise las PREFERENCIAS o REALICE LA NOTIFICACION EN PAPEL</string>
 	<string name="notificacion_grabada_correctamente">La notificación se ha guardado correctamente</string>
 	<string name="cerrar_reparto_info">Va a CERRAR el reparto, se generará el fichero con los RESULTADOS su subida al FTP y el BORRADO de los datos del dispositivo si no estas gestionando por PEE. ¿Desea Continuar?</string>
@@ -161,7 +165,7 @@
 	<string name="error_inicio_sesion">Se ha producido un error en el inicio de sesión</string>
 	<string name="actualizacion">Actualización</string>
 	<string name="detalle_actualizacion">Se ha encontrado un nueva versión. ¿Desea actualizar? Versión: </string>
-	<string name="descargando_version">Descargando versión...</string>
+	<string name="descargando_version">Descargando versión…</string>
 	<string name="error_durante_actualizacion">Se ha producido un fallo durante la actualización</string>
 	<string name="error_descarga_fichero">Se ha producido un fallo durante la descarga del fichero</string>
 	<string name="no_error_descarga_fichero">No se ha producido ningun fallo durante la descarga del fichero</string>
@@ -198,6 +202,13 @@
 		<item>Marcadas notificador</item>
 		<item>Entregada en Oficina</item>
 		<item>No Entregada en Oficina</item>
+		<item>Resultados Sin Foto</item>
 	</string-array>
+
+	<string name="nombreFichero">nombreFichero.txt</string>
+	<string name="tamayoFichero">73 Byte</string>
+	<string name="fechaFichero">20–01–2017 10:00</string>
+	<string name="nombre">Nombre</string>
+
 
 </resources>

@@ -32,15 +32,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/total_ficheros"
-                    android:textSize="10sp" />
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/textView_resumen_total_ficheros_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
                     android:layout_marginStart="20dp"
-                    android:textSize="10sp"
+                    
+                    android:textSize="12sp"
                     android:textStyle="bold" />
             </TableRow>
             <TableRow
@@ -52,15 +52,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/total_nombre_fichero_sicer"
-                    android:textSize="10sp" />
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/textView_resumen_nombre_fichero_sicer_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
                     android:layout_marginStart="20dp"
-                    android:textSize="10sp"
+                    
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
             </TableRow>
@@ -74,15 +74,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/total_notificaciones_pendientes_2_hoy"
-                    android:textSize="10sp" />
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/textView_resumen_total_notif_pendientes_2_hoy_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
                     android:layout_marginStart="20dp"
-                    android:textSize="10sp"
+                    
+                    android:textSize="12sp"
                     android:textStyle="bold" />
             </TableRow>
 
@@ -95,35 +95,36 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/total_notificaciones_pendientes_2_otro_dia"
-                    android:textSize="10sp" />
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/textView_resumen_total_notif_pendientes_2_otro_dia_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
                     android:layout_marginStart="20dp"
-                    android:textSize="10sp"
+                    
+                    android:textSize="12sp"
                     android:textStyle="bold" />
             </TableRow>
 
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
                 <TextView
                     android:id="@+id/textView_resumen_total_notificaciones"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/total_notificaciones"
-                    android:textSize="10sp" />
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/textView_resumen_total_notificaciones_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
                     android:layout_marginStart="20dp"
-                    android:textSize="10sp"
+                    
+                    android:textSize="12sp"
                     android:textStyle="bold" />
             </TableRow>
             <TableRow
@@ -135,36 +136,37 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/total_notificaciones_marcadas"
-                    android:textSize="10sp" />
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/textView_resumen_total_notif_marcadas_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
                     android:layout_marginStart="20dp"
-                    android:textSize="10sp"
+                    
+                    android:textSize="12sp"
                     android:textStyle="bold" />
             </TableRow>
 
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-            <TextView
-                android:id="@+id/textView_resumen_nombre_fichero_segundo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/total_nombre_fichero_segundo"
-                android:textSize="10sp" />
 
-            <TextView
-                android:id="@+id/textView_resumen_nombre_fichero_segundo_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginStart="20dp"
-                android:textSize="9sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/textView_resumen_nombre_fichero_segundo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/total_nombre_fichero_segundo"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/textView_resumen_nombre_fichero_segundo_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
             </TableRow>
         </TableLayout>
     </LinearLayout>
@@ -202,9 +204,9 @@
                         android:id="@+id/textView_resumen_entregado_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
-                        android:textSize="10sp"
+                        
+                        android:textSize="12sp"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -223,9 +225,9 @@
                         android:id="@+id/textView_resumen_dir_incorrecta_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
-                        android:textSize="10sp"
+                        
+                        android:textSize="12sp"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -244,9 +246,8 @@
                         android:id="@+id/textView_resumen_ausente_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
-                        android:textSize="10sp"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -265,9 +266,8 @@
                         android:id="@+id/textView_resumen_ausente_pendiente_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
-                        android:textSize="10sp"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -286,9 +286,8 @@
                         android:id="@+id/textView_resumen_desconocido_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
-                        android:textSize="10sp"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -307,9 +306,8 @@
                         android:id="@+id/textView_resumen_fallecido_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
-                        android:textSize="10sp"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -328,9 +326,8 @@
                         android:id="@+id/textView_resumen_rehusado_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
-                        android:textSize="10sp"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -349,9 +346,8 @@
                         android:id="@+id/textView_resumen_nadie_cargo_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
-                        android:textSize="10sp"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -370,9 +366,9 @@
                         android:id="@+id/textView_resumen_nadie_cargo_pendiente_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
-                        android:textSize="10sp"
+
+                        android:textSize="12sp"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -393,9 +389,8 @@
                         android:id="@+id/textView_resumen_entregado_en_oficina_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
-                        android:textSize="10sp"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -415,9 +410,8 @@
                         android:id="@+id/textView_resumen_no_entregado_en_oficina_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
-                        android:textSize="10sp"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
 
                 </TableRow>
@@ -441,7 +435,6 @@
                         android:id="@+id/textView_resumen_total_notif_gestionadas_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
                         android:textColor="@color/colorBackgroundNoEntregado"
                         android:textSize="15sp"
@@ -467,10 +460,10 @@
                         android:id="@+id/textView_resumen_total_xml_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
-                        android:textSize="15sp"
+                        
                         android:textColor="@color/colorBackgroundNoEntregado"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
                 </TableRow>
 
@@ -493,10 +486,9 @@
                         android:id="@+id/textView_resumen_total_st_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
-                        android:textSize="15sp"
                         android:textColor="@color/colorBackgroundNoEntregado"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
                 </TableRow>
 
@@ -520,10 +512,10 @@
                         android:id="@+id/textView_resumen_total_fotos_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
-                        android:textSize="15sp"
+                        
                         android:textColor="@color/colorBackgroundNoEntregado"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
                 </TableRow>
 
@@ -536,16 +528,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/total_resultados_reparto"
-                        android:textSize="11sp"
+                        android:textSize="13sp"
                         android:textStyle="bold|italic" />
 
                     <TextView
                         android:id="@+id/textView_resumen_total_resultados_reparto_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
-                        android:textSize="11sp"
+                        android:textSize="13sp"
                         android:textStyle="bold" />
                 </TableRow>
 
@@ -558,16 +549,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/total_lista"
-                        android:textSize="11sp"
+                        android:textSize="13sp"
                         android:textStyle="bold|italic" />
 
                     <TextView
                         android:id="@+id/textView_resumen_total_notif_lista_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
-                        android:textSize="11sp"
+                        android:textSize="13sp"
                         android:textStyle="bold" />
                 </TableRow>
 
@@ -580,16 +570,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/total_lista_cert"
-                        android:textSize="11sp"
+                        android:textSize="13sp"
                         android:textStyle="bold|italic" />
 
                     <TextView
                         android:id="@+id/textView_resumen_total_cert_lista_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
                         android:layout_marginStart="20dp"
-                        android:textSize="11sp"
+                        android:textSize="13sp"
                         android:textStyle="bold" />
                 </TableRow>
             </TableLayout>
@@ -600,7 +589,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/background_gradient"
+                android:background="@color/colorAccent"
                 android:padding="10dp"
                 android:text="@string/cerrar_reparto"
                 android:textAllCaps="false"

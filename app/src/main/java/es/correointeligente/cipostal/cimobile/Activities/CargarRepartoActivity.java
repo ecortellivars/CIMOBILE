@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import es.correointeligente.cipostal.cimobile.Adapters.FicheroAdapter;
@@ -49,16 +50,18 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cargar_reparto);
 
-        mToolbar = (Toolbar) findViewById(R.id.tool_bar);
+        mToolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        // Obtenemos la instancia del helper de la base de datos
+        // Obtenemos la instancia del helper de la base de datos LITE
         dbHelper = new DBHelper(this);
 
+        mlistView_cargar_reparto_ficheros = findViewById(R.id.listView_cargar_reparto_ficheros);
         mlistView_cargar_reparto_ficheros = (ListView) findViewById(R.id.listView_cargar_reparto_ficheros);
+
 
         // Carga el layout comun de sesion actual
         this.loadLayoutCurrentSession();
@@ -214,10 +217,6 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
             Boolean existeFicheroSICER = Boolean.FALSE;
             Boolean existeFicheroSEGUNDOLista = Boolean.FALSE;
             Boolean existeFicheroSEGUNDOReparto = Boolean.FALSE;
-            Boolean cargadoSICER = Boolean.FALSE;
-            Boolean cargadoSEGUNDOReparto = Boolean.FALSE;
-            Boolean cargadoSEGUNDOLista = Boolean.FALSE;
-
             Boolean esAplicacionDeOficina = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_APP_DE_OFICINA, getBaseContext(), Boolean.class.getSimpleName());
 
             if (nombreFicheroSeleccionado != null && ftpHelper.isConnected()) {
@@ -234,17 +233,17 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                     existeFicheroSEGUNDOLista = dbHelper.cargadoFicheroSEGUNDOSLista();
                 }
                 // Si no fue cargado con anterioridad
-                if ((!cargadoSICER && !existeFicheroSICER && nombreFicheroSeleccionado.contains("sicer"))
-                 || (!cargadoSEGUNDOLista && !existeFicheroSEGUNDOLista && nombreFicheroSeleccionado.contains("segundo_intento_lista"))
-                 || (!cargadoSEGUNDOReparto && !existeFicheroSEGUNDOReparto && nombreFicheroSeleccionado.contains("segundo_intento_repartidores"))) {
+                if ((!existeFicheroSICER && nombreFicheroSeleccionado.contains("sicer"))
+                 || (!existeFicheroSEGUNDOLista && nombreFicheroSeleccionado.contains("segundo_intento_lista"))
+                 || (!existeFicheroSEGUNDOReparto && nombreFicheroSeleccionado.contains("segundo_intento_repartidores"))) {
 
                     // No fue cargado pero es el fichero de segundos erroneo
-                    if ((!cargadoSEGUNDOLista && esAplicacionDeOficina && nombreFicheroSeleccionado.contains("segundo_intento_lista"))
+                    if ((esAplicacionDeOficina && nombreFicheroSeleccionado.contains("segundo_intento_lista"))
                       || (nombreFicheroSeleccionado.contains("sicer"))
                       || (nombreFicheroSeleccionado.contains("segundo_intento_repartidores"))) {
 
                         // No fue cargado pero es el fichero de segundos errorneo
-                        if ((!cargadoSEGUNDOReparto && !esAplicacionDeOficina && nombreFicheroSeleccionado.contains("segundo_intento_repartidores"))
+                        if ((!esAplicacionDeOficina && nombreFicheroSeleccionado.contains("segundo_intento_repartidores"))
                           || (nombreFicheroSeleccionado.contains("sicer"))
                           || (nombreFicheroSeleccionado.contains("segundo_intento_lista"))) {
 
@@ -403,9 +402,6 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
                                     numLinea++;
                                 }
 
-                                // Se limpia el mapa
-                                mapaNotificacion = null;
-
                                 publishProgress(getString(R.string.guardando_datos_en_bd_interna));
                                 // SICER.txt
                                 if (esCargaPrimeraEntrega) {
@@ -453,9 +449,8 @@ public class CargarRepartoActivity extends BaseActivity implements AdapterView.O
         private Date stringToDate(String aDate,String aFormat) {
             if(aDate == null) return null;
             ParsePosition pos = new ParsePosition(0);
-            SimpleDateFormat simpledateformat = new SimpleDateFormat(aFormat);
-            Date stringDate = simpledateformat.parse(aDate, pos);
-            return stringDate;
+            SimpleDateFormat simpledateformat = new SimpleDateFormat(aFormat, Locale.getDefault());
+            return simpledateformat.parse(aDate, pos);
         }
 
         @Override

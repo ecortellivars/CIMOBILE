@@ -14,7 +14,7 @@
                 android:id="@+id/tv_result_entregado_cabecera_resultado"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left|center_vertical"
+                android:layout_gravity="start|center_vertical"
                 android:text="@string/resultado"
                 android:textAllCaps="true"
                 android:textStyle="bold" />
@@ -158,6 +158,19 @@
                 android:text="@string/receptor"/>
 
             <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/receptor_numero_documento"
+                android:textStyle="bold"
+                android:layout_marginTop="5dp"/>
+
+            <TextView
+                android:id="@+id/tv_result_entregado_receptor_dni"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/receptor_numero_documento"/>
+
+            <TextView
                 android:id="@+id/textView3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -181,7 +194,8 @@
             <ImageView
                 android:id="@+id/imageView_result_entregado_firma"
                 android:layout_width="match_parent"
-                android:layout_height="128dp" />
+                android:layout_height="128dp"
+                android:contentDescription="@string/firma_receptor" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -193,7 +207,8 @@
             <ImageView
                 android:id="@+id/imageView_result_entregado_foto_acuse"
                 android:layout_width="match_parent"
-                android:layout_height="275dp" />
+                android:layout_height="275dp"
+                android:contentDescription="@string/foto_acuse" />
 
 
             <TextView
@@ -203,20 +218,22 @@
                 android:textStyle="bold"
                 android:layout_marginTop="5dp"/>
 
-            <TextView
+            <EditText
                 android:id="@+id/tv_result_entregado_observaciones"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="top|left"
+                android:autofillHints=""
+                android:background="@drawable/edit_text_shape"
+                android:gravity="top|start"
                 android:inputType="textMultiLine"
+                android:labelFor="@+id/tv_result_entregado_observaciones"
+                android:lines="4"
                 android:overScrollMode="always"
+                android:padding="3dp"
                 android:scrollbarStyle="insideInset"
                 android:scrollbars="vertical"
-                android:lines="4"
-                android:padding="3dp"
-                android:background="@drawable/edit_text_shape"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:scrollHorizontally="false"/>
+                android:scrollHorizontally="false"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
         </LinearLayout>
 

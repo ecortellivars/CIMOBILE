@@ -20,7 +20,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <LinearLayout
@@ -47,7 +47,7 @@
                         android:id="@+id/textView_nuevaNotificacion_refPostal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="TextView" />
+                        android:text="@string/referencia_postal" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -59,7 +59,7 @@
                         android:id="@+id/textView_nuevaNotificacion_refSCB"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="TextView" />
+                        android:text="@string/referencia_scb" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -72,7 +72,7 @@
                         android:id="@+id/textView_nuevaNotificacion_nombre"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="TextView" />
+                        android:text="@string/nombre" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -85,7 +85,7 @@
                         android:id="@+id/textView_nuevaNotificacion_direccion"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="TextView" />
+                        android:text="@string/direccion" />
 
                     <TableLayout
                         android:layout_width="match_parent"
@@ -153,7 +153,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="86dp"
                     android:background="@drawable/edit_text_shape"
-                    android:gravity="top|left"
+                    android:gravity="top|start"
                     android:hint="@string/hint_observaciones"
                     android:inputType="textMultiLine"
                     android:lines="3"
@@ -162,7 +162,8 @@
                     android:scrollHorizontally="false"
                     android:scrollbarStyle="insideInset"
                     android:scrollbars="vertical"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:autofillHints="" />
 
 
             </LinearLayout>
@@ -182,6 +183,7 @@
 
                 <Button
                     android:id="@+id/button_nueva_notificacion_noEntregado"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
@@ -192,11 +194,12 @@
                     android:text="@string/todos"
                     android:textAllCaps="false"
                     android:textColor="@color/cardview_dark_background"
-                    android:textColorLink="@drawable/button_selector"
-                    android:textSize="17sp" />
+                    android:textColorLink="@color/colorBotonEntregadoPressed"
+                    android:textSize="12sp" />
 
                 <Button
                     android:id="@+id/button_nueva_notificacion_entregado"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="110dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"

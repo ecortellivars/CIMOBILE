@@ -49,7 +49,7 @@ public class ListaNotificacionesActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_notificaciones);
-        mToolbar = (Toolbar) findViewById(R.id.tool_bar);
+        mToolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -72,7 +72,7 @@ public class ListaNotificacionesActivity extends BaseActivity {
         this.mapearImageButtonScanBar();
 
         // Se mapea el recycler
-        mRecyclerNotificaciones = (RecyclerView) findViewById(R.id.recyclerView_listaNotificaciones);
+        mRecyclerNotificaciones = findViewById(R.id.recyclerView_listaNotificaciones);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerNotificaciones.setLayoutManager(layoutManager);
 
@@ -216,6 +216,7 @@ public class ListaNotificacionesActivity extends BaseActivity {
         checkedFiltros[7] = mFiltroNotificacion.getMarcadas();
         checkedFiltros[8] = mFiltroNotificacion.getNoEntregadoEnOficina();
         checkedFiltros[9] = mFiltroNotificacion.getEntregadoEnOficina();
+        checkedFiltros[10] = mFiltroNotificacion.getSinFoto();
 
 
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(ListaNotificacionesActivity.this);
@@ -263,6 +264,9 @@ public class ListaNotificacionesActivity extends BaseActivity {
                         case 9:
                             mFiltroNotificacion.setNoEntregadoEnOficina(checkedFiltros[position]);
                             break;
+                        case 10:
+                            mFiltroNotificacion.setSinFoto(checkedFiltros[position]);
+                            break;
 
                     }
                 }
@@ -296,7 +300,7 @@ public class ListaNotificacionesActivity extends BaseActivity {
      * el filtro de búsqueda de forma dinámica
      */
     private void mapearEditTextRefPostal() {
-        mRefPostal = (EditText) findViewById(R.id.editText_listaNotificaciones_refPostal);
+        mRefPostal =  findViewById(R.id.editText_listaNotificaciones_refPostal);
         // Se fuerza que el inputText se haga entero en mayusculas
         mRefPostal.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         mRefPostal.addTextChangedListener(new TextWatcher() {
@@ -310,7 +314,7 @@ public class ListaNotificacionesActivity extends BaseActivity {
                if(charSequence.length() > 2) {
                    // Se reinicializa la búsqueda limpiando el adaptador y llamando al hilo de obtener notificaciones
                    mRecyclerNotificaciones.setAdapter(null);
-                   listaNotificaciones = new ArrayList<Notificacion>();
+                   listaNotificaciones = new ArrayList<>();
                    mFiltroNotificacion.setPagina(0);
                    mFiltroNotificacion.setReferencia("'%" + charSequence + "%'");
 

@@ -1088,6 +1088,14 @@ public class DBHelper extends SQLiteOpenHelper {
                       "OR (" + KEY_NOTIFICACION_RESULTADO_1 + " = '" + Util.RESULTADO_NADIE_SE_HACE_CARGO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 1) " +
                       "OR (" + KEY_NOTIFICACION_RESULTADO_2 + " = '" + Util.RESULTADO_NADIE_SE_HACE_CARGO + "' AND " + KEY_NOTIFICACION_SEGUNDO_INTENTO + " = 0) ";
         }
+        if (filtroNotificacion.getSinFoto()) {
+                    // Primera vista con resultado y sin foto
+            query += "AND ((" + KEY_NOTIFICACION_FOTO_ACUSE_RES_1 + " ISNULL AND " + KEY_NOTIFICACION_RESULTADO_1 + " IS NOT NULL " +
+                       "AND " + KEY_NOTIFICACION_FOTO_ACUSE_RES_2 + " ISNULL AND " + KEY_NOTIFICACION_RESULTADO_2 + " ISNULL)" +
+                    // Segunda visita sin foto
+                    "OR (" + KEY_NOTIFICACION_FOTO_ACUSE_RES_1 + " ISNULL AND " + KEY_NOTIFICACION_RESULTADO_1 + " IS NOT NULL " +
+                    "AND " + KEY_NOTIFICACION_FOTO_ACUSE_RES_2 + " ISNULL AND " + KEY_NOTIFICACION_RESULTADO_2 + " IS NOT NULL))";
+        }
         if (filtroNotificacion.getMarcadas()) {
             query += "AND " + KEY_NOTIFICACION_MARCADA + " = " + 1 + " ";
             query += "ORDER BY " + KEY_NOTIFICACION_TIMESTAMP_MARCADA + " ASC ";

@@ -13,19 +13,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import es.correointeligente.cipostal.cimobile.Model.Notificacion;
 import es.correointeligente.cipostal.cimobile.Model.Resultado;
@@ -67,7 +69,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resumen_reparto);
 
-        mToolbar = (Toolbar) findViewById(R.id.tool_bar);
+        mToolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -92,54 +94,51 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
     public void onClick(View view) {
         ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(20);
 
-        switch (view.getId()) {
-            case R.id.button_resumen_cerrar_reparto:
-                crearDialogoAvisoCierreReparto();
-                break;
-            default:
-                break;
+        if (view.getId() ==  R.id.button_resumen_cerrar_reparto) {
+            this.crearDialogoAvisoCierreReparto();
         }
+
     }
 
     /**
      * Clase privada para mapear todas las vistas del layout
      */
     private void mapearVistaTextViews() {
-        tv_totFicheros = (TextView) findViewById(R.id.textView_resumen_total_ficheros_value);
-        tv_totNotificaciones = (TextView) findViewById(R.id.textView_resumen_total_notificaciones_value);
-        tv_totNotifGestionadas = (TextView) findViewById(R.id.textView_resumen_total_notif_gestionadas_value);
-        tv_totFotos_txt = (TextView) findViewById(R.id.textView_resumen_total_fotos);
-        tv_totFotos = (TextView) findViewById(R.id.textView_resumen_total_fotos_value);
-        tv_totXml_txt = (TextView) findViewById(R.id.textView_resumen_total_xml);
-        tv_totXml = (TextView) findViewById(R.id.textView_resumen_total_xml_value);
-        tv_totST_txt = (TextView) findViewById(R.id.textView_resumen_total_st);
-        tv_totST = (TextView) findViewById(R.id.textView_resumen_total_st_value);
-        tv_totResultados_reparto = (TextView) findViewById(R.id.textView_resumen_total_resultados_reparto_value);
-        tv_totResultados_reparto_txt = (TextView) findViewById(R.id.textView_resumen_total_resultados_reparto);
-        tv_totNotifPendientes_2_hoy = (TextView) findViewById(R.id.textView_resumen_total_notif_pendientes_2_hoy_value);
-        tv_totNotifPendientes_2_otro_dia = (TextView) findViewById(R.id.textView_resumen_total_notif_pendientes_2_otro_dia_value);
-        tv_totNotifMarcadas = (TextView) findViewById(R.id.textView_resumen_total_notif_marcadas_value);
-        tv_totNotiLista = (TextView) findViewById(R.id.textView_resumen_total_notif_lista_value);
-        tv_totNotiLista_txt = (TextView) findViewById(R.id.textView_resumen_total_lista_txt);
-        tv_totCertLista = (TextView) findViewById(R.id.textView_resumen_total_cert_lista_value);
-        tv_totCertLista_txt = (TextView) findViewById(R.id.textView_resumen_total_lista_cert_txt);
-        tv_nombreFicheroSicer = (TextView) findViewById(R.id.textView_resumen_nombre_fichero_sicer_value);
-        tv_nombreFicheroSegundo = (TextView) findViewById(R.id.textView_resumen_nombre_fichero_segundo_value);
-        tv_entregado = (TextView) findViewById(R.id.textView_resumen_entregado_value);
-        tv_entregado_en_oficina = (TextView) findViewById(R.id.textView_resumen_entregado_en_oficina_value);
-        tv_no_entregado_en_oficina = (TextView) findViewById(R.id.textView_resumen_no_entregado_en_oficina_value);
-        tv_entregado_en_oficina_txt = (TextView) findViewById(R.id.textView_resumen_entregado_en_oficina_text);
-        tv_no_entregado_en_oficina_txt = (TextView) findViewById(R.id.textView_resumen_no_entregado_en_oficina_text);
-        tv_dirIncorrecta = (TextView) findViewById(R.id.textView_resumen_dir_incorrecta_value);
-        tv_ausente = (TextView) findViewById(R.id.textView_resumen_ausente_value);
-        tv_ausente_pendiente = (TextView) findViewById(R.id.textView_resumen_ausente_pendiente_value);
-        tv_desconocido = (TextView) findViewById(R.id.textView_resumen_desconocido_value);
-        tv_fallecido = (TextView) findViewById(R.id.textView_resumen_fallecido_value);
-        tv_rehusado = (TextView) findViewById(R.id.textView_resumen_rehusado_value);
-        tv_noSeHaceCargo = (TextView) findViewById(R.id.textView_resumen_nadie_cargo_value);
-        tv_noSeHaceCargoPendiente = (TextView) findViewById(R.id.textView_resumen_nadie_cargo_pendiente_value);
+        tv_totFicheros = findViewById(R.id.textView_resumen_total_ficheros_value);
+        tv_totNotificaciones = findViewById(R.id.textView_resumen_total_notificaciones_value);
+        tv_totNotifGestionadas = findViewById(R.id.textView_resumen_total_notif_gestionadas_value);
+        tv_totFotos_txt = findViewById(R.id.textView_resumen_total_fotos);
+        tv_totFotos = findViewById(R.id.textView_resumen_total_fotos_value);
+        tv_totXml_txt = findViewById(R.id.textView_resumen_total_xml);
+        tv_totXml = findViewById(R.id.textView_resumen_total_xml_value);
+        tv_totST_txt = findViewById(R.id.textView_resumen_total_st);
+        tv_totST = findViewById(R.id.textView_resumen_total_st_value);
+        tv_totResultados_reparto = findViewById(R.id.textView_resumen_total_resultados_reparto_value);
+        tv_totResultados_reparto_txt = findViewById(R.id.textView_resumen_total_resultados_reparto);
+        tv_totNotifPendientes_2_hoy = findViewById(R.id.textView_resumen_total_notif_pendientes_2_hoy_value);
+        tv_totNotifPendientes_2_otro_dia = findViewById(R.id.textView_resumen_total_notif_pendientes_2_otro_dia_value);
+        tv_totNotifMarcadas = findViewById(R.id.textView_resumen_total_notif_marcadas_value);
+        tv_totNotiLista = findViewById(R.id.textView_resumen_total_notif_lista_value);
+        tv_totNotiLista_txt = findViewById(R.id.textView_resumen_total_lista_txt);
+        tv_totCertLista = findViewById(R.id.textView_resumen_total_cert_lista_value);
+        tv_totCertLista_txt = findViewById(R.id.textView_resumen_total_lista_cert_txt);
+        tv_nombreFicheroSicer = findViewById(R.id.textView_resumen_nombre_fichero_sicer_value);
+        tv_nombreFicheroSegundo = findViewById(R.id.textView_resumen_nombre_fichero_segundo_value);
+        tv_entregado = findViewById(R.id.textView_resumen_entregado_value);
+        tv_entregado_en_oficina = findViewById(R.id.textView_resumen_entregado_en_oficina_value);
+        tv_no_entregado_en_oficina = findViewById(R.id.textView_resumen_no_entregado_en_oficina_value);
+        tv_entregado_en_oficina_txt = findViewById(R.id.textView_resumen_entregado_en_oficina_text);
+        tv_no_entregado_en_oficina_txt = findViewById(R.id.textView_resumen_no_entregado_en_oficina_text);
+        tv_dirIncorrecta = findViewById(R.id.textView_resumen_dir_incorrecta_value);
+        tv_ausente = findViewById(R.id.textView_resumen_ausente_value);
+        tv_ausente_pendiente = findViewById(R.id.textView_resumen_ausente_pendiente_value);
+        tv_desconocido = findViewById(R.id.textView_resumen_desconocido_value);
+        tv_fallecido = findViewById(R.id.textView_resumen_fallecido_value);
+        tv_rehusado = findViewById(R.id.textView_resumen_rehusado_value);
+        tv_noSeHaceCargo = findViewById(R.id.textView_resumen_nadie_cargo_value);
+        tv_noSeHaceCargoPendiente = findViewById(R.id.textView_resumen_nadie_cargo_pendiente_value);
 
-        mCerrarReparto = (Button) findViewById(R.id.button_resumen_cerrar_reparto);
+        mCerrarReparto =  findViewById(R.id.button_resumen_cerrar_reparto);
         mCerrarReparto.setOnClickListener(this);
     }
 
@@ -165,8 +164,6 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 
     /**
      * Clase privada que se lanza en background para realizar las consultas a la BD SQLite y
@@ -225,9 +222,24 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                 for (Notificacion noti : listaNotificacionesGestionadas){
                     // Contamos fotos
                     if (noti.getFotoAcuseRes2() != null && !noti.getFotoAcuseRes2().isEmpty()) {
-                        contadorFotos = contadorFotos + 1;
+                        try {
+                            InputStream inputStream  = new FileInputStream(noti.getFotoAcuseRes2());
+                            if (inputStream.hashCode() > 0) {
+                                contadorFotos = contadorFotos + 1;
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
                         }else if (noti.getFotoAcuseRes1() != null && !noti.getFotoAcuseRes1().isEmpty()) {
-                            contadorFotos = contadorFotos + 1;
+                        try {
+                            InputStream inputStream  = new FileInputStream(noti.getFotoAcuseRes1());
+                            if (inputStream.hashCode() > 0) {
+                                contadorFotos = contadorFotos + 1;
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         }
                     // Contamos ST
                     if (noti.getHayST()) {
@@ -289,7 +301,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
     /**
      * Método privado que pide confirmación para el cierre del reparto indicando todas las acciones a realizar
      */
-    private void crearDialogoAvisoCierreReparto() {
+    public void crearDialogoAvisoCierreReparto() {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle(R.string.cerrar_reparto);
                     builder.setMessage(R.string.cerrar_reparto_info);
@@ -368,10 +380,10 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
 
         protected String doInBackground(String... args) {
             String fallo = "";
-            File ficheroZIP = null;
-            File ficheroCSV = null;
+            File ficheroZIP;
+            File ficheroCSV;
 
-            DateFormat dfDia = new SimpleDateFormat("ddMMyyyy");
+            DateFormat dfDia = new SimpleDateFormat("ddMMyyyy", Locale.getDefault());
             // Modificación 
             // El CSV para los resultados: valencia_A22_25052017.csv
             String nombreFicheroCSV = obtenerDelegacion() + "_" + obtenerCodigoNotificador() + "_" + dfDia.format(Calendar.getInstance().getTime()) + ".csv";
@@ -385,8 +397,6 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                     String rutaCarpetaSICER = Util.obtenerRutaFtpSICER(getBaseContext(), obtenerDelegacion());
                     // /ftpData/VALENCIA/SICER/A22
                     String pathVolcado = rutaCarpetaSICER + File.separator + obtenerCodigoNotificador();
-                    // /ftpData/VALENCIA/SICER
-                    String pathVolcadoSegundoIntento = rutaCarpetaSICER;
                     if(ftpHelper.cargarCarpetaNotificador(pathVolcado)) {
 
                         // Se recuperan las notificaciones que se han gestionado durante el reparto
@@ -396,7 +406,7 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                         // valencia_25052017.csv
                         ficheroCSV = new File(Util.obtenerRutaAPP(), nombreFicheroCSV);
 
-                        try (FileWriter writerCSV = new FileWriter(ficheroCSV);) {
+                        try (FileWriter writerCSV = new FileWriter(ficheroCSV)) {
                             publishProgress(getString(R.string.generando_fichero_CSV));
                             // Quitamos el string "sin firma" o "(2ª VISITA)"
                             for (Notificacion notificacion : listaNotificacionesGestionadas) {
@@ -435,34 +445,34 @@ public class ResumenRepartoActivity extends BaseActivity implements View.OnClick
                                     }
 
                                     // Se formatea la fecha resultado y se inserta en el csv
-                                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
                                     Date dateAux = formatter.parse(fechaResultadoString2);
-                                    DateFormat df1 = new SimpleDateFormat("yyyyMMdd");
+                                    DateFormat df1 = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
                                     calendarAux.setTime(dateAux);
                                     fechaResultadoString2 = df1.format(calendarAux.getTime());
-                                    DateFormat df2 = new SimpleDateFormat("HH:mm");
+                                    DateFormat df2 = new SimpleDateFormat("HH:mm", Locale.getDefault());
                                     String hora = df2.format(calendarAux.getTime());
                                     if (notificacion.getRelacionDestinatario().contains("NO PROCEDE")){
                                         notificacion.setRelacionDestinatario(null);
                                     }
-                                    if (nombreFichero == ""){
+                                    if (nombreFichero.equals("")){
                                         nombreFichero = "CIMOBILE_" + fechaResultadoString2;
                                     }
                                     writerCSV.append(obtenerDelegacion() + ";" + obtenerCodigoNotificador() + ";" + codResultado2 + ";" + notificacion.getReferencia() + ";" + fechaResultadoString2 + ";" + fechaResultadoString2 + ";" + hora + ";" + notificacion.getLatitudRes2() + ";" + notificacion.getLongitudRes2() + ";" + notificacion.getNombreReceptor()+ ";" + notificacion.getNumDocReceptor()+ ";" + notificacion.getRelacionDestinatario() + "\n");
 
                                 } else {
                                     // Se formatea la fecha resultado y se inserta en el csv
-                                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
                                     Date dateAux = formatter.parse(fechaResultadoString1);
-                                    DateFormat df = new SimpleDateFormat("yyyyMMdd");
+                                    DateFormat df = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
                                     calendarAux.setTime(dateAux);
                                     fechaResultadoString1 = df.format(calendarAux.getTime());
-                                    DateFormat df2 = new SimpleDateFormat("HH:mm");
+                                    DateFormat df2 = new SimpleDateFormat("HH:mm", Locale.getDefault());
                                     String hora = df2.format(calendarAux.getTime());
                                     if (notificacion.getRelacionDestinatario().contains("NO PROCEDE")){
                                         notificacion.setRelacionDestinatario(null);
                                     }
-                                    if (nombreFichero == ""){
+                                    if (nombreFichero.equals("")){
                                         nombreFichero = "CIMOBILE_" + fechaResultadoString1;
                                     }
                                     writerCSV.append(obtenerDelegacion() + ";" + obtenerCodigoNotificador() + ";" + codResultado1 + ";" + notificacion.getReferencia() + ";" + fechaResultadoString1 + ";" + fechaResultadoString1 + ";" + hora + ";" +  notificacion.getLatitudRes1() + ";" + notificacion.getLongitudRes1() + ";" + notificacion.getNombreReceptor()+ ";" + notificacion.getNumDocReceptor()+ ";" + notificacion.getRelacionDestinatario() + "\n");

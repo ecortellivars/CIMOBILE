@@ -12,6 +12,7 @@ public class FiltroNotificacion {
     private Boolean marcadas;
     private Boolean entregadoEnOficina;
     private Boolean noEntregadoEnOficina;
+    private Boolean sinFoto;
     private String referencia;
     private Integer pagina;
 
@@ -26,13 +27,15 @@ public class FiltroNotificacion {
         this.entregadoEnOficina = false;
         this.noEntregadoEnOficina = false;
         this.marcadas = false;
+        this.sinFoto = false;
         this.pagina = 0;
     }
 
 
 
+
     public FiltroNotificacion(Boolean entregado, Boolean dirIncorrecta, Boolean ausente, Boolean desconocido, Boolean fallecido,
-                              Boolean rehusado, Boolean nadieSeHaceCargo, Boolean marcadas, Boolean entregadoEnOficina, Boolean noEntregadoEnOficina, String referencia,
+                              Boolean rehusado, Boolean nadieSeHaceCargo, Boolean marcadas, Boolean entregadoEnOficina, Boolean noEntregadoEnOficina, Boolean sinFoto, String referencia,
                               Integer pagina) {
         this.entregado = entregado;
         this.dirIncorrecta = dirIncorrecta;
@@ -45,6 +48,7 @@ public class FiltroNotificacion {
         this.entregadoEnOficina = entregadoEnOficina;
         this.noEntregadoEnOficina = noEntregadoEnOficina;
         this.referencia = referencia;
+        this.sinFoto = sinFoto;
         this.pagina = pagina;
     }
 
@@ -127,5 +131,9 @@ public class FiltroNotificacion {
     public Boolean getNoEntregadoEnOficina() {return noEntregadoEnOficina;}
 
     public void setNoEntregadoEnOficina(Boolean noEntregadoEnOficina) {this.noEntregadoEnOficina = noEntregadoEnOficina;}
+
+    public Boolean getSinFoto() {return sinFoto;}
+
+    public void setSinFoto(Boolean sinFoto) {this.sinFoto = sinFoto;}
 
 }

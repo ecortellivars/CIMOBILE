@@ -1,10 +1,13 @@
 <component name="libraryTable">
   <library name="Gradle: com.android.support:support-fragment:26.1.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.android/build-cache/c675a01281365455cf67f4bba3745965be3e099a/output/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.android/build-cache/c675a01281365455cf67f4bba3745965be3e099a/output/res" />
+      <root url="file://$USER_HOME$/.android/build-cache/ee7a38abbcc22ccfac85a469ab1b5d12d8a54659/output/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.android/build-cache/ee7a38abbcc22ccfac85a469ab1b5d12d8a54659/output/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.android/build-cache/ee7a38abbcc22ccfac85a469ab1b5d12d8a54659/output/res" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.support/support-fragment/26.1.0/8279b00f5194701ff18363fa2958c5a26670b0ef/support-fragment-26.1.0-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

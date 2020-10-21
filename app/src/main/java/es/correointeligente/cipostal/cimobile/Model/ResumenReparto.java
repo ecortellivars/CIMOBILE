@@ -26,36 +26,7 @@ public class ResumenReparto {
 
 
     public ResumenReparto() {
-    }
-
-    public ResumenReparto(int totFicheros, int totNotificaciones, int totFotos, int totResultadosReparto,
-                          int totNotifGestionadas, int totNotifMarcadas, int totNotifPendientesSegundoHoy,
-                          int numEntregados, int totNotifPendientesSegundoOtroDia,
-                          int numDirIncorrectas, int numAusentes, int numAusentesPendientes, int numDesconocidos,
-                          int numFallecidos, int numRehusados, int numNadieSeHaceCargo, int numNadieSeHaceCargoPendientes,
-                          int numEntregadosEnOficina, int numNoEntregadosEnOficina, int totNumListaCert, int totNumListaNA ) {
-        this.totFicheros = totFicheros;
-        this.totNotificaciones = totNotificaciones;
-        this.totNotifGestionadas = totNotifGestionadas;
-        this.totNotifPendientesSegundoHoy = totNotifPendientesSegundoHoy;
-        this.totNotifPendientesSegundoOtroDia = totNotifPendientesSegundoOtroDia;
-        this.totNotifMarcadas = totNotifMarcadas;
-        this.totFotos = totFotos;
-        this.totNumListaNA = totNumListaNA;
-        this.totNumListaCert = totNumListaCert;
-        this.totResultadosReparto = totResultadosReparto;
-        this.numEntregados = numEntregados;
-        this.numDirIncorrectas = numDirIncorrectas;
-        this.numAusentes = numAusentes;
-        this.numAusentesPendientes = numAusentesPendientes;
-        this.numDesconocidos = numDesconocidos;
-        this.numFallecidos = numFallecidos;
-        this.numRehusados = numRehusados;
-        this.numNadieSeHaceCargo = numNadieSeHaceCargo;
-        this.numNadieSeHaceCargoPendientes = numNadieSeHaceCargoPendientes;
-        this.numEntregadosEnOficina = numEntregadosEnOficina;
-        this.numNoEntregadosEnOficna = numNoEntregadosEnOficna;
-
+        super();
     }
 
     public Integer getTotFicheros() {

@@ -43,11 +43,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import es.correointeligente.cipostal.cimobile.Model.Notificacion;
 import es.correointeligente.cipostal.cimobile.Model.Resultado;
@@ -99,7 +98,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nueva_notificacion);
 
-        mToolbar = (Toolbar) findViewById(R.id.tool_bar);
+        mToolbar =  findViewById(R.id.tool_bar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -109,7 +108,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
         idNotificacion = getIntent().getIntExtra("idNotificacion", 0);
         posicionAdapter = getIntent().getIntExtra("posicionAdapter", 0);
         codigoNotificador = sp.getString(Util.CLAVE_SESION_COD_NOTIFICADOR, "");
-        btnActualizar = (ToggleButton) findViewById(R.id.btnActualizar);
+        btnActualizar =  findViewById(R.id.btnActualizar);
         btnActualizar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -138,25 +137,25 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
     }
 
     private void mapearVista() {
-        ll_detallePrimerIntento = (LinearLayout) findViewById(R.id.linearLayout_detalle_primer_intento);
-        ll_botonera = (LinearLayout) findViewById(R.id.linearLayout_nueva_notificacion_botonera);
-        tv_refPostal = (TextView) findViewById(R.id.textView_nuevaNotificacion_refPostal);
-        tv_refSCB = (TextView) findViewById(R.id.textView_nuevaNotificacion_refSCB);
-        tv_nombre = (TextView) findViewById(R.id.textView_nuevaNotificacion_nombre);
-        tv_direccion = (TextView) findViewById(R.id.textView_nuevaNotificacion_direccion);
-        tv_latitud = (TextView) findViewById(R.id.textView_nuevaNotificacion_latitud);
-        tv_longitud = (TextView) findViewById(R.id.textView_nuevaNotificacion_longitud);
-        tv_resultadoDetallePrimerIntento = (TextView) findViewById(R.id.textView_nuevaNotificacion_resultadoDetalle_primerIntento);
-        tv_fechaDetallePrimerIntento = (TextView) findViewById(R.id.textView_nuevaNotificacion_resultadoDetalle_primerIntento_fecha);
-        tv_consejoSegundoIntento = (TextView) findViewById(R.id.textView_nuevaNotificacion_consejo_segundo_intento);
-        edt_observaciones = (EditText) findViewById(R.id.editText_nuevaNotificacion_observaciones);
-        btn_entregado = (Button) findViewById(R.id.button_nueva_notificacion_entregado);
+        ll_detallePrimerIntento =  findViewById(R.id.linearLayout_detalle_primer_intento);
+        ll_botonera =  findViewById(R.id.linearLayout_nueva_notificacion_botonera);
+        tv_refPostal =  findViewById(R.id.textView_nuevaNotificacion_refPostal);
+        tv_refSCB =  findViewById(R.id.textView_nuevaNotificacion_refSCB);
+        tv_nombre =  findViewById(R.id.textView_nuevaNotificacion_nombre);
+        tv_direccion =  findViewById(R.id.textView_nuevaNotificacion_direccion);
+        tv_latitud =  findViewById(R.id.textView_nuevaNotificacion_latitud);
+        tv_longitud =  findViewById(R.id.textView_nuevaNotificacion_longitud);
+        tv_resultadoDetallePrimerIntento =  findViewById(R.id.textView_nuevaNotificacion_resultadoDetalle_primerIntento);
+        tv_fechaDetallePrimerIntento =  findViewById(R.id.textView_nuevaNotificacion_resultadoDetalle_primerIntento_fecha);
+        tv_consejoSegundoIntento =  findViewById(R.id.textView_nuevaNotificacion_consejo_segundo_intento);
+        edt_observaciones =  findViewById(R.id.editText_nuevaNotificacion_observaciones);
+        btn_entregado =  findViewById(R.id.button_nueva_notificacion_entregado);
         btn_entregado.setOnClickListener(this);
-        btn_noEntregado = (Button) findViewById(R.id.button_nueva_notificacion_noEntregado);
+        btn_noEntregado =  findViewById(R.id.button_nueva_notificacion_noEntregado);
         btn_noEntregado.setOnClickListener(this);
-        btnActualizar = (ToggleButton) findViewById(R.id.btnActualizar);
-        tv_consejoLista = (TextView) findViewById(R.id.textView_nuevaNotificacion_consejo_lista);
-        ll_detalleLista = (LinearLayout) findViewById(R.id.linearLayout_detalle_lista);
+        btnActualizar =  findViewById(R.id.btnActualizar);
+        tv_consejoLista =  findViewById(R.id.textView_nuevaNotificacion_consejo_lista);
+        ll_detalleLista =  findViewById(R.id.linearLayout_detalle_lista);
     }
 
     @Override
@@ -305,10 +304,10 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
 
             notificacion = notificacionAux;
 
-            tv_refPostal.setText(notificacion.getReferencia().toString());
-            tv_refSCB.setText(notificacion.getReferenciaSCB().toString());
-            tv_nombre.setText(notificacion.getNombre().toString());
-            tv_direccion.setText(notificacion.getDireccion().toString());
+            tv_refPostal.setText(notificacion.getReferencia());
+            tv_refSCB.setText(notificacion.getReferenciaSCB());
+            tv_nombre.setText(notificacion.getNombre());
+            tv_direccion.setText(notificacion.getDireccion());
             ll_detallePrimerIntento.setVisibility(View.INVISIBLE);
             ll_detalleLista.setVisibility(View.INVISIBLE);
             ll_botonera.setVisibility(View.VISIBLE);
@@ -339,64 +338,116 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                     btn_noEntregado.setVisibility(View.INVISIBLE);
                 }
             }else
-                    // Si requiere segundo intento lo muestro
-                    if (BooleanUtils.isTrue(notificacion.getSegundoIntento())) {
-                        // Se muestra el layout de información referente al primer resultado
-                        String horaApartirDe = null;
-                        String horaAntesDe = null;
-                        String diaLimite = null;
-                        Boolean invalidarBotonera = Boolean.FALSE;
-                        try {
+                // Si requiere segundo intento lo muestro
+                if (BooleanUtils.isTrue(notificacion.getSegundoIntento())) {
+                    // Se muestra el layout de información referente al primer resultado
+                    //String horaApartirDe = null;
+                    //String horaAntesDe = null;
+                    //String diaLimite = null;
+                    Boolean invalidarBotonera = Boolean.FALSE;
+                    Boolean mañana = Boolean.FALSE;
+                    Boolean tarde = Boolean.FALSE;
+                    //Calendar calendarDiaLimite = Calendar.getInstance();
 
-                            Integer numHoras = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_HORAS, getBaseContext(), Integer.class.getSimpleName());
-                            numHoras = numHoras == null ? 3 : numHoras; // en caso de no obtener el valor de las preferencias, por defecto son 3
-                            Integer numDias = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_DIAS, getBaseContext(), Integer.class.getSimpleName());
-                            numDias = numDias == null ? 3 : numDias; // en caso de no obtener el valor de las preferencias, por defecto son 3
+                    //Integer numHoras = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_HORAS, getBaseContext(), Integer.class.getSimpleName());
+                    //numHoras = numHoras == null ? 3 : numHoras; // en caso de no obtener el valor de las preferencias, por defecto son 3
+                    //Integer numDias = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_SIGUIENTE_VISITA_DIAS, getBaseContext(), Integer.class.getSimpleName());
+                    //numDias = numDias == null ? 3 : numDias; // en caso de no obtener el valor de las preferencias, por defecto son 3
 
-                            String fechaString = notificacion.getFechaHoraRes1();
-                            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-                            Date date = formatter.parse(fechaString);
-                            Calendar calendarApartirDe = Calendar.getInstance();
-                            Calendar calendarAntesDe = Calendar.getInstance();
-                            Calendar calendarDiaLimite = Calendar.getInstance();
-                            calendarApartirDe.setTime(date);
-                            calendarApartirDe.add(Calendar.HOUR, numHoras);
-                            calendarAntesDe.setTime(date);
-                            calendarAntesDe.add(Calendar.HOUR, -numHoras);
-                            calendarDiaLimite.setTime(date);
-                            calendarDiaLimite.add(Calendar.DATE, numDias);
-                            calendarDiaLimite.add(Calendar.HOUR, numHoras);
-
-                            DateFormat df = new SimpleDateFormat("HH:mm");
-                            horaApartirDe = df.format(calendarApartirDe.getTime());
-                            horaAntesDe = df.format(calendarAntesDe.getTime());
-
-                            Calendar calendarParaComparaHoras = Calendar.getInstance();
-                            calendarParaComparaHoras.setTime(date);
-
-                            df = new SimpleDateFormat("dd/MM/yyyy");
-                            diaLimite = df.format(calendarDiaLimite.getTime());
-
-                            //invalidarBotonera = !(calendarParaComparaHoras.after(calendarAntesDe) &&
-                            //calendarParaComparaHoras.before(calendarApartirDe) &&
-                            //calendarDiaLimite.after(Calendar.getInstance()));
-
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-
-                        if (!notificacion.getResultado1().equals(Util.RESULTADO_AUSENTE_SEGUNDO)
-                         && !notificacion.getResultado1().equals(Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO)) {
-                            String consejoSegundoIntento = getString(R.string.dia_limite) + " " + diaLimite + "\n" +
-                                                           getString(R.string.informacion_segundo_intento_1) + " " + horaAntesDe + " " +
-                                                           getString(R.string.informacion_segundo_intento_2) + " " + horaApartirDe;
-                            ll_detallePrimerIntento.setVisibility(View.VISIBLE);
-                            ll_botonera.setVisibility(invalidarBotonera ? View.INVISIBLE : View.VISIBLE);
-                            tv_resultadoDetallePrimerIntento.setText(notificacion.getResultado1() + " " + notificacion.getDescResultado1());
-                            tv_fechaDetallePrimerIntento.setText(notificacion.getFechaHoraRes1());
-                            tv_consejoSegundoIntento.setText(consejoSegundoIntento);
-                        }
+                    String fechaString = notificacion.getFechaHoraRes1();
+                    String horaStringSinBarra = fechaString.replace("/","");
+                    String horaStringSinEspacio = horaStringSinBarra.replace(" ","");
+                    String horaStringSinPuntos = horaStringSinEspacio.replace(":","");
+                    String horaStringSub = horaStringSinPuntos.substring(8, 10);
+                    switch (horaStringSub){
+                        case "08":
+                            mañana = Boolean.TRUE;
+                            break;
+                        case "09" :
+                            mañana = Boolean.TRUE;
+                            break;
+                        case "10" :
+                            mañana = Boolean.TRUE;
+                            break;
+                        case "11" :
+                            mañana = Boolean.TRUE;
+                            break;
+                        case "12" :
+                            mañana = Boolean.TRUE;
+                            break;
+                        case "13" :
+                            mañana = Boolean.TRUE;
+                            break;
+                        case "14" :
+                            mañana = Boolean.TRUE;
+                            break;
+                        case "15" :
+                            tarde = Boolean.TRUE;
+                            break;
+                        case "16" :
+                            tarde = Boolean.TRUE;
+                            break;
+                        case "17" :
+                            tarde = Boolean.TRUE;
+                            break;
+                        case "18" :
+                            tarde = Boolean.TRUE;
+                            break;
+                        case "19" :
+                            tarde = Boolean.TRUE;
+                            break;
+                        case "20" :
+                            tarde = Boolean.TRUE;
+                            break;
+                        case "21" :
+                            tarde = Boolean.TRUE;
+                            break;
                     }
+
+
+                    int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+                    // Si estamos en la mañana y el primero fue por la mañana (NO PERMITIR)
+                    if (currentHour >= 8 && currentHour <= 15 && mañana) {
+                        invalidarBotonera = Boolean.TRUE;
+                    }
+                    // Si estamos en la mañana y el primero fue por la tarde  (PERMITIR)
+                    else if (currentHour >= 8 && currentHour <= 15 && tarde) {
+                        invalidarBotonera = Boolean.FALSE;
+                    }
+                    // Si estamos en la tarde y el primero fue por la tarde  (NO PERMITIR)
+                    else if (currentHour >= 15 && currentHour <= 21 && tarde) {
+                        invalidarBotonera = Boolean.TRUE;
+                    }
+                    // Si estamos en la tarde y el primero fue por la mañana (PERMITIR)
+                    else if (currentHour >= 15 && currentHour <= 21 && mañana) {
+                        invalidarBotonera = Boolean.FALSE;
+                    }
+                    // Resto
+                    else {
+                        invalidarBotonera = Boolean.TRUE;
+                    }
+
+                    if (!notificacion.getResultado1().equals(Util.RESULTADO_AUSENTE_SEGUNDO)
+                     && !notificacion.getResultado1().equals(Util.RESULTADO_NADIE_SE_HACE_CARGO_SEGUNDO)) {
+                        String consejoSegundoIntento = "";
+                        if (tarde){
+                            consejoSegundoIntento = getString(R.string.informacion_segundo_intento_mañana) ;
+                        }
+                        else if (mañana){
+                            consejoSegundoIntento = getString(R.string.informacion_segundo_intento_tarde);
+                        } else {
+                            consejoSegundoIntento = getString(R.string.informacion_intento_fuera_horario);
+                        }
+
+
+                        ll_detallePrimerIntento.setVisibility(View.VISIBLE);
+                        ll_botonera.setVisibility(invalidarBotonera ? View.INVISIBLE : View.VISIBLE);
+                        tv_resultadoDetallePrimerIntento.setText(notificacion.getResultado1() + " " + notificacion.getDescResultado1());
+                        tv_fechaDetallePrimerIntento.setText(notificacion.getFechaHoraRes1());
+                        tv_consejoSegundoIntento.setText(consejoSegundoIntento);
+                        btnActualizar.setVisibility(invalidarBotonera ? View.INVISIBLE : View.VISIBLE);
+                    }
+                }
 
             progressDialog.dismiss();
         }
@@ -436,13 +487,13 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     // Fecha para base de datos
-                    DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                    DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
                     String fechaHoraString = df.format(Calendar.getInstance().getTime());
                     String codResultado = listaResultadosNoNotifica.get(checkedItem).getCodigo();
                     String descResultado = listaResultadosNoNotifica.get(checkedItem).getDescripcion();
 
                     // Fecha para dar nombre a la imagen en base de datos y al fichero JPG
-                    DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
+                    DateFormat df2 = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
 
                     // Preparamos la informacion si es Primer Intento
                     if (BooleanUtils.isFalse(notificacion.getSegundoIntento())
@@ -680,37 +731,88 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             String fallo = "";
             String ficheroST = "";
 
-            if ((notificacion.getLatitudRes1() == "0") && (notificacion.getLongitudRes1() == "0")){
+            if (notificacion.getLatitudRes1().equals("0") && notificacion.getLongitudRes1().equals("0")){
                     fallo = getString(R.string.error_guardar_en_bd_localizacion)   ;
                         } else {
                                 File ficheroXML = null;
                                 try {
                                     // Se genera el fichero XML
                                     publishProgress(getString(R.string.generado_xml));
-                                    ficheroXML = Util.NotificacionToXML(notificacion, getBaseContext());
-
-                                    // Se realiza la llamada al servidor del sellado de tiempo y se genera el fichero de sello de tiempo
-                                    Boolean tsaActivo = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_ACTIVO, getBaseContext(), Boolean.class.getSimpleName());
-                                    if(BooleanUtils.isTrue(tsaActivo)) {
-                                        publishProgress(getString(R.string.generado_sello_de_tiempo));
-                                        String tsaUrl = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_URL, getBaseContext(), String.class.getSimpleName());
-                                        String tsaUser = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_USER, getBaseContext(), String.class.getSimpleName());
-                                        TimeStampRequestParameters timeStampRequestParameters = null;
-                                        if (StringUtils.isNotBlank(tsaUser)) {
-                                            String tsaPassword = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_PASSWORD, getBaseContext(), String.class.getSimpleName());
-                                            timeStampRequestParameters = new TimeStampRequestParameters();
-                                            timeStampRequestParameters.setUser(tsaUser);
-                                            timeStampRequestParameters.setPassword(tsaPassword);
+                                    try {
+                                        ficheroXML = Util.NotificacionToXML(notificacion, getBaseContext());
+                                    }catch (CiMobileException e) {
+                                        fallo = getString(R.string.problema_guardar_XML_realizar_notif_en_papel);
+                                        // Elimina el fichero xml
+                                        try {
+                                            File file;
+                                            String nombeFichero = notificacion.getReferencia() +  ".xml";
+                                            file = new File(Util.obtenerRutaXML() + File.separator + nombeFichero);
+                                            if (file.exists()) {
+                                                file.delete();
+                                                notificacion.setHayXML(Boolean.FALSE);
+                                            }
+                                        }catch (Exception e3) {
+                                            e3.printStackTrace();
                                         }
-                                        TimeStamp t = TimeStamp.stampDocument(FileUtils.readFileToByteArray(ficheroXML), new URL(tsaUrl), timeStampRequestParameters, null);
-                                        ficheroST = Util.guardarFicheroSelloTiempo(notificacion, t.toDER());
                                     }
-                                if (ficheroXML != null) {
-                                    notificacion.setHayXML(Boolean.TRUE);
-                                }
+
+                                    if (ficheroXML != null) {
+                                        notificacion.setHayXML(Boolean.TRUE);
+                                        // Se realiza la llamada al servidor del sellado de tiempo y se genera el fichero de sello de tiempo
+                                        Boolean tsaActivo = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_ACTIVO, getBaseContext(), Boolean.class.getSimpleName());
+                                        if (BooleanUtils.isTrue(tsaActivo)) {
+                                            publishProgress(getString(R.string.generado_sello_de_tiempo));
+                                            String tsaUrl = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_URL, getBaseContext(), String.class.getSimpleName());
+                                            String tsaUser = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_USER, getBaseContext(), String.class.getSimpleName());
+                                            TimeStampRequestParameters timeStampRequestParameters = null;
+                                            if (StringUtils.isNotBlank(tsaUser)) {
+                                                String tsaPassword = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_TSA_PASSWORD, getBaseContext(), String.class.getSimpleName());
+                                                timeStampRequestParameters = new TimeStampRequestParameters();
+                                                timeStampRequestParameters.setUser(tsaUser);
+                                                timeStampRequestParameters.setPassword(tsaPassword);
+                                            }
+                                            try{
+                                                TimeStamp t = TimeStamp.stampDocument(FileUtils.readFileToByteArray(ficheroXML), new URL(tsaUrl), timeStampRequestParameters, null);
+                                                ficheroST = Util.guardarFicheroSelloTiempo(notificacion, t.toDER());
+                                            }catch (CiMobileException e2) {
+                                                fallo = getString(R.string.problema_guardar_ST_realizar_notif_en_papel);
+                                                // Elimina el fichero xml
+                                                try {
+                                                    File file;
+                                                    String nombeFichero = notificacion.getReferencia() +  ".xml";
+                                                    file = new File(Util.obtenerRutaXML() + File.separator + nombeFichero);
+                                                    if (file.exists()) {
+                                                        file.delete();
+                                                        notificacion.setHayXML(Boolean.FALSE);
+                                                    }
+                                                }catch (Exception e3) {
+                                                    e3.printStackTrace();
+                                                }
+                                            }
+
+                                        }
+                                    } else {
+                                             notificacion.setHayXML(Boolean.FALSE);
+                                            }
+
                                 if (ficheroST != ""){
                                     notificacion.setHayST(Boolean.TRUE);
-                                }
+                                } else {
+                                        notificacion.setHayST(Boolean.FALSE);
+                                        // Elimina el fichero xml
+                                        try {
+                                            File file;
+                                            String nombeFichero = notificacion.getReferencia() +  ".xml";
+                                            file = new File(Util.obtenerRutaXML() + File.separator + nombeFichero);
+                                            if (file.exists()) {
+                                                file.delete();
+                                                notificacion.setHayXML(Boolean.FALSE);
+                                            }
+                                        }catch (Exception e2) {
+                                            e2.printStackTrace();
+                                        }
+                                    }
+
                                 if (!notificacion.getHayXML()){
                                     fallo = getString(R.string.problema_guardar_XML_realizar_notif_en_papel);
                                     } else if (!notificacion.getHayST()){
@@ -721,8 +823,7 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
                                                 fallo = getString(R.string.error_guardar_en_bd);
                                             }
                                         }
-                                } catch (CiMobileException e) {
-                                    fallo = e.getError();
+
                                 } catch (IOException e) {
                                     fallo = getString(R.string.error_lectura_fichero_xml);
                                 }
@@ -745,12 +846,11 @@ public class NuevaNotificacionActivity extends BaseActivity implements View.OnCl
             AlertDialog.Builder builder = new AlertDialog.Builder(NuevaNotificacionActivity.this);
             // Si hubo fallo en el XML y en el SELLO de TIEMPO
             if(fallo != null && !fallo.isEmpty()) {
-                fallo = "";
                 if (notificacion.getHayXML().booleanValue() == false){
                     builder.setTitle(R.string.no_guardado);
                     // Añadir texto indicando que como no se ha generado ni el sello de tiempo ni el xml, esa notificacion
                     // debera realizarla en papel
-                    fallo += getString(R.string.problema_guardar_XML_realizar_notif_en_papel);
+                    fallo = getString(R.string.problema_guardar_XML_realizar_notif_en_papel) + " o " + fallo;
                     builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialogInterface, int which) {
                             Intent intentResultado = new Intent();

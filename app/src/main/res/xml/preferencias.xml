@@ -89,22 +89,6 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Segundos intentos">
-
-        <EditTextPreference
-            android:key="sigVisitaDias"
-            android:title="Dias"
-            android:inputType ="number"
-            android:summary="Dias de margen para el segundo intento"/>
-
-        <EditTextPreference
-            android:key="sigVisitaHoras"
-            android:title="Horas"
-            android:inputType ="number"
-            android:summary="Horas de margen para el segundo intento"/>
-
-    </PreferenceCategory>
-
     <PreferenceCategory android:title="Actualizaciones">
         <EditTextPreference
             android:key="updatesCarpeta"

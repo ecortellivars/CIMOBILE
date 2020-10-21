@@ -2,6 +2,7 @@ package es.correointeligente.cipostal.cimobile.Util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Environment;
 import android.util.Base64;
 
@@ -18,6 +19,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,6 +28,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -42,6 +46,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import es.correointeligente.cipostal.cimobile.Model.Notificacion;
 import es.correointeligente.cipostal.cimobile.R;
+
 
 
 public class Util {
@@ -96,6 +101,9 @@ public class Util {
     // Para uso exclusivo de control del trabajo del notificador
     public final static String RESULTADO_ENTREGADO_SIN_FIRMA = "01";
     public final static String DESCRIPCION_ENTREGADO_SIN_FIRMA = "Notificado sin firma";
+    public final static String DESCRIPCION_SIN_RECEPTOR = "SIN RECEPTOR";
+
+
 
     // CONSTANTES FICHEROS DE PREFERENCIAS
     public final static String FICHERO_PREFERENCIAS_SESION = "sesion";
@@ -134,7 +142,9 @@ public class Util {
 
     public final static String CLAVE_PREFERENCIAS_APP_DE_OFICINA = "usarAPPEnOficina";
     public final static String CLAVE_PREFERENCIAS_APP_PEE = "usarAPPPEE";
-
+    private static final Object COMPRESSOR_MAX_WIDTH = 100;
+    private static final Object COMPRESSOR_MAX_HEIGHT = 100;
+    private static final Object COMPRESSOR_QUALITY = 0;
 
 
     /**
@@ -250,6 +260,18 @@ public class Util {
     }
 
     /**
+     * Obtiene la ruta del FOTOS de la APP
+     * @return String
+     */
+    public static String obtenerRutaFotos() {
+        File file = new File(obtenerRutaAPP()  + File.separator + EXTERNAL_DIRECTORY_FOTO_ACUSE);
+        if(!file.exists()) {
+            file.mkdirs();
+        }
+        return file.getPath();
+    }
+
+    /**
      * Obtiene la ruta del directorio donde se alojan las imagenes con las las firmas de los receptores
      * @return String
      */
@@ -328,7 +350,7 @@ public class Util {
      * @return
      */
     public static String obtenerRutaFtpSICER(Context context, String delegacion) {
-        String ruta = "";
+        String ruta;
 
         //ruta = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_BASE, context, String.class.getSimpleName());
         // /valencia/VALENCIA/SICER
@@ -343,7 +365,7 @@ public class Util {
      * @return
      */
     public static String obtenerRutaFtpActualizaciones(Context context) {
-        String ruta = "";
+        String ruta;
 
         ruta = Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_CARPETA_BASE, context, String.class.getSimpleName());
         ruta = ruta + Util.obtenerValorPreferencia(Util.CLAVE_PREFERENCIAS_FTP_UPDATES_CARPETA, context, String.class.getSimpleName());
@@ -371,7 +393,7 @@ public class Util {
      * @throws Exception No se puede escribir
      */
     public static String  guardarFicheroSelloTiempo(Notificacion notificacion, byte[] contenido) throws IOException {
-        String nombreFichero = "";
+        String nombreFichero;
 
         // Los guardamos a disco.
         if (notificacion.getReferencia() != null && !notificacion.getReferencia().isEmpty()) {
@@ -383,6 +405,24 @@ public class Util {
 
         return nombreFichero;
     }
+    /**
+     * Guarda en disco un array de bytes.
+     * @param notificacion Fichero donde se guardará el contenido
+     * @param contenido Contenido a guardar
+     * @throws Exception No se puede escribir
+     */
+    public static String  guardarFicheroFoto(Notificacion notificacion, byte[] contenido) throws IOException {
+        String nombreFichero = "";
+
+        // Los guardamos a disco.
+        if (notificacion.getReferencia() != null && !notificacion.getReferencia().isEmpty()) {
+            nombreFichero = notificacion.getReferencia() + ".jpeg";
+        }
+        FileUtils.writeByteArrayToFile(new File(obtenerRutaFotos(), nombreFichero), contenido);
+
+        return nombreFichero;
+    }
+
 
     /**
      * Crear un fichero XML a partir de una notificacion dada
@@ -392,31 +432,31 @@ public class Util {
      */
     public static File NotificacionToXML(Notificacion notificacion, Context context) throws CiMobileException {
         File xmlFile = null;
+        String nombeFichero;
         try {
-            String nombeFichero = notificacion.getReferencia() + ".xml";
 
             // Se Determina si viene del primer o del segundo resultado
-            Date date = null;
-            String horaString = null;
-            String fechaString = null;
-            String resultadoString = null;
-            String resultadoDescString = null;
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-            DateFormat dfHora = new SimpleDateFormat("HH:mm");
-            DateFormat dfDia = new SimpleDateFormat("dd/MM/yyyy");
-            String latitudString = "";
-            String longitudString = "";
-            String observacionesString = "";
-            String notificadorString = null;
-            String firmaNotificadorString = null;
+            Date date;
+            String horaString;
+            String fechaString;
+            String resultadoString;
+            String resultadoDescString;
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+            DateFormat dfHora = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            DateFormat dfDia = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            String latitudString;
+            String longitudString;
+            String observacionesString;
+            String notificadorString;
+            String firmaNotificadorString;
 
             if(StringUtils.isNotBlank(notificacion.getResultado2())) {
+                nombeFichero = notificacion.getReferencia() + "_" + notificacion.getResultado2() + ".xml";
                 resultadoString = notificacion.getResultado2();
                 resultadoDescString = notificacion.getDescResultado2();
                 date = formatter.parse(notificacion.getFechaHoraRes2());
 
                 if (notificacion.getLatitudRes2().isEmpty() ||
-                    notificacion.getLatitudRes2().equals(null) ||
                     notificacion.getLatitudRes2() == null ||
                     notificacion.getLatitudRes2().length() == 0 ||
                     notificacion.getLatitudRes2().equals("")){
@@ -425,7 +465,6 @@ public class Util {
                         latitudString = notificacion.getLatitudRes2();
                 }
                 if (notificacion.getLongitudRes2().isEmpty() ||
-                    notificacion.getLongitudRes2().equals(null) ||
                     notificacion.getLongitudRes2() == null ||
                     notificacion.getLongitudRes2().length() == 0 ||
                     notificacion.getLongitudRes2().equals("")){
@@ -434,7 +473,6 @@ public class Util {
                         longitudString = notificacion.getLongitudRes2();
                 }
                 if (notificacion.getObservacionesRes2().isEmpty() ||
-                    notificacion.getObservacionesRes2().equals(null) ||
                     notificacion.getObservacionesRes2() == null ||
                     notificacion.getObservacionesRes2().length() == 0 ||
                     notificacion.getObservacionesRes2().equals("")){
@@ -446,12 +484,12 @@ public class Util {
                 firmaNotificadorString = notificacion.getFirmaNotificadorRes2();
 
             } else {
+                nombeFichero = notificacion.getReferencia() + "_" + notificacion.getResultado1() + ".xml";
                 resultadoString = notificacion.getResultado1();
                 resultadoDescString = notificacion.getDescResultado1();
                 date = formatter.parse(notificacion.getFechaHoraRes1());
 
                 if (notificacion.getLatitudRes1().isEmpty() ||
-                    notificacion.getLatitudRes1().equals(null) ||
                     notificacion.getLatitudRes1() == null ||
                     notificacion.getLatitudRes1().length() == 0 ||
                     notificacion.getLatitudRes1().equals("")){
@@ -460,7 +498,6 @@ public class Util {
                         latitudString = notificacion.getLatitudRes1();
                 }
                 if (notificacion.getLongitudRes1().isEmpty() ||
-                    notificacion.getLongitudRes1().equals(null) ||
                     notificacion.getLongitudRes1() == null ||
                     notificacion.getLongitudRes1().length() == 0 ||
                     notificacion.getLongitudRes1().equals("")){
@@ -469,7 +506,6 @@ public class Util {
                         longitudString = notificacion.getLongitudRes1();
                 }
                 if (notificacion.getObservacionesRes1().isEmpty() ||
-                    notificacion.getObservacionesRes1().equals(null) ||
                     notificacion.getObservacionesRes1() == null ||
                     notificacion.getObservacionesRes1().length() == 0 ||
                     notificacion.getObservacionesRes1().equals("")    ){
@@ -486,7 +522,7 @@ public class Util {
 
             // Se empieza a generar el arbol XML
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = null;
+            DocumentBuilder dBuilder;
             dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.newDocument();
 
@@ -554,9 +590,9 @@ public class Util {
             notificador.appendChild(doc.createTextNode(notificadorString));
             rootElement.appendChild(notificador);
 
-            FileInputStream fis = null;
-            byte[] filedata = null;
-            String encodedImage = null;
+            FileInputStream fis;
+            byte[] filedata;
+            String encodedImage;
 
             // Si el resultado es ENTREGADO CON FIRMA capturamos los datos del RECEPTOR de la carta
             if(notificacion.getNumDocReceptor() != null && !notificacion.getNumDocReceptor().trim().isEmpty()) {
@@ -635,7 +671,7 @@ public class Util {
      * @return
      */
     public static File comprimirZIP(String codigoNotificador, String delegacion) {
-        DateFormat dfDia = new SimpleDateFormat("ddMMyyyy");
+        DateFormat dfDia = new SimpleDateFormat("ddMMyyyy", Locale.getDefault());
         String nombreFichero = delegacion + "_" + codigoNotificador + "_" + dfDia.format(Calendar.getInstance().getTime()) + ".zip";
 
         File directorioAGenerarZIP = new File(obtenerRutaAPP());
@@ -873,4 +909,57 @@ public class Util {
 
         return valido;
     }
+
+ /*   public static void scaleImage(Context context, Bitmap bitmap, String pathTemp, String pathDirectoryDest){
+        SharedPreferences sharedPref = context.getSharedPreferences("session", Context.MODE_PRIVATE);
+        String t = sharedPref.getString("t", "");
+
+        try {
+            FileOutputStream fos1 = new FileOutputStream(new File(pathTemp));
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos1);
+            fos1.flush();
+            fos1.close();
+            //PRUEBA COMPRESSOR
+            File image = new Compressor(context)
+                    .setMaxWidth(COMPRESSOR_MAX_WIDTH)
+                    .setMaxHeight(COMPRESSOR_MAX_HEIGHT)
+                    .setQuality(COMPRESSOR_QUALITY)
+                    .setDestinationDirectoryPath(pathDirectoryDest)
+                    .setCompressFormat(Bitmap.CompressFormat.JPEG)
+                    .compressToFile(new File(pathTemp));
+
+            File fileTemp = new File(pathTemp);
+            fileTemp.delete();
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }*/
+
+    public static byte[] bitmapToByteArray(Bitmap bm) {
+        // Create the buffer with the correct size
+        int iBytes = bm.getWidth() * bm.getHeight() * 4;
+        ByteBuffer buffer = ByteBuffer.allocate(iBytes);
+
+        // Log.e("DBG", buffer.remaining()+""); -- Returns a correct number based on dimensions
+        // Copy to buffer and then into byte array
+        bm.copyPixelsToBuffer(buffer);
+        // Log.e("DBG", buffer.remaining()+""); -- Returns 0
+        return buffer.array();
+    }
+
+    public static File compressImageToFile(Bitmap bitmap, File outFile, Bitmap.CompressFormat format) {
+        try {
+            OutputStream outStream = new FileOutputStream(outFile);
+            bitmap.compress(format, 0, outStream);
+            outStream.flush();
+            outStream.close();
+        }
+        catch (Exception e) {
+            return null;
+        }
+        return outFile;
+    }
+
+
 }
